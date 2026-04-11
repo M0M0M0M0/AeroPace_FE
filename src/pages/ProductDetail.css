@@ -1,0 +1,275 @@
+/* Chrome, Edge, Safari */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+/* WRAPPER */
+.pd-wrapper {
+  background: #000;
+  color: #fff;
+  min-height: 100vh;
+  padding: 5rem 6%;
+}
+
+/* MAIN GRID */
+.pd-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* IMAGE */
+.pd-main-image-box {
+  width: 100%;
+  height: 350px;
+  background: #111;
+  border-radius: 1.5rem;
+  border: 1px solid #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pd-main-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* THUMB */
+.pd-thumb-list {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pd-thumb {
+  width: 70px;
+  height: 70px;
+  background: #111;
+  border-radius: 10px;
+  border: 1px solid #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: 0.3s;
+}
+
+.pd-thumb img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.pd-thumb.active {
+  border: 2px solid #fff;
+  opacity: 1;
+}
+
+/* INFO */
+.pd-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pd-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.pd-price {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.pd-category {
+  color: #aaa;
+}
+
+/* QTY */
+.pd-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pd-qty-box {
+  display: flex;
+  align-items: center;
+  background: #111;
+  /* border-radius: 999px; */
+  border: 1px solid #333;
+}
+
+.pd-qty-box button {
+  padding: 0.3rem 0.8rem;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+  border: none;
+}
+
+.pd-qty-input {
+  width: 50px;
+  text-align: center;
+  background: #111;
+  color: #fff;
+  border: none;
+  outline: none;
+}
+
+/* ẨN SPINNER */
+.pd-qty-input::-webkit-outer-spin-button,
+.pd-qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.pd-qty-input {
+  -moz-appearance: textfield;
+}
+
+/* ADD BTN */
+.pd-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  color: #000;
+  padding: 0.8rem 1.6rem;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  border: none;
+}
+
+.pd-add-btn:hover {
+  transform: scale(1.05);
+}
+
+/* ADVANTAGES */
+.pd-advantages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.pd-adv-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #111;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  transition: 0.3s;
+}
+
+.pd-adv-item span {
+  color: #ddd;
+}
+
+/* DESC */
+.pd-desc {
+  margin-top: 4rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pd-desc h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.pd-desc-content {
+  background: #111;
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid #222;
+  line-height: 1.6;
+}
+/* VARIANT */
+.pd-variant {
+  margin-top: 0.5rem;
+}
+
+.pd-variant-title {
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  color: #ccc;
+}
+
+.pd-variant-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pd-variant-item {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #333;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+}
+
+.pd-variant-item:hover {
+  border-color: #fff;
+  transform: translateY(-2px);
+}
+
+.pd-variant-item.active {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+.pd-action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.pd-buy-btn {
+  flex: 1;
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 50px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.pd-buy-btn:hover {
+  transform: scale(1.05);
+}
+.pd-desc-content img {
+  max-width: 70%;
+  height: auto;
+  display: block;
+  margin: 10px auto;
+}
+
+.pd-desc-content {
+  overflow: hidden;
+  word-break: break-word;
+}

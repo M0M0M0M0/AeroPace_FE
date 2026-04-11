@@ -1,0 +1,170 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000; /* Nền đen sâu */
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: #0f0f0f; /* Lớp nền thẻ sáng hơn một chút */
+  padding: 40px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.login-header h2 {
+  color: #fff;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.login-header p {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 16px;
+  color: #555;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px 14px 14px 48px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #fff;
+  background: #222;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.remember-me {
+  color: #777;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.forgot-password {
+  color: #d1d5db;
+  text-decoration: none;
+}
+
+.login-submit-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.login-submit-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.login-footer {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.login-footer a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+/* --- Các class mới cho thông báo hiện đại --- */
+.modern-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: slideDownFade 0.4s ease forwards;
+}
+
+/* Thông báo thành công (Màu xanh lá) */
+.alert-success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ade80;
+}
+
+/* Thông báo lỗi (Màu đỏ) */
+.alert-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+/* Khi nút submit bị vô hiệu hóa (disabled) */
+.login-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Hiệu ứng xuất hiện mượt mà */
+@keyframes slideDownFade {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,77 @@
+/* Import font từ Google Fonts để đảm bảo hiển thị tiếng Việt 100% */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+.policy-wrapper {
+  padding-top: 100px;
+  padding-bottom: 80px;
+  background-color: #0a0a0a;
+  min-height: 100vh;
+  /* Thay đổi font-family sang Inter */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.policy-container {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 50px;
+  background: #000000;
+  border-radius: 12px;
+  border: 1px solid #222;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.policy-title {
+  font-size: 2.5rem;
+  font-weight: 800; /* Rất đậm cho tiêu đề */
+  color: #ffffff;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: -0.5px; /* Thu hẹp khoảng cách chữ cho hiện đại */
+}
+
+.policy-date {
+  font-size: 0.95rem;
+  color: #888;
+  font-style: italic;
+  margin-bottom: 50px;
+  border-bottom: 1px solid #222;
+  padding-bottom: 25px;
+}
+
+.policy-section {
+  margin-bottom: 35px;
+}
+
+.policy-section h3 {
+  font-size: 1.4rem;
+  color: #ffffff;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.policy-section p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #d1d5db;
+  font-weight: 400;
+  /* TẠO KHOẢNG CÁCH GIỮA CÁC ĐÒNG p */
+  margin-bottom: 20px;
+}
+
+/* --- Tối ưu cho di động --- */
+@media (max-width: 768px) {
+  .policy-wrapper {
+    padding-top: 90px;
+  }
+  
+  .policy-container {
+    margin: 0 15px;
+    padding: 30px;
+  }
+  
+  .policy-title {
+    font-size: 1.8rem;
+  }
+}
