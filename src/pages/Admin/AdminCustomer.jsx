@@ -8,9 +8,15 @@ const API_BASE = "http://localhost:8080/api/v1/admin/customers";
 const AdminCustomers = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
   const [selectedCustomer, setSelected] = useState(null);
   const [toastMsg, setToastMsg] = useState("");
+
+  // ── Filter states ─────────────────────────────────────────────
+  const [searchId, setSearchId] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
+  const [searchPhone, setSearchPhone] = useState("");
+  const [filterStatus, setFilterStatus] = useState("ALL");
 
   // ── Fetch danh sách ──────────────────────────────────────────
   const fetchCustomers = async () => {
@@ -70,13 +76,39 @@ const AdminCustomers = () => {
     showToast("Cập nhật thông tin thành công");
   };
 
-  // ── Filter search ─────────────────────────────────────────────
-  const filtered = customers.filter(
-    (c) =>
-      c.username?.toLowerCase().includes(search.toLowerCase()) ||
-      c.email?.toLowerCase().includes(search.toLowerCase()) ||
-      c.fullName?.toLowerCase().includes(search.toLowerCase()),
-  );
+  // ── Reset filters ─────────────────────────────────────────────
+  const handleResetFilters = () => {
+    setSearchId("");
+    setSearchName("");
+    setSearchEmail("");
+    setSearchPhone("");
+    setFilterStatus("ALL");
+  };
+
+  // ── Filter logic ──────────────────────────────────────────────
+  const filtered = customers.filter((c) => {
+    const matchId = searchId
+      ? String(c.userId).includes(searchId.trim())
+      : true;
+    const matchName = searchName
+      ? (c.fullName || c.username || "")
+          .toLowerCase()
+          .includes(searchName.toLowerCase())
+      : true;
+    const matchEmail = searchEmail
+      ? (c.email || "").toLowerCase().includes(searchEmail.toLowerCase())
+      : true;
+    const matchPhone = searchPhone
+      ? (c.phoneNumber || "").includes(searchPhone.trim())
+      : true;
+    const matchStatus =
+      filterStatus === "ALL" ? true : c.status === filterStatus;
+
+    return matchId && matchName && matchEmail && matchPhone && matchStatus;
+  });
+
+  const hasActiveFilter =
+    searchId || searchName || searchEmail || searchPhone || filterStatus !== "ALL";
 
   return (
     <div className="ac-page">
@@ -89,12 +121,6 @@ const AdminCustomers = () => {
           <h1 className="ac-title">Khách hàng</h1>
           <p className="ac-subtitle">Quản lý tài khoản khách hàng</p>
         </div>
-        <input
-          className="ac-search"
-          placeholder="🔍  Tìm theo tên, email..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
       </div>
 
       {/* Stats */}
@@ -117,6 +143,55 @@ const AdminCustomers = () => {
         </div>
       </div>
 
+      {/* Filter bar */}
+      <div className="ac-filter-bar">
+        <input
+          className="ac-filter-input ac-filter-id"
+          placeholder="🔍 ID"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+        />
+        <input
+          className="ac-filter-input"
+          placeholder="🔍 Họ tên"
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+        />
+        <input
+          className="ac-filter-input"
+          placeholder="🔍 Email"
+          value={searchEmail}
+          onChange={(e) => setSearchEmail(e.target.value)}
+        />
+        <input
+          className="ac-filter-input"
+          placeholder="🔍 Số điện thoại"
+          value={searchPhone}
+          onChange={(e) => setSearchPhone(e.target.value)}
+        />
+        <select
+          className="ac-filter-select"
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+        >
+          <option value="ALL">Tất cả trạng thái</option>
+          <option value="ACTIVE">Đang hoạt động</option>
+          <option value="LOCKED">Đã khoá</option>
+        </select>
+        {hasActiveFilter && (
+          <button className="ac-filter-reset" onClick={handleResetFilters}>
+            ✕ Xoá bộ lọc
+          </button>
+        )}
+      </div>
+
+      {/* Result count */}
+      {hasActiveFilter && (
+        <p className="ac-filter-result">
+          Tìm thấy <strong>{filtered.length}</strong> / {customers.length} khách hàng
+        </p>
+      )}
+
       {/* Table */}
       {loading ? (
         <div className="ac-loading">Đang tải...</div>
@@ -126,6 +201,7 @@ const AdminCustomers = () => {
             <thead>
               <tr>
                 <th>#</th>
+                <th>ID</th>
                 <th>Tên đăng nhập</th>
                 <th>Họ tên</th>
                 <th>Email</th>
@@ -138,18 +214,15 @@ const AdminCustomers = () => {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="ac-empty-row">
+                  <td colSpan={9} className="ac-empty-row">
                     Không tìm thấy khách hàng
                   </td>
                 </tr>
               ) : (
                 filtered.map((c, idx) => (
-                  <tr
-                    key={c.userId}
-                    className="ac-row"
-                    onClick={() => setSelected(c)}
-                  >
+                  <tr key={c.userId} className="ac-row">
                     <td>{idx + 1}</td>
+                    <td className="ac-id">#{c.userId}</td>
                     <td className="ac-username">{c.username}</td>
                     <td>
                       {c.fullName || (
@@ -173,12 +246,20 @@ const AdminCustomers = () => {
                       </span>
                     </td>
                     <td>
-                      <button
-                        className={`ac-lock-btn ${c.status === "ACTIVE" ? "lock" : "unlock"}`}
-                        onClick={(e) => handleToggleLock(c.userId, e)}
-                      >
-                        {c.status === "ACTIVE" ? "Khoá" : "Mở khoá"}
-                      </button>
+                      <div className="ac-actions">
+                        <button
+                          className={`ac-lock-btn ${c.status === "ACTIVE" ? "lock" : "unlock"}`}
+                          onClick={(e) => handleToggleLock(c.userId, e)}
+                        >
+                          {c.status === "ACTIVE" ? "Khoá" : "Mở khoá"}
+                        </button>
+                        <button
+                          className="ac-edit-btn"
+                          onClick={() => setSelected(c)}
+                        >
+                          ✏️ Sửa
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

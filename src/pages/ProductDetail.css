@@ -9,7 +9,8 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
-/* WRAPPER */
+
+/* ── WRAPPER ─────────────────────────────────────────────────── */
 .pd-wrapper {
   background: #000;
   color: #fff;
@@ -17,7 +18,7 @@ input[type="number"] {
   padding: 5rem 6%;
 }
 
-/* MAIN GRID */
+/* ── MAIN GRID ───────────────────────────────────────────────── */
 .pd-main {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -26,7 +27,7 @@ input[type="number"] {
   margin: 0 auto;
 }
 
-/* IMAGE */
+/* ── IMAGE ───────────────────────────────────────────────────── */
 .pd-main-image-box {
   width: 100%;
   height: 350px;
@@ -44,7 +45,7 @@ input[type="number"] {
   object-fit: contain;
 }
 
-/* THUMB */
+/* ── THUMBNAILS ──────────────────────────────────────────────── */
 .pd-thumb-list {
   display: flex;
   gap: 10px;
@@ -78,16 +79,17 @@ input[type="number"] {
   opacity: 1;
 }
 
-/* INFO */
+/* ── INFO COLUMN ─────────────────────────────────────────────── */
 .pd-info {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.2rem;
 }
 
 .pd-title {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 800;
+  line-height: 1.2;
 }
 
 .pd-price {
@@ -97,9 +99,74 @@ input[type="number"] {
 
 .pd-category {
   color: #aaa;
+  font-size: 0.9rem;
 }
 
-/* QTY */
+/* ── VARIANT SELECTOR ────────────────────────────────────────── */
+.pd-variant {
+  margin-top: 0.25rem;
+}
+
+.pd-variant-title {
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  color: #ccc;
+  font-size: 0.95rem;
+}
+
+.pd-variant-selected {
+  color: #fff;
+  font-weight: 700;
+}
+
+.pd-variant-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pd-variant-item {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid #333;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.pd-variant-item:hover:not(.disabled) {
+  border-color: #fff;
+  transform: translateY(-2px);
+}
+
+.pd-variant-item.active {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Option không có variant tương ứng */
+.pd-variant-item.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+/* ── STOCK ───────────────────────────────────────────────────── */
+.pd-stock {
+  font-size: 0.85rem;
+  color: #4ade80;
+  margin: 0;
+}
+
+.pd-out-of-stock {
+  color: #ef4444;
+}
+
+/* ── QTY ─────────────────────────────────────────────────────── */
 .pd-qty-row {
   display: flex;
   align-items: center;
@@ -110,7 +177,6 @@ input[type="number"] {
   display: flex;
   align-items: center;
   background: #111;
-  /* border-radius: 999px; */
   border: 1px solid #333;
 }
 
@@ -129,20 +195,21 @@ input[type="number"] {
   color: #fff;
   border: none;
   outline: none;
+  -moz-appearance: textfield;
 }
 
-/* ẨN SPINNER */
 .pd-qty-input::-webkit-outer-spin-button,
 .pd-qty-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-.pd-qty-input {
-  -moz-appearance: textfield;
+/* ── ACTION BUTTONS ──────────────────────────────────────────── */
+.pd-action-buttons {
+  display: flex;
+  gap: 1rem;
 }
 
-/* ADD BTN */
 .pd-add-btn {
   display: flex;
   align-items: center;
@@ -153,15 +220,33 @@ input[type="number"] {
   border-radius: 50px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.25s;
   border: none;
 }
 
-.pd-add-btn:hover {
-  transform: scale(1.05);
+.pd-add-btn:hover:not(:disabled) { transform: scale(1.05); }
+
+.pd-buy-btn {
+  flex: 1;
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 50px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.25s;
 }
 
-/* ADVANTAGES */
+.pd-buy-btn:hover:not(:disabled) { transform: scale(1.05); }
+
+.pd-add-btn:disabled,
+.pd-buy-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── ADVANTAGES ──────────────────────────────────────────────── */
 .pd-advantages {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -178,11 +263,9 @@ input[type="number"] {
   transition: 0.3s;
 }
 
-.pd-adv-item span {
-  color: #ddd;
-}
+.pd-adv-item span { color: #ddd; }
 
-/* DESC */
+/* ── DESCRIPTION ─────────────────────────────────────────────── */
 .pd-desc {
   margin-top: 4rem;
   max-width: 1200px;
@@ -201,75 +284,13 @@ input[type="number"] {
   border-radius: 1rem;
   border: 1px solid #222;
   line-height: 1.6;
-}
-/* VARIANT */
-.pd-variant {
-  margin-top: 0.5rem;
+  overflow: hidden;
+  word-break: break-word;
 }
 
-.pd-variant-title {
-  font-weight: 600;
-  margin-bottom: 0.6rem;
-  color: #ccc;
-}
-
-.pd-variant-list {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.pd-variant-item {
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid #333;
-  background: #111;
-  color: #fff;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.25s ease;
-}
-
-.pd-variant-item:hover {
-  border-color: #fff;
-  transform: translateY(-2px);
-}
-
-.pd-variant-item.active {
-  background: #fff;
-  color: #000;
-  border-color: #fff;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
-.pd-action-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.pd-buy-btn {
-  flex: 1;
-  background: #fff;
-  color: #000;
-  border: none;
-  padding: 0.9rem;
-  border-radius: 50px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.pd-buy-btn:hover {
-  transform: scale(1.05);
-}
 .pd-desc-content img {
   max-width: 70%;
   height: auto;
   display: block;
   margin: 10px auto;
-}
-
-.pd-desc-content {
-  overflow: hidden;
-  word-break: break-word;
 }

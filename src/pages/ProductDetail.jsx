@@ -12,13 +12,26 @@ import { toast } from "sonner";
 import { useCart } from "../context/CartContext";
 import "./ProductDetail.css";
 
+const getUniqueValues = (variants, key) => {
+  const values = variants
+    .map((v) => v[key])
+    .filter((v) => v && v.trim() !== "");
+  return [...new Set(values)];
+};
+
+const findMatchingVariant = (variants, selected, optionKeys) => {
+  return variants.find((v) =>
+    optionKeys.every((key) => !selected[key] || v[key] === selected[key]),
+  );
+};
+
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
-  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selected, setSelected] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
 
@@ -31,7 +44,14 @@ const ProductDetail = () => {
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);
-        setSelectedVariant(data.variants?.[0]);
+        const first = data.variants?.[0];
+        if (first) {
+          const init = {};
+          if (data.option1Name) init.option1Value = first.option1Value;
+          if (data.option2Name) init.option2Value = first.option2Value;
+          if (data.option3Name) init.option3Value = first.option3Value;
+          setSelected(init);
+        }
       })
       .catch(console.error);
   }, [id]);
@@ -43,47 +63,87 @@ const ProductDetail = () => {
       </p>
     );
 
-  const image = images?.[0]?.imageUrl;
-  const price = selectedVariant?.price || 0;
-  const category = product.categories?.[0]?.name || "";
-  const optionName = product.option1Name;
   const variants = product.variants || [];
+
+  const optionDefs = [
+    { name: product.option1Name, key: "option1Value" },
+    { name: product.option2Name, key: "option2Value" },
+    { name: product.option3Name, key: "option3Value" },
+  ].filter((o) => o.name);
+
+  const optionKeys = optionDefs.map((o) => o.key);
+  const selectedVariant = findMatchingVariant(variants, selected, optionKeys);
+
+  const price = selectedVariant?.price || variants[0]?.price || 0;
+  const maxStock = selectedVariant?.stock ?? 0;
+  const category = product.categories?.[0]?.name || "";
+  const image = images?.[0]?.imageUrl;
+
+  const handleSelectOption = (key, value) => {
+    const newSelected = { ...selected, [key]: value };
+    const match = findMatchingVariant(variants, newSelected, optionKeys);
+    if (!match) {
+      const fallback = variants.find((v) => v[key] === value);
+      if (fallback) {
+        const filled = { ...newSelected };
+        optionKeys.forEach((k) => {
+          if (!filled[k] || !findMatchingVariant(variants, filled, optionKeys))
+            filled[k] = fallback[k];
+        });
+        setSelected(filled);
+        setQuantity(1);
+        return;
+      }
+    }
+    setSelected(newSelected);
+    setQuantity(1);
+  };
+
+  const isAvailable = (key, value) => {
+    const test = { ...selected, [key]: value };
+    return !!findMatchingVariant(variants, test, optionKeys);
+  };
+
+  const clamp = (val) => Math.min(Math.max(1, val), maxStock);
+  const decrement = () => setQuantity((q) => clamp(q - 1));
+  const increment = () => setQuantity((q) => clamp(q + 1));
+  const handleQtyInput = (e) => {
+    const val = parseInt(e.target.value, 10);
+    if (isNaN(val)) return setQuantity(1);
+    setQuantity(clamp(val));
+  };
 
   const handleAddToCart = () => {
     if (!selectedVariant) return;
-
-    const cartItem = {
-      id: product.id,
-      name: product.name,
-      price: selectedVariant.price,
-      image: image,
-      variantId: selectedVariant.id,
-      option: selectedVariant.option1Value,
-    };
-
-    addToCart(cartItem, quantity);
-
-    toast.success(`Đã thêm "${product.name}" vào giỏ hàng!`, {
-      action: {
-        label: "Xem giỏ hàng",
-        onClick: () => navigate("/cart"),
+    addToCart(
+      {
+        id: product.id,
+        name: product.name,
+        price: selectedVariant.price,
+        image,
+        variantId: selectedVariant.id,
+        option: selectedVariant.option1Value,
       },
+      quantity,
+    );
+    toast.success(`Đã thêm "${product.name}" vào giỏ hàng!`, {
+      action: { label: "Xem giỏ hàng", onClick: () => navigate("/cart") },
     });
   };
 
   const handleBuyNow = () => {
     if (!selectedVariant) return;
-
-    const cartItem = {
-      id: product.id,
-      name: product.name,
-      price: selectedVariant.price,
-      image: image,
-      variantId: selectedVariant.id,
-      option: selectedVariant.option1Value,
-    };
-
-    addToCart(cartItem, quantity);
+    addToCart(
+      {
+        id: product.id,
+        name: product.name,
+        price: selectedVariant.price,
+        image,
+        variantId: selectedVariant.id,
+        option: selectedVariant.option1Value,
+      },
+      quantity,
+    );
     navigate("/cart");
   };
 
@@ -93,23 +153,17 @@ const ProductDetail = () => {
     { icon: <ShieldCheck size={20} />, text: "Đảm bảo chất lượng" },
   ];
 
-  const increment = () => setQuantity((q) => q + 1);
-  const decrement = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
-
   return (
     <div className="pd-wrapper">
       <div className="pd-main">
         <div className="pd-image-section">
-          {image && (
-            <div className="pd-main-image-box">
-              <img
-                src={images[activeImage]?.imageUrl}
-                alt={product.name}
-                className="pd-main-image"
-              />
-            </div>
-          )}
-
+          <div className="pd-main-image-box">
+            <img
+              src={images[activeImage]?.imageUrl}
+              alt={product.name}
+              className="pd-main-image"
+            />
+          </div>
           <div className="pd-thumb-list">
             {images.map((img, index) => (
               <div
@@ -125,59 +179,93 @@ const ProductDetail = () => {
 
         <div className="pd-info">
           <h1 className="pd-title">{product.name}</h1>
-
           <p className="pd-price">{price.toLocaleString()} ₫</p>
-
           <p className="pd-category">{category}</p>
 
-          {optionName && (
-            <div className="pd-variant">
-              <p className="pd-variant-title">{optionName}:</p>
-
-              <div className="pd-variant-list">
-                {variants.map((v) => (
-                  <button
-                    key={v.id}
-                    className={`pd-variant-item ${
-                      selectedVariant?.id === v.id ? "active" : ""
-                    }`}
-                    onClick={() => setSelectedVariant(v)}
-                  >
-                    {v.option1Value}
-                  </button>
-                ))}
+          {optionDefs.map(({ name, key }) => {
+            const values = getUniqueValues(variants, key);
+            if (values.length === 0) return null;
+            return (
+              <div key={key} className="pd-variant">
+                <p className="pd-variant-title">
+                  {name}:{" "}
+                  <span className="pd-variant-selected">{selected[key]}</span>
+                </p>
+                <div className="pd-variant-list">
+                  {values.map((val) => {
+                    const available = isAvailable(key, val);
+                    const active = selected[key] === val;
+                    return (
+                      <button
+                        key={val}
+                        className={`pd-variant-item ${active ? "active" : ""} ${!available ? "disabled" : ""}`}
+                        onClick={() =>
+                          available && handleSelectOption(key, val)
+                        }
+                        disabled={!available}
+                      >
+                        {val}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            );
+          })}
+
+          {selectedVariant && (
+            <p className="pd-stock">
+              {maxStock > 0 ? (
+                `Còn ${maxStock} sản phẩm`
+              ) : (
+                <span className="pd-out-of-stock">Hết hàng</span>
+              )}
+            </p>
           )}
 
           <div className="pd-qty-row">
             <span>Số lượng:</span>
-
             <div className="pd-qty-box">
-              <button onClick={decrement}>
+              <button
+                onClick={decrement}
+                disabled={quantity <= 1 || maxStock === 0}
+              >
                 <Minus size={16} />
               </button>
-
               <input
                 type="number"
                 min="1"
+                max={maxStock}
                 value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
+                onChange={handleQtyInput}
                 className="pd-qty-input"
+                disabled={maxStock === 0}
               />
-
-              <button onClick={increment}>
+              <button
+                onClick={increment}
+                disabled={quantity >= maxStock || maxStock === 0}
+              >
                 <Plus size={16} />
               </button>
             </div>
+            {quantity >= maxStock && maxStock > 0 && (
+              <span className="pd-qty-max">Tối đa {maxStock}</span>
+            )}
           </div>
 
           <div className="pd-action-buttons">
-            <button onClick={handleAddToCart} className="pd-add-btn">
+            <button
+              onClick={handleAddToCart}
+              className="pd-add-btn"
+              disabled={!selectedVariant || maxStock === 0}
+            >
               <ShoppingCart size={20} /> Thêm vào giỏ
             </button>
-
-            <button onClick={handleBuyNow} className="pd-buy-btn">
+            <button
+              onClick={handleBuyNow}
+              className="pd-buy-btn"
+              disabled={!selectedVariant || maxStock === 0}
+            >
               Mua ngay
             </button>
           </div>
@@ -195,7 +283,6 @@ const ProductDetail = () => {
 
       <div className="pd-desc">
         <h2>Mô tả sản phẩm</h2>
-
         <div
           dangerouslySetInnerHTML={{ __html: product.description }}
           className="pd-desc-content"

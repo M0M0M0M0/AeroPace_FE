@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Edit2, Trash2, Plus, X, Search } from "lucide-react";
+import {
+  Edit2,
+  Trash2,
+  Plus,
+  X,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
 import axios from "axios";
+import "./AdminProducts.css";
 
 const BASE = "http://localhost:8080/api/v1";
 const authHeader = () => ({
@@ -12,7 +20,6 @@ const AdminProducts = () => {
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
   const [modal, setModal] = useState({
     open: false,
     mode: "add",
@@ -20,7 +27,19 @@ const AdminProducts = () => {
   });
   const [saving, setSaving] = useState(false);
 
-  // ================= FORM STATE =================
+  // ── Filter states ─────────────────────────────────────────────
+  const [filterName, setFilterName] = useState("");
+  const [filterProductId, setFilterProductId] = useState("");
+  const [filterVariantId, setFilterVariantId] = useState("");
+  const [filterSku, setFilterSku] = useState("");
+  const [filterBrand, setFilterBrand] = useState("");
+  const [filterCategory, setFilterCategory] = useState("");
+  const [filterPriceMin, setFilterPriceMin] = useState("");
+  const [filterPriceMax, setFilterPriceMax] = useState("");
+  const [filterStockMin, setFilterStockMin] = useState("");
+  const [filterStockMax, setFilterStockMax] = useState("");
+
+  // ── Form state ────────────────────────────────────────────────
   const emptyForm = {
     name: "",
     description: "",
@@ -28,7 +47,7 @@ const AdminProducts = () => {
     option1Name: "",
     option2Name: "",
     option3Name: "",
-    images: [], // [{ imageUrl, position }]
+    images: [],
     variants: [
       {
         option1Value: "",
@@ -43,11 +62,10 @@ const AdminProducts = () => {
   };
   const [form, setForm] = useState(emptyForm);
 
-  // ================= FETCH =================
+  // ── Fetch ─────────────────────────────────────────────────────
   const fetchProducts = async () => {
     try {
       const res = await axios.get(`${BASE}/products/detail`);
-      // console.log("RAW RESPONSE:", res.data);
       setProducts(res.data.products || res.data);
     } catch (err) {
       console.error(err);
@@ -55,12 +73,10 @@ const AdminProducts = () => {
       setLoading(false);
     }
   };
-
   const fetchBrands = async () => {
     const res = await axios.get(`${BASE}/brands`);
     setBrands(res.data);
   };
-
   const fetchCategories = async () => {
     const res = await axios.get(`${BASE}/categories`);
     setCategories(res.data);
@@ -72,14 +88,13 @@ const AdminProducts = () => {
     fetchCategories();
   }, []);
 
-  // ================= OPEN MODAL =================
+  // ── Modal helpers ─────────────────────────────────────────────
   const openAdd = () => {
     setForm(emptyForm);
     setModal({ open: true, mode: "add", product: null });
   };
 
   const openEdit = (product) => {
-    // console.log("PRODUCT IMAGES:", product.images);
     setForm({
       name: product.name || "",
       description: product.description || "",
@@ -93,7 +108,6 @@ const AdminProducts = () => {
           imageUrl: img.imageUrl,
           position: img.position,
         })) || [],
-        
       variants: product.variants?.map((v) => ({
         id: v.id,
         option1Value: v.option1Value || "",
@@ -117,7 +131,7 @@ const AdminProducts = () => {
     setModal({ open: true, mode: "edit", product });
   };
 
-  // ================= SAVE =================
+  // ── Save ──────────────────────────────────────────────────────
   const handleSave = async () => {
     if (!form.name || !form.brandId) {
       alert("Vui lòng điền tên sản phẩm và chọn thương hiệu!");
@@ -126,22 +140,21 @@ const AdminProducts = () => {
     setSaving(true);
     try {
       if (modal.mode === "add") {
-        // 1. Tạo product
         const res = await axios.post(
           `${BASE}/products`,
           {
             name: form.name,
             description: form.description,
             brandId: Number(form.brandId),
+            option1Name: form.option1Name || null,
+            option2Name: form.option2Name || null,
+            option3Name: form.option3Name || null,
           },
           { headers: authHeader() },
         );
-
         const productId = res.data.id;
-
-        // 2. Tạo variants
         for (const v of form.variants) {
-          if (v.option1Value && v.price) {
+          if (v.option1Value && v.price)
             await axios.post(
               `${BASE}/products/variants`,
               {
@@ -155,12 +168,9 @@ const AdminProducts = () => {
               },
               { headers: authHeader() },
             );
-          }
         }
-
-        // 3. Tạo images
         for (const img of form.images) {
-          if (img.imageUrl) {
+          if (img.imageUrl)
             await axios.post(
               `${BASE}/products/images`,
               {
@@ -170,48 +180,37 @@ const AdminProducts = () => {
               },
               { headers: authHeader() },
             );
-          }
         }
-
-        // 4. Gán categories
-        for (const catId of form.categoryIds) {
+        for (const catId of form.categoryIds)
           await axios.post(
             `${BASE}/products/${productId}/categories/${catId}`,
             {},
             { headers: authHeader() },
           );
-        }
       } else {
-        // EDIT MODE
         const productId = modal.product.id;
-
-        // 1. Update product info
         await axios.put(
           `${BASE}/products/${productId}`,
           {
             name: form.name,
             description: form.description,
             brandId: Number(form.brandId),
+            option1Name: form.option1Name || null,
+            option2Name: form.option2Name || null,
+            option3Name: form.option3Name || null,
           },
           { headers: authHeader() },
         );
-
-        // 2. Xử lý variants
         const oldVariantIds = modal.product.variants?.map((v) => v.id) || [];
         const newVariantIds = form.variants
           .filter((v) => v.id)
           .map((v) => v.id);
-
-        // Xóa variants bị remove
         for (const oldId of oldVariantIds) {
-          if (!newVariantIds.includes(oldId)) {
+          if (!newVariantIds.includes(oldId))
             await axios.delete(`${BASE}/products/variants/${oldId}`, {
               headers: authHeader(),
             });
-          }
         }
-
-        // Update hoặc tạo mới variants
         for (const v of form.variants) {
           const payload = {
             productId,
@@ -222,34 +221,25 @@ const AdminProducts = () => {
             stock: Number(v.stock) || 0,
             sku: v.sku || "",
           };
-          if (v.id) {
+          if (v.id)
             await axios.put(`${BASE}/products/variants/${v.id}`, payload, {
               headers: authHeader(),
             });
-          } else if (v.option1Value && v.price) {
+          else if (v.option1Value && v.price)
             await axios.post(`${BASE}/products/variants`, payload, {
               headers: authHeader(),
             });
-          }
         }
-
-        // 3. Xử lý images
         const oldImageIds = modal.product.images?.map((i) => i.id) || [];
         const newImageIds = form.images.filter((i) => i.id).map((i) => i.id);
-
-        // Xóa images bị remove
         for (const oldId of oldImageIds) {
-          if (!newImageIds.includes(oldId)) {
-            console.log("DELETE IMAGE ID:", oldId);
+          if (!newImageIds.includes(oldId))
             await axios.delete(`${BASE}/products/images/${oldId}`, {
               headers: authHeader(),
             });
-          }
         }
-
-        // Thêm images mới
         for (const img of form.images) {
-          if (!img.id && img.imageUrl) {
+          if (!img.id && img.imageUrl)
             await axios.post(
               `${BASE}/products/images`,
               {
@@ -259,34 +249,24 @@ const AdminProducts = () => {
               },
               { headers: authHeader() },
             );
-          }
         }
-
-        // 4. Xử lý categories
         const oldCatIds = modal.product.categories?.map((c) => c.id) || [];
-
-        // Xóa categories bị remove
         for (const oldId of oldCatIds) {
-          if (!form.categoryIds.includes(oldId)) {
+          if (!form.categoryIds.includes(oldId))
             await axios.delete(
               `${BASE}/products/${productId}/categories/${oldId}`,
               { headers: authHeader() },
             );
-          }
         }
-
-        // Thêm categories mới
         for (const catId of form.categoryIds) {
-          if (!oldCatIds.includes(catId)) {
+          if (!oldCatIds.includes(catId))
             await axios.post(
               `${BASE}/products/${productId}/categories/${catId}`,
               {},
               { headers: authHeader() },
             );
-          }
         }
       }
-
       await fetchProducts();
       setModal({ open: false, mode: "add", product: null });
     } catch (err) {
@@ -297,19 +277,19 @@ const AdminProducts = () => {
     }
   };
 
-  // ================= DELETE =================
+  // ── Delete ────────────────────────────────────────────────────
   const handleDelete = async (id) => {
     if (!window.confirm("Xóa sản phẩm này?")) return;
     try {
       await axios.delete(`${BASE}/products/${id}`, { headers: authHeader() });
       await fetchProducts();
-    } catch (err) {
+    } catch {
       alert("Xóa thất bại!");
     }
   };
 
-  // ================= VARIANT HANDLERS =================
-  const addVariant = () => {
+  // ── Variant handlers ──────────────────────────────────────────
+  const addVariant = () =>
     setForm({
       ...form,
       variants: [
@@ -324,38 +304,32 @@ const AdminProducts = () => {
         },
       ],
     });
-  };
-
-  const removeVariant = (idx) => {
+  const removeVariant = (idx) =>
     setForm({ ...form, variants: form.variants.filter((_, i) => i !== idx) });
-  };
-
   const updateVariant = (idx, field, value) => {
-    const updated = [...form.variants];
-    updated[idx] = { ...updated[idx], [field]: value };
-    setForm({ ...form, variants: updated });
+    const u = [...form.variants];
+    u[idx] = { ...u[idx], [field]: value };
+    setForm({ ...form, variants: u });
   };
 
-  // ================= IMAGE HANDLERS =================
-  const addImage = () => {
-    const nextPosition = form.images.length + 1;
+  // ── Image handlers ────────────────────────────────────────────
+  const addImage = () =>
     setForm({
       ...form,
-      images: [...form.images, { imageUrl: "", position: nextPosition }],
+      images: [
+        ...form.images,
+        { imageUrl: "", position: form.images.length + 1 },
+      ],
     });
-  };
-
-  const removeImage = (idx) => {
+  const removeImage = (idx) =>
     setForm({ ...form, images: form.images.filter((_, i) => i !== idx) });
-  };
-
   const updateImage = (idx, value) => {
-    const updated = [...form.images];
-    updated[idx] = { ...updated[idx], imageUrl: value };
-    setForm({ ...form, images: updated });
+    const u = [...form.images];
+    u[idx] = { ...u[idx], imageUrl: value };
+    setForm({ ...form, images: u });
   };
 
-  // ================= CATEGORY HANDLERS =================
+  // ── Category toggle ───────────────────────────────────────────
   const toggleCategory = (catId) => {
     const ids = form.categoryIds.includes(catId)
       ? form.categoryIds.filter((id) => id !== catId)
@@ -363,260 +337,299 @@ const AdminProducts = () => {
     setForm({ ...form, categoryIds: ids });
   };
 
-  // ================= FILTER =================
-  const filtered = products.filter(
-    (p) =>
-      p.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.brand?.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
-  // ================= HELPERS =================
+  // ── Helpers ───────────────────────────────────────────────────
   const getMinPrice = (variants) => {
     if (!variants?.length) return "—";
     const prices = variants.map((v) => Number(v.price)).filter(Boolean);
     if (!prices.length) return "—";
-    const min = Math.min(...prices);
-    const max = Math.max(...prices);
+    const min = Math.min(...prices),
+      max = Math.max(...prices);
     return min === max
       ? `${min.toLocaleString("vi-VN")} ₫`
       : `${min.toLocaleString("vi-VN")} - ${max.toLocaleString("vi-VN")} ₫`;
   };
-
   const getTotalStock = (variants) =>
     variants?.reduce((sum, v) => sum + (Number(v.stock) || 0), 0) || 0;
 
-  if (loading)
-    return <div style={{ padding: "40px", color: "#aaa" }}>Đang tải...</div>;
+  // ── Filter logic ──────────────────────────────────────────────
+  const hasActiveFilter =
+    filterName ||
+    filterProductId ||
+    filterVariantId ||
+    filterSku ||
+    filterBrand ||
+    filterCategory ||
+    filterPriceMin ||
+    filterPriceMax ||
+    filterStockMin ||
+    filterStockMax;
 
-  const inputStyle = {
-    width: "100%",
-    padding: "9px 12px",
-    background: "#111",
-    border: "1px solid #444",
-    color: "#fff",
-    borderRadius: "8px",
-    boxSizing: "border-box",
-    fontSize: "14px",
+  const resetFilters = () => {
+    setFilterName("");
+    setFilterProductId("");
+    setFilterVariantId("");
+    setFilterSku("");
+    setFilterBrand("");
+    setFilterCategory("");
+    setFilterPriceMin("");
+    setFilterPriceMax("");
+    setFilterStockMin("");
+    setFilterStockMax("");
   };
-  const labelStyle = {
-    color: "#a3a3a3",
-    fontSize: "13px",
-    display: "block",
-    marginBottom: "5px",
-  };
+
+  const filtered = products.filter((p) => {
+    if (filterName && !p.name?.toLowerCase().includes(filterName.toLowerCase()))
+      return false;
+    if (filterProductId && !String(p.id).includes(filterProductId.trim()))
+      return false;
+    if (
+      filterBrand &&
+      !p.brand?.toLowerCase().includes(filterBrand.toLowerCase())
+    )
+      return false;
+    if (
+      filterCategory &&
+      !p.categories?.some((c) =>
+        c.name.toLowerCase().includes(filterCategory.toLowerCase()),
+      )
+    )
+      return false;
+
+    const variants = p.variants || [];
+
+    if (
+      filterVariantId &&
+      !variants.some((v) => String(v.id).includes(filterVariantId.trim()))
+    )
+      return false;
+    if (
+      filterSku &&
+      !variants.some((v) =>
+        (v.sku || "").toLowerCase().includes(filterSku.toLowerCase()),
+      )
+    )
+      return false;
+
+    const prices = variants.map((v) => Number(v.price)).filter(Boolean);
+    const minPrice = prices.length ? Math.min(...prices) : 0;
+    if (filterPriceMin && minPrice < Number(filterPriceMin)) return false;
+    if (filterPriceMax && minPrice > Number(filterPriceMax)) return false;
+
+    const totalStock = getTotalStock(variants);
+    if (filterStockMin && totalStock < Number(filterStockMin)) return false;
+    if (filterStockMax && totalStock > Number(filterStockMax)) return false;
+
+    return true;
+  });
+
+  if (loading) return <div className="adp-loading">Đang tải...</div>;
 
   return (
-    <div>
+    <div className="adp-page">
       {/* HEADER */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <h2 style={{ margin: 0 }}>Quản lý Sản phẩm</h2>
-        <button
-          onClick={openAdd}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            background: "#3b82f6",
-            color: "#fff",
-            border: "none",
-            padding: "10px 16px",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
-        >
+      <div className="adp-header">
+        <div>
+          <h2 className="adp-title">Quản lý Sản phẩm</h2>
+          <p className="adp-subtitle">
+            Quản lý toàn bộ sản phẩm trong hệ thống
+          </p>
+        </div>
+        <button className="adp-btn-add" onClick={openAdd}>
           <Plus size={18} /> Thêm sản phẩm
         </button>
       </div>
 
-      {/* SEARCH */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          background: "#1a1a1a",
-          border: "1px solid #333",
-          borderRadius: "8px",
-          padding: "8px 12px",
-          marginBottom: "20px",
-        }}
-      >
-        <Search size={18} color="#888" />
-        <input
-          type="text"
-          placeholder="Tìm theo tên, thương hiệu..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            border: "none",
-            background: "transparent",
-            color: "#fff",
-            outline: "none",
-            marginLeft: "10px",
-            width: "100%",
-            fontSize: "14px",
-          }}
-        />
-        {searchTerm && (
-          <button
-            onClick={() => setSearchTerm("")}
-            style={{
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              color: "#888",
-            }}
-          >
-            <X size={16} />
-          </button>
-        )}
+      {/* FILTER BAR */}
+      <div className="adp-filter-wrap">
+        <div className="adp-filter-bar">
+          <div className="adp-filter-field">
+            <label className="adp-filter-label">Tên sản phẩm</label>
+            <div className="adp-filter-input-wrap">
+              <Search size={14} className="adp-filter-icon" />
+              <input
+                className="adp-filter-input"
+                placeholder="Tìm tên..."
+                value={filterName}
+                onChange={(e) => setFilterName(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="adp-filter-field adp-filter-field--sm">
+            <label className="adp-filter-label">ID sản phẩm</label>
+            <input
+              className="adp-filter-input"
+              placeholder="VD: 12"
+              value={filterProductId}
+              onChange={(e) => setFilterProductId(e.target.value)}
+            />
+          </div>
+          <div className="adp-filter-field adp-filter-field--sm">
+            <label className="adp-filter-label">ID biến thể</label>
+            <input
+              className="adp-filter-input"
+              placeholder="VD: 5"
+              value={filterVariantId}
+              onChange={(e) => setFilterVariantId(e.target.value)}
+            />
+          </div>
+          <div className="adp-filter-field adp-filter-field--sm">
+            <label className="adp-filter-label">SKU</label>
+            <input
+              className="adp-filter-input"
+              placeholder="VD: NK-001"
+              value={filterSku}
+              onChange={(e) => setFilterSku(e.target.value)}
+            />
+          </div>
+          <div className="adp-filter-field">
+            <label className="adp-filter-label">Thương hiệu</label>
+            <select
+              className="adp-filter-input"
+              value={filterBrand}
+              onChange={(e) => setFilterBrand(e.target.value)}
+            >
+              <option value="">Tất cả</option>
+              {brands.map((b) => (
+                <option key={b.id} value={b.name}>
+                  {b.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="adp-filter-field">
+            <label className="adp-filter-label">Danh mục</label>
+            <select
+              className="adp-filter-input"
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+            >
+              <option value="">Tất cả</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.name}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="adp-filter-field adp-filter-field--range">
+            <label className="adp-filter-label">Khoảng giá (₫)</label>
+            <div className="adp-filter-range">
+              <input
+                className="adp-filter-input"
+                type="number"
+                placeholder="Từ"
+                value={filterPriceMin}
+                onChange={(e) => setFilterPriceMin(e.target.value)}
+              />
+              <span className="adp-filter-range-sep">—</span>
+              <input
+                className="adp-filter-input"
+                type="number"
+                placeholder="Đến"
+                value={filterPriceMax}
+                onChange={(e) => setFilterPriceMax(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="adp-filter-field adp-filter-field--range">
+            <label className="adp-filter-label">Tồn kho</label>
+            <div className="adp-filter-range">
+              <input
+                className="adp-filter-input"
+                type="number"
+                placeholder="Từ"
+                value={filterStockMin}
+                onChange={(e) => setFilterStockMin(e.target.value)}
+              />
+              <span className="adp-filter-range-sep">—</span>
+              <input
+                className="adp-filter-input"
+                type="number"
+                placeholder="Đến"
+                value={filterStockMax}
+                onChange={(e) => setFilterStockMax(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="adp-filter-footer">
+          {hasActiveFilter && (
+            <>
+              <span className="adp-filter-result">
+                Tìm thấy <strong>{filtered.length}</strong> / {products.length}{" "}
+                sản phẩm
+              </span>
+              <button className="adp-filter-reset" onClick={resetFilters}>
+                <X size={13} /> Xoá bộ lọc
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {/* TABLE */}
-      <div
-        style={{
-          background: "#1a1a1a",
-          borderRadius: "12px",
-          border: "1px solid #333",
-          overflow: "hidden",
-        }}
-      >
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            color: "#fff",
-            textAlign: "left",
-          }}
-        >
-          <thead style={{ background: "#222", borderBottom: "1px solid #333" }}>
+      <div className="adp-table-wrap">
+        <table className="adp-table">
+          <thead>
             <tr>
-              <th style={{ padding: "14px" }}>Ảnh</th>
-              <th style={{ padding: "14px" }}>Tên sản phẩm</th>
-              <th style={{ padding: "14px" }}>Thương hiệu</th>
-              <th style={{ padding: "14px" }}>Danh mục</th>
-              <th style={{ padding: "14px" }}>Giá</th>
-              <th style={{ padding: "14px" }}>Tồn kho</th>
-              <th style={{ padding: "14px" }}>Variants</th>
-              <th style={{ padding: "14px" }}>Thao tác</th>
+              <th>Ảnh</th>
+              <th>ID</th>
+              <th>Tên sản phẩm</th>
+              <th>Thương hiệu</th>
+              <th>Danh mục</th>
+              <th>Giá</th>
+              <th>Tồn kho</th>
+              <th>Variants</th>
+              <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length > 0 ? (
               filtered.map((product) => (
-                <tr
-                  key={product.id}
-                  style={{ borderBottom: "1px solid #2a2a2a" }}
-                >
-                  <td style={{ padding: "14px" }}>
+                <tr key={product.id} className="adp-row">
+                  <td>
                     {product.images?.[0]?.imageUrl ? (
                       <img
+                        className="adp-thumb"
                         src={product.images[0].imageUrl}
                         alt={product.name}
-                        style={{
-                          width: "50px",
-                          height: "50px",
-                          borderRadius: "8px",
-                          objectFit: "cover",
-                          border: "1px solid #444",
-                        }}
                       />
                     ) : (
-                      <div
-                        style={{
-                          width: "50px",
-                          height: "50px",
-                          borderRadius: "8px",
-                          background: "#333",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: "10px",
-                          color: "#888",
-                        }}
-                      >
-                        No img
-                      </div>
+                      <div className="adp-thumb adp-thumb--empty">No img</div>
                     )}
                   </td>
-                  <td
-                    style={{
-                      padding: "14px",
-                      fontWeight: "500",
-                      maxWidth: "200px",
-                    }}
-                  >
-                    {product.name}
+                  <td className="adp-id">#{product.id}</td>
+                  <td className="adp-name">{product.name}</td>
+                  <td className="adp-brand">{product.brand}</td>
+                  <td>
+                    <div className="adp-cats">
+                      {product.categories?.map((c) => (
+                        <span key={c.id} className="adp-cat-tag">
+                          {c.name}
+                        </span>
+                      ))}
+                    </div>
                   </td>
-                  <td style={{ padding: "14px", color: "#a3a3a3" }}>
-                    {product.brand}
-                  </td>
-                  <td style={{ padding: "14px" }}>
-                    {product.categories?.map((c) => (
-                      <span
-                        key={c.id}
-                        style={{
-                          background: "#333",
-                          padding: "2px 8px",
-                          borderRadius: "4px",
-                          fontSize: "12px",
-                          marginRight: "4px",
-                        }}
-                      >
-                        {c.name}
-                      </span>
-                    ))}
-                  </td>
-                  <td
-                    style={{
-                      padding: "14px",
-                      color: "#4ade80",
-                      fontSize: "13px",
-                    }}
-                  >
-                    {getMinPrice(product.variants)}
-                  </td>
-                  <td style={{ padding: "14px" }}>
+                  <td className="adp-price">{getMinPrice(product.variants)}</td>
+                  <td className="adp-stock">
                     {getTotalStock(product.variants)}
                   </td>
-                  <td
-                    style={{
-                      padding: "14px",
-                      color: "#a3a3a3",
-                      fontSize: "13px",
-                    }}
-                  >
+                  <td className="adp-variant-count">
                     {product.variants?.length || 0} phân loại
                   </td>
-                  <td style={{ padding: "14px" }}>
-                    <div style={{ display: "flex", gap: "10px" }}>
+                  <td>
+                    <div className="adp-actions">
                       <button
+                        className="adp-btn-edit"
                         onClick={() => openEdit(product)}
-                        style={{
-                          background: "transparent",
-                          color: "#eab308",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
                       >
-                        <Edit2 size={18} />
+                        <Edit2 size={16} />
                       </button>
                       <button
+                        className="adp-btn-delete"
                         onClick={() => handleDelete(product.id)}
-                        style={{
-                          background: "transparent",
-                          color: "#ef4444",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
                       >
-                        <Trash2 size={18} />
+                        <Trash2 size={16} />
                       </button>
                     </div>
                   </td>
@@ -624,14 +637,7 @@ const AdminProducts = () => {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="8"
-                  style={{
-                    padding: "30px",
-                    textAlign: "center",
-                    color: "#888",
-                  }}
-                >
+                <td colSpan="9" className="adp-empty-row">
                   Không tìm thấy sản phẩm.
                 </td>
               </tr>
@@ -642,75 +648,39 @@ const AdminProducts = () => {
 
       {/* MODAL */}
       {modal.open && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0,0,0,0.75)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              background: "#1a1a1a",
-              padding: "28px",
-              borderRadius: "12px",
-              width: "750px",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              border: "1px solid #333",
-            }}
-          >
-            {/* MODAL HEADER */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "24px",
-              }}
-            >
-              <h3 style={{ margin: 0 }}>
+        <div className="adp-overlay">
+          <div className="adp-modal">
+            {/* Modal Header */}
+            <div className="adp-modal-header">
+              <h3 className="adp-modal-title">
                 {modal.mode === "add"
                   ? "Thêm sản phẩm mới"
                   : "Chỉnh sửa sản phẩm"}
               </h3>
               <button
+                className="adp-modal-close"
                 onClick={() =>
                   setModal({ open: false, mode: "add", product: null })
                 }
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "#888",
-                  cursor: "pointer",
-                }}
               >
                 <X size={22} />
               </button>
             </div>
 
-            {/* THÔNG TIN CƠ BẢN */}
-            <div style={{ marginBottom: "16px" }}>
-              <label style={labelStyle}>Tên sản phẩm *</label>
+            {/* Thông tin cơ bản */}
+            <div className="adp-form-row">
+              <label className="adp-form-label">Tên sản phẩm *</label>
               <input
-                style={inputStyle}
+                className="adp-form-input"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Tên sản phẩm"
               />
             </div>
-
-            <div style={{ marginBottom: "16px" }}>
-              <label style={labelStyle}>Mô tả</label>
+            <div className="adp-form-row">
+              <label className="adp-form-label">Mô tả</label>
               <textarea
-                style={{ ...inputStyle, minHeight: "80px", resize: "vertical" }}
+                className="adp-form-input adp-form-textarea"
                 value={form.description}
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })
@@ -719,18 +689,11 @@ const AdminProducts = () => {
               />
             </div>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "16px",
-                marginBottom: "16px",
-              }}
-            >
-              <div>
-                <label style={labelStyle}>Thương hiệu *</label>
+            <div className="adp-form-grid-2">
+              <div className="adp-form-row">
+                <label className="adp-form-label">Thương hiệu *</label>
                 <select
-                  style={inputStyle}
+                  className="adp-form-input"
                   value={form.brandId}
                   onChange={(e) =>
                     setForm({ ...form, brandId: e.target.value })
@@ -744,36 +707,14 @@ const AdminProducts = () => {
                   ))}
                 </select>
               </div>
-              <div>
-                <label style={labelStyle}>Danh mục</label>
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "6px",
-                    padding: "8px",
-                    background: "#111",
-                    border: "1px solid #444",
-                    borderRadius: "8px",
-                    minHeight: "40px",
-                  }}
-                >
+              <div className="adp-form-row">
+                <label className="adp-form-label">Danh mục</label>
+                <div className="adp-cat-picker">
                   {categories.map((c) => (
                     <span
                       key={c.id}
                       onClick={() => toggleCategory(c.id)}
-                      style={{
-                        padding: "3px 10px",
-                        borderRadius: "20px",
-                        fontSize: "12px",
-                        cursor: "pointer",
-                        background: form.categoryIds.includes(c.id)
-                          ? "#3b82f6"
-                          : "#333",
-                        color: form.categoryIds.includes(c.id)
-                          ? "#fff"
-                          : "#aaa",
-                      }}
+                      className={`adp-cat-chip ${form.categoryIds.includes(c.id) ? "adp-cat-chip--active" : ""}`}
                     >
                       {c.name}
                     </span>
@@ -782,224 +723,107 @@ const AdminProducts = () => {
               </div>
             </div>
 
-            {/* OPTION NAMES */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr 1fr",
-                gap: "12px",
-                marginBottom: "20px",
-              }}
-            >
+            <div className="adp-form-grid-3">
               {["option1Name", "option2Name", "option3Name"].map(
                 (field, idx) => (
-                  <div key={field}>
-                    <label style={labelStyle}>
-                      Tên option {idx + 1} (VD: Màu sắc)
+                  <div key={field} className="adp-form-row">
+                    <label className="adp-form-label">
+                      Tên option {idx + 1}
                     </label>
                     <input
-                      style={inputStyle}
+                      className="adp-form-input"
                       value={form[field]}
                       onChange={(e) =>
                         setForm({ ...form, [field]: e.target.value })
                       }
-                      placeholder={`Option ${idx + 1}`}
+                      placeholder={`VD: Màu sắc`}
                     />
                   </div>
                 ),
               )}
             </div>
 
-            <hr style={{ borderColor: "#333", margin: "20px 0" }} />
+            <hr className="adp-divider" />
 
-            {/* IMAGES */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "12px",
-              }}
-            >
-              <h4 style={{ margin: 0 }}>Hình ảnh ({form.images.length})</h4>
-              <button
-                onClick={addImage}
-                style={{
-                  background: "#22c55e",
-                  color: "#fff",
-                  border: "none",
-                  padding: "6px 12px",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  fontSize: "13px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "5px",
-                }}
-              >
+            {/* Images */}
+            <div className="adp-section-header">
+              <h4 className="adp-section-title">
+                Hình ảnh ({form.images.length})
+              </h4>
+              <button className="adp-btn-add-sm" onClick={addImage}>
                 <Plus size={14} /> Thêm ảnh
               </button>
             </div>
-
             {form.images.map((img, idx) => (
-              <div
-                key={idx}
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  alignItems: "center",
-                  marginBottom: "10px",
-                }}
-              >
-                <div style={{ flex: 1 }}>
-                  <input
-                    style={inputStyle}
-                    value={img.imageUrl}
-                    onChange={(e) => updateImage(idx, e.target.value)}
-                    placeholder="URL hình ảnh"
-                  />
-                </div>
-                <span
-                  style={{
-                    color: "#a3a3a3",
-                    fontSize: "13px",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Vị trí: {img.position}
-                </span>
+              <div key={idx} className="adp-image-row">
+                <input
+                  className="adp-form-input"
+                  value={img.imageUrl}
+                  onChange={(e) => updateImage(idx, e.target.value)}
+                  placeholder="URL hình ảnh"
+                />
+                <span className="adp-image-pos">Vị trí: {img.position}</span>
                 {img.imageUrl && (
                   <img
                     src={img.imageUrl}
                     alt=""
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      objectFit: "cover",
-                      borderRadius: "6px",
-                      border: "1px solid #444",
-                    }}
+                    className="adp-image-preview"
                     onError={(e) => (e.target.style.display = "none")}
                   />
                 )}
                 <button
+                  className="adp-btn-remove"
                   onClick={() => removeImage(idx)}
-                  style={{
-                    background: "transparent",
-                    color: "#ef4444",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
                 >
-                  <X size={18} />
+                  <X size={16} />
                 </button>
               </div>
             ))}
 
-            <hr style={{ borderColor: "#333", margin: "20px 0" }} />
+            <hr className="adp-divider" />
 
-            {/* VARIANTS */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "12px",
-              }}
-            >
-              <h4 style={{ margin: 0 }}>
+            {/* Variants */}
+            <div className="adp-section-header">
+              <h4 className="adp-section-title">
                 Phân loại / Variants ({form.variants.length})
               </h4>
-              <button
-                onClick={addVariant}
-                style={{
-                  background: "#22c55e",
-                  color: "#fff",
-                  border: "none",
-                  padding: "6px 12px",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  fontSize: "13px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "5px",
-                }}
-              >
+              <button className="adp-btn-add-sm" onClick={addVariant}>
                 <Plus size={14} /> Thêm variant
               </button>
             </div>
-
             {form.variants.map((v, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: "#222",
-                  padding: "14px",
-                  borderRadius: "8px",
-                  border: "1px solid #333",
-                  marginBottom: "10px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr 1fr",
-                    gap: "10px",
-                    marginBottom: "10px",
-                  }}
-                >
-                  <div>
-                    <label style={labelStyle}>
-                      Option 1 ({form.option1Name || "Option 1"})
-                    </label>
-                    <input
-                      style={inputStyle}
-                      value={v.option1Value}
-                      onChange={(e) =>
-                        updateVariant(idx, "option1Value", e.target.value)
-                      }
-                      placeholder="VD: Đỏ"
-                    />
-                  </div>
-                  <div>
-                    <label style={labelStyle}>
-                      Option 2 ({form.option2Name || "Option 2"})
-                    </label>
-                    <input
-                      style={inputStyle}
-                      value={v.option2Value}
-                      onChange={(e) =>
-                        updateVariant(idx, "option2Value", e.target.value)
-                      }
-                      placeholder="VD: Size 40"
-                    />
-                  </div>
-                  <div>
-                    <label style={labelStyle}>
-                      Option 3 ({form.option3Name || "Option 3"})
-                    </label>
-                    <input
-                      style={inputStyle}
-                      value={v.option3Value}
-                      onChange={(e) =>
-                        updateVariant(idx, "option3Value", e.target.value)
-                      }
-                      placeholder="VD: Cotton"
-                    />
-                  </div>
+              <div key={idx} className="adp-variant-card">
+                <div className="adp-form-grid-3">
+                  {["option1Value", "option2Value", "option3Value"].map(
+                    (field, i) => (
+                      <div key={field} className="adp-form-row">
+                        <label className="adp-form-label">
+                          {[
+                            form.option1Name,
+                            form.option2Name,
+                            form.option3Name,
+                          ][i] || `Option ${i + 1}`}
+                        </label>
+                        <input
+                          className="adp-form-input"
+                          value={v[field]}
+                          onChange={(e) =>
+                            updateVariant(idx, field, e.target.value)
+                          }
+                          placeholder={
+                            ["VD: Đỏ", "VD: Size 40", "VD: Cotton"][i]
+                          }
+                        />
+                      </div>
+                    ),
+                  )}
                 </div>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr 1fr",
-                    gap: "10px",
-                  }}
-                >
-                  <div>
-                    <label style={labelStyle}>Giá *</label>
+                <div className="adp-form-grid-3">
+                  <div className="adp-form-row">
+                    <label className="adp-form-label">Giá *</label>
                     <input
+                      className="adp-form-input"
                       type="number"
-                      style={inputStyle}
                       value={v.price}
                       onChange={(e) =>
                         updateVariant(idx, "price", e.target.value)
@@ -1007,11 +831,11 @@ const AdminProducts = () => {
                       placeholder="VD: 500000"
                     />
                   </div>
-                  <div>
-                    <label style={labelStyle}>Tồn kho</label>
+                  <div className="adp-form-row">
+                    <label className="adp-form-label">Tồn kho</label>
                     <input
+                      className="adp-form-input"
                       type="number"
-                      style={inputStyle}
                       value={v.stock}
                       onChange={(e) =>
                         updateVariant(idx, "stock", e.target.value)
@@ -1019,10 +843,10 @@ const AdminProducts = () => {
                       placeholder="VD: 10"
                     />
                   </div>
-                  <div>
-                    <label style={labelStyle}>SKU</label>
+                  <div className="adp-form-row">
+                    <label className="adp-form-label">SKU</label>
                     <input
-                      style={inputStyle}
+                      className="adp-form-input"
                       value={v.sku}
                       onChange={(e) =>
                         updateVariant(idx, "sku", e.target.value)
@@ -1033,17 +857,8 @@ const AdminProducts = () => {
                 </div>
                 {form.variants.length > 1 && (
                   <button
+                    className="adp-btn-remove-variant"
                     onClick={() => removeVariant(idx)}
-                    style={{
-                      marginTop: "10px",
-                      background: "transparent",
-                      color: "#ef4444",
-                      border: "1px solid #ef4444",
-                      padding: "4px 10px",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                      fontSize: "12px",
-                    }}
                   >
                     Xóa variant này
                   </button>
@@ -1051,41 +866,20 @@ const AdminProducts = () => {
               </div>
             ))}
 
-            {/* FOOTER */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: "10px",
-                marginTop: "24px",
-              }}
-            >
+            {/* Footer */}
+            <div className="adp-modal-footer">
               <button
+                className="adp-btn-cancel"
                 onClick={() =>
                   setModal({ open: false, mode: "add", product: null })
                 }
-                style={{
-                  padding: "10px 16px",
-                  background: "#333",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                }}
               >
-                Hủy
+                Huỷ
               </button>
               <button
+                className="adp-btn-save"
                 onClick={handleSave}
                 disabled={saving}
-                style={{
-                  padding: "10px 16px",
-                  background: saving ? "#555" : "#3b82f6",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "8px",
-                  cursor: saving ? "not-allowed" : "pointer",
-                }}
               >
                 {saving ? "Đang lưu..." : "Lưu sản phẩm"}
               </button>
