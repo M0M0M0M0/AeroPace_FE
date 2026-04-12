@@ -1,25 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Eye, Edit, Search, X } from "lucide-react";
+import { Eye, Edit, X } from "lucide-react";
 import axios from "axios";
+import "./AdminOrders.css";
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("ALL");
 
+  // ── Filter states ─────────────────────────────────────────────
+  const [searchId, setSearchId] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [searchPhone, setSearchPhone] = useState("");
+  const [searchAddress, setSearchAddress] = useState("");
+  const [filterStatus, setFilterStatus] = useState("ALL");
+  const [filterDateFrom, setFilterDateFrom] = useState("");
+  const [filterDateTo, setFilterDateTo] = useState("");
+
+  // ── Modals ────────────────────────────────────────────────────
   const [statusModal, setStatusModal] = useState({
     isOpen: false,
     orderId: null,
     targetStatus: "",
   });
-
   const [detailModal, setDetailModal] = useState({
     isOpen: false,
     order: null,
   });
 
-  // ================= FETCH =================
+  // ── Fetch ─────────────────────────────────────────────────────
   const fetchOrders = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/v1/orders", {
@@ -37,13 +45,13 @@ const AdminOrders = () => {
     fetchOrders();
   }, []);
 
-  // ================= CẬP NHẬT TRẠNG THÁI =================
+  // ── Cập nhật trạng thái ───────────────────────────────────────
   const handleConfirmStatusChange = async () => {
     try {
       await axios.put(
         `http://localhost:8080/api/v1/orders/${statusModal.orderId}/status?status=${statusModal.targetStatus}`,
         {},
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } },
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
       await fetchOrders();
       setStatusModal({ isOpen: false, orderId: null, targetStatus: "" });
@@ -53,76 +61,143 @@ const AdminOrders = () => {
     }
   };
 
-  // ================= LỌC =================
+  // ── Reset filters ─────────────────────────────────────────────
+  const handleResetFilters = () => {
+    setSearchId("");
+    setSearchName("");
+    setSearchPhone("");
+    setSearchAddress("");
+    setFilterStatus("ALL");
+    setFilterDateFrom("");
+    setFilterDateTo("");
+  };
+
+  // ── Filter + sort logic ───────────────────────────────────────
   const filteredOrders = orders
     .filter((o) => {
-      if (filterStatus !== "ALL" && o.status !== filterStatus) return false;
-      const s = searchTerm.toLowerCase();
-      return (
-        String(o.id).includes(s) ||
-        (o.receiverName || "").toLowerCase().includes(s) ||
-        (o.phoneNumber || "").includes(s) ||
-        (o.shippingAddress || "").toLowerCase().includes(s)
-      );
-    })
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const matchId = searchId
+        ? String(o.id).includes(searchId.trim())
+        : true;
+      const matchName = searchName
+        ? (o.receiverName || "").toLowerCase().includes(searchName.toLowerCase())
+        : true;
+      const matchPhone = searchPhone
+        ? (o.phoneNumber || "").includes(searchPhone.trim())
+        : true;
+      const matchAddress = searchAddress
+        ? (o.shippingAddress || "").toLowerCase().includes(searchAddress.toLowerCase())
+        : true;
+      const matchStatus =
+        filterStatus === "ALL" ? true : o.status === filterStatus;
 
-  // ================= HELPERS =================
+      let matchDateFrom = true;
+      if (filterDateFrom) {
+        matchDateFrom = new Date(o.createdAt) >= new Date(filterDateFrom + "T00:00");
+      }
+      let matchDateTo = true;
+      if (filterDateTo) {
+        matchDateTo = new Date(o.createdAt) <= new Date(filterDateTo + "T23:59");
+      }
+
+      return matchId && matchName && matchPhone && matchAddress && matchStatus && matchDateFrom && matchDateTo;
+    })
+    .sort((a, b) => a.id - b.id);
+
+  const hasActiveFilter =
+    searchId || searchName || searchPhone || searchAddress ||
+    filterStatus !== "ALL" || filterDateFrom || filterDateTo;
+
+  // ── Helpers ───────────────────────────────────────────────────
   const getStatusLabel = (status) => {
     switch (status) {
-      case "PAID": return "Đã thanh toán";
-      case "SHIP_COD": return "Chờ giao (COD)";
-      case "SHIPPING": return "Đang giao";
+      case "PAID":      return "Đã thanh toán";
+      case "SHIP_COD":  return "Chờ giao (COD)";
+      case "SHIPPING":  return "Đang giao";
       case "DELIVERED": return "Đã giao";
       case "CANCELLED": return "Đã hủy";
-      default: return status;
+      default:          return status;
     }
   };
 
-  const getStatusStyle = (status) => {
+  const getStatusClass = (status) => {
     switch (status) {
-      case "PAID": return { background: "rgba(96,165,250,0.2)", color: "#60a5fa" };
-      case "SHIP_COD": return { background: "rgba(250,204,21,0.2)", color: "#facc15" };
-      case "SHIPPING": return { background: "rgba(251,146,60,0.2)", color: "#fb923c" };
-      case "DELIVERED": return { background: "rgba(74,222,128,0.2)", color: "#4ade80" };
-      case "CANCELLED": return { background: "rgba(248,113,113,0.2)", color: "#f87171" };
-      default: return { background: "#333", color: "#fff" };
+      case "PAID":      return "ao-badge paid";
+      case "SHIP_COD":  return "ao-badge ship-cod";
+      case "SHIPPING":  return "ao-badge shipping";
+      case "DELIVERED": return "ao-badge delivered";
+      case "CANCELLED": return "ao-badge cancelled";
+      default:          return "ao-badge";
     }
   };
 
-  if (loading) return <div style={{ padding: "40px", color: "#aaa" }}>Đang tải...</div>;
+  // ── Stats ─────────────────────────────────────────────────────
+  const stats = {
+    total:     orders.length,
+    delivered: orders.filter((o) => o.status === "DELIVERED").length,
+    shipping:  orders.filter((o) => o.status === "SHIPPING").length,
+    cancelled: orders.filter((o) => o.status === "CANCELLED").length,
+  };
 
   return (
-    <div>
-      {/* HEADER */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-        <h2 style={{ margin: 0 }}>Quản lý Đơn hàng</h2>
-        <span style={{ color: "#aaa", fontSize: "14px" }}>{filteredOrders.length} đơn hàng</span>
+    <div className="ao-page">
+      {/* Header */}
+      <div className="ao-header">
+        <div>
+          <h1 className="ao-title">Đơn hàng</h1>
+          <p className="ao-subtitle">Quản lý tất cả đơn hàng</p>
+        </div>
       </div>
 
-      {/* TÌM KIẾM + LỌC */}
-      <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
-        <div style={{ display: "flex", alignItems: "center", background: "#1a1a1a", border: "1px solid #333", borderRadius: "8px", padding: "8px 12px", flex: 1 }}>
-          <Search size={18} color="#888" />
-          <input
-            type="text"
-            placeholder="Tìm theo ID, tên, SĐT, địa chỉ..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ border: "none", background: "transparent", color: "#fff", outline: "none", marginLeft: "10px", width: "100%", fontSize: "14px" }}
-          />
-          {searchTerm && (
-            <button onClick={() => setSearchTerm("")} style={{ background: "transparent", border: "none", cursor: "pointer", color: "#888" }}>
-              <X size={16} />
-            </button>
-          )}
+      {/* Stats */}
+      <div className="ao-stats">
+        <div className="ao-stat-card">
+          <span className="ao-stat-num">{stats.total}</span>
+          <span className="ao-stat-label">Tổng đơn hàng</span>
         </div>
+        <div className="ao-stat-card">
+          <span className="ao-stat-num">{stats.delivered}</span>
+          <span className="ao-stat-label">Đã giao</span>
+        </div>
+        <div className="ao-stat-card">
+          <span className="ao-stat-num">{stats.shipping}</span>
+          <span className="ao-stat-label">Đang giao</span>
+        </div>
+        <div className="ao-stat-card">
+          <span className="ao-stat-num">{stats.cancelled}</span>
+          <span className="ao-stat-label">Đã hủy</span>
+        </div>
+      </div>
 
-        {/* LỌC THEO TRẠNG THÁI */}
+      {/* Filter bar — row 1: text inputs + status */}
+      <div className="ao-filter-bar">
+        <input
+          className="ao-filter-input ao-filter-id"
+          placeholder="ID"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+        />
+        <input
+          className="ao-filter-input"
+          placeholder="Người nhận"
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+        />
+        <input
+          className="ao-filter-input"
+          placeholder="Số điện thoại"
+          value={searchPhone}
+          onChange={(e) => setSearchPhone(e.target.value)}
+        />
+        <input
+          className="ao-filter-input"
+          placeholder="Địa chỉ"
+          value={searchAddress}
+          onChange={(e) => setSearchAddress(e.target.value)}
+        />
         <select
+          className="ao-filter-select"
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          style={{ padding: "8px 12px", background: "#1a1a1a", color: "#fff", border: "1px solid #333", borderRadius: "8px", outline: "none", fontSize: "14px", cursor: "pointer" }}
         >
           <option value="ALL">Tất cả trạng thái</option>
           <option value="PAID">Đã thanh toán</option>
@@ -133,97 +208,144 @@ const AdminOrders = () => {
         </select>
       </div>
 
-      {/* BẢNG */}
-      <div style={{ background: "#1a1a1a", borderRadius: "12px", border: "1px solid #333", overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", color: "#fff" }}>
-          <thead style={{ background: "#222", borderBottom: "1px solid #333" }}>
-            <tr>
-              <th style={{ padding: "14px" }}>ID</th>
-              <th style={{ padding: "14px" }}>Người nhận</th>
-              <th style={{ padding: "14px" }}>SĐT</th>
-              <th style={{ padding: "14px" }}>Địa chỉ</th>
-              <th style={{ padding: "14px" }}>Tổng tiền</th>
-              <th style={{ padding: "14px" }}>Trạng thái</th>
-              <th style={{ padding: "14px" }}>Ngày đặt</th>
-              <th style={{ padding: "14px" }}>Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredOrders.length > 0 ? (
-              filteredOrders.map((order) => {
-                const statusStyle = getStatusStyle(order.status);
-                return (
-                  <tr key={order.id} style={{ borderBottom: "1px solid #2a2a2a" }}>
-                    <td style={{ padding: "14px", fontWeight: "bold" }}>#{order.id}</td>
-                    <td style={{ padding: "14px" }}>{order.receiverName || "—"}</td>
-                    <td style={{ padding: "14px", color: "#aaa" }}>{order.phoneNumber}</td>
-                    <td style={{ padding: "14px", color: "#aaa", maxWidth: "180px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                      {order.shippingAddress}
-                    </td>
-                    <td style={{ padding: "14px", color: "#4ade80", fontWeight: "bold" }}>
+      {/* Filter bar — row 2: date range */}
+      <div className="ao-filter-bar ao-filter-bar-date">
+        <div className="ao-filter-date-group">
+          <label className="ao-filter-date-label">Từ ngày</label>
+          <input
+            type="date"
+            className="ao-filter-input ao-filter-date"
+            value={filterDateFrom}
+            onChange={(e) => setFilterDateFrom(e.target.value)}
+          />
+        </div>
+
+        <span className="ao-filter-date-sep">→</span>
+
+        <div className="ao-filter-date-group">
+          <label className="ao-filter-date-label">Đến ngày</label>
+          <input
+            type="date"
+            className="ao-filter-input ao-filter-date"
+            value={filterDateTo}
+            onChange={(e) => setFilterDateTo(e.target.value)}
+            min={filterDateFrom}
+          />
+        </div>
+
+        {hasActiveFilter && (
+          <button className="ao-filter-reset" onClick={handleResetFilters}>
+            ✕ Xoá bộ lọc
+          </button>
+        )}
+      </div>
+
+      {/* Result count */}
+      {hasActiveFilter && (
+        <p className="ao-filter-result">
+          Tìm thấy <strong>{filteredOrders.length}</strong> / {orders.length} đơn hàng
+        </p>
+      )}
+
+      {/* Table */}
+      {loading ? (
+        <div className="ao-loading">Đang tải...</div>
+      ) : (
+        <div className="ao-table-wrap">
+          <table className="ao-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>ID</th>
+                <th>Người nhận</th>
+                <th>SĐT</th>
+                <th>Địa chỉ</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Ngày đặt</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredOrders.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="ao-empty-row">
+                    Không tìm thấy đơn hàng nào.
+                  </td>
+                </tr>
+              ) : (
+                filteredOrders.map((order, idx) => (
+                  <tr key={order.id} className="ao-row">
+                    <td>{idx + 1}</td>
+                    <td className="ao-id">#{order.id}</td>
+                    <td className="ao-name">{order.receiverName || "—"}</td>
+                    <td>{order.phoneNumber}</td>
+                    <td className="ao-address">{order.shippingAddress}</td>
+                    <td className="ao-price">
                       {order.totalPrice?.toLocaleString("vi-VN")} ₫
                     </td>
-                    <td style={{ padding: "14px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <span style={{ ...statusStyle, padding: "4px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "500" }}>
+                    <td>
+                      <div className="ao-status-cell">
+                        <span className={getStatusClass(order.status)}>
                           {getStatusLabel(order.status)}
                         </span>
                         <button
-                          onClick={() => setStatusModal({ isOpen: true, orderId: order.id, targetStatus: order.status })}
-                          style={{ background: "transparent", color: "#a3a3a3", border: "none", cursor: "pointer" }}
+                          className="ao-edit-status-btn"
                           title="Cập nhật trạng thái"
+                          onClick={() =>
+                            setStatusModal({
+                              isOpen: true,
+                              orderId: order.id,
+                              targetStatus: order.status,
+                            })
+                          }
                         >
-                          <Edit size={15} />
+                          <Edit size={14} />
                         </button>
                       </div>
                     </td>
-                    <td style={{ padding: "14px", color: "#aaa", fontSize: "13px" }}>
+                    <td className="ao-date">
                       {new Date(order.createdAt).toLocaleString("vi-VN")}
                     </td>
-                    <td style={{ padding: "14px" }}>
+                    <td>
                       <button
-                        onClick={() => setDetailModal({ isOpen: true, order })}
-                        style={{ background: "transparent", color: "#3b82f6", border: "none", cursor: "pointer" }}
+                        className="ao-view-btn"
                         title="Xem chi tiết"
+                        onClick={() => setDetailModal({ isOpen: true, order })}
                       >
-                        <Eye size={18} />
+                        <Eye size={16} /> Chi tiết
                       </button>
                     </td>
                   </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan="8" style={{ padding: "30px", textAlign: "center", color: "#888" }}>
-                  Không tìm thấy đơn hàng nào.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
 
-      {/* MODAL CẬP NHẬT TRẠNG THÁI */}
+      {/* Modal cập nhật trạng thái */}
       {statusModal.isOpen && (
-        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
-          <div style={{ background: "#1a1a1a", padding: "25px", borderRadius: "12px", width: "400px", border: "1px solid #333" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ margin: 0 }}>Cập nhật trạng thái</h3>
-              <button onClick={() => setStatusModal({ isOpen: false, orderId: null, targetStatus: "" })} style={{ background: "transparent", border: "none", color: "#888", cursor: "pointer" }}>
-                <X size={20} />
+        <div className="ao-overlay" onClick={() => setStatusModal({ isOpen: false, orderId: null, targetStatus: "" })}>
+          <div className="ao-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="ao-modal-header">
+              <div>
+                <h3 className="ao-modal-title">Cập nhật trạng thái</h3>
+                <p className="ao-modal-sub">Đơn hàng #{statusModal.orderId}</p>
+              </div>
+              <button
+                className="ao-modal-close"
+                onClick={() => setStatusModal({ isOpen: false, orderId: null, targetStatus: "" })}
+              >
+                <X size={18} />
               </button>
             </div>
 
-            <p style={{ color: "#a3a3a3", marginBottom: "16px" }}>
-              Đơn hàng: <strong style={{ color: "#fff" }}>#{statusModal.orderId}</strong>
-            </p>
-
-            <div style={{ marginBottom: "24px" }}>
-              <label style={{ display: "block", color: "#888", marginBottom: "8px", fontSize: "13px" }}>Trạng thái mới</label>
+            <div className="ao-form-row">
+              <label>Trạng thái mới</label>
               <select
                 value={statusModal.targetStatus}
                 onChange={(e) => setStatusModal({ ...statusModal, targetStatus: e.target.value })}
-                style={{ width: "100%", padding: "10px", borderRadius: "8px", background: "#222", color: "#fff", border: "1px solid #444", outline: "none" }}
               >
                 <option value="PAID">Đã thanh toán</option>
                 <option value="SHIP_COD">Chờ giao (COD)</option>
@@ -233,11 +355,14 @@ const AdminOrders = () => {
               </select>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-              <button onClick={() => setStatusModal({ isOpen: false, orderId: null, targetStatus: "" })} style={{ padding: "10px 16px", background: "#333", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer" }}>
+            <div className="ao-modal-actions">
+              <button
+                className="ao-btn-cancel"
+                onClick={() => setStatusModal({ isOpen: false, orderId: null, targetStatus: "" })}
+              >
                 Hủy
               </button>
-              <button onClick={handleConfirmStatusChange} style={{ padding: "10px 16px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer" }}>
+              <button className="ao-btn-save" onClick={handleConfirmStatusChange}>
                 Xác nhận
               </button>
             </div>
@@ -245,45 +370,54 @@ const AdminOrders = () => {
         </div>
       )}
 
-      {/* MODAL CHI TIẾT ĐƠN HÀNG */}
+      {/* Modal chi tiết đơn hàng */}
       {detailModal.isOpen && detailModal.order && (
-        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
-          <div style={{ background: "#1a1a1a", padding: "25px", borderRadius: "12px", width: "500px", border: "1px solid #333", maxHeight: "80vh", overflowY: "auto" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ margin: 0 }}>Chi tiết đơn hàng #{detailModal.order.id}</h3>
-              <button onClick={() => setDetailModal({ isOpen: false, order: null })} style={{ background: "transparent", border: "none", color: "#888", cursor: "pointer" }}>
-                <X size={20} />
+        <div className="ao-overlay" onClick={() => setDetailModal({ isOpen: false, order: null })}>
+          <div className="ao-modal ao-modal-detail" onClick={(e) => e.stopPropagation()}>
+            <div className="ao-modal-header">
+              <div>
+                <h3 className="ao-modal-title">Chi tiết đơn hàng #{detailModal.order.id}</h3>
+                <p className="ao-modal-sub">
+                  Đặt lúc: {new Date(detailModal.order.createdAt).toLocaleString("vi-VN")}
+                </p>
+              </div>
+              <button
+                className="ao-modal-close"
+                onClick={() => setDetailModal({ isOpen: false, order: null })}
+              >
+                <X size={18} />
               </button>
             </div>
 
-            <div style={{ marginBottom: "16px", padding: "14px", background: "#222", borderRadius: "8px" }}>
-              <p style={{ margin: "0 0 6px 0", color: "#aaa", fontSize: "13px" }}>Thông tin người nhận</p>
-              <p style={{ margin: "4px 0", color: "#fff" }}>{detailModal.order.receiverName || "—"}</p>
-              <p style={{ margin: "4px 0", color: "#aaa" }}>{detailModal.order.phoneNumber}</p>
-              <p style={{ margin: "4px 0", color: "#aaa" }}>{detailModal.order.shippingAddress}</p>
+            {/* Thông tin người nhận */}
+            <div className="ao-detail-section">
+              <p className="ao-detail-section-label">Thông tin người nhận</p>
+              <p className="ao-detail-value">{detailModal.order.receiverName || "—"}</p>
+              <p className="ao-detail-sub">{detailModal.order.phoneNumber}</p>
+              <p className="ao-detail-sub">{detailModal.order.shippingAddress}</p>
             </div>
 
-            <div style={{ marginBottom: "16px" }}>
-              <p style={{ color: "#aaa", fontSize: "13px", marginBottom: "10px" }}>Sản phẩm</p>
+            {/* Sản phẩm */}
+            <div className="ao-detail-section">
+              <p className="ao-detail-section-label">Sản phẩm</p>
               {detailModal.order.items?.map((item, idx) => (
-                <div key={idx} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #2a2a2a" }}>
-                  <span style={{ color: "#ddd", flex: 1 }}>{item.productName}</span>
-                  <span style={{ color: "#aaa", marginLeft: "12px" }}>x{item.quantity}</span>
-                  <span style={{ color: "#fff", marginLeft: "16px", fontWeight: "bold" }}>{item.price?.toLocaleString("vi-VN")} ₫</span>
+                <div key={idx} className="ao-detail-item">
+                  <span className="ao-detail-item-name">{item.productName}</span>
+                  <span className="ao-detail-item-qty">x{item.quantity}</span>
+                  <span className="ao-detail-item-price">
+                    {item.price?.toLocaleString("vi-VN")} ₫
+                  </span>
                 </div>
               ))}
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", padding: "14px", background: "#222", borderRadius: "8px" }}>
-              <span style={{ color: "#aaa" }}>Tổng tiền</span>
-              <span style={{ color: "#4ade80", fontWeight: "bold", fontSize: "16px" }}>
+            {/* Tổng tiền */}
+            <div className="ao-detail-total">
+              <span>Tổng tiền</span>
+              <span className="ao-detail-total-price">
                 {detailModal.order.totalPrice?.toLocaleString("vi-VN")} ₫
               </span>
             </div>
-
-            <p style={{ color: "#666", fontSize: "12px", marginTop: "12px", textAlign: "right" }}>
-              Đặt lúc: {new Date(detailModal.order.createdAt).toLocaleString("vi-VN")}
-            </p>
           </div>
         </div>
       )}

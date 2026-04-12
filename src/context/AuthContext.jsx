@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
           return;
         }
 
-        console.log("MERGE SUCCESS → REMOVE SESSION");
+        // console.log("MERGE SUCCESS → REMOVE SESSION");
         localStorage.removeItem("sessionId");
       } catch (err) {
         console.error(" MERGE ERROR:", err);

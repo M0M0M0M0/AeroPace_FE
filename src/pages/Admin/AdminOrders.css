@@ -1,0 +1,458 @@
+/* ================================================================
+   ADMIN ORDERS — dark theme, consistent với AdminCustomers.css
+   ================================================================ */
+
+/* ── Page ────────────────────────────────────────────────────── */
+.ao-page {
+  position: relative;
+  color: #fff;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.ao-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.ao-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.ao-subtitle {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+}
+
+/* ── Stats ───────────────────────────────────────────────────── */
+.ao-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.ao-stat-card {
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+}
+
+.ao-stat-num {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ao-stat-label {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* ── Filter bar ──────────────────────────────────────────────── */
+.ao-filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ao-filter-bar-date {
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+
+.ao-filter-input {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  padding: 9px 14px;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+  flex: 1;
+  min-width: 130px;
+}
+
+.ao-filter-input.ao-filter-id {
+  max-width: 90px;
+  flex: 0 0 90px;
+}
+
+.ao-filter-input.ao-filter-date {
+  flex: 0 0 40px;
+  min-width: unset;
+  color-scheme: dark;
+}
+
+.ao-filter-input:focus         { border-color: rgba(255, 255, 255, 0.3); }
+.ao-filter-input::placeholder  { color: #555; }
+.ao-filter-input:disabled      { opacity: 0.35; cursor: not-allowed; }
+
+.ao-filter-select {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  padding: 9px 14px;
+  font-size: 0.875rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  min-width: 170px;
+}
+
+.ao-filter-select:focus  { border-color: rgba(255, 255, 255, 0.3); }
+.ao-filter-select option { background: #1a1a1a; }
+
+/* Date group */
+.ao-filter-date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ao-filter-date-label {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.ao-filter-date-sep {
+  color: #555;
+  font-size: 1rem;
+  padding: 0 4px;
+  margin-bottom: 2px;
+}
+
+/* Reset */
+.ao-filter-reset {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s;
+  margin-bottom: 2px;
+}
+.ao-filter-reset:hover { background: rgba(239, 68, 68, 0.2); }
+
+/* Result count */
+.ao-filter-result {
+  font-size: 0.82rem;
+  color: #666;
+  margin: 0 0 14px;
+}
+.ao-filter-result strong { color: #fff; }
+
+/* ── Table ───────────────────────────────────────────────────── */
+.ao-table-wrap {
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ao-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.ao-table thead tr {
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ao-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #a3a3a3;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.ao-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.15s;
+}
+.ao-row:last-child { border-bottom: none; }
+.ao-row:hover      { background: #1a1a1a; }
+
+.ao-table td {
+  padding: 14px 16px;
+  color: #e5e5e5;
+  vertical-align: middle;
+}
+
+.ao-id      { color: #666; font-size: 0.82rem; font-weight: 600; }
+.ao-name    { font-weight: 600; color: #fff; }
+.ao-address {
+  color: #a3a3a3;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ao-price { color: #4ade80; font-weight: 700; }
+.ao-date  { color: #a3a3a3; font-size: 0.82rem; white-space: nowrap; }
+
+.ao-empty-row {
+  text-align: center;
+  color: #555;
+  padding: 48px 0 !important;
+}
+
+/* ── Status badge ────────────────────────────────────────────── */
+.ao-status-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ao-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ao-badge.paid      { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+.ao-badge.ship-cod  { background: rgba(250, 204, 21, 0.15);  color: #facc15; }
+.ao-badge.shipping  { background: rgba(251, 146, 60, 0.15);  color: #fb923c; }
+.ao-badge.delivered { background: rgba(74, 222, 128, 0.15);  color: #4ade80; }
+.ao-badge.cancelled { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+
+.ao-edit-status-btn {
+  background: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.ao-edit-status-btn:hover { color: #fff; }
+
+/* ── View button ─────────────────────────────────────────────── */
+.ao-view-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: #a3a3a3;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.ao-view-btn:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ── Loading ─────────────────────────────────────────────────── */
+.ao-loading {
+  text-align: center;
+  padding: 60px 0;
+  color: #555;
+}
+
+/* ================================================================
+   MODAL
+   ================================================================ */
+.ao-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.ao-modal {
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ao-modal-detail {
+  max-width: 520px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.ao-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.ao-modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.ao-modal-sub {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0;
+}
+
+.ao-modal-close {
+  background: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  transition: color 0.2s;
+}
+.ao-modal-close:hover { color: #fff; }
+
+/* Form rows inside modal */
+.ao-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ao-form-row label {
+  font-size: 0.8rem;
+  color: #a3a3a3;
+  font-weight: 500;
+}
+
+.ao-form-row select {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.ao-form-row select:focus  { border-color: rgba(255, 255, 255, 0.3); }
+.ao-form-row select option { background: #1a1a1a; }
+
+.ao-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.ao-btn-cancel {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #a3a3a3;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.ao-btn-cancel:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+
+.ao-btn-save {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+.ao-btn-save:hover { opacity: 0.85; }
+
+/* Detail modal sections */
+.ao-detail-section {
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ao-detail-section-label {
+  font-size: 0.75rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.ao-detail-value { font-weight: 600; color: #fff; margin: 0; }
+.ao-detail-sub   { color: #a3a3a3; font-size: 0.875rem; margin: 0; }
+
+.ao-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.ao-detail-item:last-child { border-bottom: none; }
+
+.ao-detail-item-name  { flex: 1; color: #e5e5e5; font-size: 0.875rem; }
+.ao-detail-item-qty   { color: #666; font-size: 0.85rem; white-space: nowrap; }
+.ao-detail-item-price { font-weight: 700; color: #fff; white-space: nowrap; }
+
+.ao-detail-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 16px;
+  color: #a3a3a3;
+  font-size: 0.9rem;
+}
+
+.ao-detail-total-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #4ade80;
+}

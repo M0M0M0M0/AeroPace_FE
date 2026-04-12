@@ -115,16 +115,16 @@ const Profile = () => {
     }
 
     try {
-      console.log("PROFILE ID:", profileId);
+      // console.log("PROFILE ID:", profileId);
 
-      console.log("DATA SEND:", {
-        fullName: formData.name,
-        phoneNumber: formData.phone_number,
-        dob: formData.dob,
-        gender: formData.gender,
-        address: formData.address,
-        userId: user.id,
-      });
+      // console.log("DATA SEND:", {
+      //   fullName: formData.name,
+      //   phoneNumber: formData.phone_number,
+      //   dob: formData.dob,
+      //   gender: formData.gender,
+      //   address: formData.address,
+      //   userId: user.id,
+      // });
 
       await axios.put(`${API_URL}/${profileId}`, {
         fullName: formData.name,
