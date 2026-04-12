@@ -30,9 +30,21 @@ const AdminOrders = () => {
   // ── Fetch ─────────────────────────────────────────────────────
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/v1/orders", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const params = new URLSearchParams();
+      if (searchId) params.append("id", searchId);
+      if (searchName) params.append("receiverName", searchName);
+      if (searchPhone) params.append("phoneNumber", searchPhone);
+      if (searchAddress) params.append("shippingAddress", searchAddress);
+      if (filterStatus !== "ALL") params.append("status", filterStatus);
+      if (filterDateFrom) params.append("dateFrom", filterDateFrom);
+      if (filterDateTo) params.append("dateTo", filterDateTo);
+
+      const res = await axios.get(
+        `http://localhost:8080/api/v1/orders?${params}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        },
+      );
       setOrders(res.data);
     } catch (err) {
       console.error(err);
@@ -43,7 +55,15 @@ const AdminOrders = () => {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [
+    searchId,
+    searchName,
+    searchPhone,
+    searchAddress,
+    filterStatus,
+    filterDateFrom,
+    filterDateTo,
+  ]);
 
   // ── Cập nhật trạng thái ───────────────────────────────────────
   const handleConfirmStatusChange = async () => {
@@ -51,7 +71,9 @@ const AdminOrders = () => {
       await axios.put(
         `http://localhost:8080/api/v1/orders/${statusModal.orderId}/status?status=${statusModal.targetStatus}`,
         {},
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        },
       );
       await fetchOrders();
       setStatusModal({ isOpen: false, orderId: null, targetStatus: "" });
@@ -75,66 +97,95 @@ const AdminOrders = () => {
   // ── Filter + sort logic ───────────────────────────────────────
   const filteredOrders = orders
     .filter((o) => {
-      const matchId = searchId
-        ? String(o.id).includes(searchId.trim())
-        : true;
+      const matchId = searchId ? String(o.id).includes(searchId.trim()) : true;
       const matchName = searchName
-        ? (o.receiverName || "").toLowerCase().includes(searchName.toLowerCase())
+        ? (o.receiverName || "")
+            .toLowerCase()
+            .includes(searchName.toLowerCase())
         : true;
       const matchPhone = searchPhone
         ? (o.phoneNumber || "").includes(searchPhone.trim())
         : true;
       const matchAddress = searchAddress
-        ? (o.shippingAddress || "").toLowerCase().includes(searchAddress.toLowerCase())
+        ? (o.shippingAddress || "")
+            .toLowerCase()
+            .includes(searchAddress.toLowerCase())
         : true;
       const matchStatus =
         filterStatus === "ALL" ? true : o.status === filterStatus;
 
       let matchDateFrom = true;
       if (filterDateFrom) {
-        matchDateFrom = new Date(o.createdAt) >= new Date(filterDateFrom + "T00:00");
+        matchDateFrom =
+          new Date(o.createdAt) >= new Date(filterDateFrom + "T00:00");
       }
       let matchDateTo = true;
       if (filterDateTo) {
-        matchDateTo = new Date(o.createdAt) <= new Date(filterDateTo + "T23:59");
+        matchDateTo =
+          new Date(o.createdAt) <= new Date(filterDateTo + "T23:59");
       }
 
-      return matchId && matchName && matchPhone && matchAddress && matchStatus && matchDateFrom && matchDateTo;
+      return (
+        matchId &&
+        matchName &&
+        matchPhone &&
+        matchAddress &&
+        matchStatus &&
+        matchDateFrom &&
+        matchDateTo
+      );
     })
     .sort((a, b) => a.id - b.id);
 
   const hasActiveFilter =
-    searchId || searchName || searchPhone || searchAddress ||
-    filterStatus !== "ALL" || filterDateFrom || filterDateTo;
+    searchId ||
+    searchName ||
+    searchPhone ||
+    searchAddress ||
+    filterStatus !== "ALL" ||
+    filterDateFrom ||
+    filterDateTo;
 
   // ── Helpers ───────────────────────────────────────────────────
   const getStatusLabel = (status) => {
     switch (status) {
-      case "PAID":      return "Đã thanh toán";
-      case "SHIP_COD":  return "Chờ giao (COD)";
-      case "SHIPPING":  return "Đang giao";
-      case "DELIVERED": return "Đã giao";
-      case "CANCELLED": return "Đã hủy";
-      default:          return status;
+      case "PAID":
+        return "Đã thanh toán";
+      case "SHIP_COD":
+        return "Chờ giao (COD)";
+      case "SHIPPING":
+        return "Đang giao";
+      case "DELIVERED":
+        return "Đã giao";
+      case "CANCELLED":
+        return "Đã hủy";
+      default:
+        return status;
     }
   };
 
   const getStatusClass = (status) => {
     switch (status) {
-      case "PAID":      return "ao-badge paid";
-      case "SHIP_COD":  return "ao-badge ship-cod";
-      case "SHIPPING":  return "ao-badge shipping";
-      case "DELIVERED": return "ao-badge delivered";
-      case "CANCELLED": return "ao-badge cancelled";
-      default:          return "ao-badge";
+      case "PAID":
+        return "ao-badge paid";
+      case "SHIP_COD":
+        return "ao-badge ship-cod";
+      case "SHIPPING":
+        return "ao-badge shipping";
+      case "DELIVERED":
+        return "ao-badge delivered";
+      case "CANCELLED":
+        return "ao-badge cancelled";
+      default:
+        return "ao-badge";
     }
   };
 
   // ── Stats ─────────────────────────────────────────────────────
   const stats = {
-    total:     orders.length,
+    total: orders.length,
     delivered: orders.filter((o) => o.status === "DELIVERED").length,
-    shipping:  orders.filter((o) => o.status === "SHIPPING").length,
+    shipping: orders.filter((o) => o.status === "SHIPPING").length,
     cancelled: orders.filter((o) => o.status === "CANCELLED").length,
   };
 
@@ -243,7 +294,8 @@ const AdminOrders = () => {
       {/* Result count */}
       {hasActiveFilter && (
         <p className="ao-filter-result">
-          Tìm thấy <strong>{filteredOrders.length}</strong> / {orders.length} đơn hàng
+          Tìm thấy <strong>{filteredOrders.length}</strong> / {orders.length}{" "}
+          đơn hàng
         </p>
       )}
 
@@ -326,7 +378,12 @@ const AdminOrders = () => {
 
       {/* Modal cập nhật trạng thái */}
       {statusModal.isOpen && (
-        <div className="ao-overlay" onClick={() => setStatusModal({ isOpen: false, orderId: null, targetStatus: "" })}>
+        <div
+          className="ao-overlay"
+          onClick={() =>
+            setStatusModal({ isOpen: false, orderId: null, targetStatus: "" })
+          }
+        >
           <div className="ao-modal" onClick={(e) => e.stopPropagation()}>
             <div className="ao-modal-header">
               <div>
@@ -335,7 +392,13 @@ const AdminOrders = () => {
               </div>
               <button
                 className="ao-modal-close"
-                onClick={() => setStatusModal({ isOpen: false, orderId: null, targetStatus: "" })}
+                onClick={() =>
+                  setStatusModal({
+                    isOpen: false,
+                    orderId: null,
+                    targetStatus: "",
+                  })
+                }
               >
                 <X size={18} />
               </button>
@@ -345,7 +408,12 @@ const AdminOrders = () => {
               <label>Trạng thái mới</label>
               <select
                 value={statusModal.targetStatus}
-                onChange={(e) => setStatusModal({ ...statusModal, targetStatus: e.target.value })}
+                onChange={(e) =>
+                  setStatusModal({
+                    ...statusModal,
+                    targetStatus: e.target.value,
+                  })
+                }
               >
                 <option value="PAID">Đã thanh toán</option>
                 <option value="SHIP_COD">Chờ giao (COD)</option>
@@ -358,11 +426,20 @@ const AdminOrders = () => {
             <div className="ao-modal-actions">
               <button
                 className="ao-btn-cancel"
-                onClick={() => setStatusModal({ isOpen: false, orderId: null, targetStatus: "" })}
+                onClick={() =>
+                  setStatusModal({
+                    isOpen: false,
+                    orderId: null,
+                    targetStatus: "",
+                  })
+                }
               >
                 Hủy
               </button>
-              <button className="ao-btn-save" onClick={handleConfirmStatusChange}>
+              <button
+                className="ao-btn-save"
+                onClick={handleConfirmStatusChange}
+              >
                 Xác nhận
               </button>
             </div>
@@ -372,13 +449,24 @@ const AdminOrders = () => {
 
       {/* Modal chi tiết đơn hàng */}
       {detailModal.isOpen && detailModal.order && (
-        <div className="ao-overlay" onClick={() => setDetailModal({ isOpen: false, order: null })}>
-          <div className="ao-modal ao-modal-detail" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="ao-overlay"
+          onClick={() => setDetailModal({ isOpen: false, order: null })}
+        >
+          <div
+            className="ao-modal ao-modal-detail"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="ao-modal-header">
               <div>
-                <h3 className="ao-modal-title">Chi tiết đơn hàng #{detailModal.order.id}</h3>
+                <h3 className="ao-modal-title">
+                  Chi tiết đơn hàng #{detailModal.order.id}
+                </h3>
                 <p className="ao-modal-sub">
-                  Đặt lúc: {new Date(detailModal.order.createdAt).toLocaleString("vi-VN")}
+                  Đặt lúc:{" "}
+                  {new Date(detailModal.order.createdAt).toLocaleString(
+                    "vi-VN",
+                  )}
                 </p>
               </div>
               <button
@@ -392,9 +480,13 @@ const AdminOrders = () => {
             {/* Thông tin người nhận */}
             <div className="ao-detail-section">
               <p className="ao-detail-section-label">Thông tin người nhận</p>
-              <p className="ao-detail-value">{detailModal.order.receiverName || "—"}</p>
+              <p className="ao-detail-value">
+                {detailModal.order.receiverName || "—"}
+              </p>
               <p className="ao-detail-sub">{detailModal.order.phoneNumber}</p>
-              <p className="ao-detail-sub">{detailModal.order.shippingAddress}</p>
+              <p className="ao-detail-sub">
+                {detailModal.order.shippingAddress}
+              </p>
             </div>
 
             {/* Sản phẩm */}
@@ -402,7 +494,9 @@ const AdminOrders = () => {
               <p className="ao-detail-section-label">Sản phẩm</p>
               {detailModal.order.items?.map((item, idx) => (
                 <div key={idx} className="ao-detail-item">
-                  <span className="ao-detail-item-name">{item.productName}</span>
+                  <span className="ao-detail-item-name">
+                    {item.productName}
+                  </span>
                   <span className="ao-detail-item-qty">x{item.quantity}</span>
                   <span className="ao-detail-item-price">
                     {item.price?.toLocaleString("vi-VN")} ₫
