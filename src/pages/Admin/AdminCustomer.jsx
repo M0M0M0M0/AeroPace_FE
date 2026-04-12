@@ -108,7 +108,11 @@ const AdminCustomers = () => {
   });
 
   const hasActiveFilter =
-    searchId || searchName || searchEmail || searchPhone || filterStatus !== "ALL";
+    searchId ||
+    searchName ||
+    searchEmail ||
+    searchPhone ||
+    filterStatus !== "ALL";
 
   return (
     <div className="ac-page">
@@ -147,25 +151,25 @@ const AdminCustomers = () => {
       <div className="ac-filter-bar">
         <input
           className="ac-filter-input ac-filter-id"
-          placeholder="🔍 ID"
+          placeholder="ID"
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
         />
         <input
           className="ac-filter-input"
-          placeholder="🔍 Họ tên"
+          placeholder="Họ tên"
           value={searchName}
           onChange={(e) => setSearchName(e.target.value)}
         />
         <input
           className="ac-filter-input"
-          placeholder="🔍 Email"
+          placeholder="Email"
           value={searchEmail}
           onChange={(e) => setSearchEmail(e.target.value)}
         />
         <input
           className="ac-filter-input"
-          placeholder="🔍 Số điện thoại"
+          placeholder="Số điện thoại"
           value={searchPhone}
           onChange={(e) => setSearchPhone(e.target.value)}
         />
@@ -188,7 +192,8 @@ const AdminCustomers = () => {
       {/* Result count */}
       {hasActiveFilter && (
         <p className="ac-filter-result">
-          Tìm thấy <strong>{filtered.length}</strong> / {customers.length} khách hàng
+          Tìm thấy <strong>{filtered.length}</strong> / {customers.length} khách
+          hàng
         </p>
       )}
 
@@ -202,7 +207,7 @@ const AdminCustomers = () => {
               <tr>
                 <th>#</th>
                 <th>ID</th>
-                <th>Tên đăng nhập</th>
+                <th>Username</th>
                 <th>Họ tên</th>
                 <th>Email</th>
                 <th>Số điện thoại</th>
@@ -222,7 +227,7 @@ const AdminCustomers = () => {
                 filtered.map((c, idx) => (
                   <tr key={c.userId} className="ac-row">
                     <td>{idx + 1}</td>
-                    <td className="ac-id">#{c.userId}</td>
+                    <td className="ac-id">{c.userId}</td>
                     <td className="ac-username">{c.username}</td>
                     <td>
                       {c.fullName || (
