@@ -101,7 +101,7 @@ const Home = () => {
               <div
                 key={item.id}
                 className="card-wrapper"
-                onClick={() => navigate(`/product/detail/${item.id}`)}
+                onClick={() => navigate(`/products/detail/${item.id}`)}
               >
                 <div className="card-container">
                   <div
@@ -184,7 +184,7 @@ const Home = () => {
               <div
                 key={item.id}
                 className="card-wrapper"
-                onClick={() => navigate(`/product/detail/${item.id}`)}
+                onClick={() => navigate(`/products/detail/${item.id}`)}
               >
                 <div className="card-container">
                   <div
@@ -267,7 +267,7 @@ const Home = () => {
                 <div
                   key={index}
                   className="scroll-item"
-                  onClick={() => navigate(`/product/detail/${item.id}`)}
+                  onClick={() => navigate(`/products/detail/${item.id}`)}
                 >
                   {image && (
                     <img
@@ -297,7 +297,7 @@ const Home = () => {
                       </button>
 
                       <Link
-                        to={`/product/detail/${item.id}`}
+                        to={`/products/detail/${item.id}`}
                         onClick={(e) => e.stopPropagation()}
                         className="scroll-btn"
                       >

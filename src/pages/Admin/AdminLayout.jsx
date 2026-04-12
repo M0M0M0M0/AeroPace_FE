@@ -74,12 +74,12 @@ const AdminLayout = () => {
           </Link>
         </nav>
 
-        <div className="sidebar-footer">
+        {/* <div className="sidebar-footer">
           <button className="logout-btn" onClick={handleLogout}>
             <LogOut size={20} />
             <span className="nav-label">Đăng xuất</span>
           </button>
-        </div>
+        </div> */}
       </aside>
 
       {/* --- KẾT THÚC SIDEBAR --- */}
@@ -104,6 +104,13 @@ const AdminLayout = () => {
                 className="avatar"
               />
               <span className="admin-name">Admin</span>
+              <button
+                className="logout-btn"
+                onClick={handleLogout}
+                title="Đăng xuất"
+              >
+                <LogOut size={18} />
+              </button>
             </div>
           </div>
         </header>
