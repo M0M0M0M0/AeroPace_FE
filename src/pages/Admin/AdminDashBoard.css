@@ -1,3 +1,293 @@
-.admin-container .lucide-shopping-cart{
-    color: #a3a3a3;
+.admin-container .lucide-shopping-cart {
+  color: #a3a3a3;
+}
+/* ================================================================
+   ADMIN DASHBOARD — dark theme, consistent với AdminCustomers.css
+   ================================================================ */
+
+/* ── Page ────────────────────────────────────────────────────── */
+.ad-page {
+  position: relative;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ad-loading {
+  padding: 60px;
+  text-align: center;
+  color: #555;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.ad-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.ad-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.ad-subtitle {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+}
+
+.ad-export-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.ad-export-btn:hover {
+  background: rgba(34, 197, 94, 0.25);
+}
+
+/* ── Stat cards ──────────────────────────────────────────────── */
+.ad-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.ad-stat-card {
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ad-stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ad-stat-icon.green {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+.ad-stat-icon.blue {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+.ad-stat-icon.yellow {
+  background: rgba(250, 204, 21, 0.15);
+  color: #facc15;
+}
+.ad-stat-icon.teal {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+}
+
+.ad-stat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ad-stat-label {
+  font-size: 0.78rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+.ad-stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* ── Generic card ────────────────────────────────────────────── */
+.ad-card {
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.ad-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 20px;
+  color: #fff;
+}
+
+.ad-empty {
+  color: #555;
+  font-size: 0.875rem;
+}
+
+/* ── Bar chart ───────────────────────────────────────────────── */
+.ad-chart-card {
+}
+
+.ad-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 200px;
+  padding: 0 4px;
+}
+
+.ad-chart-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.ad-chart-bar-wrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.ad-chart-value {
+  font-size: 10px;
+  color: #a3a3a3;
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+
+.ad-chart-bar {
+  width: 55%;
+  background: #3b82f6;
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+  transition: height 0.3s ease;
+}
+
+.ad-chart-label {
+  font-size: 11px;
+  color: #666;
+  margin-top: 8px;
+  white-space: nowrap;
+}
+
+/* ── Table ───────────────────────────────────────────────────── */
+.ad-table-wrap {
+  overflow-x: auto;
+}
+
+.ad-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.ad-table thead tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ad-table th {
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  color: #a3a3a3;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.ad-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s;
+}
+.ad-row:last-child {
+  border-bottom: none;
+}
+.ad-row:hover {
+  background: #1a1a1a;
+}
+
+.ad-table td {
+  padding: 12px 14px;
+  color: #e5e5e5;
+  vertical-align: middle;
+}
+
+.ad-td-id {
+  color: #666;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.ad-td-muted {
+  color: #a3a3a3;
+}
+.ad-td-price {
+  color: #4ade80;
+  font-weight: 700;
+}
+
+/* ── Status badge ────────────────────────────────────────────── */
+.ad-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ad-badge.paid {
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+}
+.ad-badge.ship-cod {
+  background: rgba(250, 204, 21, 0.15);
+  color: #facc15;
+}
+.ad-badge.shipping {
+  background: rgba(251, 146, 60, 0.15);
+  color: #fb923c;
+}
+.ad-badge.delivered {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+}
+.ad-badge.cancelled {
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .ad-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .ad-stats {
+    grid-template-columns: 1fr;
+  }
 }

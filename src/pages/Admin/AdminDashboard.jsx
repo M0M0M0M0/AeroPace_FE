@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Download,
-  TrendingUp,
-  DollarSign,
-  ShoppingBag,
-  Clock,
-} from "lucide-react";
+import { Download, TrendingUp, DollarSign, ShoppingBag, Clock } from "lucide-react";
 import * as XLSX from "xlsx";
 import axios from "axios";
+import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
   const [orders, setOrders] = useState([]);
@@ -17,9 +12,7 @@ const AdminDashboard = () => {
     const fetchOrders = async () => {
       try {
         const res = await axios.get("http://localhost:8080/api/v1/orders", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         setOrders(res.data);
       } catch (err) {
@@ -36,22 +29,24 @@ const AdminDashboard = () => {
     .filter((o) => o.status !== "CANCELLED")
     .reduce((sum, o) => sum + (o.totalPrice || 0), 0);
 
-  const totalOrders = orders.length;
-  const pendingOrders = orders.filter(
-    (o) => o.status === "PAID" || o.status === "SHIP_COD",
-  ).length;
+  const totalOrders    = orders.length;
+  const pendingOrders  = orders.filter((o) => o.status === "PAID" || o.status === "SHIP_COD").length;
   const deliveredOrders = orders.filter((o) => o.status === "DELIVERED").length;
 
-  // ================= DOANH THU THEO THÁNG =================
+  // ================= DOANH THU THEO THÁNG (sắp xếp tăng dần) =================
   const revenueByMonth = {};
   orders
     .filter((o) => o.status !== "CANCELLED")
     .forEach((o) => {
-      const month = new Date(o.createdAt).getMonth() + 1;
-      const key = `Tháng ${month}`;
+      const d     = new Date(o.createdAt);
+      const year  = d.getFullYear();
+      const month = d.getMonth() + 1;
+      const key   = `${year}-${String(month).padStart(2, "0")}`;
       revenueByMonth[key] = (revenueByMonth[key] || 0) + (o.totalPrice || 0);
     });
-  const maxRevenue = Math.max(...Object.values(revenueByMonth), 1);
+
+  const sortedMonths = Object.keys(revenueByMonth).sort();
+  const maxRevenue   = Math.max(...sortedMonths.map((k) => revenueByMonth[k]), 1);
 
   // ================= 10 ĐƠN GẦN NHẤT =================
   const recentOrders = [...orders]
@@ -69,284 +64,154 @@ const AdminDashboard = () => {
         "Tổng tiền": o.totalPrice,
         "Trạng thái": o.status,
         "Ngày đặt": new Date(o.createdAt).toLocaleString("vi-VN"),
-      })),
+      }))
     );
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Đơn hàng");
     XLSX.writeFile(wb, "Bao_Cao_Don_Hang_ShopRunner.xlsx");
   };
 
+  // ================= HELPERS =================
   const getStatusLabel = (status) => {
     switch (status) {
-      case "PAID":
-        return "Đã thanh toán";
-      case "SHIP_COD":
-        return "Chờ giao (COD)";
-      case "SHIPPING":
-        return "Đang giao";
-      case "DELIVERED":
-        return "Đã giao";
-      case "CANCELLED":
-        return "Đã hủy";
-      default:
-        return status;
+      case "PAID":      return "Đã thanh toán";
+      case "SHIP_COD":  return "Chờ giao (COD)";
+      case "SHIPPING":  return "Đang giao";
+      case "DELIVERED": return "Đã giao";
+      case "CANCELLED": return "Đã hủy";
+      default:          return status;
     }
   };
 
-  const getStatusStyle = (status) => {
+  const getStatusClass = (status) => {
     switch (status) {
-      case "PAID":
-        return { background: "rgba(96,165,250,0.2)", color: "#60a5fa" };
-      case "SHIP_COD":
-        return { background: "rgba(250,204,21,0.2)", color: "#facc15" };
-      case "SHIPPING":
-        return { background: "rgba(251,146,60,0.2)", color: "#fb923c" };
-      case "DELIVERED":
-        return { background: "rgba(74,222,128,0.2)", color: "#4ade80" };
-      case "CANCELLED":
-        return { background: "rgba(248,113,113,0.2)", color: "#f87171" };
-      default:
-        return { background: "#333", color: "#fff" };
+      case "PAID":      return "ad-badge paid";
+      case "SHIP_COD":  return "ad-badge ship-cod";
+      case "SHIPPING":  return "ad-badge shipping";
+      case "DELIVERED": return "ad-badge delivered";
+      case "CANCELLED": return "ad-badge cancelled";
+      default:          return "ad-badge";
     }
   };
 
-  if (loading)
-    return <div style={{ padding: "40px", color: "#aaa" }}>Đang tải...</div>;
+  const formatMonthLabel = (key) => {
+    const [year, month] = key.split("-");
+    return `T${parseInt(month)}/${year}`;
+  };
+
+  if (loading) return <div className="ad-loading">Đang tải...</div>;
 
   return (
-    <div className="dashboard-wrapper">
+    <div className="ad-page">
       {/* HEADER */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "24px",
-        }}
-      >
-        <h2>Tổng quan hệ thống</h2>
-        <button
-          onClick={handleExportData}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            padding: "10px 16px",
-            background: "#22c55e",
-            color: "#fff",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
-        >
+      <div className="ad-header">
+        <div>
+          <h1 className="ad-title">Tổng quan hệ thống</h1>
+          <p className="ad-subtitle">Thống kê và báo cáo đơn hàng</p>
+        </div>
+        <button className="ad-export-btn" onClick={handleExportData}>
           <Download size={18} /> Xuất Excel
         </button>
       </div>
 
-      {/* THỐNG KÊ */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: "16px",
-          marginBottom: "28px",
-        }}
-      >
-        {[
-          {
-            icon: <DollarSign size={20} color="#22c55e" />,
-            label: "Tổng doanh thu",
-            value: totalRevenue.toLocaleString("vi-VN") + " ₫",
-          },
-          {
-            icon: <ShoppingBag size={20} color="#3b82f6" />,
-            label: "Tổng đơn hàng",
-            value: totalOrders + " đơn",
-          },
-          {
-            icon: <Clock size={20} color="#facc15" />,
-            label: "Chờ xử lý",
-            value: pendingOrders + " đơn",
-          },
-          {
-            icon: <TrendingUp size={20} color="#4ade80" />,
-            label: "Đã giao thành công",
-            value: deliveredOrders + " đơn",
-          },
-        ].map((card, idx) => (
-          <div
-            key={idx}
-            style={{
-              background: "#1a1a1a",
-              padding: "20px",
-              borderRadius: "12px",
-              border: "1px solid #333",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                color: "#a3a3a3",
-                fontSize: "13px",
-              }}
-            >
-              {card.icon} {card.label}
-            </div>
-            <h3
-              style={{ fontSize: "22px", margin: "10px 0 0 0", color: "#fff" }}
-            >
-              {card.value}
-            </h3>
+      {/* STAT CARDS */}
+      <div className="ad-stats">
+        <div className="ad-stat-card">
+          <div className="ad-stat-icon green"><DollarSign size={20} /></div>
+          <div className="ad-stat-body">
+            <span className="ad-stat-label">Tổng doanh thu</span>
+            <span className="ad-stat-value">{totalRevenue.toLocaleString("vi-VN")} ₫</span>
           </div>
-        ))}
+        </div>
+        <div className="ad-stat-card">
+          <div className="ad-stat-icon blue"><ShoppingBag size={20} /></div>
+          <div className="ad-stat-body">
+            <span className="ad-stat-label">Tổng đơn hàng</span>
+            <span className="ad-stat-value">{totalOrders} đơn</span>
+          </div>
+        </div>
+        <div className="ad-stat-card">
+          <div className="ad-stat-icon yellow"><Clock size={20} /></div>
+          <div className="ad-stat-body">
+            <span className="ad-stat-label">Chờ xử lý</span>
+            <span className="ad-stat-value">{pendingOrders} đơn</span>
+          </div>
+        </div>
+        <div className="ad-stat-card">
+          <div className="ad-stat-icon teal"><TrendingUp size={20} /></div>
+          <div className="ad-stat-body">
+            <span className="ad-stat-label">Đã giao thành công</span>
+            <span className="ad-stat-value">{deliveredOrders} đơn</span>
+          </div>
+        </div>
       </div>
 
       {/* BIỂU ĐỒ DOANH THU THEO THÁNG */}
-      <div
-        style={{
-          background: "#1a1a1a",
-          padding: "20px",
-          borderRadius: "12px",
-          border: "1px solid #333",
-          marginBottom: "28px",
-        }}
-      >
-        <h3 style={{ marginBottom: "20px" }}>Doanh thu theo tháng</h3>
-        {Object.keys(revenueByMonth).length === 0 ? (
-          <p style={{ color: "#aaa" }}>Chưa có dữ liệu</p>
+      <div className="ad-card ad-chart-card">
+        <h3 className="ad-card-title">Doanh thu theo tháng</h3>
+        {sortedMonths.length === 0 ? (
+          <p className="ad-empty">Chưa có dữ liệu</p>
         ) : (
-          <>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-end",
-                gap: "16px",
-                height: "200px",
-                padding: "0 8px",
-              }}
-            >
-              {Object.entries(revenueByMonth).map(([month, revenue], idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    height: "100%",
-                  }}
-                >
-                  <div
-                    style={{
-                      flex: 1,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                      width: "100%",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: "10px",
-                        color: "#a3a3a3",
-                        marginBottom: "4px",
-                      }}
-                    >
+          <div className="ad-chart">
+            {sortedMonths.map((key) => {
+              const revenue = revenueByMonth[key];
+              const heightPct = (revenue / maxRevenue) * 100;
+              return (
+                <div key={key} className="ad-chart-col">
+                  <div className="ad-chart-bar-wrap">
+                    <span className="ad-chart-value">
                       {(revenue / 1000000).toFixed(0)}M
                     </span>
                     <div
-                      style={{
-                        width: "60%",
-                        height: `${(revenue / maxRevenue) * 100}%`,
-                        background: "#3b82f6",
-                        borderRadius: "4px 4px 0 0",
-                        minHeight: "4px",
-                      }}
+                      className="ad-chart-bar"
+                      style={{ height: `${heightPct}%` }}
                     />
                   </div>
-                  <span
-                    style={{
-                      fontSize: "11px",
-                      color: "#a3a3a3",
-                      marginTop: "6px",
-                    }}
-                  >
-                    {month}
-                  </span>
+                  <span className="ad-chart-label">{formatMonthLabel(key)}</span>
                 </div>
-              ))}
-            </div>
-          </>
+              );
+            })}
+          </div>
         )}
       </div>
 
-      {/* BẢNG ĐƠN HÀNG GẦN ĐÂY */}
-      <div
-        style={{
-          background: "#1a1a1a",
-          padding: "20px",
-          borderRadius: "12px",
-          border: "1px solid #333",
-        }}
-      >
-        <h3 style={{ marginBottom: "16px" }}>10 đơn hàng gần nhất</h3>
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            fontSize: "14px",
-          }}
-        >
-          <thead>
-            <tr style={{ color: "#a3a3a3", borderBottom: "1px solid #333" }}>
-              <th style={{ padding: "10px", textAlign: "left" }}>ID</th>
-              <th style={{ padding: "10px", textAlign: "left" }}>Người nhận</th>
-              <th style={{ padding: "10px", textAlign: "left" }}>SĐT</th>
-              <th style={{ padding: "10px", textAlign: "left" }}>Tổng tiền</th>
-              <th style={{ padding: "10px", textAlign: "left" }}>Trạng thái</th>
-              <th style={{ padding: "10px", textAlign: "left" }}>Ngày đặt</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recentOrders.map((order) => {
-              const style = getStatusStyle(order.status);
-              return (
-                <tr key={order.id} style={{ borderBottom: "1px solid #222" }}>
-                  <td style={{ padding: "10px", color: "#fff" }}>
-                    #{order.id}
-                  </td>
-                  <td style={{ padding: "10px", color: "#fff" }}>
-                    {order.receiverName || "—"}
-                  </td>
-                  <td style={{ padding: "10px", color: "#aaa" }}>
-                    {order.phoneNumber}
-                  </td>
-                  <td style={{ padding: "10px", color: "#fff" }}>
+      {/* BẢNG 10 ĐƠN GẦN NHẤT */}
+      <div className="ad-card">
+        <h3 className="ad-card-title">10 đơn hàng gần nhất</h3>
+        <div className="ad-table-wrap">
+          <table className="ad-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Người nhận</th>
+                <th>SĐT</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Ngày đặt</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentOrders.map((order) => (
+                <tr key={order.id} className="ad-row">
+                  <td className="ad-td-id">#{order.id}</td>
+                  <td>{order.receiverName || "—"}</td>
+                  <td className="ad-td-muted">{order.phoneNumber}</td>
+                  <td className="ad-td-price">
                     {order.totalPrice?.toLocaleString("vi-VN")} ₫
                   </td>
-                  <td style={{ padding: "10px" }}>
-                    <span
-                      style={{
-                        ...style,
-                        padding: "4px 10px",
-                        borderRadius: "20px",
-                        fontSize: "12px",
-                      }}
-                    >
+                  <td>
+                    <span className={getStatusClass(order.status)}>
                       {getStatusLabel(order.status)}
                     </span>
                   </td>
-                  <td style={{ padding: "10px", color: "#aaa" }}>
+                  <td className="ad-td-muted">
                     {new Date(order.createdAt).toLocaleString("vi-VN")}
                   </td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
