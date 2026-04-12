@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
   Search,
@@ -11,6 +11,7 @@ import {
 } from "lucide-react"; // Thêm UserCircle icon
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+
 import "./Navbar.css";
 
 function Navbar() {
@@ -22,6 +23,15 @@ function Navbar() {
     (total, item) => total + item.quantity,
     0,
   );
+  const [searchText, setSearchText] = useState("");
+  const { pathname } = useLocation();
+  const hideSearch = pathname.startsWith("/products");
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && searchText.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchText.trim())}`);
+    }
+  };
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,12 +49,20 @@ function Navbar() {
           </Link>
         </div>
 
-        <div className="navbar-center">
-          <div className="navbar-search">
-            <input type="text" placeholder="Tìm giày chạy bộ, đồ tập..." />
-            <Search className="search-icon" size={20} />
+        {!hideSearch && (
+          <div className="navbar-center">
+            <div className="navbar-search">
+              <input
+                type="text"
+                placeholder="Tìm giày chạy bộ, đồ tập..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={handleSearch}
+              />
+              <Search className="search-icon" size={20} />
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="navbar-right">
           <div className="navbar-links">

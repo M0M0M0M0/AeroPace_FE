@@ -4,6 +4,7 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import axios from "axios";
+import "./Cart.css";
 
 const getSessionId = () => {
   let sessionId = localStorage.getItem("sessionId");
@@ -18,7 +19,7 @@ const Cart = () => {
   
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { cart, fetchCart, updateQuantity, removeFromCart, clearCart } = useCart(); // ← dùng từ context
+  const { cart, fetchCart, updateQuantity, removeFromCart, clearCart } = useCart(); 
   const sessionId = user?.id ? null : getSessionId();
 
   useEffect(() => {
@@ -38,7 +39,7 @@ const Cart = () => {
           `http://localhost:8080/api/v1/cart/clear/session?sessionId=${sessionId}`,
         );
       }
-      fetchCart(); // ← fetch lại để đồng bộ context
+      fetchCart(); 
     } catch (err) {
       console.error(err);
     }
@@ -95,9 +96,9 @@ const Cart = () => {
                 <button
                   onClick={() => {
                     if (item.quantity === 1) {
-                      removeFromCart(item.cartItemId); // ← từ context
+                      removeFromCart(item.cartItemId); 
                     } else {
-                      updateQuantity(item.cartItemId, item.quantity - 1); // ← từ context
+                      updateQuantity(item.cartItemId, item.quantity - 1); 
                     }
                   }}
                 >
@@ -107,7 +108,7 @@ const Cart = () => {
                 <span>{item.quantity}</span>
 
                 <button
-                  onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)} // ← từ context
+                  onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)} 
                 >
                   <Plus size={16} />
                 </button>
@@ -116,7 +117,7 @@ const Cart = () => {
               {/* REMOVE */}
               <button
                 className="cart-remove"
-                onClick={() => removeFromCart(item.cartItemId)} // ← từ context
+                onClick={() => removeFromCart(item.cartItemId)} 
               >
                 <Trash2 size={20} />
               </button>

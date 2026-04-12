@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import "./Products.css";
@@ -9,7 +9,6 @@ const Products = () => {
   const { addToCart } = useCart();
 
   const [activeId, setActiveId] = useState(null);
-
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
 
@@ -18,12 +17,15 @@ const Products = () => {
 
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-
   const [appliedMin, setAppliedMin] = useState("");
   const [appliedMax, setAppliedMax] = useState("");
 
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
+
+  const [searchText, setSearchText] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [totalPages, setTotalPages] = useState(1);
 
   // ================= FETCH FILTER DATA =================
   useEffect(() => {
@@ -33,17 +35,12 @@ const Products = () => {
           fetch("http://localhost:8080/api/v1/brands"),
           fetch("http://localhost:8080/api/v1/categories"),
         ]);
-
-        const brandData = await brandRes.json();
-        const categoryData = await categoryRes.json();
-
-        setBrands(brandData || []);
-        setCategories(categoryData || []);
+        setBrands((await brandRes.json()) || []);
+        setCategories((await categoryRes.json()) || []);
       } catch (err) {
         console.error(err);
       }
     };
-
     fetchFilters();
   }, []);
 
@@ -51,11 +48,14 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        const search = searchParams.get("search") || "";
+
         const hasFilter =
           selectedBrands.length > 0 ||
           selectedCategories.length > 0 ||
           appliedMin ||
-          appliedMax;
+          appliedMax ||
+          search;
 
         let url = "";
 
@@ -63,47 +63,49 @@ const Products = () => {
           url = `http://localhost:8080/api/v1/products/detail?page=${page - 1}`;
         } else {
           const params = new URLSearchParams();
-
-          if (selectedBrands.length > 0) {
-            selectedBrands.forEach((id) => params.append("brands", id));
-          }
-
-          if (selectedCategories.length > 0) {
-            selectedCategories.forEach((id) => params.append("categories", id));
-          }
-
+          if (search) params.append("name", search);
+          selectedBrands.forEach((id) => params.append("brands", id));
+          selectedCategories.forEach((id) => params.append("categories", id));
           if (appliedMin) params.append("minPrice", appliedMin);
           if (appliedMax) params.append("maxPrice", appliedMax);
-
           params.append("page", page - 1);
-
           url = `http://localhost:8080/api/v1/products/filter?${params.toString()}`;
         }
 
         const res = await fetch(url);
         const data = await res.json();
-
-        const productList = data.products || data.content || [];
-
-        setProducts(productList);
+        setProducts(data.products || data.content || []);
+        setTotalPages(data.totalPages || 1);
+        console.log(data);
       } catch (err) {
         console.error(err);
       }
     };
 
     fetchProducts();
-  }, [selectedBrands, selectedCategories, appliedMin, appliedMax, page]);
+  }, [
+    selectedBrands,
+    selectedCategories,
+    appliedMin,
+    appliedMax,
+    page,
+    searchParams,
+  ]);
 
   // ================= RESET PAGE =================
   useEffect(() => {
     setPage(1);
-  }, [selectedCategories, selectedBrands, appliedMin, appliedMax]);
+  }, [
+    selectedCategories,
+    selectedBrands,
+    appliedMin,
+    appliedMax,
+    searchParams,
+  ]);
 
+  // ================= SCROLL TO TOP =================
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [page]);
 
   const toggleCheckbox = (value, list, setList) => {
@@ -118,28 +120,43 @@ const Products = () => {
     setAppliedMin(minPrice);
     setAppliedMax(maxPrice);
   };
+  const handleSearch = (e) => {
+    if (e.key === "Enter") {
+      setSearchParams(searchText.trim() ? { search: searchText.trim() } : {});
+    }
+  };
 
+  const clearSearch = () => {
+    setSearchText("");
+    setSearchParams({});
+  };
   return (
-    <div className="products-layout">
-      {/* SIDEBAR */}
-      <div className="sidebar">
-        <h3 className="filter-title">Filter</h3>
+    <div className="prd-layout">
+      <div className="prd-sidebar">
+        <div className="prd-sidebar-search">
+          <input
+            type="text"
+            placeholder="Tìm sản phẩm..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyDown={handleSearch}
+          />
+        </div>
+        <h3 className="prd-filter-title">Filter</h3>
 
-        {/* CATEGORY */}
-        <div className="filter-group">
-          <div className="filter-header">
+        <div className="prd-filter-group">
+          <div className="prd-filter-header">
             <p>Category</p>
             <button
-              className="clear-btn"
+              className="prd-clear-btn"
               onClick={() => setSelectedCategories([])}
             >
               Uncheck all
             </button>
           </div>
-
-          <div className="filter-list">
+          <div className="prd-filter-list">
             {categories.map((cat) => (
-              <label key={cat.id} className="filter-item">
+              <label key={cat.id} className="prd-filter-item">
                 <input
                   type="checkbox"
                   checked={selectedCategories.includes(cat.id)}
@@ -157,18 +174,19 @@ const Products = () => {
           </div>
         </div>
 
-        {/* BRAND */}
-        <div className="filter-group">
-          <div className="filter-header">
+        <div className="prd-filter-group">
+          <div className="prd-filter-header">
             <p>Brand</p>
-            <button className="clear-btn" onClick={() => setSelectedBrands([])}>
+            <button
+              className="prd-clear-btn"
+              onClick={() => setSelectedBrands([])}
+            >
               Uncheck all
             </button>
           </div>
-
-          <div className="filter-list">
+          <div className="prd-filter-list">
             {brands.map((brand) => (
-              <label key={brand.id} className="filter-item">
+              <label key={brand.id} className="prd-filter-item">
                 <input
                   type="checkbox"
                   checked={selectedBrands.includes(brand.id)}
@@ -182,10 +200,9 @@ const Products = () => {
           </div>
         </div>
 
-        {/* PRICE */}
-        <div className="filter-group">
+        <div className="prd-filter-group">
           <p>Price (VND)</p>
-          <div className="price-inputs">
+          <div className="prd-price-inputs">
             <input
               type="number"
               placeholder="Min"
@@ -200,98 +217,148 @@ const Products = () => {
               onChange={(e) => setMaxPrice(e.target.value)}
             />
           </div>
-
-          <button
-            onClick={applyPrice}
-            style={{
-              marginTop: "10px",
-              width: "100%",
-              padding: "6px",
-              borderRadius: "6px",
-              border: "none",
-              background: "#fff",
-              color: "#000",
-              cursor: "pointer",
-            }}
-          >
+          <button className="prd-apply-btn" onClick={applyPrice}>
             Apply
           </button>
         </div>
       </div>
 
-      {/* PRODUCTS */}
-      <div className="products-content">
-        <div className="featured-grid">
+      <div className="prd-content">
+        <div className="prd-tags-row">
+          {searchParams.get("search") && (
+            <span className="prd-tag prd-tag--search">
+              🔍 "{searchParams.get("search")}"
+              <button onClick={clearSearch}>✕</button>
+            </span>
+          )}
+          {selectedBrands.map((id) => {
+            const brand = brands.find((b) => b.id === id);
+            return (
+              <span key={id} className="prd-tag">
+                {brand?.name}
+                <button
+                  onClick={() =>
+                    toggleCheckbox(id, selectedBrands, setSelectedBrands)
+                  }
+                >
+                  ✕
+                </button>
+              </span>
+            );
+          })}
+          {selectedCategories.map((id) => {
+            const cat = categories.find((c) => c.id === id);
+            return (
+              <span key={id} className="prd-tag">
+                {cat?.name}
+                <button
+                  onClick={() =>
+                    toggleCheckbox(
+                      id,
+                      selectedCategories,
+                      setSelectedCategories,
+                    )
+                  }
+                >
+                  ✕
+                </button>
+              </span>
+            );
+          })}
+          {(appliedMin || appliedMax) && (
+            <span className="prd-tag">
+              {appliedMin ? `${Number(appliedMin).toLocaleString()}₫` : "0"} —{" "}
+              {appliedMax ? `${Number(appliedMax).toLocaleString()}₫` : "∞"}
+              <button
+                onClick={() => {
+                  setAppliedMin("");
+                  setAppliedMax("");
+                  setMinPrice("");
+                  setMaxPrice("");
+                }}
+              >
+                ✕
+              </button>
+            </span>
+          )}
+          {(selectedBrands.length > 0 ||
+            selectedCategories.length > 0 ||
+            appliedMin ||
+            appliedMax) && (
+            <button
+              className="prd-clear-all-btn"
+              onClick={() => {
+                setSelectedBrands([]);
+                setSelectedCategories([]);
+                setAppliedMin("");
+                setAppliedMax("");
+                setMinPrice("");
+                setMaxPrice("");
+              }}
+            >
+              Xóa tất cả
+            </button>
+          )}
+        </div>
+
+        <div className="prd-grid">
           {products.length === 0 ? (
-            <div className="no-product">Không có sản phẩm phù hợp</div>
+            <div className="prd-empty">Không có sản phẩm phù hợp</div>
           ) : (
             products.map((item) => {
               const image = item.images?.[0]?.imageUrl;
               const price = item.variants?.[0]?.price || 0;
-
               return (
                 <div
                   key={item.id}
-                  className="card-wrapper"
+                  className="prd-card-wrapper"
                   onClick={() => navigate(`/products/detail/${item.id}`)}
                 >
-                  <div className="card-container">
+                  <div className="prd-card-container">
                     <div
-                      className="card-top"
+                      className="prd-card-top"
                       style={{ backgroundImage: `url(${image})` }}
                     />
-
                     <div
-                      className={`card-bottom ${activeId === item.id ? "clicked" : ""}`}
+                      className={`prd-card-bottom ${activeId === item.id ? "prd-clicked" : ""}`}
                     >
-                      <div className="card-left">
-                        <div className="card-details">
+                      <div className="prd-card-left">
+                        <div className="prd-card-details">
                           <h1>{item.name}</h1>
                           <p>{price.toLocaleString()} ₫</p>
                         </div>
-
-                        {/* ADD TO CART */}
                         <div
-                          className="card-buy"
+                          className="prd-card-buy"
                           onClick={(e) => {
                             e.stopPropagation();
-
                             const defaultVariant = item.variants?.[0];
-
                             if (!defaultVariant) {
                               alert("Sản phẩm chưa có biến thể");
                               return;
                             }
-
                             addToCart(
-                              {
-                                id: item.id,
-                                variantId: defaultVariant.id,
-                              },
+                              { id: item.id, variantId: defaultVariant.id },
                               1,
                             );
-
                             setActiveId(item.id);
                             setTimeout(() => setActiveId(null), 1500);
                           }}
                         >
-                          <ShoppingCart size={18} className="product-cart-icon"/>
+                          <ShoppingCart size={18} className="prd-cart-icon" />
                         </div>
                       </div>
-
-                      <div className="card-right">
-                        <div className="card-done">✔</div>
+                      <div className="prd-card-right">
+                        <div className="prd-card-done">✔</div>
                       </div>
                     </div>
                   </div>
 
                   <div
-                    className="card-inside"
+                    className="prd-card-inside"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <div className="card-icon">ℹ</div>
-
-                    <div className="card-contents">
+                    <div className="prd-card-icon">ℹ</div>
+                    <div className="prd-card-contents">
                       <table>
                         <tbody>
                           <tr>
@@ -316,15 +383,17 @@ const Products = () => {
           )}
         </div>
 
-        {/* PAGINATION */}
-        <div className="pagination">
+        <div className="prd-pagination">
           <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
             Prev
           </button>
-
           <span>{page}</span>
-
-          <button onClick={() => setPage((p) => p + 1)}>Next</button>
+          <button
+            disabled={page >= totalPages}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
