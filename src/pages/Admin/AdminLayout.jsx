@@ -19,6 +19,8 @@ const AdminLayout = () => {
 
   const handleLogout = () => {
     navigate("/login");
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   const isActive = (path) => {
@@ -73,13 +75,13 @@ const AdminLayout = () => {
             <Users size={20} />
             <span className="nav-label">Khách hàng</span>
           </Link>
-          <Link
+          {/* <Link
             to="/admin/settings"
             className={`nav-item ${isActive("/admin/settings") ? "active" : ""}`}
           >
             <Settings size={20} />
             <span className="nav-label">Cài đặt</span>
-          </Link>
+          </Link> */}
         </nav>
       </aside>
       {/* --- KẾT THÚC SIDEBAR --- */}

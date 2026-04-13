@@ -28,7 +28,7 @@ const OrderSuccess = () => {
 
   return (
     <div className="order-success-page">
-      {/* ✅ Dấu tích mua hàng thành công */}
+      {/* Dấu tích mua hàng thành công */}
       <div
         className="success-icon"
         style={{ transform: `scale(${scale})` }}
