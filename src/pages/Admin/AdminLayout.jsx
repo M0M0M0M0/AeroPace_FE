@@ -8,6 +8,7 @@ import {
   Settings,
   LogOut,
   Menu,
+  Tag,
 } from "lucide-react";
 import "./AdminLayout.css";
 
@@ -19,6 +20,7 @@ const AdminLayout = () => {
   const handleLogout = () => {
     navigate("/login");
   };
+
   const isActive = (path) => {
     if (path === "/admin") {
       return location.pathname === "/admin" || location.pathname === "/admin/";
@@ -35,7 +37,6 @@ const AdminLayout = () => {
             <h2>{isSidebarOpen ? "SHOP RUNNER" : "SR"}</h2>
           </Link>
         </div>
-
         <nav className="sidebar-nav">
           <Link
             to="/admin"
@@ -59,6 +60,13 @@ const AdminLayout = () => {
             <span className="nav-label">Sản phẩm</span>
           </Link>
           <Link
+            to="/admin/catalog"
+            className={`nav-item ${isActive("/admin/catalog") ? "active" : ""}`}
+          >
+            <Tag size={20} />
+            <span className="nav-label">Danh mục & Brand</span>
+          </Link>
+          <Link
             to="/admin/customers"
             className={`nav-item ${isActive("/admin/customers") ? "active" : ""}`}
           >
@@ -73,15 +81,7 @@ const AdminLayout = () => {
             <span className="nav-label">Cài đặt</span>
           </Link>
         </nav>
-
-        {/* <div className="sidebar-footer">
-          <button className="logout-btn" onClick={handleLogout}>
-            <LogOut size={20} />
-            <span className="nav-label">Đăng xuất</span>
-          </button>
-        </div> */}
       </aside>
-
       {/* --- KẾT THÚC SIDEBAR --- */}
 
       <div className="admin-main">
@@ -95,7 +95,6 @@ const AdminLayout = () => {
               <Menu size={24} />
             </button>
           </div>
-
           <div className="header-right">
             <div className="admin-profile">
               <img
@@ -118,7 +117,6 @@ const AdminLayout = () => {
 
         {/* --- MAIN CONTENT --- */}
         <main className="admin-content">
-          {/* Nơi hiển thị nội dung các trang con dựa theo Route */}
           <Outlet />
         </main>
       </div>

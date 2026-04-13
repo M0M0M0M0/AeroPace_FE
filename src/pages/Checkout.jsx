@@ -7,7 +7,7 @@ import axios from "axios";
 import "./Checkout.css";
 
 const Checkout = () => {
-  const { cart, clearCart, fetchCart } = useCart();
+  const { cart, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loadingProfile, setLoadingProfile] = useState(false);
@@ -20,10 +20,9 @@ const Checkout = () => {
     email: "",
     phone: "",
     address: "",
-    city: "",
-    postal: "",
     paymentMethod: "cod",
   });
+
   const handleUseMyInfo = async () => {
     if (!user?.id) return;
 
@@ -36,7 +35,7 @@ const Checkout = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        },
+        }
       );
 
       const data = res.data;
@@ -51,17 +50,17 @@ const Checkout = () => {
 
       toast.success("Đã tải thông tin của bạn!");
     } catch (err) {
-      console.log(err);
       toast.error("Không lấy được thông tin khách hàng");
     } finally {
       setLoadingProfile(false);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, email, phone, address, paymentMethod } = form;
 
-    if (!name || !email || !phone || !address || !paymentMethod) {
+    if (!name || !email || !phone || !address) {
       toast.error("Vui lòng điền đầy đủ thông tin.");
       return;
     }
@@ -73,19 +72,18 @@ const Checkout = () => {
           userId: user.id,
           shippingAddress: address,
           phoneNumber: phone,
-          paymentMethod: paymentMethod,
+          paymentMethod,
           receiverName: name,
         },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        },
+        }
       );
 
       clearCart();
 
-      toast.success(`Đặt hàng thành công!`);
       navigate("/order-success", {
         state: {
           order: {
@@ -97,15 +95,16 @@ const Checkout = () => {
           },
         },
       });
+
+      toast.success("Đặt hàng thành công!");
     } catch (err) {
-      console.error(err);
-      toast.error("Đặt hàng thất bại, vui lòng thử lại.");
+      toast.error("Đặt hàng thất bại.");
     }
   };
 
-  if (!cartItems || cartItems.length === 0)
+  if (!cartItems.length)
     return (
-      <div className="cart-empty">
+      <div className="checkout-empty">
         <p>Giỏ hàng trống.</p>
         <button className="btn" onClick={() => navigate("/products")}>
           Quay lại cửa hàng
@@ -117,56 +116,63 @@ const Checkout = () => {
     <div className="checkout-page">
       <div className="container">
         <h1 className="section-title">Thanh toán</h1>
+
         <div className="checkout-grid">
-          {/* Form khách hàng */}
+          {/* FORM */}
           <form className="checkout-form" onSubmit={handleSubmit}>
-            <div className="form-header">
+            <div className="checkout-form-header">
               <h2>Thông tin khách hàng</h2>
 
               <button
                 type="button"
-                className="use-info-btn"
+                className="checkout-use-info-btn"
                 onClick={handleUseMyInfo}
                 disabled={loadingProfile}
               >
                 {loadingProfile ? "Đang tải..." : "Sử dụng thông tin của tôi"}
               </button>
             </div>
-            <div className="form-grid">
-              {["name", "email", "phone", "address"].map((field, idx) => (
+
+            <div className="checkout-form-grid">
+              {["name", "email", "phone", "address"].map((field) => (
                 <input
-                  key={idx}
+                  key={field}
                   type={field === "email" ? "email" : "text"}
                   placeholder={
                     field === "name"
                       ? "Họ và tên"
                       : field === "email"
-                        ? "Email"
-                        : field === "phone"
-                          ? "Số điện thoại"
-                          : "Địa chỉ"
+                      ? "Email"
+                      : field === "phone"
+                      ? "Số điện thoại"
+                      : "Địa chỉ"
                   }
                   value={form[field]}
                   onChange={(e) =>
                     setForm({ ...form, [field]: e.target.value })
                   }
-                  className="form-input"
+                  className="checkout-input"
                 />
               ))}
             </div>
 
-            <div className="payment-methods">
+            <div className="checkout-payment">
               <h3>Phương thức thanh toán</h3>
-              <div className="payment-grid">
+
+              <div className="checkout-payment-grid">
                 {[
                   { id: "cod", label: "COD" },
-                  { id: "bank", label: "Chuyển khoản ngân hàng" },
-                  { id: "card", label: "Thẻ tín dụng / Thẻ ghi nợ" },
+                  { id: "bank", label: "Chuyển khoản" },
+                  { id: "card", label: "Thẻ" },
                 ].map((m) => (
                   <div
                     key={m.id}
-                    className={`payment-card ${form.paymentMethod === m.id ? "active" : ""}`}
-                    onClick={() => setForm({ ...form, paymentMethod: m.id })}
+                    className={`checkout-payment-card ${
+                      form.paymentMethod === m.id ? "active" : ""
+                    }`}
+                    onClick={() =>
+                      setForm({ ...form, paymentMethod: m.id })
+                    }
                   >
                     {m.label}
                   </div>
@@ -174,25 +180,24 @@ const Checkout = () => {
               </div>
             </div>
 
-            <button type="submit" className="btn mt-4">
+            <button type="submit" className="btn">
               Thanh toán
             </button>
           </form>
 
-          {/* Chi tiết đơn hàng */}
-          <div className="order-summary">
+          {/* ORDER */}
+          <div className="checkout-summary">
             <h2>Đơn hàng của bạn</h2>
-            <div className="order-items">
+
+            <div className="checkout-items">
               {cartItems.map((item) => (
-                <div key={item.cartItemId} className="order-item">
-                  <div className="order-left">
+                <div key={item.cartItemId} className="checkout-item">
+                  <div className="checkout-item-left">
                     <img src={item.image} alt={item.productName} />
                     <div>
                       <p>{item.productName}</p>
-                      <p className="variant">
+                      <p className="checkout-variant">
                         {item.option1Value}
-                        {item.option2Value && ` - ${item.option2Value}`}
-                        {item.option3Value && ` - ${item.option3Value}`}
                       </p>
                       <p>
                         {item.quantity} x {item.price.toLocaleString()} ₫
@@ -202,7 +207,8 @@ const Checkout = () => {
                 </div>
               ))}
             </div>
-            <div className="order-total">
+
+            <div className="checkout-total">
               <h3>Tổng tiền:</h3>
               <p>{totalPrice.toLocaleString()} ₫</p>
             </div>

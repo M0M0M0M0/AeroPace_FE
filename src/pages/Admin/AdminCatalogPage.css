@@ -1,0 +1,400 @@
+/* ================================================================
+   CATALOG PAGE — dark theme, consistent với AdminOrders.css
+   ================================================================ */
+
+/* ── Page ────────────────────────────────────────────────────── */
+.cp-page {
+  position: relative;
+  color: #fff;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.cp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.cp-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.cp-subtitle {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+}
+
+/* ── Stats ───────────────────────────────────────────────────── */
+.cp-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.cp-stat-card {
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+}
+
+.cp-stat-num {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cp-stat-label {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* ── Tabs ────────────────────────────────────────────────────── */
+.cp-tabs {
+  display: flex;
+  gap: 4px;
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 4px;
+  width: fit-content;
+  margin-bottom: 20px;
+}
+
+.cp-tab {
+  padding: 8px 24px;
+  border-radius: 7px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.cp-tab.active {
+  background: #fff;
+  color: #000;
+}
+
+.cp-tab:not(.active):hover {
+  color: #a3a3a3;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────────── */
+.cp-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.cp-search {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  padding: 9px 14px;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+  min-width: 220px;
+  flex: 1;
+  max-width: 360px;
+}
+
+.cp-search:focus         { border-color: rgba(255, 255, 255, 0.3); }
+.cp-search::placeholder  { color: #555; }
+
+.cp-btn-add {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.cp-btn-add:hover { opacity: 0.85; }
+
+/* ── Table ───────────────────────────────────────────────────── */
+.cp-table-wrap {
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.cp-table thead tr {
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cp-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #a3a3a3;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.cp-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.15s;
+}
+.cp-row:last-child { border-bottom: none; }
+.cp-row:hover      { background: #1a1a1a; }
+
+.cp-table td {
+  padding: 14px 16px;
+  color: #e5e5e5;
+  vertical-align: middle;
+}
+
+.cp-id   { color: #666; font-size: 0.82rem; font-weight: 600; }
+.cp-name { font-weight: 600; color: #fff; }
+.cp-desc {
+  color: #a3a3a3;
+  font-size: 0.875rem;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cp-no-desc { color: #444; }
+
+.cp-empty-row {
+  text-align: center;
+  color: #555;
+  padding: 48px 0 !important;
+}
+
+/* ── Action buttons ──────────────────────────────────────────── */
+.cp-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cp-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cp-edit-btn  { color: #a3a3a3; }
+.cp-edit-btn:hover  {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cp-delete-btn { color: #555; }
+.cp-delete-btn:hover {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+/* ── Loading ─────────────────────────────────────────────────── */
+.cp-loading {
+  text-align: center;
+  padding: 60px 0;
+  color: #555;
+}
+
+/* ================================================================
+   MODAL
+   ================================================================ */
+.cp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.cp-modal {
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 440px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cp-modal-delete {
+  max-width: 400px;
+}
+
+.cp-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cp-modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.cp-modal-sub {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0;
+  min-height: 16px;
+}
+
+.cp-modal-close {
+  background: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  transition: color 0.2s;
+}
+.cp-modal-close:hover { color: #fff; }
+
+/* Form rows */
+.cp-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cp-form-row label {
+  font-size: 0.8rem;
+  color: #a3a3a3;
+  font-weight: 500;
+}
+
+.cp-form-row input,
+.cp-form-row textarea {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.cp-form-row input:focus,
+.cp-form-row textarea:focus { border-color: rgba(255, 255, 255, 0.3); }
+
+.cp-form-row input::placeholder,
+.cp-form-row textarea::placeholder { color: #555; }
+
+/* Error */
+.cp-form-error {
+  font-size: 0.82rem;
+  color: #f87171;
+  margin: 0;
+  padding: 8px 12px;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: 6px;
+}
+
+/* Delete confirm message */
+.cp-delete-msg {
+  font-size: 0.9rem;
+  color: #a3a3a3;
+  line-height: 1.6;
+  margin: 0;
+}
+.cp-delete-msg strong { color: #fff; }
+
+/* Modal actions */
+.cp-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.cp-btn-cancel {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #a3a3a3;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.cp-btn-cancel:hover { border-color: rgba(255, 255, 255, 0.3); color: #fff; }
+
+.cp-btn-save {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+.cp-btn-save:hover { opacity: 0.85; }
+
+.cp-btn-danger {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+.cp-btn-danger:hover { opacity: 0.85; }

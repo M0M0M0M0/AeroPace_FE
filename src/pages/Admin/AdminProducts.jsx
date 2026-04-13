@@ -27,7 +27,7 @@ const AdminProducts = () => {
   });
   const [saving, setSaving] = useState(false);
 
-  // ── Filter states ─────────────────────────────────────────────
+  // ── Filter states (bảng ngoài) ─────────────────────────────
   const [filterName, setFilterName] = useState("");
   const [filterProductId, setFilterProductId] = useState("");
   const [filterVariantId, setFilterVariantId] = useState("");
@@ -39,7 +39,11 @@ const AdminProducts = () => {
   const [filterStockMin, setFilterStockMin] = useState("");
   const [filterStockMax, setFilterStockMax] = useState("");
 
-  // ── Form state ────────────────────────────────────────────────
+  // ── Search trong modal ──────────────────────────────────────
+  const [modalBrandSearch, setModalBrandSearch] = useState("");
+  const [modalCatSearch, setModalCatSearch] = useState("");
+
+  // ── Form state ──────────────────────────────────────────────
   const emptyForm = {
     name: "",
     description: "",
@@ -62,7 +66,7 @@ const AdminProducts = () => {
   };
   const [form, setForm] = useState(emptyForm);
 
-  // ── Fetch ─────────────────────────────────────────────────────
+  // ── Fetch ───────────────────────────────────────────────────
   const fetchProducts = async () => {
     try {
       const res = await axios.get(`${BASE}/products/detail`);
@@ -88,9 +92,11 @@ const AdminProducts = () => {
     fetchCategories();
   }, []);
 
-  // ── Modal helpers ─────────────────────────────────────────────
+  // ── Modal helpers ───────────────────────────────────────────
   const openAdd = () => {
     setForm(emptyForm);
+    setModalBrandSearch("");
+    setModalCatSearch("");
     setModal({ open: true, mode: "add", product: null });
   };
 
@@ -128,10 +134,18 @@ const AdminProducts = () => {
       ],
       categoryIds: product.categories?.map((c) => c.id) || [],
     });
+    setModalBrandSearch("");
+    setModalCatSearch("");
     setModal({ open: true, mode: "edit", product });
   };
 
-  // ── Save ──────────────────────────────────────────────────────
+  const closeModal = () => {
+    setModal({ open: false, mode: "add", product: null });
+    setModalBrandSearch("");
+    setModalCatSearch("");
+  };
+
+  // ── Save ────────────────────────────────────────────────────
   const handleSave = async () => {
     if (!form.name || !form.brandId) {
       alert("Vui lòng điền tên sản phẩm và chọn thương hiệu!");
@@ -268,7 +282,7 @@ const AdminProducts = () => {
         }
       }
       await fetchProducts();
-      setModal({ open: false, mode: "add", product: null });
+      closeModal();
     } catch (err) {
       console.error(err);
       alert("Lưu thất bại! " + (err.response?.data?.message || ""));
@@ -277,7 +291,7 @@ const AdminProducts = () => {
     }
   };
 
-  // ── Delete ────────────────────────────────────────────────────
+  // ── Delete ──────────────────────────────────────────────────
   const handleDelete = async (id) => {
     if (!window.confirm("Xóa sản phẩm này?")) return;
     try {
@@ -288,7 +302,7 @@ const AdminProducts = () => {
     }
   };
 
-  // ── Variant handlers ──────────────────────────────────────────
+  // ── Variant handlers ────────────────────────────────────────
   const addVariant = () =>
     setForm({
       ...form,
@@ -312,7 +326,7 @@ const AdminProducts = () => {
     setForm({ ...form, variants: u });
   };
 
-  // ── Image handlers ────────────────────────────────────────────
+  // ── Image handlers ──────────────────────────────────────────
   const addImage = () =>
     setForm({
       ...form,
@@ -329,7 +343,7 @@ const AdminProducts = () => {
     setForm({ ...form, images: u });
   };
 
-  // ── Category toggle ───────────────────────────────────────────
+  // ── Category toggle ─────────────────────────────────────────
   const toggleCategory = (catId) => {
     const ids = form.categoryIds.includes(catId)
       ? form.categoryIds.filter((id) => id !== catId)
@@ -337,7 +351,7 @@ const AdminProducts = () => {
     setForm({ ...form, categoryIds: ids });
   };
 
-  // ── Helpers ───────────────────────────────────────────────────
+  // ── Helpers ─────────────────────────────────────────────────
   const getMinPrice = (variants) => {
     if (!variants?.length) return "—";
     const prices = variants.map((v) => Number(v.price)).filter(Boolean);
@@ -351,7 +365,7 @@ const AdminProducts = () => {
   const getTotalStock = (variants) =>
     variants?.reduce((sum, v) => sum + (Number(v.stock) || 0), 0) || 0;
 
-  // ── Filter logic ──────────────────────────────────────────────
+  // ── Filter logic (bảng ngoài) ───────────────────────────────
   const hasActiveFilter =
     filterName ||
     filterProductId ||
@@ -421,6 +435,14 @@ const AdminProducts = () => {
 
     return true;
   });
+
+  // ── Filtered lists trong modal ──────────────────────────────
+  const filteredModalBrands = brands.filter((b) =>
+    b.name.toLowerCase().includes(modalBrandSearch.toLowerCase()),
+  );
+  const filteredModalCats = categories.filter((c) =>
+    c.name.toLowerCase().includes(modalCatSearch.toLowerCase()),
+  );
 
   if (loading) return <div className="adp-loading">Đang tải...</div>;
 
@@ -657,12 +679,7 @@ const AdminProducts = () => {
                   ? "Thêm sản phẩm mới"
                   : "Chỉnh sửa sản phẩm"}
               </h3>
-              <button
-                className="adp-modal-close"
-                onClick={() =>
-                  setModal({ open: false, mode: "add", product: null })
-                }
-              >
+              <button className="adp-modal-close" onClick={closeModal}>
                 <X size={22} />
               </button>
             </div>
@@ -690,35 +707,83 @@ const AdminProducts = () => {
             </div>
 
             <div className="adp-form-grid-2">
+              {/* ── BRAND với search ── */}
               <div className="adp-form-row">
                 <label className="adp-form-label">Thương hiệu *</label>
+                <div className="adp-modal-search-wrap">
+                  <Search size={13} className="adp-modal-search-icon" />
+                  <input
+                    className="adp-modal-search-input"
+                    placeholder="Tìm thương hiệu..."
+                    value={modalBrandSearch}
+                    onChange={(e) => setModalBrandSearch(e.target.value)}
+                  />
+                </div>
                 <select
-                  className="adp-form-input"
+                  className="adp-form-input adp-modal-select"
+                  size={5}
                   value={form.brandId}
                   onChange={(e) =>
                     setForm({ ...form, brandId: e.target.value })
                   }
                 >
-                  <option value="">-- Chọn thương hiệu --</option>
-                  {brands.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name}
-                    </option>
-                  ))}
+                  {filteredModalBrands.length === 0 ? (
+                    <option disabled>Không tìm thấy</option>
+                  ) : (
+                    filteredModalBrands.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.name}
+                      </option>
+                    ))
+                  )}
                 </select>
+                {form.brandId && (
+                  <p className="adp-modal-selected-hint">
+                    Đã chọn:{" "}
+                    <strong>
+                      {brands.find((b) => String(b.id) === String(form.brandId))?.name}
+                    </strong>
+                  </p>
+                )}
               </div>
+
+              {/* ── CATEGORY với search + scroll ── */}
               <div className="adp-form-row">
-                <label className="adp-form-label">Danh mục</label>
-                <div className="adp-cat-picker">
-                  {categories.map((c) => (
-                    <span
-                      key={c.id}
-                      onClick={() => toggleCategory(c.id)}
-                      className={`adp-cat-chip ${form.categoryIds.includes(c.id) ? "adp-cat-chip--active" : ""}`}
-                    >
-                      {c.name}
+                <label className="adp-form-label">
+                  Danh mục{" "}
+                  {form.categoryIds.length > 0 && (
+                    <span className="adp-cat-count">
+                      ({form.categoryIds.length} đã chọn)
                     </span>
-                  ))}
+                  )}
+                </label>
+                <div className="adp-modal-search-wrap">
+                  <Search size={13} className="adp-modal-search-icon" />
+                  <input
+                    className="adp-modal-search-input"
+                    placeholder="Tìm danh mục..."
+                    value={modalCatSearch}
+                    onChange={(e) => setModalCatSearch(e.target.value)}
+                  />
+                </div>
+                <div className="adp-cat-picker">
+                  {filteredModalCats.length === 0 ? (
+                    <span className="adp-cat-empty">Không tìm thấy</span>
+                  ) : (
+                    filteredModalCats.map((c) => (
+                      <span
+                        key={c.id}
+                        onClick={() => toggleCategory(c.id)}
+                        className={`adp-cat-chip ${
+                          form.categoryIds.includes(c.id)
+                            ? "adp-cat-chip--active"
+                            : ""
+                        }`}
+                      >
+                        {c.name}
+                      </span>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -736,7 +801,7 @@ const AdminProducts = () => {
                       onChange={(e) =>
                         setForm({ ...form, [field]: e.target.value })
                       }
-                      placeholder={`VD: Màu sắc`}
+                      placeholder="VD: Màu sắc"
                     />
                   </div>
                 ),
@@ -868,12 +933,7 @@ const AdminProducts = () => {
 
             {/* Footer */}
             <div className="adp-modal-footer">
-              <button
-                className="adp-btn-cancel"
-                onClick={() =>
-                  setModal({ open: false, mode: "add", product: null })
-                }
-              >
+              <button className="adp-btn-cancel" onClick={closeModal}>
                 Huỷ
               </button>
               <button
