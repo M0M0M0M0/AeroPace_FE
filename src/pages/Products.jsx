@@ -6,7 +6,7 @@ import "./Products.css";
 
 const Products = () => {
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  const { isOutOfStock, isMaxedOut, getCartQuantity, addItemToCart } = useCart();
 
   const [activeId, setActiveId] = useState(null);
   const [products, setProducts] = useState([]);
@@ -27,7 +27,6 @@ const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState(1);
 
-  // ================= FETCH FILTER DATA =================
   useEffect(() => {
     const fetchFilters = async () => {
       try {
@@ -44,7 +43,6 @@ const Products = () => {
     fetchFilters();
   }, []);
 
-  // ================= FETCH PRODUCTS =================
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -92,7 +90,6 @@ const Products = () => {
     searchParams,
   ]);
 
-  // ================= RESET PAGE =================
   useEffect(() => {
     setPage(1);
   }, [
@@ -103,7 +100,6 @@ const Products = () => {
     searchParams,
   ]);
 
-  // ================= SCROLL TO TOP =================
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [page]);
@@ -120,6 +116,7 @@ const Products = () => {
     setAppliedMin(minPrice);
     setAppliedMax(maxPrice);
   };
+
   const handleSearch = (e) => {
     if (e.key === "Enter") {
       setSearchParams(searchText.trim() ? { search: searchText.trim() } : {});
@@ -130,6 +127,15 @@ const Products = () => {
     setSearchText("");
     setSearchParams({});
   };
+
+  const handleAddToCart = (item, e) => {
+    e.stopPropagation();
+    if (isMaxedOut(item)) return;
+    addItemToCart(item, navigate);
+    setActiveId(item.id);
+    setTimeout(() => setActiveId(null), 1500);
+  };
+
   return (
     <div className="prd-layout">
       <div className="prd-sidebar">
@@ -308,6 +314,12 @@ const Products = () => {
             products.map((item) => {
               const image = item.images?.[0]?.imageUrl;
               const price = item.variants?.[0]?.price || 0;
+              const outOfStock = isOutOfStock(item);
+              const maxed = isMaxedOut(item);
+              const cartQty = item.variants
+                ?.filter((v) => v.stock && v.stock > 0)
+                .reduce((sum, v) => sum + getCartQuantity(item.id, v.id), 0);
+
               return (
                 <div
                   key={item.id}
@@ -315,6 +327,19 @@ const Products = () => {
                   onClick={() => navigate(`/products/detail/${item.id}`)}
                 >
                   <div className="prd-card-container">
+                    {outOfStock && (
+                      <div className="prd-out-of-stock-badge">Hết hàng</div>
+                    )}
+                    {!outOfStock && maxed && (
+                      <div className="prd-out-of-stock-badge">
+                        Đã đạt giới hạn tồn kho
+                      </div>
+                    )}
+                    {cartQty > 0 && (
+                      <div className="prd-in-cart-badge">
+                        Trong giỏ: {cartQty}
+                      </div>
+                    )}
                     <div
                       className="prd-card-top"
                       style={{ backgroundImage: `url(${image})` }}
@@ -328,21 +353,8 @@ const Products = () => {
                           <p>{price.toLocaleString()} ₫</p>
                         </div>
                         <div
-                          className="prd-card-buy"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const defaultVariant = item.variants?.[0];
-                            if (!defaultVariant) {
-                              alert("Sản phẩm chưa có biến thể");
-                              return;
-                            }
-                            addToCart(
-                              { id: item.id, variantId: defaultVariant.id },
-                              1,
-                            );
-                            setActiveId(item.id);
-                            setTimeout(() => setActiveId(null), 1500);
-                          }}
+                          className={`prd-card-buy ${maxed ? "prd-card-buy--disabled" : ""}`}
+                          onClick={(e) => handleAddToCart(item, e)}
                         >
                           <ShoppingCart size={18} className="prd-cart-icon" />
                         </div>
@@ -372,6 +384,12 @@ const Products = () => {
                           <tr>
                             <th>Price</th>
                             <td>{price.toLocaleString()} ₫</td>
+                          </tr>
+                          <tr>
+                            <th>Tồn kho</th>
+                            <td style={{ color: outOfStock ? "red" : "inherit" }}>
+                              {outOfStock ? "Hết hàng" : item.variants?.[0]?.stock}
+                            </td>
                           </tr>
                         </tbody>
                       </table>

@@ -294,3 +294,39 @@ input[type="number"] {
   display: block;
   margin: 10px auto;
 }
+.pd-variant-in-cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #e53e3e;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.pd-stock-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pd-in-cart-info {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: #718096;
+}
+
+.pd-maxed-label {
+  color: #e53e3e;
+  font-weight: 500;
+}

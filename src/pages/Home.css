@@ -49,7 +49,9 @@
   text-decoration: none;
 }
 
-.home-btn:hover { background: #ccc; }
+.home-btn:hover {
+  background: #ccc;
+}
 
 /* SECTION TITLE */
 .home-section-title {
@@ -88,10 +90,14 @@
 }
 
 @media (max-width: 992px) {
-  .home-featured-grid { grid-template-columns: repeat(2, 1fr); }
+  .home-featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 @media (max-width: 600px) {
-  .home-featured-grid { grid-template-columns: 1fr; }
+  .home-featured-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ICONS */
@@ -146,7 +152,9 @@
   cursor: pointer;
 }
 
-.home-scroll-item:hover .home-scroll-overlay { opacity: 1; }
+.home-scroll-item:hover .home-scroll-overlay {
+  opacity: 1;
+}
 
 .home-scroll-actions {
   display: flex;
@@ -166,7 +174,9 @@
   font-weight: 600;
 }
 
-.home-scroll-btn:hover { background: #ccc; }
+.home-scroll-btn:hover {
+  background: #ccc;
+}
 
 /* CARD */
 .home-card-wrapper {
@@ -187,7 +197,9 @@
   box-shadow: 5px 20px 30px rgba(0, 0, 0, 0.2);
 }
 
-.home-card-container { width: 100%; }
+.home-card-container {
+  width: 100%;
+}
 
 .home-card-top {
   width: 100%;
@@ -204,7 +216,9 @@
   transition: transform 0.5s;
 }
 
-.home-card-bottom.home-clicked { transform: translateX(-50%); }
+.home-card-bottom.home-clicked {
+  transform: translateX(-50%);
+}
 
 .home-card-left {
   width: 50%;
@@ -229,7 +243,10 @@
   text-overflow: ellipsis;
 }
 
-.home-card-details p { font-size: 13px; color: #333; }
+.home-card-details p {
+  font-size: 13px;
+  color: #333;
+}
 
 .home-card-buy {
   width: 30%;
@@ -240,8 +257,14 @@
   background: #f1f1f1;
 }
 
-.home-card-buy img { width: 20px; height: 20px; object-fit: contain; }
-.home-card-buy:hover { background: #a6cdde; }
+.home-card-buy img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+.home-card-buy:hover {
+  background: #a6cdde;
+}
 
 .home-card-right {
   width: 50%;
@@ -281,7 +304,9 @@
   border-radius: 0;
 }
 
-.home-card-inside:hover .home-card-icon { opacity: 0; }
+.home-card-inside:hover .home-card-icon {
+  opacity: 0;
+}
 
 .home-card-icon {
   position: absolute;
@@ -303,21 +328,81 @@
   transform: translateY(0);
 }
 
-.home-card-contents table { width: 100%; color: #fff; }
-.home-card-contents th { padding-right: 12px; }
+.home-card-contents table {
+  width: 100%;
+  color: #fff;
+}
+.home-card-contents th {
+  padding-right: 12px;
+}
+/* Bước 8 - Out of stock */
+.home-out-of-stock-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(220, 38, 38, 0.9);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  z-index: 10;
+  pointer-events: none;
+}
+.home-in-cart-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  z-index: 10;
+  pointer-events: none;
+  background-color: #2563eb; 
+}
+.home-out-of-stock-badge + .home-in-cart-badge {
+  transform: translateY(25px);
+}
+
+.home-card-buy--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.home-scroll-btn--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 
 /* ANIMATIONS */
 @keyframes home-fadeUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes home-scrollIcons {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @media (max-width: 768px) {
-  .home-hero-title { font-size: 2rem; }
-  .home-sport-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  .home-hero-title {
+    font-size: 2rem;
+  }
+  .home-sport-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
 }

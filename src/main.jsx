@@ -15,6 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         duration: 2500,
         style: { background: "#000", color: "#fff", borderRadius: "12px" },
       }}
+      offset={"4rem"}
     />
   </React.StrictMode>
 );
