@@ -5,6 +5,7 @@ import "./AdminOrders.css";
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // ── Filter states ─────────────────────────────────────────────
@@ -20,12 +21,28 @@ const AdminOrders = () => {
   const [statusModal, setStatusModal] = useState({
     isOpen: false,
     orderId: null,
+    currentStatus: "",
     targetStatus: "",
   });
   const [detailModal, setDetailModal] = useState({
     isOpen: false,
     order: null,
   });
+  const getNextValidStatuses = (currentStatus) => {
+    switch (currentStatus) {
+      case "PAID":
+      case "SHIP_COD":
+        return ["SHIPPING", "CANCELLED"];
+      case "SHIPPING":
+        return ["DELIVERED"];
+      case "DELIVERED":
+      case "CANCELLED":
+        return [];
+      default:
+        return [];
+    }
+  };
+
 
   // ── Fetch ─────────────────────────────────────────────────────
   const fetchOrders = async () => {
@@ -39,13 +56,23 @@ const AdminOrders = () => {
       if (filterDateFrom) params.append("dateFrom", filterDateFrom);
       if (filterDateTo) params.append("dateTo", filterDateTo);
 
-      const res = await axios.get(
-        `http://localhost:8080/api/v1/orders?${params}`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        },
-      );
-      setOrders(res.data);
+      const paramsAll = new URLSearchParams();
+      if (searchId) paramsAll.append("id", searchId);
+      if (searchName) paramsAll.append("receiverName", searchName);
+      if (searchPhone) paramsAll.append("phoneNumber", searchPhone);
+      if (searchAddress) paramsAll.append("shippingAddress", searchAddress);
+      if (filterDateFrom) paramsAll.append("dateFrom", filterDateFrom);
+      if (filterDateTo) paramsAll.append("dateTo", filterDateTo);
+
+      const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
+
+      const [resFiltered, resAll] = await Promise.all([
+        axios.get(`http://localhost:8080/api/v1/orders?${params}`, { headers }),
+        axios.get(`http://localhost:8080/api/v1/orders?${paramsAll}`, { headers }),
+      ]);
+
+      setOrders(resFiltered.data);
+      setAllOrders(resAll.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -100,16 +127,16 @@ const AdminOrders = () => {
       const matchId = searchId ? String(o.id).includes(searchId.trim()) : true;
       const matchName = searchName
         ? (o.receiverName || "")
-            .toLowerCase()
-            .includes(searchName.toLowerCase())
+          .toLowerCase()
+          .includes(searchName.toLowerCase())
         : true;
       const matchPhone = searchPhone
         ? (o.phoneNumber || "").includes(searchPhone.trim())
         : true;
       const matchAddress = searchAddress
         ? (o.shippingAddress || "")
-            .toLowerCase()
-            .includes(searchAddress.toLowerCase())
+          .toLowerCase()
+          .includes(searchAddress.toLowerCase())
         : true;
       const matchStatus =
         filterStatus === "ALL" ? true : o.status === filterStatus;
@@ -181,13 +208,6 @@ const AdminOrders = () => {
     }
   };
 
-  // ── Stats ─────────────────────────────────────────────────────
-  const stats = {
-    total: orders.length,
-    delivered: orders.filter((o) => o.status === "DELIVERED").length,
-    shipping: orders.filter((o) => o.status === "SHIPPING").length,
-    cancelled: orders.filter((o) => o.status === "CANCELLED").length,
-  };
 
   return (
     <div className="ao-page">
@@ -201,22 +221,24 @@ const AdminOrders = () => {
 
       {/* Stats */}
       <div className="ao-stats">
-        <div className="ao-stat-card">
-          <span className="ao-stat-num">{stats.total}</span>
-          <span className="ao-stat-label">Tổng đơn hàng</span>
-        </div>
-        <div className="ao-stat-card">
-          <span className="ao-stat-num">{stats.delivered}</span>
-          <span className="ao-stat-label">Đã giao</span>
-        </div>
-        <div className="ao-stat-card">
-          <span className="ao-stat-num">{stats.shipping}</span>
-          <span className="ao-stat-label">Đang giao</span>
-        </div>
-        <div className="ao-stat-card">
-          <span className="ao-stat-num">{stats.cancelled}</span>
-          <span className="ao-stat-label">Đã hủy</span>
-        </div>
+        {[
+          { key: "ALL", label: "Tổng đơn hàng", count: allOrders.length },
+          { key: "PAID", label: "Đã thanh toán", count: allOrders.filter(o => o.status === "PAID").length },
+          { key: "SHIP_COD", label: "Chờ giao (COD)", count: allOrders.filter(o => o.status === "SHIP_COD").length },
+          { key: "SHIPPING", label: "Đang giao", count: allOrders.filter(o => o.status === "SHIPPING").length },
+          { key: "DELIVERED", label: "Đã giao", count: allOrders.filter(o => o.status === "DELIVERED").length },
+          { key: "CANCELLED", label: "Đã hủy", count: allOrders.filter(o => o.status === "CANCELLED").length },
+        ].map(({ key, label, count }) => (
+          <div
+            key={key}
+            className={`ao-stat-card ${filterStatus === key ? "ao-stat-card--active" : ""}`}
+            onClick={() => setFilterStatus(filterStatus === key ? "ALL" : key)}
+            style={{ cursor: "pointer" }}
+          >
+            <span className="ao-stat-num">{count}</span>
+            <span className="ao-stat-label">{label}</span>
+          </div>
+        ))}
       </div>
 
       {/* Filter bar — row 1: text inputs + status */}
@@ -341,19 +363,22 @@ const AdminOrders = () => {
                         <span className={getStatusClass(order.status)}>
                           {getStatusLabel(order.status)}
                         </span>
-                        <button
-                          className="ao-edit-status-btn"
-                          title="Cập nhật trạng thái"
-                          onClick={() =>
-                            setStatusModal({
-                              isOpen: true,
-                              orderId: order.id,
-                              targetStatus: order.status,
-                            })
-                          }
-                        >
-                          <Edit size={14} />
-                        </button>
+                        {getNextValidStatuses(order.status).length > 0 && (
+                          <button
+                            className="ao-edit-status-btn"
+                            title="Cập nhật trạng thái"
+                            onClick={() =>
+                              setStatusModal({
+                                isOpen: true,
+                                orderId: order.id,
+                                currentStatus: order.status,
+                                targetStatus: getNextValidStatuses(order.status)[0],
+                              })
+                            }
+                          >
+                            <Edit size={14} />
+                          </button>
+                        )}
                       </div>
                     </td>
                     <td className="ao-date">
@@ -381,7 +406,7 @@ const AdminOrders = () => {
         <div
           className="ao-overlay"
           onClick={() =>
-            setStatusModal({ isOpen: false, orderId: null, targetStatus: "" })
+            setStatusModal({ isOpen: false, orderId: null, targetStatus: "", currentStatus: "" })
           }
         >
           <div className="ao-modal" onClick={(e) => e.stopPropagation()}>
@@ -397,6 +422,7 @@ const AdminOrders = () => {
                     isOpen: false,
                     orderId: null,
                     targetStatus: "",
+                    currentStatus: "",
                   })
                 }
               >
@@ -405,21 +431,26 @@ const AdminOrders = () => {
             </div>
 
             <div className="ao-form-row">
-              <label>Trạng thái mới</label>
+              <label>Trạng thái hiện tại</label>
+              <span className={getStatusClass(statusModal.currentStatus)}
+                style={{ display: "inline-block", marginTop: 4 }}>
+                {getStatusLabel(statusModal.currentStatus)}
+              </span>
+            </div>
+
+            <div className="ao-form-row">
+              <label>Chuyển sang</label>
               <select
                 value={statusModal.targetStatus}
                 onChange={(e) =>
-                  setStatusModal({
-                    ...statusModal,
-                    targetStatus: e.target.value,
-                  })
+                  setStatusModal({ ...statusModal, targetStatus: e.target.value })
                 }
               >
-                <option value="PAID">Đã thanh toán</option>
-                <option value="SHIP_COD">Chờ giao (COD)</option>
-                <option value="SHIPPING">Đang giao</option>
-                <option value="DELIVERED">Đã giao</option>
-                <option value="CANCELLED">Đã hủy</option>
+                {getNextValidStatuses(statusModal.currentStatus).map((s) => (
+                  <option key={s} value={s}>
+                    {getStatusLabel(s)}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -431,6 +462,7 @@ const AdminOrders = () => {
                     isOpen: false,
                     orderId: null,
                     targetStatus: "",
+                    currentStatus: "",
                   })
                 }
               >
