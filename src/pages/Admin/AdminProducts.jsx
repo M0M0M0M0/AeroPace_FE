@@ -334,7 +334,7 @@ const AdminProducts = () => {
         await axios.delete(`${BASE}/products/variants/${v.id}`, { headers: authHeader() });
 
         // Refetch product mới nhất để cập nhật lại modal
-        const res = await axios.get(`${BASE}/products/detail?page=0`);
+        const res = await axios.get(`${BASE}/products/detail?page=0`, { headers: authHeader() });
         const updatedProducts = res.data.products || res.data;
         setProducts(updatedProducts);
 
