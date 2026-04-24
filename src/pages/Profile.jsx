@@ -115,16 +115,6 @@ const Profile = () => {
     }
 
     try {
-      // console.log("PROFILE ID:", profileId);
-
-      // console.log("DATA SEND:", {
-      //   fullName: formData.name,
-      //   phoneNumber: formData.phone_number,
-      //   dob: formData.dob,
-      //   gender: formData.gender,
-      //   address: formData.address,
-      //   userId: user.id,
-      // });
 
       await axios.put(`${API_URL}/${profileId}`, {
         fullName: formData.name,
@@ -331,78 +321,80 @@ const Profile = () => {
                 </div>
               ) : (
                 <div className="orders-list">
-                  {orders.map((order) => {
-                    const statusStyle = getStatusColor(order.status);
-                    return (
-                      <div key={order.id} className="order-card">
-                        <div className="order-card-header">
-                          <span className="order-id">
-                            ID đơn hàng: {order.id} -{" "}
-                          </span>
-                          <span
-                            className="order-status"
-                            style={{
-                              background: statusStyle.bg,
-                              color: statusStyle.color,
-                            }}
-                          >
-                            Trạng thái: {getStatusLabel(order.status)}
-                          </span>
-                        </div>
+                  {[...orders]
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                    .map((order) => {
+                      const statusStyle = getStatusColor(order.status);
+                      return (
+                        <div key={order.id} className="order-card">
+                          <div className="order-card-header">
+                            <span className="order-id">
+                              ID đơn hàng: {order.id} -{" "}
+                            </span>
+                            <span
+                              className="order-status"
+                              style={{
+                                background: statusStyle.bg,
+                                color: statusStyle.color,
+                              }}
+                            >
+                              Trạng thái: {getStatusLabel(order.status)}
+                            </span>
+                          </div>
 
-                        <div className="order-card-body">
-                          {order.receiverName && (
-                            <p>
-                              <User size={14} /> Tên người nhận:{" "}
-                              {order.receiverName}
-                            </p>
-                          )}
-                          <p>
-                            <MapPin size={14} /> Địa chỉ giao hàng:{" "}
-                            {order.shippingAddress}
-                          </p>
-                          <p>
-                            <Phone size={14} /> Số điện thoại:{" "}
-                            {order.phoneNumber}
-                          </p>
-                          <p>
-                            Ngày đặt:{" "}
-                            {new Date(order.createdAt).toLocaleString("vi-VN")}
-                          </p>
-
-                          {/* Danh sách sản phẩm */}
-                          {order.items && order.items.length > 0 && (
-                            <div className="order-items-list">
-                              <p className="order-items-title">
-                                Danh sách sản phẩm:
+                          <div className="order-card-body">
+                            {order.receiverName && (
+                              <p>
+                                <User size={14} /> Tên người nhận:{" "}
+                                {order.receiverName}
                               </p>
-                              {order.items.map((item, idx) => (
-                                <div key={idx} className="order-item-row">
-                                  <span className="order-item-name">
-                                    {item.productName}
-                                  </span>
-                                  <div className="order-item-right">
-                                    <span className="order-item-qty">
-                                      x{item.quantity}
-                                    </span>
-                                    <span className="order-item-price">
-                                      {item.price?.toLocaleString()} ₫
-                                    </span>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
+                            )}
+                            <p>
+                              <MapPin size={14} /> Địa chỉ giao hàng:{" "}
+                              {order.shippingAddress}
+                            </p>
+                            <p>
+                              <Phone size={14} /> Số điện thoại:{" "}
+                              {order.phoneNumber}
+                            </p>
+                            <p>
+                              Ngày đặt:{" "}
+                              {new Date(order.createdAt).toLocaleString("vi-VN")}
+                            </p>
 
-                        <div className="order-card-footer">
-                          <span className="order-total">
-                            Tổng: {order.totalPrice?.toLocaleString()} ₫
-                          </span>
+                            {/* Danh sách sản phẩm */}
+                            {order.items && order.items.length > 0 && (
+                              <div className="order-items-list">
+                                <p className="order-items-title">
+                                  Danh sách sản phẩm:
+                                </p>
+                                {order.items.map((item, idx) => (
+                                  <div key={idx} className="order-item-row">
+                                    <span className="order-item-name">
+                                      {item.productName}
+                                    </span>
+                                    <div className="order-item-right">
+                                      <span className="order-item-qty">
+                                        x{item.quantity}
+                                      </span>
+                                      <span className="order-item-price">
+                                        {item.price?.toLocaleString()} ₫
+                                      </span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="order-card-footer">
+                            <span className="order-total">
+                              Tổng: {order.totalPrice?.toLocaleString()} ₫
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
                 </div>
               )}
             </div>

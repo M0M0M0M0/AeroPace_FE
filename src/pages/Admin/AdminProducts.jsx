@@ -233,7 +233,6 @@ const AdminProducts = () => {
         }
 
         // 3. Variants — chỉ xử lý active variants
-        // (deleted variants đã được xử lý realtime qua removeVariant)
         const activeFormVariants = form.variants.filter((v) => !v.isDeleted);
         const oldActiveVariantIds = modal.product.variants
           ?.filter((v) => !v.isDeleted)
@@ -322,12 +321,8 @@ const AdminProducts = () => {
   const removeVariant = async (idx) => {
     const v = form.variants[idx];
     if (v.id) {
-      // Variant đã tồn tại trong DB → gọi API DELETE
-      // BE sẽ tự quyết định hard/soft delete dựa vào có order hay không
       if (!window.confirm(
-        "Xóa variant này?\n\n" +
-        "• Nếu variant chưa có trong đơn hàng nào → xóa hẳn\n" +
-        "• Nếu đã có trong đơn hàng → ẩn đi (soft delete)"
+        "Xóa variant này?\n\n"
       )) return;
 
       try {
@@ -346,7 +341,6 @@ const AdminProducts = () => {
         alert("Xóa variant thất bại!");
       }
     } else {
-      // Variant mới chưa save → chỉ xóa khỏi form
       setForm({ ...form, variants: form.variants.filter((_, i) => i !== idx) });
     }
   };
