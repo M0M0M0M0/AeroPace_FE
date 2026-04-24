@@ -10,6 +10,7 @@ import {
   Package,
 } from "lucide-react"; // Thêm UserCircle icon
 import { useCart } from "../context/CartContext";
+import logo from "../../public//favicon_io/LogoAero.png"
 import { useAuth } from "../context/AuthContext";
 
 import "./Navbar.css";
@@ -44,8 +45,17 @@ function Navbar() {
     <nav className="navbar-wrapper slide-down">
       <div className="navbar-container">
         <div className="navbar-left">
-          <Link to="/" className="navbar-logo">
-            SHOP RUNNER
+          <Link 
+            to="/" 
+            className="navbar-logo" 
+            style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}
+          >
+            <img 
+              src={logo} 
+              alt="AeroPace Logo" 
+              style={{ height: '40px', width: 'auto' }} // Điều chỉnh chiều cao này (30px-50px) cho vừa mắt
+            />
+            <span>AeroPace</span>
           </Link>
         </div>
 
