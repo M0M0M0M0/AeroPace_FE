@@ -65,7 +65,7 @@ const Register = () => {
       <div className="login-card">
         <div className="login-header">
           <h2>Tạo tài khoản mới</h2>
-          <p>Tham gia cùng SHOP RUNNER ngay hôm nay</p>
+          <p>Tham gia cùng AEROPACE ngay hôm nay</p>
         </div>
 
         {message.text && (

@@ -31,43 +31,6 @@ button {
   padding: 2rem;
 }
 
-/* === NAVBAR === */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #0a0a0a;
-  padding: 1rem 2rem;
-  border-bottom: 1px solid #222;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.navbar .logo {
-  font-weight: 700;
-  font-size: 1.5rem;
-}
-
-.navbar ul {
-  list-style: none;
-  display: flex;
-  gap: 1.5rem;
-}
-
-.navbar ul li a:hover {
-  color: #ccc;
-}
-
-/* === FOOTER === */
-.footer {
-  text-align: center;
-  padding: 2rem;
-  background: #0a0a0a;
-  border-top: 1px solid #222;
-  margin-top: 3rem;
-  color: #999;
-}
 
 /* === HERO SECTION === */
 .hero-section {

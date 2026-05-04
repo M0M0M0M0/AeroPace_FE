@@ -55,7 +55,7 @@ function Navbar() {
               alt="AeroPace Logo" 
               style={{ height: '40px', width: 'auto' }} // Điều chỉnh chiều cao này (30px-50px) cho vừa mắt
             />
-            <span>AeroPace</span>
+            <span>AEROPACE</span>
           </Link>
         </div>
 
