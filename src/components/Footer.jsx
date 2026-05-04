@@ -84,9 +84,9 @@ function Footer() {
       {/* Dòng cuối */}
       <div className="footer-bottom">
         <p>
-          © {new Date().getFullYear()} ShopRunner. All rights reserved.
+          © {new Date().getFullYear()} AeroPace. All rights reserved.
           <br />
-          Made by <span className="footer-team">ShopRunner Team</span>
+          Made by <span className="footer-team">AeroPace Team</span>
         </p>
       </div>
     </footer>

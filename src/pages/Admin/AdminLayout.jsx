@@ -36,7 +36,7 @@ const AdminLayout = () => {
       <aside className={`admin-sidebar ${isSidebarOpen ? "open" : "closed"}`}>
         <div className="sidebar-logo">
           <Link to="/" style={{ textDecoration: "none", color: "#fff" }}>
-            <h2>{isSidebarOpen ? "SHOP RUNNER" : "SR"}</h2>
+            <h2>{isSidebarOpen ? "AERO PACE" : "AP"}</h2>
           </Link>
         </div>
         <nav className="sidebar-nav">
