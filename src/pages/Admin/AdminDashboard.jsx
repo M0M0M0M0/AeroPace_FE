@@ -29,8 +29,8 @@ const AdminDashboard = () => {
     .filter((o) => o.status !== "CANCELLED")
     .reduce((sum, o) => sum + (o.totalPrice || 0), 0);
 
-  const totalOrders    = orders.length;
-  const pendingOrders  = orders.filter((o) => o.status === "PAID" || o.status === "SHIP_COD").length;
+  const totalOrders = orders.length;
+  const pendingOrders = orders.filter((o) => o.status === "PAID" || o.status === "SHIP_COD").length;
   const deliveredOrders = orders.filter((o) => o.status === "DELIVERED").length;
 
   // ================= DOANH THU THEO THÁNG (sắp xếp tăng dần) =================
@@ -38,15 +38,15 @@ const AdminDashboard = () => {
   orders
     .filter((o) => o.status !== "CANCELLED")
     .forEach((o) => {
-      const d     = new Date(o.createdAt);
-      const year  = d.getFullYear();
+      const d = new Date(o.createdAt);
+      const year = d.getFullYear();
       const month = d.getMonth() + 1;
-      const key   = `${year}-${String(month).padStart(2, "0")}`;
+      const key = `${year}-${String(month).padStart(2, "0")}`;
       revenueByMonth[key] = (revenueByMonth[key] || 0) + (o.totalPrice || 0);
     });
 
   const sortedMonths = Object.keys(revenueByMonth).sort();
-  const maxRevenue   = Math.max(...sortedMonths.map((k) => revenueByMonth[k]), 1);
+  const maxRevenue = Math.max(...sortedMonths.map((k) => revenueByMonth[k]), 1);
 
   // ================= 10 ĐƠN GẦN NHẤT =================
   const recentOrders = [...orders]
@@ -68,29 +68,29 @@ const AdminDashboard = () => {
     );
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Đơn hàng");
-    XLSX.writeFile(wb, "Bao_Cao_Don_Hang_ShopRunner.xlsx");
+    XLSX.writeFile(wb, "Bao_Cao_Don_Hang_AeroPace.xlsx");
   };
 
   // ================= HELPERS =================
   const getStatusLabel = (status) => {
     switch (status) {
-      case "PAID":      return "Đã thanh toán";
-      case "SHIP_COD":  return "Chờ giao (COD)";
-      case "SHIPPING":  return "Đang giao";
+      case "PAID": return "Đã thanh toán";
+      case "SHIP_COD": return "Chờ giao (COD)";
+      case "SHIPPING": return "Đang giao";
       case "DELIVERED": return "Đã giao";
       case "CANCELLED": return "Đã hủy";
-      default:          return status;
+      default: return status;
     }
   };
 
   const getStatusClass = (status) => {
     switch (status) {
-      case "PAID":      return "ad-badge paid";
-      case "SHIP_COD":  return "ad-badge ship-cod";
-      case "SHIPPING":  return "ad-badge shipping";
+      case "PAID": return "ad-badge paid";
+      case "SHIP_COD": return "ad-badge ship-cod";
+      case "SHIPPING": return "ad-badge shipping";
       case "DELIVERED": return "ad-badge delivered";
       case "CANCELLED": return "ad-badge cancelled";
-      default:          return "ad-badge";
+      default: return "ad-badge";
     }
   };
 

@@ -8,23 +8,23 @@ const POLICY_DATA = {
     update: "Cập nhật lần cuối: 01/2026",
     content: [
       {
-        p: ["Chúng tôi luôn cam kết mang lại trải nghiệm mua sắm tốt nhất cho khách hàng. Chính sách đổi trả tại ShopRunner được xây dựng để đảm bảo quyền lợi của quý khách trong trường hợp sản phẩm không đáp ứng mong đợi hoặc gặp vấn đề về chất lượng."]
+        p: ["Chúng tôi luôn cam kết mang lại trải nghiệm mua sắm tốt nhất cho khách hàng. Chính sách đổi trả tại AeroPace được xây dựng để đảm bảo quyền lợi của quý khách trong trường hợp sản phẩm không đáp ứng mong đợi hoặc gặp vấn đề về chất lượng."]
       },
       { 
         h3: "1. Điều kiện đổi trả", 
         p: ["Sản phẩm còn nguyên tem mác, chưa qua sử dụng trong vòng 7 ngày kể từ ngày nhận hàng.",
           "Sản phẩm được đổi trả trong vòng 7 ngày kể từ ngày nhận hàng.",
           "Sản phẩm phải còn nguyên vẹn, chưa qua sử dụng, và còn đầy đủ hóa đơn, phụ kiện, tem mác đi kèm (nếu có).",
-          "Chính sách đổi trả áp dụng với các sản phẩm mua trực tiếp trên website ShopRunner."
+          "Chính sách đổi trả áp dụng với các sản phẩm mua trực tiếp trên website AeroPace."
         ] 
       },
       { 
         h3: "2. Quy trình đổi trả", 
         /* Cấu trúc lại mảng p để in đậm các bước dễ dàng hơn */
         p: [
-          "Bước 1 - Liên hệ hỗ trợ:"," Gọi tới hotline: 012345678 hoặc gửi email tới cskh@shoprunner.vn. Cung cấp thông tin về sản phẩm cần đổi trả bao gồm: mã đơn hàng, hình ảnh tình trạng sản phẩm và lý do đổi trả.",
+          "Bước 1 - Liên hệ hỗ trợ:"," Gọi tới hotline: 012345678 hoặc gửi email tới cskh@aeropace.vn. Cung cấp thông tin về sản phẩm cần đổi trả bao gồm: mã đơn hàng, hình ảnh tình trạng sản phẩm và lý do đổi trả.",
           "Bước 2 - Xác nhận và hướng dẫn:"," Bộ phận chăm sóc khách hàng sẽ xác nhận yêu cầu trong vòng 1-2 ngày làm việc. Hướng dẫn gửi lại sản phẩm về kho sẽ được cung cấp cụ thể qua email hoặc hotline.",
-          "Bước 3 - Gửi sản phẩm:"," Đóng gói sản phẩm cần đổi trả cẩn thận, kèm theo hóa đơn mua hàng. Gửi về địa chỉ kho của ShopRunner theo đúng hướng dẫn đã nhận.",
+          "Bước 3 - Gửi sản phẩm:"," Đóng gói sản phẩm cần đổi trả cẩn thận, kèm theo hóa đơn mua hàng. Gửi về địa chỉ kho của AeroPace theo đúng hướng dẫn đã nhận.",
           "Bước 4 - Xử lý yêu cầu:"," Sau khi nhận và kiểm tra sản phẩm, chúng tôi sẽ thông báo kết quả đổi trả qua email hoặc tin nhắn. Thời gian xử lý đổi trả từ 3-5 ngày làm việc kể từ khi nhận sản phẩm."
         ] 
       },
@@ -39,12 +39,12 @@ const POLICY_DATA = {
     update: "Cập nhật lần cuối: 01/2026",
     content: [
       {
-        p: ["Chính sách bảo hành tại ShopRunner được xây dựng nhằm đảm bảo quyền lợi của khách hàng khi sử dụng các sản phẩm do chúng tôi cung cấp. Chúng tôi cam kết đồng hành cùng khách hàng trong suốt quá trình sử dụng sản phẩm."]
+        p: ["Chính sách bảo hành tại AeroPace được xây dựng nhằm đảm bảo quyền lợi của khách hàng khi sử dụng các sản phẩm do chúng tôi cung cấp. Chúng tôi cam kết đồng hành cùng khách hàng trong suốt quá trình sử dụng sản phẩm."]
       },
       {
         h3: "1. Quy định chung",
         p: [
-          "Tất cả các sản phẩm mua tại ShopRunner đều được bảo hành theo quy định của nhà sản xuất hoặc chính sách riêng của chúng tôi (nếu có).",
+          "Tất cả các sản phẩm mua tại AeroPace đều được bảo hành theo quy định của nhà sản xuất hoặc chính sách riêng của chúng tôi (nếu có).",
           "Thời gian bảo hành và các điều kiện cụ thể sẽ được ghi rõ trong phần mô tả sản phẩm hoặc trên phiếu bảo hành đi kèm.",
           "Chính sách chỉ áp dụng cho sản phẩm chính, không bao gồm quà tặng kèm hoặc phụ kiện ngoài danh mục bảo hành."
         ]
@@ -54,7 +54,7 @@ const POLICY_DATA = {
         p: [
           "Lỗi kỹ thuật phát sinh từ nhà sản xuất (không phải lỗi do người dùng).",
           "Sản phẩm còn trong thời hạn bảo hành được quy định tại thời điểm mua hàng.",
-          "Sản phẩm có đầy đủ hóa đơn, phiếu bảo hành, hoặc thông tin xác nhận mua hàng tại ShopRunner.",
+          "Sản phẩm có đầy đủ hóa đơn, phiếu bảo hành, hoặc thông tin xác nhận mua hàng tại AeroPace.",
           "Tem bảo hành, mã sản phẩm, hoặc serial sản phẩm còn nguyên vẹn, không bị rách hoặc tẩy xóa."
         ]
       },
@@ -71,7 +71,7 @@ const POLICY_DATA = {
       {
         h3: "4. Quy trình bảo hành",
         p: [
-          "Bước 1 - Liên hệ yêu cầu bảo hành:"," Gọi hotline 012345678 hoặc gửi email đến cskh@shoprunner.vn. Cung cấp mã đơn hàng, hình ảnh/clip mô tả lỗi và hóa đơn mua hàng.",
+          "Bước 1 - Liên hệ yêu cầu bảo hành:"," Gọi hotline 012345678 hoặc gửi email đến cskh@aeropace.vn. Cung cấp mã đơn hàng, hình ảnh/clip mô tả lỗi và hóa đơn mua hàng.",
           "Bước 2 - Xác nhận yêu cầu bảo hành:"," Bộ phận chăm sóc khách hàng sẽ xác minh và phản hồi yêu cầu trong vòng 1-2 ngày làm việc.",
           "Bước 3 - Gửi sản phẩm bảo hành:"," Nếu đủ điều kiện, quý khách đóng gói sản phẩm cẩn thận và gửi về địa chỉ bảo hành theo hướng dẫn.",
           "Bước 4 - Xử lý bảo hành:"," Thời gian xử lý từ 7-14 ngày làm việc tùy thuộc vào mức độ lỗi của sản phẩm.",
@@ -89,7 +89,7 @@ const POLICY_DATA = {
     update: "Cập nhật lần cuối: 01/2026",
     content: [
       {
-        p: ["ShopRunner cam kết bảo vệ quyền riêng tư và thông tin cá nhân của khách hàng. Chính sách này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ dữ liệu của bạn khi mua sắm tại hệ thống."]
+        p: ["AeroPace cam kết bảo vệ quyền riêng tư và thông tin cá nhân của khách hàng. Chính sách này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ dữ liệu của bạn khi mua sắm tại hệ thống."]
       },
       {
         h3: "1. Thu thập thông tin cá nhân",
@@ -133,7 +133,7 @@ const POLICY_DATA = {
       {
         h3: "6. Quy trình giải quyết khiếu nại bảo mật",
         p: [
-          "Bước 1 - Tiếp nhận:"," Khách hàng gửi phản hồi qua hotline 012345678 hoặc email cskh@shoprunner.vn.",
+          "Bước 1 - Tiếp nhận:"," Khách hàng gửi phản hồi qua hotline 012345678 hoặc email cskh@aeropace.vn.",
           "Bước 2 - Xác minh:"," Chúng tôi sẽ xác nhận tiếp nhận khiếu nại trong vòng 48 giờ làm việc.",
           "Bước 3 - Xử lý: ","Đội ngũ kỹ thuật và pháp chế sẽ điều tra và đưa ra giải pháp xử lý trong vòng 7 ngày làm việc.",
           "Bước 4 - Phản hồi:"," Kết quả xử lý sẽ được thông báo chính thức qua email của khách hàng."

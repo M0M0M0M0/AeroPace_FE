@@ -74,7 +74,7 @@ const Login = () => {
       <div className="login-card">
         <div className="login-header">
           <h2>Chào mừng trở lại</h2>
-          <p>Đăng nhập để tiếp tục trải nghiệm SHOP RUNNER</p>
+          <p>Đăng nhập để tiếp tục trải nghiệm AEROPACE</p>
         </div>
         <form onSubmit={handleSubmit} className="login-form">
           <div className="input-group">
