@@ -29,7 +29,7 @@ function Footer() {
       <div className="footer-container">
         {/* Cột 1 - Giới thiệu */}
         <div className="footer-col">
-          <h2 className="footer-logo">SHOESTORE</h2>
+          <h2 className="footer-logo">AEROPACE</h2>
           <p className="footer-text">
             Từ máy chạy đến đường đua<br/> Trọn bộ hành trang, bứt phá giới hạn. <br />
             Khám phá ngay kho trang bị chuyên nghiệp giúp bạn bứt tốc trên mọi cung đường!

@@ -10,7 +10,7 @@ import {
   Package,
 } from "lucide-react"; // Thêm UserCircle icon
 import { useCart } from "../context/CartContext";
-import logo from "../../public//favicon_io/LogoAero.png"
+import logo from "../../public/favicon_io/LogoAero.png"
 import { useAuth } from "../context/AuthContext";
 
 import "./Navbar.css";

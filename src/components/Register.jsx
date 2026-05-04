@@ -88,6 +88,8 @@ const Register = () => {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
+              minLength={5}
+              maxLength={50}
             />
           </div>
 
@@ -99,6 +101,8 @@ const Register = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              minLength={5}
+              maxLength={100}
             />
           </div>
 

@@ -29,7 +29,6 @@ import Profile from "./pages/Profile";
 // (Nhớ import đúng đường dẫn nơi bạn đã lưu các file này nhé)
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
-import UserManagement from "./components/UserManagement";
 import AdminProducts from "./pages/Admin/AdminProducts";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import AdminSettings from "./pages/Admin/AdminSettings";
@@ -78,7 +77,6 @@ function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />{" "}
               {/* Mặc định vào /admin sẽ hiển thị Dashboard */}
-              <Route path="users" element={<UserManagement />} />{" "}
               {/* Đường dẫn: /admin/users */}
               <Route path="products" element={<AdminProducts />} />
               <Route path="catalog" element={<AdminCatalogPage />} />
