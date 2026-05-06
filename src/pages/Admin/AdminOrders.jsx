@@ -73,6 +73,7 @@ const AdminOrders = () => {
 
       setOrders(resFiltered.data);
       setAllOrders(resAll.data);
+      console.log("Fetched orders:", resFiltered.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -512,12 +513,12 @@ const AdminOrders = () => {
             {/* Thông tin người nhận */}
             <div className="ao-detail-section">
               <p className="ao-detail-section-label">Thông tin người nhận</p>
-              <p className="ao-detail-value">
-                {detailModal.order.receiverName || "—"}
-              </p>
-              <p className="ao-detail-sub">{detailModal.order.phoneNumber}</p>
               <p className="ao-detail-sub">
-                {detailModal.order.shippingAddress}
+                Tên người nhận: {detailModal.order.receiverName || "—"}
+              </p>
+              <p className="ao-detail-sub">Số điện thoại: {detailModal.order.phoneNumber}</p>
+              <p className="ao-detail-sub">
+                Địa chỉ giao hàng: {detailModal.order.shippingAddress}
               </p>
             </div>
 
@@ -528,6 +529,9 @@ const AdminOrders = () => {
                 <div key={idx} className="ao-detail-item">
                   <span className="ao-detail-item-name">
                     {item.productName}
+                    {item.variantName && (
+                      <span className="ao-detail-item-variant"> — {item.variantName}</span>
+                    )}
                   </span>
                   <span className="ao-detail-item-qty">x{item.quantity}</span>
                   <span className="ao-detail-item-price">
