@@ -49,11 +49,10 @@ const Register = () => {
         navigate("/login");
       }, 2000);
     } catch (error) {
-      console.error(error);
 
       setMessage({
         type: "error",
-        text: error.response?.data || "Đăng ký thất bại!",
+        text: error.response?.data?.message || "Đăng ký thất bại!",
       });
     } finally {
       setIsLoading(false);
