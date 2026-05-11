@@ -165,3 +165,31 @@
 .cart-btn-red:hover {
   background: #e00;
 }
+
+.cart-card--warning {
+  border: 1px solid #fca5a5;
+  background: #fff7f7;
+}
+
+.cart-stock-warning {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.cart-global-warning {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #dc2626;
+  font-size: 13px;
+  background: #fff1f1;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 12px;
+}
