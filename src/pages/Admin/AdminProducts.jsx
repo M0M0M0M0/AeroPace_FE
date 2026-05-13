@@ -536,8 +536,13 @@ const AdminProducts = () => {
                 <td className="adp-price">{getMinPrice(product.variants)}</td>
                 <td className="adp-stock">{getTotalStock(product.variants)}</td>
                 {bsMode && <td className="adp-sold"><strong>{product.totalSold?.toLocaleString("vi-VN") || "—"}</strong></td>}
-                <td className="adp-variant-count">{product.variants?.filter((v) => !v.isDeleted).length || 0} phân loại</td>
-                {!bsMode && (
+                <td className="adp-variant-count">
+                  {(() => {
+                    const active = product.variants?.filter((v) => !v.isDeleted) || [];
+                    if (!active.length) return "0 phân loại";
+                    return `${active.length} phân loại - ${active.map((v) => `#${v.id}`).join(", ")}`;
+                  })()}
+                </td>                {!bsMode && (
                   <td>
                     <div className="adp-actions">
                       {product.status === "DELETED" ? (
@@ -665,6 +670,11 @@ const AdminProducts = () => {
             </div>
             {form.variants.map((v, idx) => (
               <div key={idx} className="adp-variant-card">
+                {v.id && (
+                  <div style={{ fontSize: 11, color: "#6b7280", marginBottom: 6, fontWeight: 600 }}>
+                    Variant ID: <span style={{ color: "#2563eb" }}>#{v.id}</span>
+                  </div>
+                )}
                 <div className="adp-form-grid-3">
                   {["option1Value", "option2Value", "option3Value"].map((field, i) => (
                     <div key={field} className="adp-form-row">
