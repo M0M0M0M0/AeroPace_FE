@@ -106,6 +106,7 @@ const AdminProducts = () => {
       const res = await axios.get(`${BASE}/products/filter?${params}`, { headers: authHeader() });
       setProducts(res.data.products || res.data.content || []);
       setTotalPages(res.data.totalPages || 1);
+      console.log("Fetched products with filters:", res.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -217,7 +218,7 @@ const AdminProducts = () => {
       status: product.status || "DRAFT",
       option1Name: product.option1Name || "", option2Name: product.option2Name || "", option3Name: product.option3Name || "",
       images: product.images?.map((img) => ({ id: img.id, imageUrl: img.imageUrl, position: img.position })) || [],
-      variants: product.variants?.map((v) => ({ id: v.id, option1Value: v.option1Value || "", option2Value: v.option2Value || "", option3Value: v.option3Value || "", price: v.price || "", stock: v.stock || "", sku: v.sku || "", isDeleted: v.isDeleted || false })) || [{ option1Value: "", option2Value: "", option3Value: "", price: "", stock: "", sku: "" }],
+      variants: product.variants?.map((v) => ({ id: v.id, option1Value: v.option1Value || "", option2Value: v.option2Value || "", option3Value: v.option3Value || "", price: v.price || "", stock: v.stock ?? "", sku: v.sku || "", isDeleted: v.isDeleted || false })) || [{ option1Value: "", option2Value: "", option3Value: "", price: "", stock: "", sku: "" }],
       categoryIds: product.categories?.map((c) => c.id) || [],
     });
     setModalBrandSearch(""); setModalCatSearch("");
@@ -229,6 +230,21 @@ const AdminProducts = () => {
   // ── Save ──────────────────────────────────────────────────────
   const handleSave = async () => {
     if (!form.name || !form.brandId) { alert("Vui lòng điền tên sản phẩm và chọn thương hiệu!"); return; }
+    const optionChecks = [
+      { nameField: "option1Name", valueField: "option1Value", label: "Option 1" },
+      { nameField: "option2Name", valueField: "option2Value", label: "Option 2" },
+      { nameField: "option3Name", valueField: "option3Value", label: "Option 3" },
+    ];
+
+    for (const { nameField, valueField, label } of optionChecks) {
+      const hasValue = form.variants.some(
+        (v) => !v.isDeleted && v[valueField] && v[valueField].trim() !== ""
+      );
+      if (hasValue && !form[nameField]?.trim()) {
+        alert(`Bạn đã nhập giá trị cho ${label} nhưng chưa đặt tên cho option này!\nVui lòng điền tên ${label} (VD: "Màu sắc", "Size", "Loại") trước khi lưu.`);
+        return;
+      }
+    }
     setSaving(true);
     try {
       if (modal.mode === "add") {
@@ -665,6 +681,7 @@ const AdminProducts = () => {
                 {!isViewOnly && form.variants.length > 1 && <button className="adp-btn-remove-variant" onClick={() => removeVariant(idx)}>Xóa variant này</button>}
               </div>
             ))}
+            {!isViewOnly && <button className="adp-btn-add-sm" onClick={addVariant}><Plus size={14} /> Thêm variant</button>}
 
             <div className="adp-modal-footer">
               <button className="adp-btn-cancel" onClick={closeModal}>{isViewOnly ? "Đóng" : "Huỷ"}</button>

@@ -211,11 +211,19 @@ const AdminCatalogPage = () => {
 
       {/* Stats */}
       <div className="cp-stats">
-        <div className="cp-stat-card">
+        <div
+          className={`cp-stat-card cp-stat-card--clickable ${tab === "brand" ? "cp-stat-card--active" : ""}`}
+          onClick={() => setTab("brand")}
+          title="Chuyển sang tab Thương hiệu"
+        >
           <span className="cp-stat-num">{brands.length}</span>
           <span className="cp-stat-label">Tổng brand</span>
         </div>
-        <div className="cp-stat-card">
+        <div
+          className={`cp-stat-card cp-stat-card--clickable ${tab === "category" ? "cp-stat-card--active" : ""}`}
+          onClick={() => setTab("category")}
+          title="Chuyển sang tab Danh mục"
+        >
           <span className="cp-stat-num">{categories.length}</span>
           <span className="cp-stat-label">Tổng category</span>
         </div>

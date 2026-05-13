@@ -48,6 +48,16 @@
   gap: 4px;
   min-width: 150px;
 }
+.cp-stat-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: #1a1a1a;
+  cursor: pointer;
+}
+
+.cp-stat-card--active {
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  background: #1a1a1a !important;
+}
 
 .cp-stat-num {
   font-size: 2rem;
