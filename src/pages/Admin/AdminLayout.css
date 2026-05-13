@@ -9,16 +9,30 @@
 
 /* --- SIDEBAR --- */
 .admin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+
   background-color: #0f0f0f;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
+
   display: flex;
   flex-direction: column;
+
   transition: width 0.3s ease;
   overflow: hidden;
+
+  z-index: 1000;
 }
 
-.admin-sidebar.open { width: 250px; }
-.admin-sidebar.closed { width: 70px; }
+.admin-sidebar.open {
+  width: 250px;
+}
+
+.admin-sidebar.closed {
+  width: 70px;
+}
 
 .sidebar-logo {
   height: 70px;
@@ -55,7 +69,8 @@
   white-space: nowrap;
 }
 
-.nav-item:hover, .nav-item.active {
+.nav-item:hover,
+.nav-item.active {
   background-color: #1a1a1a;
   color: #fff;
 }
@@ -94,7 +109,17 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Tránh vỡ khung */
+  overflow: hidden;
+
+  transition: margin-left 0.3s ease;
+}
+
+.admin-sidebar.open+.admin-main {
+  margin-left: 250px;
+}
+
+.admin-sidebar.closed+.admin-main {
+  margin-left: 70px;
 }
 
 /* --- HEADER --- */
@@ -108,13 +133,15 @@
   padding: 0 20px;
 }
 
-.header-left, .header-right {
+.header-left,
+.header-right {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
-.menu-toggle-btn, .icon-btn {
+.menu-toggle-btn,
+.icon-btn {
   background: transparent;
   border: none;
   color: #fff;
@@ -180,5 +207,6 @@
   flex: 1;
   padding: 30px;
   background-color: #000;
-  overflow-y: auto; /* Cho phép scroll nội dung bên trong */
+  overflow-y: auto;
+  /* Cho phép scroll nội dung bên trong */
 }

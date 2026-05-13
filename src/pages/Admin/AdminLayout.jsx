@@ -75,13 +75,7 @@ const AdminLayout = () => {
             <Users size={20} />
             <span className="nav-label">Khách hàng</span>
           </Link>
-          {/* <Link
-            to="/admin/settings"
-            className={`nav-item ${isActive("/admin/settings") ? "active" : ""}`}
-          >
-            <Settings size={20} />
-            <span className="nav-label">Cài đặt</span>
-          </Link> */}
+
         </nav>
       </aside>
       {/* --- KẾT THÚC SIDEBAR --- */}

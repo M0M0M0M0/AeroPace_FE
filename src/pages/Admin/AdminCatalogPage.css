@@ -107,7 +107,7 @@
 .cp-toolbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content:left;
   gap: 12px;
   margin-bottom: 14px;
   flex-wrap: wrap;
@@ -132,7 +132,7 @@
 
 .cp-btn-add {
   display: flex;
-  align-items: center;
+  align-items:flex-end;
   gap: 7px;
   background: #fff;
   color: #000;
