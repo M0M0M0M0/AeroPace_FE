@@ -273,7 +273,7 @@ const AdminCustomers = () => {
                           className="ac-edit-btn"
                           onClick={() => setSelected(c)}
                         >
-                          ✏️ Sửa
+                          Sửa
                         </button>
                       </div>
                     </td>
