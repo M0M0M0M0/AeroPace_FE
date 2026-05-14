@@ -923,3 +923,83 @@
   font-size: 14px;
   color: #374151;
 }
+
+.adp-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  backdrop-filter: blur(2px);
+}
+
+.adp-confirm-dialog {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 14px;
+  padding: 28px 24px;
+  width: 90%;
+  max-width: 380px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.adp-confirm-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.adp-confirm-desc {
+  font-size: 0.875rem;
+  color: #888;
+  margin: 0 0 8px;
+}
+
+.adp-confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.adp-confirm-btn-discard {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid #555;
+  background: transparent;
+  color: #bbb;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background 0.2s;
+}
+
+.adp-confirm-btn-discard:hover {
+  background: #2a2a2a;
+}
+
+.adp-confirm-btn-save {
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: none;
+  background: #3b82f6;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.adp-confirm-btn-save:hover {
+  opacity: 0.85;
+}
+
+.adp-confirm-btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -44,6 +44,8 @@ const AdminProducts = () => {
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState({ open: false, mode: "add", product: null });
   const [saving, setSaving] = useState(false);
+  const [initialForm, setInitialForm] = useState(null);
+  const [showEditConfirm, setShowEditConfirm] = useState(false);
 
   // ── Pagination ────────────────────────────────────────────────
   const [page, setPage] = useState(0);
@@ -212,17 +214,43 @@ const AdminProducts = () => {
   };
 
   const openEdit = (product) => {
-    setForm({
-      name: product.name || "", description: product.description || "",
+    const f = {
+      name: product.name || "",
+      description: product.description || "",
       brandId: brands.find((b) => b.name === product.brand)?.id || "",
       status: product.status || "DRAFT",
-      option1Name: product.option1Name || "", option2Name: product.option2Name || "", option3Name: product.option3Name || "",
+      option1Name: product.option1Name || "",
+      option2Name: product.option2Name || "",
+      option3Name: product.option3Name || "",
       images: product.images?.map((img) => ({ id: img.id, imageUrl: img.imageUrl, position: img.position })) || [],
       variants: product.variants?.map((v) => ({ id: v.id, option1Value: v.option1Value || "", option2Value: v.option2Value || "", option3Value: v.option3Value || "", price: v.price || "", stock: v.stock ?? "", sku: v.sku || "", isDeleted: v.isDeleted || false })) || [{ option1Value: "", option2Value: "", option3Value: "", price: "", stock: "", sku: "" }],
       categoryIds: product.categories?.map((c) => c.id) || [],
-    });
-    setModalBrandSearch(""); setModalCatSearch("");
+    };
+    setForm(f);
+    setInitialForm(JSON.stringify(f));
+    setModalBrandSearch("");
+    setModalCatSearch("");
     setModal({ open: true, mode: "edit", product });
+  };
+  const hasUnsavedChanges = () => {
+    if (modal.mode !== "edit" || !initialForm) return false;
+    return JSON.stringify(form) !== initialForm;
+  };
+
+  const handleOverlayClick = () => {
+    if (hasUnsavedChanges()) {
+      setShowEditConfirm(true);
+    } else {
+      closeModal();
+    }
+  };
+
+  const handleCloseBtn = () => {
+    if (hasUnsavedChanges()) {
+      setShowEditConfirm(true);
+    } else {
+      closeModal();
+    }
   };
 
   const closeModal = () => { setModal({ open: false, mode: "add", product: null }); setModalBrandSearch(""); setModalCatSearch(""); };
@@ -577,8 +605,8 @@ const AdminProducts = () => {
 
       {/* MODAL */}
       {modal.open && (
-        <div className="adp-overlay">
-          <div className="adp-modal">
+        <div className="adp-overlay" onClick={handleOverlayClick}>
+          <div className="adp-modal" onClick={(e) => e.stopPropagation()}>
             <div className="adp-modal-header">
               <h3 className="adp-modal-title">
                 {modal.mode === "add" && "Thêm sản phẩm mới"}
@@ -696,6 +724,35 @@ const AdminProducts = () => {
             <div className="adp-modal-footer">
               <button className="adp-btn-cancel" onClick={closeModal}>{isViewOnly ? "Đóng" : "Huỷ"}</button>
               {!isViewOnly && <button className="adp-btn-save" onClick={handleSave} disabled={saving}>{saving ? "Đang lưu..." : "Lưu sản phẩm"}</button>}
+            </div>
+          </div>
+        </div>
+      )}
+      {showEditConfirm && (
+        <div className="adp-confirm-overlay" onClick={() => setShowEditConfirm(false)}>
+          <div className="adp-confirm-dialog" onClick={(e) => e.stopPropagation()}>
+            <h3 className="adp-confirm-title">Bạn có thay đổi chưa lưu</h3>
+            <p className="adp-confirm-desc">Lưu lại trước khi thoát hay bỏ qua?</p>
+            <div className="adp-confirm-actions">
+              <button
+                className="adp-confirm-btn-discard"
+                onClick={() => {
+                  setShowEditConfirm(false);
+                  closeModal();
+                }}
+              >
+                Bỏ thay đổi
+              </button>
+              <button
+                className="adp-confirm-btn-save"
+                onClick={() => {
+                  setShowEditConfirm(false);
+                  handleSave();
+                }}
+                disabled={saving}
+              >
+                {saving ? "Đang lưu..." : "Lưu thay đổi"}
+              </button>
             </div>
           </div>
         </div>

@@ -1,14 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Minus, Plus, Trash2, AlertTriangle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+
 import "./Cart.css";
 
 const Cart = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const hasStockIssue = cart?.items?.some(
     (item) => item.quantity > item.stockAvailable || item.stockAvailable === 0
@@ -124,7 +126,7 @@ const Cart = () => {
           )}
 
           <div className="cart-actions">
-            <button className="btn" onClick={clearCart}>
+            <button className="btn" onClick={() => setShowConfirm(true)}>
               Xóa tất cả
             </button>
             <button
@@ -144,6 +146,28 @@ const Cart = () => {
           </div>
         </div>
       </div>
+      {showConfirm && (
+        <div className="cart-confirm-overlay" onClick={() => setShowConfirm(false)}>
+          <div className="cart-confirm-dialog" onClick={(e) => e.stopPropagation()}>
+            <h3>Xóa toàn bộ giỏ hàng?</h3>
+            <p>Hành động này không thể hoàn tác.</p>
+            <div className="cart-confirm-actions">
+              <button className="cart-confirm-btn-cancel" onClick={() => setShowConfirm(false)}>
+                Hủy
+              </button>
+              <button
+                className="cart-confirm-btn-delete"
+                onClick={() => {
+                  clearCart();
+                  setShowConfirm(false);
+                }}
+              >
+                Xóa tất cả
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
