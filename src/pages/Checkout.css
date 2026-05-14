@@ -130,7 +130,17 @@
   margin-top: 1rem;
   font-weight: bold;
 }
-
+.cart-checkout-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  background: #fff;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s ease;
+}
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .checkout-grid {

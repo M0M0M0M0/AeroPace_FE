@@ -1,0 +1,122 @@
+/* Bao phủ toàn trang */
+.os-page {
+  background: #000;
+  color: #fff;
+  min-height: 100vh;
+  padding: 8rem 6% 4rem; /* Padding top lớn để không bị header đè lên */
+}
+
+/* Trường hợp trống */
+.os-empty {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  background: #000;
+  color: #aaa;
+  font-size: 1.2rem;
+}
+
+/* Container chính */
+.os-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.os-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.os-subtitle {
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 2.5rem;
+  font-size: 1.1rem;
+}
+
+/* Khối chứa đơn hàng */
+.os-card {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.os-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #333;
+  padding-bottom: 1.5rem;
+}
+
+.os-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.os-item-name {
+  font-size: 1.1rem;
+  color: #ddd;
+}
+
+.os-item-name span {
+  color: #888;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.os-item-price {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Khối tổng tiền */
+.os-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.os-total-row h3 {
+  font-size: 1.4rem;
+  color: #fff;
+}
+
+.os-total-row p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #e74c3c; /* Màu đỏ nổi bật giống giỏ hàng */
+}
+
+/* Nút bấm */
+.os-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.os-btn {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  border-radius: 999px;
+  background: #fff;
+  color: #000;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.os-btn:hover {
+  background: #ccc;
+}

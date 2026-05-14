@@ -12,20 +12,8 @@ import { toast } from "sonner";
 import { useCart } from "../context/CartContext";
 import "./ProductDetail.css";
 
-const getUniqueValues = (variants, key, optionKeys, selected) => {
-  const currentIndex = optionKeys.indexOf(key);
-
-  const filtered = variants.filter((v) => {
-    for (let i = 0; i < currentIndex; i++) {
-      const prevKey = optionKeys[i];
-      if (selected[prevKey] && v[prevKey] !== selected[prevKey]) {
-        return false;
-      }
-    }
-    return true;
-  });
-
-  const values = filtered
+const getUniqueValues = (variants, key) => {
+  const values = variants
     .map((v) => v[key])
     .filter((v) => v && v.trim() !== "");
   return [...new Set(values)];
@@ -50,7 +38,7 @@ const ProductDetail = () => {
   const images = product?.images
     ? [...product.images].sort((a, b) => a.position - b.position)
     : [];
-
+    
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/v1/products/detail/${id}`)
@@ -124,22 +112,8 @@ const ProductDetail = () => {
   };
 
   const isAvailable = (key, value) => {
-    return variants.some((variant) => {
-      if (variant[key] !== value) return false;
-
-      for (const optionKey of optionKeys) {
-        if (optionKey === key) break;
-
-        if (
-          selected[optionKey] &&
-          variant[optionKey] !== selected[optionKey]
-        ) {
-          return false;
-        }
-      }
-
-      return variant.stock > 0;
-    });
+    const test = { ...selected, [key]: value };
+    return !!findMatchingVariant(variants, test, optionKeys);
   };
 
   // Lấy số trong giỏ cho một variant cụ thể (dùng cho badge trên button)
@@ -229,7 +203,7 @@ const ProductDetail = () => {
           <p className="pd-category">{category}</p>
 
           {optionDefs.map(({ name, key }) => {
-            const values = getUniqueValues(variants, key, optionKeys, selected);
+            const values = getUniqueValues(variants, key);
             if (values.length === 0) return null;
             return (
               <div key={key} className="pd-variant">

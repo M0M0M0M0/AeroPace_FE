@@ -92,8 +92,8 @@ const AdminCustomers = () => {
       : true;
     const matchName = searchName
       ? (c.fullName || c.username || "")
-        .toLowerCase()
-        .includes(searchName.toLowerCase())
+          .toLowerCase()
+          .includes(searchName.toLowerCase())
       : true;
     const matchEmail = searchEmail
       ? (c.email || "").toLowerCase().includes(searchEmail.toLowerCase())
@@ -129,28 +129,17 @@ const AdminCustomers = () => {
 
       {/* Stats */}
       <div className="ac-stats">
-        <div
-          className={`ac-stat-card ${filterStatus === "ALL" ? "ac-stat-card--active" : ""}`}
-          onClick={() => setFilterStatus("ALL")}
-        >
+        <div className="ac-stat-card">
           <span className="ac-stat-num">{customers.length}</span>
           <span className="ac-stat-label">Tổng khách hàng</span>
         </div>
-
-        <div
-          className={`ac-stat-card ${filterStatus === "ACTIVE" ? "ac-stat-card--active" : ""}`}
-          onClick={() => setFilterStatus("ACTIVE")}
-        >
+        <div className="ac-stat-card">
           <span className="ac-stat-num">
             {customers.filter((c) => c.status === "ACTIVE").length}
           </span>
           <span className="ac-stat-label">Đang hoạt động</span>
         </div>
-
-        <div
-          className={`ac-stat-card ${filterStatus === "LOCKED" ? "ac-stat-card--active" : ""}`}
-          onClick={() => setFilterStatus("LOCKED")}
-        >
+        <div className="ac-stat-card">
           <span className="ac-stat-num">
             {customers.filter((c) => c.status === "LOCKED").length}
           </span>
@@ -273,7 +262,7 @@ const AdminCustomers = () => {
                           className="ac-edit-btn"
                           onClick={() => setSelected(c)}
                         >
-                          Sửa
+                          ✏️ Sửa
                         </button>
                       </div>
                     </td>

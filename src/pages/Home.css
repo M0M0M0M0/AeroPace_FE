@@ -55,7 +55,7 @@
 
 /* SECTION TITLE */
 .home-section-title {
-  color: #ffa322;
+  color: #ffffff;
   text-align: center;
   margin: 20px 0 40px;
   font-size: 2.5rem;
@@ -205,11 +205,31 @@
 .home-card-top {
   width: 100%;
   aspect-ratio: 1 / 1;
+  background-color: #F5F5F7;
+  position: relative; /* Cần có relative để chứa 2 ảnh con bên trong */
+}
+
+/* Định dạng chung cho cả 2 lớp ảnh */
+.home-img-default,
+.home-img-hover {
+  position: absolute;
+  inset: 0; /* Ôm khít container (tương đương top:0, left:0, right:0, bottom:0) */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  background-color: #f5f5f5;
+  transition: opacity 0.4s ease-in-out; /* Thời gian chuyển đổi mờ dần */
 }
+
+/* Ẩn ảnh thứ 2 đi khi chưa hover */
+.home-img-hover {
+  opacity: 0;
+}
+
+/* Khi hover vào nguyên cái thẻ (home-card-wrapper), hiện ảnh thứ 2 lên */
+.home-card-wrapper:hover .home-img-hover {
+  opacity: 1;
+}
+
 
 .home-card-bottom {
   width: 200%;
@@ -235,7 +255,7 @@
 }
 
 .home-card-details h1 {
-  font-size: 14px;
+  font-size: 15px;
   color: #000;
   font-weight: 600;
   margin-bottom: 4px;
@@ -245,7 +265,7 @@
 }
 
 .home-card-details p {
-  font-size: 13px;
+  font-size: 14px;
   color: #333;
 }
 
@@ -285,30 +305,6 @@
   cursor: pointer;
 }
 
-.home-card-inside {
-  position: absolute;
-  width: 70px;
-  height: 70px;
-  top: -35px;
-  right: -35px;
-  background: #92879b;
-  border-radius: 0 0 200px 200px;
-  overflow: hidden;
-  transition: 0.5s;
-}
-
-.home-card-inside:hover {
-  width: 100%;
-  height: 70%;
-  top: 0;
-  right: 0;
-  border-radius: 0;
-}
-
-.home-card-inside:hover .home-card-icon {
-  opacity: 0;
-}
-
 .home-card-icon {
   position: absolute;
   right: 40px;
@@ -324,18 +320,7 @@
   text-align: left;
 }
 
-.home-card-inside:hover .home-card-contents {
-  opacity: 1;
-  transform: translateY(0);
-}
 
-.home-card-contents table {
-  width: 100%;
-  color: #fff;
-}
-.home-card-contents th {
-  padding-right: 12px;
-}
 /* Bước 8 - Out of stock */
 .home-out-of-stock-badge {
   position: absolute;
@@ -376,6 +361,200 @@
 .home-scroll-btn--disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* NÚT BẤM YÊU THÍCH & SO SÁNH TRÊN ẢNH */
+.card-actions-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 20;
+}
+
+.action-icon-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+}
+
+.action-icon-btn:hover {
+  background: #fff;
+  transform: scale(1.1);
+}
+
+/* THANH SO SÁNH PHÍA DƯỚI (COMPARE BAR) */
+.compare-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+  padding: 15px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  transform: translateY(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.compare-sticky-bar.visible {
+  transform: translateY(0);
+}
+
+.compare-items-container {
+  display: flex;
+  gap: 15px;
+  flex: 1;
+}
+
+.compare-item-mini {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f5f5f5;
+  padding: 5px 10px;
+  border-radius: 8px;
+  position: relative;
+  border: 1px solid #ddd;
+}
+
+.compare-item-mini img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.compare-item-mini p {
+  font-size: 13px;
+  font-weight: 600;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #000;
+  margin: 0;
+}
+
+.compare-remove-btn {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compare-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.btn-compare-now {
+  background: #000;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.compare-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0; 
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999; /* Đảm bảo đè lên thanh So sánh ngay và Header */
+  padding: 20px;
+}
+
+.compare-modal-content {
+  background: #fff;
+  width: 100%;
+  max-width: 1000px;
+  max-height: 90vh;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.compare-modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+}
+
+.compare-modal-header h2 { color: #000; margin: 0; font-size: 1.5rem; }
+
+.close-modal-btn { background: none; border: none; cursor: pointer; color: #666; }
+
+.compare-modal-body {
+  padding: 20px;
+  overflow-x: auto;
+  flex: 1;
+}
+
+.compare-table thead img { 
+  width: 140px; 
+  height: auto; /* Tự động co giãn theo tỷ lệ thực tế của cái kính */
+  max-height: 120px; /* Giới hạn để ảnh không bị quá to */
+  object-fit: contain; 
+  margin-bottom: 10px; 
+}
+
+.compare-table th, .compare-table td {
+  border: 1px solid #eee;
+  padding: 15px;
+  text-align: center;
+  color: #333;
+}
+
+.compare-table thead th { background: #fff; }
+.compare-table thead img { width: 120px; height: 120px; object-fit: contain; margin-bottom: 10px; }
+.compare-table thead p { font-size: 14px; font-weight: 600; margin: 0; color: #000; }
+
+.compare-table td:first-child {
+  background: #fcfcfc;
+  font-weight: 600;
+  width: 150px;
+  text-align: left;
+}
+
+.compare-price { color: #d32f2f; font-weight: bold; font-size: 1.1rem; }
+.compare-desc { font-size: 13px; color: #666; text-align: justify !important; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 /* ANIMATIONS */

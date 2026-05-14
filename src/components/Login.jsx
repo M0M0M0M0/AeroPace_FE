@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Mail, Lock, LogIn, X, ShieldX, CheckCircle, AlertCircle, } from "lucide-react";
+import { Mail, Lock, LogIn, X, ShieldX } from "lucide-react";
 import axios from "axios";
 import "./Login.css";
 
@@ -32,11 +32,9 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [message, setMessage] = useState({ type: "", text: "" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage({ type: "", text: "" });
     try {
       const response = await axios.post("http://localhost:8080/auth/login", {
         email,
@@ -61,10 +59,9 @@ const Login = () => {
         navigate(from);
       }
     } catch (error) {
-      setMessage({
-        type: "error",
-        text: error.response?.data?.message || "Đăng nhập thất bại!",
-      });
+      console.error(error);
+      const message = error.response?.data?.message || "Đăng nhập thất bại!";
+      alert(message);
     }
   };
 
@@ -79,16 +76,6 @@ const Login = () => {
           <h2>Chào mừng trở lại</h2>
           <p>Đăng nhập để tiếp tục trải nghiệm AEROPACE</p>
         </div>
-        {message.text && (
-          <div className={`modern-alert alert-${message.type}`}>
-            {message.type === "success" ? (
-              <CheckCircle size={20} />
-            ) : (
-              <AlertCircle size={20} />
-            )}
-            <span>{message.text}</span>
-          </div>
-        )}
         <form onSubmit={handleSubmit} className="login-form">
           <div className="input-group">
             <Mail className="input-icon" size={20} />

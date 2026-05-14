@@ -44,8 +44,6 @@ const AdminProducts = () => {
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState({ open: false, mode: "add", product: null });
   const [saving, setSaving] = useState(false);
-  const [initialForm, setInitialForm] = useState(null);
-  const [showEditConfirm, setShowEditConfirm] = useState(false);
 
   // ── Pagination ────────────────────────────────────────────────
   const [page, setPage] = useState(0);
@@ -108,7 +106,6 @@ const AdminProducts = () => {
       const res = await axios.get(`${BASE}/products/filter?${params}`, { headers: authHeader() });
       setProducts(res.data.products || res.data.content || []);
       setTotalPages(res.data.totalPages || 1);
-      console.log("Fetched products with filters:", res.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -214,43 +211,17 @@ const AdminProducts = () => {
   };
 
   const openEdit = (product) => {
-    const f = {
-      name: product.name || "",
-      description: product.description || "",
+    setForm({
+      name: product.name || "", description: product.description || "",
       brandId: brands.find((b) => b.name === product.brand)?.id || "",
       status: product.status || "DRAFT",
-      option1Name: product.option1Name || "",
-      option2Name: product.option2Name || "",
-      option3Name: product.option3Name || "",
+      option1Name: product.option1Name || "", option2Name: product.option2Name || "", option3Name: product.option3Name || "",
       images: product.images?.map((img) => ({ id: img.id, imageUrl: img.imageUrl, position: img.position })) || [],
-      variants: product.variants?.map((v) => ({ id: v.id, option1Value: v.option1Value || "", option2Value: v.option2Value || "", option3Value: v.option3Value || "", price: v.price || "", stock: v.stock ?? "", sku: v.sku || "", isDeleted: v.isDeleted || false })) || [{ option1Value: "", option2Value: "", option3Value: "", price: "", stock: "", sku: "" }],
+      variants: product.variants?.map((v) => ({ id: v.id, option1Value: v.option1Value || "", option2Value: v.option2Value || "", option3Value: v.option3Value || "", price: v.price || "", stock: v.stock || "", sku: v.sku || "", isDeleted: v.isDeleted || false })) || [{ option1Value: "", option2Value: "", option3Value: "", price: "", stock: "", sku: "" }],
       categoryIds: product.categories?.map((c) => c.id) || [],
-    };
-    setForm(f);
-    setInitialForm(JSON.stringify(f));
-    setModalBrandSearch("");
-    setModalCatSearch("");
+    });
+    setModalBrandSearch(""); setModalCatSearch("");
     setModal({ open: true, mode: "edit", product });
-  };
-  const hasUnsavedChanges = () => {
-    if (modal.mode !== "edit" || !initialForm) return false;
-    return JSON.stringify(form) !== initialForm;
-  };
-
-  const handleOverlayClick = () => {
-    if (hasUnsavedChanges()) {
-      setShowEditConfirm(true);
-    } else {
-      closeModal();
-    }
-  };
-
-  const handleCloseBtn = () => {
-    if (hasUnsavedChanges()) {
-      setShowEditConfirm(true);
-    } else {
-      closeModal();
-    }
   };
 
   const closeModal = () => { setModal({ open: false, mode: "add", product: null }); setModalBrandSearch(""); setModalCatSearch(""); };
@@ -258,21 +229,6 @@ const AdminProducts = () => {
   // ── Save ──────────────────────────────────────────────────────
   const handleSave = async () => {
     if (!form.name || !form.brandId) { alert("Vui lòng điền tên sản phẩm và chọn thương hiệu!"); return; }
-    const optionChecks = [
-      { nameField: "option1Name", valueField: "option1Value", label: "Option 1" },
-      { nameField: "option2Name", valueField: "option2Value", label: "Option 2" },
-      { nameField: "option3Name", valueField: "option3Value", label: "Option 3" },
-    ];
-
-    for (const { nameField, valueField, label } of optionChecks) {
-      const hasValue = form.variants.some(
-        (v) => !v.isDeleted && v[valueField] && v[valueField].trim() !== ""
-      );
-      if (hasValue && !form[nameField]?.trim()) {
-        alert(`Bạn đã nhập giá trị cho ${label} nhưng chưa đặt tên cho option này!\nVui lòng điền tên ${label} (VD: "Màu sắc", "Size", "Loại") trước khi lưu.`);
-        return;
-      }
-    }
     setSaving(true);
     try {
       if (modal.mode === "add") {
@@ -564,13 +520,8 @@ const AdminProducts = () => {
                 <td className="adp-price">{getMinPrice(product.variants)}</td>
                 <td className="adp-stock">{getTotalStock(product.variants)}</td>
                 {bsMode && <td className="adp-sold"><strong>{product.totalSold?.toLocaleString("vi-VN") || "—"}</strong></td>}
-                <td className="adp-variant-count">
-                  {(() => {
-                    const active = product.variants?.filter((v) => !v.isDeleted) || [];
-                    if (!active.length) return "0 phân loại";
-                    return `${active.length} phân loại - ${active.map((v) => `#${v.id}`).join(", ")}`;
-                  })()}
-                </td>                {!bsMode && (
+                <td className="adp-variant-count">{product.variants?.filter((v) => !v.isDeleted).length || 0} phân loại</td>
+                {!bsMode && (
                   <td>
                     <div className="adp-actions">
                       {product.status === "DELETED" ? (
@@ -605,8 +556,8 @@ const AdminProducts = () => {
 
       {/* MODAL */}
       {modal.open && (
-        <div className="adp-overlay" onClick={handleOverlayClick}>
-          <div className="adp-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="adp-overlay">
+          <div className="adp-modal">
             <div className="adp-modal-header">
               <h3 className="adp-modal-title">
                 {modal.mode === "add" && "Thêm sản phẩm mới"}
@@ -698,11 +649,6 @@ const AdminProducts = () => {
             </div>
             {form.variants.map((v, idx) => (
               <div key={idx} className="adp-variant-card">
-                {v.id && (
-                  <div style={{ fontSize: 11, color: "#6b7280", marginBottom: 6, fontWeight: 600 }}>
-                    Variant ID: <span style={{ color: "#2563eb" }}>#{v.id}</span>
-                  </div>
-                )}
                 <div className="adp-form-grid-3">
                   {["option1Value", "option2Value", "option3Value"].map((field, i) => (
                     <div key={field} className="adp-form-row">
@@ -719,40 +665,10 @@ const AdminProducts = () => {
                 {!isViewOnly && form.variants.length > 1 && <button className="adp-btn-remove-variant" onClick={() => removeVariant(idx)}>Xóa variant này</button>}
               </div>
             ))}
-            {!isViewOnly && <button className="adp-btn-add-sm" onClick={addVariant}><Plus size={14} /> Thêm variant</button>}
 
             <div className="adp-modal-footer">
               <button className="adp-btn-cancel" onClick={closeModal}>{isViewOnly ? "Đóng" : "Huỷ"}</button>
               {!isViewOnly && <button className="adp-btn-save" onClick={handleSave} disabled={saving}>{saving ? "Đang lưu..." : "Lưu sản phẩm"}</button>}
-            </div>
-          </div>
-        </div>
-      )}
-      {showEditConfirm && (
-        <div className="adp-confirm-overlay" onClick={() => setShowEditConfirm(false)}>
-          <div className="adp-confirm-dialog" onClick={(e) => e.stopPropagation()}>
-            <h3 className="adp-confirm-title">Bạn có thay đổi chưa lưu</h3>
-            <p className="adp-confirm-desc">Lưu lại trước khi thoát hay bỏ qua?</p>
-            <div className="adp-confirm-actions">
-              <button
-                className="adp-confirm-btn-discard"
-                onClick={() => {
-                  setShowEditConfirm(false);
-                  closeModal();
-                }}
-              >
-                Bỏ thay đổi
-              </button>
-              <button
-                className="adp-confirm-btn-save"
-                onClick={() => {
-                  setShowEditConfirm(false);
-                  handleSave();
-                }}
-                disabled={saving}
-              >
-                {saving ? "Đang lưu..." : "Lưu thay đổi"}
-              </button>
             </div>
           </div>
         </div>

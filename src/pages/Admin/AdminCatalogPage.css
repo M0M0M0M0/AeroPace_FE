@@ -48,16 +48,6 @@
   gap: 4px;
   min-width: 150px;
 }
-.cp-stat-card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: #1a1a1a;
-  cursor: pointer;
-}
-
-.cp-stat-card--active {
-  border-color: rgba(255, 255, 255, 0.4) !important;
-  background: #1a1a1a !important;
-}
 
 .cp-stat-num {
   font-size: 2rem;
@@ -107,7 +97,7 @@
 .cp-toolbar {
   display: flex;
   align-items: center;
-  justify-content:left;
+  justify-content: space-between;
   gap: 12px;
   margin-bottom: 14px;
   flex-wrap: wrap;
@@ -132,7 +122,7 @@
 
 .cp-btn-add {
   display: flex;
-  align-items:flex-end;
+  align-items: center;
   gap: 7px;
   background: #fff;
   color: #000;

@@ -16,9 +16,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         style: { background: "#000", color: "#fff", borderRadius: "12px" },
       }}
       offset={"4rem"}
-      gap={8}
-      visibleToasts={5}
-      expand={true}
     />
   </React.StrictMode>
 );

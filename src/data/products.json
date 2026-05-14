@@ -1,0 +1,102 @@
+[
+  {
+    "id": "n1",
+    "name": "Nike Air Zoom Pegasus",
+    "price": 2390000,
+    "brand": "Nike",
+    "category": "Running",
+    "image": "https://static.nike.com/a/images/t_web_pw_592_v2/f_auto/474d65a0-5b68-4266-bb72-6f8409dcd7dc/AIR+FORCE+1+%2707+LV8.png",
+    "description": "Giày chạy bộ nhẹ, êm ái, phù hợp mọi địa hình và cự ly dài.",
+    "date": "2025-09-25"
+  },
+  {
+    "id": "n2",
+    "name": "Nike Air Max 270",
+    "price": 3100000,
+    "brand": "Nike",
+    "category": "Lifestyle",
+    "image": "https://static.nike.com/a/images/t_web_pw_592_v2/f_auto/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/e3d70c0a-794f-4483-aef9-3622c9eaa837/AIR+JORDAN+LEGACY+312+LOW.png",
+    "description": "Đế Air lớn mang lại cảm giác đàn hồi vượt trội cho cả ngày dài.",
+    "date": "2025-09-22"
+  },
+  {
+    "id": "n3",
+    "name": "Nike Air Force 1 '07",
+    "price": 2900000,
+    "brand": "Nike",
+    "category": "Casual",
+    "image": "https://static.nike.com/a/images/t_web_pw_592_v2/f_auto/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/adc7c971-2c81-402c-907c-d91abf52e0d3/WMNS+AIR+JORDAN+1+MID.png",
+    "description": "Phong cách cổ điển, dễ phối đồ, phù hợp cho mọi dịp.",
+    "date": "2025-09-18"
+  },
+  {
+    "id": "n4",
+    "name": "Nike Dunk Low Retro",
+    "price": 2700000,
+    "brand": "Nike",
+    "category": "Skateboarding",
+    "image": "https://static.nike.com/a/images/t_web_pw_592_v2/f_auto/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/89235dab-3047-41d2-af7b-d0a77f43fe6a/AIR+JORDAN+1+HIGH+G.png",
+    "description": "Thiết kế cổ điển với phần da cao cấp, mang phong cách đường phố.",
+    "date": "2025-09-14"
+  },
+  {
+    "id": "n5",
+    "name": "Nike ZoomX Vaporfly",
+    "price": 5800000,
+    "brand": "Nike",
+    "category": "Running",
+    "image": "https://static.nike.com/a/images/t_web_pw_592_v2/f_auto/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/146b5ff9-06cb-4df0-8704-ad272d6e5452/AIR+JORDAN+1+LOW+PRM.png",
+    "description": "Hiệu năng cao cấp cho vận động viên chuyên nghiệp.",
+    "date": "2025-09-10"
+  },
+  {
+    "id": "n6",
+    "name": "Nike Blazer Mid Vintage",
+    "price": 2500000,
+    "brand": "Nike",
+    "category": "Casual",
+    "image": "https://static.nike.com/a/images/t_web_pw_592_v2/f_auto/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/9320fcfa-d9e1-4ff3-81a0-ec50a129b1ff/JORDAN+SPIZIKE+LOW.png",
+    "description": "Thiết kế retro kết hợp hiện đại, phong cách đường phố năng động.",
+    "date": "2025-08-30"
+  },
+  {
+    "id": "n7",
+    "name": "Nike React Infinity Run",
+    "price": 3400000,
+    "brand": "Nike",
+    "category": "Running",
+    "image": "https://static.nike.com/a/images/t_web_pw_592_v2/f_auto/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/1445f056-2d3a-4a76-b93c-f9316a28132f/JORDAN+CMFT+ERA.png",
+    "description": "Công nghệ React giảm chấn, mang lại cảm giác ổn định và êm ái.",
+    "date": "2025-08-28"
+  },
+  {
+    "id": "n8",
+    "name": "Nike Metcon 9",
+    "price": 3300000,
+    "brand": "Nike",
+    "category": "Training",
+    "image": "https://static.nike.com/a/images/t_web_pw_592_v2/f_auto/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/8aa5f91f-ed99-401c-abb4-6dba8fd0d357/JORDAN+LUKA+.77+PF.png",
+    "description": "Thiết kế chắc chắn, bám sàn tốt, lý tưởng cho tập gym và crossfit.",
+    "date": "2025-08-25"
+  },
+  {
+    "id": "n9",
+    "name": "Nike Air Zoom Alphafly",
+    "price": 6800000,
+    "brand": "Nike",
+    "category": "Running",
+    "image": "https://static.nike.com/a/images/t_web_pw_592_v2/f_auto/5bd30c3e-63e8-4ac8-862a-ff141ab37e72/AIR+MAX+TL+2.5.png",
+    "description": "Hiệu năng đỉnh cao dành cho marathon, tối ưu tốc độ và độ nảy.",
+    "date": "2025-08-20"
+  },
+  {
+    "id": "n10",
+    "name": "Nike Air Max Plus",
+    "price": 3600000,
+    "brand": "Nike",
+    "category": "Lifestyle",
+    "image": "https://static.nike.com/a/images/t_web_pw_592_v2/f_auto/60d2e87c-9eaa-46a0-b9aa-0f730291262b/AIR+FORCE+1+%2707.png",
+    "description": "Thiết kế mang phong cách cá tính, nổi bật với khung gợn sóng đặc trưng.",
+    "date": "2025-08-18"
+  }
+]

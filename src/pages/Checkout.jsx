@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // Thêm useLocation
 import { toast } from "sonner";
 import axios from "axios";
 import "./Checkout.css";
@@ -10,10 +10,22 @@ const Checkout = () => {
   const { cart, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation(); // Lấy data từ route navigation
   const [loadingProfile, setLoadingProfile] = useState(false);
 
-  const cartItems = cart?.items || [];
-  const totalPrice = cart?.totalAmount || 0;
+  // 1. Nhận danh sách ID sản phẩm đã chọn từ trang Cart
+  const selectedItemIds = location.state?.selectedItems || [];
+
+  // 2. Lọc ra các sản phẩm nằm trong danh sách được chọn
+  const checkoutItems = useMemo(() => {
+    if (!cart?.items) return [];
+    return cart.items.filter((item) => selectedItemIds.includes(item.cartItemId));
+  }, [cart?.items, selectedItemIds]);
+
+  // 3. Tính lại tổng tiền cho các sản phẩm này
+  const totalPrice = useMemo(() => {
+    return checkoutItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  }, [checkoutItems]);
 
   const [form, setForm] = useState({
     name: "",
@@ -74,6 +86,8 @@ const Checkout = () => {
           phoneNumber: phone,
           paymentMethod,
           receiverName: name,
+          // QUAN TRỌNG: Gửi kèm danh sách các cartItemId lên BE để BE biết chỉ tạo đơn cho những item này
+          cartItemIds: selectedItemIds 
         },
         {
           headers: {
@@ -82,14 +96,18 @@ const Checkout = () => {
         }
       );
 
-      clearCart();
+      // LƯU Ý: Nếu trước đây clearCart() xóa TOÀN BỘ giỏ hàng ở Frontend, 
+      // bạn có thể cần tạo thêm 1 hàm removeSelectedItems(selectedItemIds) trong CartContext 
+      // hoặc đơn giản là gọi hàm fetch lại giỏ hàng từ BE (vì BE đã trừ đi những item vừa mua).
+      // Tạm thời giữ nguyên logic của bạn:
+      clearCart(); 
 
       navigate("/order-success", {
         state: {
           order: {
             customer: { name, email, phone, address },
-            items: cartItems,
-            total: totalPrice,
+            items: checkoutItems, // Truyền các item ĐÃ MUA sang trang success
+            total: totalPrice, // Truyền TỔNG TIỀN MỚI
             paymentMethod,
             date: new Date().toLocaleString(),
           },
@@ -102,20 +120,21 @@ const Checkout = () => {
     }
   };
 
-  if (!cartItems.length)
+  // Nếu không có sản phẩm nào được chọn (người dùng cố tình vào link /checkout)
+  if (!checkoutItems.length)
     return (
       <div className="checkout-empty">
-        <p>Giỏ hàng trống.</p>
-        <button className="btn" onClick={() => navigate("/products")}>
-          Quay lại cửa hàng
+        <p>Không có sản phẩm nào để thanh toán.</p>
+        <button className="cart-page-btn" onClick={() => navigate("/cart")}>
+          Quay lại giỏ hàng
         </button>
       </div>
     );
 
   return (
     <div className="checkout-page">
-      <div className="container">
-        <h1 className="section-title">Thanh toán</h1>
+      <div className="cart-container">
+        <h1 className="cart-section-title">Thanh toán</h1>
 
         <div className="checkout-grid">
           {/* FORM */}
@@ -180,8 +199,8 @@ const Checkout = () => {
               </div>
             </div>
 
-            <button type="submit" className="btn">
-              Thanh toán
+            <button type="submit" className="cart-checkout-btn">
+              Xác nhận thanh toán
             </button>
           </form>
 
@@ -190,7 +209,7 @@ const Checkout = () => {
             <h2>Đơn hàng của bạn</h2>
 
             <div className="checkout-items">
-              {cartItems.map((item) => (
+              {checkoutItems.map((item) => ( // Render danh sách đã lọc
                 <div key={item.cartItemId} className="checkout-item">
                   <div className="checkout-item-left">
                     <img src={item.image} alt={item.productName} />

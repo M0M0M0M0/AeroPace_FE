@@ -20,7 +20,6 @@ const AdminCatalogPage = () => {
   const [brands, setBrands] = useState([]);
   const [brandLoading, setBrandLoading] = useState(true);
   const [brandSearch, setBrandSearch] = useState("");
-  const [brandIdSearch, setBrandIdSearch] = useState("");
   const [brandModal, setBrandModal] = useState({
     open: false,
     mode: "add", // "add" | "edit"
@@ -38,7 +37,6 @@ const AdminCatalogPage = () => {
   const [categories, setCategories] = useState([]);
   const [catLoading, setCatLoading] = useState(true);
   const [catSearch, setCatSearch] = useState("");
-  const [catIdSearch, setCatIdSearch] = useState("");
   const [catModal, setCatModal] = useState({
     open: false,
     mode: "add",
@@ -192,17 +190,13 @@ const AdminCatalogPage = () => {
   };
 
   // ── FILTERED lists ────────────────────────────────────────────────────────
-  const filteredBrands = brands.filter((b) => {
-    const matchName = b.name.toLowerCase().includes(brandSearch.toLowerCase());
-    const matchId = brandIdSearch ? String(b.id).includes(brandIdSearch.trim()) : true;
-    return matchName && matchId;
-  });
+  const filteredBrands = brands.filter((b) =>
+    b.name.toLowerCase().includes(brandSearch.toLowerCase())
+  );
 
-  const filteredCats = categories.filter((c) => {
-    const matchName = c.name.toLowerCase().includes(catSearch.toLowerCase());
-    const matchId = catIdSearch ? String(c.id).includes(catIdSearch.trim()) : true;
-    return matchName && matchId;
-  });
+  const filteredCats = categories.filter((c) =>
+    c.name.toLowerCase().includes(catSearch.toLowerCase())
+  );
 
   // ═══════════════════════════════════════════════════════════════════════════
   return (
@@ -217,19 +211,11 @@ const AdminCatalogPage = () => {
 
       {/* Stats */}
       <div className="cp-stats">
-        <div
-          className={`cp-stat-card cp-stat-card--clickable ${tab === "brand" ? "cp-stat-card--active" : ""}`}
-          onClick={() => setTab("brand")}
-          title="Chuyển sang tab Thương hiệu"
-        >
+        <div className="cp-stat-card">
           <span className="cp-stat-num">{brands.length}</span>
           <span className="cp-stat-label">Tổng brand</span>
         </div>
-        <div
-          className={`cp-stat-card cp-stat-card--clickable ${tab === "category" ? "cp-stat-card--active" : ""}`}
-          onClick={() => setTab("category")}
-          title="Chuyển sang tab Danh mục"
-        >
+        <div className="cp-stat-card">
           <span className="cp-stat-num">{categories.length}</span>
           <span className="cp-stat-label">Tổng category</span>
         </div>
@@ -255,13 +241,6 @@ const AdminCatalogPage = () => {
       {tab === "brand" && (
         <>
           <div className="cp-toolbar">
-            <input
-              className="cp-search"
-              placeholder="Tìm theo ID..."
-              value={brandIdSearch}
-              onChange={(e) => setBrandIdSearch(e.target.value)}
-              style={{ maxWidth: 140 }}
-            />
             <input
               className="cp-search"
               placeholder="Tìm brand..."
@@ -337,13 +316,6 @@ const AdminCatalogPage = () => {
       {tab === "category" && (
         <>
           <div className="cp-toolbar">
-            <input
-              className="cp-search"
-              placeholder="Tìm theo ID..."
-              value={catIdSearch}
-              onChange={(e) => setCatIdSearch(e.target.value)}
-              style={{ maxWidth: 140 }}
-            />
             <input
               className="cp-search"
               placeholder="Tìm category..."

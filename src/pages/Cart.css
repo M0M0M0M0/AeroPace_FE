@@ -1,3 +1,72 @@
+/* Thêm các class này vào file Cart.css của bạn */
+
+/* Định dạng cho ô Select All */
+.cart-select-all {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+  margin-bottom: -0.5rem;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.cart-select-all label {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Định dạng cho Checkbox */
+.cart-checkbox {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  accent-color: #c00; /* Màu đỏ cho checkbox khi được tick (phù hợp với nút xóa) */
+  flex-shrink: 0;
+}
+
+/* Chỉnh lại thẻ .cart-info để các class bên trong ăn CSS chuẩn xác do lúc trước tên class bị nhầm ở JSX */
+.cart-info h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.cart-info h2:hover {
+  text-decoration: underline;
+}
+
+.cart-variant {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin: 0.25rem 0;
+}
+
+.cart-price {
+  font-weight: 700;
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* Đổi màu số tiền tổng cho nổi bật */
+.cart-total .total-price {
+  color: #e74c3c;
+  font-size: 1.5rem;
+}
+
+/* Nút thanh toán khi bị disable (không chọn sản phẩm nào) */
+.cart-btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #555 !important;
+  color: #999 !important;
+}
+
+.cart-btn-disabled:hover {
+  background: #555 !important;
+}
+
+/* Các class có sẵn của bạn giữ nguyên bên dưới... */
 .cart-empty {
   min-height: 80vh;
   display: flex;
@@ -134,7 +203,7 @@
   font-weight: 600;
 }
 
-.cart-actions {
+.cart-page-actions {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
@@ -142,7 +211,7 @@
   margin-top: 1rem;
 }
 
-.cart-btn {
+.cart-page-btn {
   padding: 0.75rem 1.5rem;
   border-radius: 999px;
   background: #fff;
@@ -153,115 +222,18 @@
   transition: background 0.3s ease;
 }
 
-.cart-btn:hover {
+.cart-page-btn:hover {
   background: #ccc;
 }
 
-.cart-btn-red {
-  background: #c00;
-  color: #fff;
+/* Thêm class này cho nút thanh toán khi chưa chọn sản phẩm */
+.cart-page-btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #555 !important;
+  color: #999 !important;
 }
 
-.cart-btn-red:hover {
-  background: #e00;
-}
-
-.cart-card--warning {
-  border: 1px solid #fca5a5;
-  background: #fff7f7;
-}
-
-.cart-stock-warning {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: #dc2626;
-  font-size: 12px;
-  margin-top: 4px;
-  font-weight: 500;
-}
-
-.cart-global-warning {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #dc2626;
-  font-size: 13px;
-  background: #fff1f1;
-  border: 1px solid #fca5a5;
-  border-radius: 8px;
-  padding: 10px 14px;
-  margin-top: 12px;
-}
-.cart-confirm-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.65);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  backdrop-filter: blur(2px);
-}
-
-.cart-confirm-dialog {
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 16px;
-  padding: 2rem;
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.cart-confirm-dialog h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #fff;
-}
-
-.cart-confirm-dialog p {
-  font-size: 0.9rem;
-  color: #aaa;
-}
-
-.cart-confirm-actions {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.cart-confirm-btn-cancel {
-  padding: 0.6rem 1.5rem;
-  border-radius: 999px;
-  border: 1px solid #444;
-  background: transparent;
-  color: #ccc;
-  cursor: pointer;
-  font-size: 0.95rem;
-  transition: background 0.2s;
-}
-
-.cart-confirm-btn-cancel:hover {
-  background: #222;
-}
-
-.cart-confirm-btn-delete {
-  padding: 0.6rem 1.5rem;
-  border-radius: 999px;
-  border: none;
-  background: #c00;
-  color: #fff;
-  cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 600;
-  transition: background 0.2s;
-}
-
-.cart-confirm-btn-delete:hover {
-  background: #e00;
+.cart-page-btn-disabled:hover {
+  background: #555 !important;
 }
