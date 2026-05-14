@@ -130,7 +130,7 @@ const Cart = () => {
             <button
               className="btn"
               disabled={hasStockIssue}
-              style={hasStockIssue ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+              style={hasStockIssue ? { opacity: 0.5, cursor: "not-allowed", backgroundColor: "#ccc" } : {}}
               onClick={() => {
                 if (!user?.id) {
                   navigate("/login", { state: { from: "/cart" } });

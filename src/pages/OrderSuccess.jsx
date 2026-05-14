@@ -8,12 +8,12 @@ const OrderSuccess = () => {
   const [scale, setScale] = useState(1);
 
   // Animation dấu tích
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setScale((prev) => (prev === 1 ? 1.2 : 1));
-    }, 600);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setScale((prev) => (prev === 1 ? 1.2 : 1));
+  //   }, 600);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   if (!order) {
     return (
@@ -36,7 +36,6 @@ const OrderSuccess = () => {
         ✓
       </div>
 
-      {/* 🎉 Lời cảm ơn */}
       <div className="success-message">
         <h1>Cảm ơn bạn đã mua hàng!</h1>
         <p>
@@ -44,7 +43,6 @@ const OrderSuccess = () => {
         </p>
       </div>
 
-      {/* 🧾 Thông tin khách hàng */}
       <div className="order-info">
         <h2>Thông tin khách hàng</h2>
         <div className="info-grid">
@@ -56,7 +54,7 @@ const OrderSuccess = () => {
         </div>
       </div>
 
-      {/* 🛒 Chi tiết đơn hàng */}
+      {/* Chi tiết đơn hàng */}
       <div className="order-items-container">
         <h2>Chi tiết đơn hàng</h2>
         <div className="order-items">
@@ -79,7 +77,7 @@ const OrderSuccess = () => {
         </div>
       </div>
 
-      {/* 🔗 Quay lại cửa hàng */}
+      {/*  Quay lại cửa hàng */}
       <div className="text-center mt-6">
         <Link to="/products" className="btn">
           Quay lại cửa hàng
