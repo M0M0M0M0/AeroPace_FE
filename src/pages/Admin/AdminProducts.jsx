@@ -79,7 +79,7 @@ const AdminProducts = () => {
 
   // ── Form ─────────────────────────────────────────────────────
   const emptyForm = {
-    name: "", description: "", brandId: "", status: "DRAFT",
+    name: "", description: "", brandId: "", slug: "", status: "DRAFT",
     option1Name: "", option2Name: "", option3Name: "",
     images: [],
     variants: [{ option1Value: "", option2Value: "", option3Value: "", price: "", stock: "", sku: "" }],
@@ -277,7 +277,7 @@ const AdminProducts = () => {
     try {
       if (modal.mode === "add") {
         const res = await axios.post(`${BASE}/products`, {
-          name: form.name, description: form.description, brandId: Number(form.brandId),
+          name: form.name, slug: form.slug || undefined, description: form.description, brandId: Number(form.brandId),
           option1Name: form.option1Name || null, option2Name: form.option2Name || null, option3Name: form.option3Name || null, status: form.status,
         }, { headers: authHeader() });
         const productId = res.data.id;
@@ -623,6 +623,16 @@ const AdminProducts = () => {
             <div className="adp-form-row">
               <label className="adp-form-label">Mô tả</label>
               <textarea className="adp-form-input adp-form-textarea" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Mô tả sản phẩm" disabled={isViewOnly} />
+            </div>
+            <div className="adp-form-row">
+              <label className="adp-form-label">Slug</label>
+              <input
+                className="adp-form-input"
+                value={form.slug}
+                onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                placeholder="VD: ao-thun-nike (để trống tự generate)"
+                disabled={isViewOnly}
+              />
             </div>
             {!isViewOnly ? (
               <div className="adp-form-row">
