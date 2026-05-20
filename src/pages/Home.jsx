@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Heart, ArrowLeftRight, X } from "lucide-react"; 
+import { usePreferences } from "../components/UsePreferences";
 import { toast } from "sonner";
 import { useCart } from "../context/CartContext";
 import "./Home.css";
 import addToCartIcon from "../../assets/icons/cart.png";
+import CompareModal from "../components/CompareModal";  
 
 const Home = () => {
   const [featured, setFeatured] = useState([]);
@@ -13,7 +15,7 @@ const Home = () => {
     useCart();
   const [activeId, setActiveId] = useState(null);
 
-  const productIds = [50, 51, 52, 64, 72, 73, 74, 75, 76, 77, 78, 79, 180];
+  const productIds = [50, 51, 52, 64, 72, 180,448,449,450,451,1482,10,210,211,212,213,184,185,186,187,188];
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -23,7 +25,12 @@ const Home = () => {
           `http://localhost:8080/api/v1/products/by-ids?${query}`,
         );
         const data = await res.json();
-        if (Array.isArray(data)) setFeatured(data);
+        if (Array.isArray(data)) {
+          const sorted = productIds
+            .map((id) => data.find((p) => p.id === id))
+            .filter(Boolean);
+          setFeatured(sorted);
+        }
         else setFeatured([]);
       } catch (err) {
         console.error(err);
@@ -39,12 +46,18 @@ const Home = () => {
     setActiveId(item.id);
     setTimeout(() => setActiveId(null), 1500);
   };
+  const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
+  const { compareList, toggleCompare, removeCompare, clearCompare } = usePreferences();
 
   const renderCard = (item) => {
-    const image = item.images?.[0]?.imageUrl;
+    const defaultImage = item.images?.[0]?.imageUrl;
+    const hoverImage = item.images?.[1]?.imageUrl || defaultImage;
     const price = item.variants?.[0]?.price || 0;
     const outOfStock = isOutOfStock(item);
     const maxed = isMaxedOut(item);
+    
+   
+    const isCompared = compareList.some((c) => c.id === item.id);
 
     return (
       <div
@@ -53,14 +66,7 @@ const Home = () => {
         onClick={() => navigate(`/products/detail/${item.id}`)}
       >
         <div className="home-card-container">
-          {outOfStock && (
-            <div className="home-out-of-stock-badge">Hết hàng</div>
-          )}
-          {!outOfStock && maxed && (
-            <div className="home-out-of-stock-badge">
-              Đã đạt giới hạn tồn kho
-            </div>
-          )}
+          
           {(() => {
             const qty = item.variants
               ?.filter((v) => v.stock && v.stock > 0)
@@ -69,10 +75,19 @@ const Home = () => {
               <div className="home-in-cart-badge">Trong giỏ: {qty}</div>
             ) : null;
           })()}
-          <div
-            className="home-card-top"
-            style={{ backgroundImage: `url(${image})` }}
-          />
+          
+          {/* 2. THAY THẾ PHẦN div.home-card-top CŨ BẰNG ĐOẠN NÀY */}
+          <div className="home-card-top">
+            {/* THÊM KHỐI NÚT ACTION VÀO ĐÂY */}
+            <div className="card-actions-overlay">
+              <button className="action-icon-btn" onClick={(e) => toggleCompare(item, e)}>
+                <ArrowLeftRight size={18} color={isCompared ? "#2563eb" : "#333"} />
+              </button>
+            </div>
+
+            <div className="home-img-default" style={{ backgroundImage: `url(${defaultImage})` }} />
+            <div className="home-img-hover" style={{ backgroundImage: `url(${hoverImage})` }} />
+          </div>
           <div
             className={`home-card-bottom ${activeId === item.id ? "home-clicked" : ""}`}
           >
@@ -91,33 +106,6 @@ const Home = () => {
             <div className="home-card-right">
               <div className="home-card-done">✔</div>
             </div>
-          </div>
-        </div>
-        <div className="home-card-inside" onClick={(e) => e.stopPropagation()}>
-          <div className="home-card-icon">ℹ</div>
-          <div className="home-card-contents">
-            <table>
-              <tbody>
-                <tr>
-                  <th>Category</th>
-                  <td>{item.categories?.[0]?.name || "N/A"}</td>
-                </tr>
-                <tr>
-                  <th>Brand</th>
-                  <td>{item.brand || "N/A"}</td>
-                </tr>
-                <tr>
-                  <th>Price</th>
-                  <td>{price.toLocaleString()} ₫</td>
-                </tr>
-                {/* <tr>
-                  <th>Tồn kho</th>
-                  <td style={{ color: outOfStock ? "red" : "inherit" }}>
-                    {outOfStock ? "Hết hàng" : item.variants?.[0]?.stock}
-                  </td>
-                </tr> */}
-              </tbody>
-            </table>
           </div>
         </div>
       </div>
@@ -148,18 +136,41 @@ const Home = () => {
       </section>
 
       <section className="home-sport-section">
-        <h2 className="home-section-title">Shop by Sport</h2>
+        <h2 className="home-section-title">Giày Chạy Bộ</h2>
         <div className="home-sport-grid">
           {featured.slice(0, 5).map(renderCard)}
         </div>
       </section>
 
-      <section className="home-featured-section">
+      <section className="home-sport-section">
+        <h2 className="home-section-title">Dép Chạy Bộ</h2>
+        <div className="home-sport-grid">
+          {featured.slice(6, 11).map(renderCard)}
+        </div>
+      </section>
+
+      <section className="home-sport-section">
+        <h2 className="home-section-title">Kính Thể Thao</h2>
+        <div className="home-sport-grid">
+          {featured.slice(11, 16).map(renderCard)}
+        </div>
+      </section>
+
+      <section className="home-sport-section">
+        <h2 className="home-section-title">Đồng Hồ Thể Thao</h2>
+        <div className="home-sport-grid">
+          {featured.slice(16, 22).map(renderCard)}
+        </div>
+      </section>
+
+      {/* <section className="home-featured-section">
         <h2 className="home-section-title">Outstanding product</h2>
         <div className="home-featured-grid">
           {featured.slice(5, 13).map(renderCard)}
         </div>
-      </section>
+      </section> */}
+
+      
 
       <section className="home-icons-section">
         <div className="home-container">
@@ -213,12 +224,35 @@ const Home = () => {
                     </div>
                   </div>
                 </div>
+                
               );
             })}
           </div>
         </div>
       </section>
+      <div className={`compare-sticky-bar ${compareList.length > 0 ? "visible" : ""}`}>
+        <div className="compare-items-container">
+          {compareList.map((item) => (
+            <div key={item.id} className="compare-item-mini">
+              <img src={item.images?.[0]?.imageUrl} alt="" />
+              <p>{item.name}</p>
+              <button className="compare-remove-btn" onClick={() => removeCompare(item.id)}><X size={12} /></button>
+            </div>
+          ))}
+        </div>
+        <div className="compare-actions">
+          <button className="btn-compare-now" onClick={() => setIsCompareModalOpen(true)}>
+            So sánh ngay ({compareList.length})
+          </button>
+        </div>
+      </div>
+      <CompareModal 
+        isOpen={isCompareModalOpen} 
+        onClose={() => setIsCompareModalOpen(false)} 
+        compareItems={compareList}
+      />
     </div>
+      
   );
 };
 

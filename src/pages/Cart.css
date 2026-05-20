@@ -134,7 +134,7 @@
   font-weight: 600;
 }
 
-.cart-actions {
+.cart-page-actions {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
@@ -142,7 +142,7 @@
   margin-top: 1rem;
 }
 
-.cart-btn {
+.cart-page-btn {
   padding: 0.75rem 1.5rem;
   border-radius: 999px;
   background: #fff;
@@ -153,16 +153,16 @@
   transition: background 0.3s ease;
 }
 
-.cart-btn:hover {
+.cart-page-btn:hover {
   background: #ccc;
 }
 
-.cart-btn-red {
+.cart-page-btn-red {
   background: #c00;
   color: #fff;
 }
 
-.cart-btn-red:hover {
+.cart-page-btn-red:hover {
   background: #e00;
 }
 
@@ -264,4 +264,68 @@
 
 .cart-confirm-btn-delete:hover {
   background: #e00;
+}
+.cart-select-all {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+  margin-bottom: -0.5rem;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.cart-select-all label {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Định dạng cho Checkbox */
+.cart-checkbox {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  accent-color: #c00; /* Màu đỏ cho checkbox khi được tick (phù hợp với nút xóa) */
+  flex-shrink: 0;
+}
+
+/* Chỉnh lại thẻ .cart-info để các class bên trong ăn CSS chuẩn xác do lúc trước tên class bị nhầm ở JSX */
+.cart-info h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.cart-info h2:hover {
+  text-decoration: underline;
+}
+
+.cart-variant {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin: 0.25rem 0;
+}
+
+.cart-price {
+  font-weight: 700;
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* Đổi màu số tiền tổng cho nổi bật */
+.cart-total .total-price {
+  color: #e74c3c;
+  font-size: 1.5rem;
+}
+
+/* Nút thanh toán khi bị disable (không chọn sản phẩm nào) */
+.cart-page-btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #555 !important;
+  color: #999 !important;
+}
+
+.cart-page-btn-disabled:hover {
+  background: #555 !important;
 }
