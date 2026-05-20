@@ -5,6 +5,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import axios from "axios";
 import "./Checkout.css";
+// --- 1. IMPORT THƯ VIỆN PAYPAL ---
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 const Checkout = () => {
   const { cart, clearCart } = useCart();
@@ -13,14 +15,10 @@ const Checkout = () => {
   const location = useLocation();
   const [loadingProfile, setLoadingProfile] = useState(false);
 
-  // Nhận dữ liệu từ trang Cart (nếu có sử dụng luồng chọn sản phẩm trước đó)
   const selectedItemIds = location.state?.selectedItems || [];
-  
-  // Dùng logic cũ của bạn hoặc logic mới tùy dự án. Ở đây mình giữ theo code bạn gửi
   const cartItems = cart?.items || [];
   const totalPrice = cart?.totalAmount || 0;
 
-  // --- THÊM STATE QUẢN LÝ ĐỊA CHỈ ---
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
@@ -33,19 +31,17 @@ const Checkout = () => {
     name: "",
     email: "",
     phone: "",
-    specificAddress: "", // Số nhà, ngõ, tên đường...
+    specificAddress: "", 
     paymentMethod: "cod",
   });
 
-  // --- API LẤY ĐỊA GIỚI HÀNH CHÍNH VIỆT NAM ---
-  // 1. Lấy danh sách Tỉnh/Thành phố
+  // API lấy địa giới hành chính
   useEffect(() => {
     axios.get("https://esgoo.net/api-tinhthanh/1/0.htm").then((res) => {
       if (res.data.error === 0) setProvinces(res.data.data);
     });
   }, []);
 
-  // 2. Lấy Quận/Huyện khi Tỉnh/Thành thay đổi
   useEffect(() => {
     if (selectedProvince) {
       axios.get(`https://esgoo.net/api-tinhthanh/2/${selectedProvince}.htm`).then((res) => {
@@ -56,7 +52,6 @@ const Checkout = () => {
     }
   }, [selectedProvince]);
 
-  // 3. Lấy Phường/Xã khi Quận/Huyện thay đổi
   useEffect(() => {
     if (selectedDistrict) {
       axios.get(`https://esgoo.net/api-tinhthanh/3/${selectedDistrict}.htm`).then((res) => {
@@ -65,7 +60,6 @@ const Checkout = () => {
       setSelectedWard("");
     }
   }, [selectedDistrict]);
-
 
   const handleUseMyInfo = async () => {
     if (!user?.id) return;
@@ -81,7 +75,6 @@ const Checkout = () => {
         name: data.fullName || "",
         phone: data.phoneNumber || "",
         email: data.email || user.email || "",
-        // Lưu ý: Vì địa chỉ từ DB là chuỗi dính liền, ta đưa tạm vào specificAddress
         specificAddress: data.address || "", 
       }));
       toast.success("Đã tải thông tin! Vui lòng chọn lại Tỉnh/Thành phố nếu cần.");
@@ -92,53 +85,106 @@ const Checkout = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { name, email, phone, specificAddress, paymentMethod } = form;
-
-    // Kiểm tra đã nhập đủ chưa
+  // --- HÀM KIỂM TRA FORM HỢP LỆ ---
+  const validateForm = () => {
+    const { name, email, phone, specificAddress } = form;
     if (!name || !email || !phone || !specificAddress || !selectedProvince || !selectedDistrict || !selectedWard) {
       toast.error("Vui lòng điền và chọn đầy đủ thông tin địa chỉ.");
-      return;
+      return false;
     }
+    return true;
+  };
 
-    // Lấy tên Tỉnh, Huyện, Xã từ ID để ghép thành chuỗi
+  // --- HÀM GHÉP ĐỊA CHỈ HOÀN CHỈNH ---
+  const getFullAddress = () => {
     const provinceName = provinces.find(p => p.id === selectedProvince)?.full_name || "";
     const districtName = districts.find(d => d.id === selectedDistrict)?.full_name || "";
     const wardName = wards.find(w => w.id === selectedWard)?.full_name || "";
+    return `${form.specificAddress}, ${wardName}, ${districtName}, ${provinceName}`;
+  };
 
-    // Ghép thành chuỗi địa chỉ hoàn chỉnh gửi xuống Backend
-    const fullAddress = `${specificAddress}, ${wardName}, ${districtName}, ${provinceName}`;
+  // --- XỬ LÝ ĐẶT HÀNG CHO COD HOẶC BANK (Form Submit truyền thống) ---
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const fullAddress = getFullAddress();
 
     try {
       await axios.post(
         "http://localhost:8080/api/v1/orders/checkout",
         {
           userId: user.id,
-          shippingAddress: fullAddress, // Gửi chuỗi đã ghép
-          phoneNumber: phone,
-          paymentMethod,
-          receiverName: name,
+          shippingAddress: fullAddress, 
+          phoneNumber: form.phone,
+          paymentMethod: form.paymentMethod,
+          receiverName: form.name,
         },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
 
-      clearCart();
-      navigate("/order-success", {
-        state: {
-          order: {
-            customer: { name, email, phone, address: fullAddress },
-            items: cartItems,
-            total: totalPrice,
-            paymentMethod,
-            date: new Date().toLocaleString(),
-          },
-        },
-      });
-      toast.success("Đặt hàng thành công!");
+      executeOrderSuccess(fullAddress, form.paymentMethod);
     } catch (err) {
       toast.error("Đặt hàng thất bại.");
     }
+  };
+
+  // --- CHUYỂN HƯỚNG KHI THÀNH CÔNG (Dùng chung cho cả 2 luồng) ---
+  const executeOrderSuccess = (fullAddress, method) => {
+    clearCart();
+    navigate("/order-success", {
+      state: {
+        order: {
+          customer: { name: form.name, email: form.email, phone: form.phone, address: fullAddress },
+          items: cartItems,
+          total: totalPrice,
+          paymentMethod: method,
+          date: new Date().toLocaleString(),
+        },
+      },
+    });
+    toast.success("Đặt hàng thành công!");
+  };
+
+  // --- LOGIC XỬ LÝ PAYPAL ---
+  const handleCreateOrder = (data, actions) => {
+    // PayPal tính theo USD, đổi tạm VND sang USD (ví dụ chia 25,000đ)
+    const amountInUSD = (totalPrice / 25000).toFixed(2); 
+
+    return actions.order.create({
+      purchase_units: [
+        {
+          amount: {
+            currency_code: "USD",
+            value: amountInUSD,
+          },
+        },
+      ],
+    });
+  };
+
+  const handlePayPalApprove = async (data, actions) => {
+    return actions.order.capture().then(async (details) => {
+      const fullAddress = getFullAddress();
+      try {
+        // Sau khi khách trả tiền trên PayPal thành công, tiến hành tạo đơn ở Backend
+        await axios.post(
+          "http://localhost:8080/api/v1/orders/checkout",
+          {
+            userId: user.id,
+            shippingAddress: fullAddress,
+            phoneNumber: form.phone,
+            paymentMethod: "paypal", // Lưu phương thức là paypal
+            receiverName: form.name,
+          },
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+        );
+
+        executeOrderSuccess(fullAddress, "paypal");
+      } catch (err) {
+        toast.error("Thanh toán PayPal thành công nhưng không thể tạo đơn hàng trên hệ thống.");
+      }
+    });
   };
 
   if (!cartItems.length)
@@ -171,7 +217,6 @@ const Checkout = () => {
               </button>
             </div>
 
-            {/* Các trường cơ bản */}
             <div className="checkout-form-grid">
               <input
                 type="text"
@@ -196,7 +241,6 @@ const Checkout = () => {
               />
             </div>
 
-            {/* KHU VỰC CHỌN ĐỊA CHỈ MỚI */}
             <div className="checkout-address-section">
               <h3>Địa chỉ nhận hàng</h3>
               <div className="checkout-address-grid">
@@ -225,7 +269,7 @@ const Checkout = () => {
 
                 <select 
                   className="checkout-select" 
-                  value={selectedWard} 
+                  value={selectedDistrict ? selectedWard : ""} 
                   onChange={(e) => setSelectedWard(e.target.value)}
                   disabled={!selectedDistrict}
                 >
@@ -252,6 +296,7 @@ const Checkout = () => {
                 {[
                   { id: "cod", label: "Thanh toán khi nhận hàng (COD)" },
                   { id: "bank", label: "Chuyển khoản ngân hàng" },
+                  { id: "paypal", label: "Thanh toán qua PayPal (Giả lập)" }, // Đã thêm nút lựa chọn này
                 ].map((m) => (
                   <div
                     key={m.id}
@@ -264,12 +309,35 @@ const Checkout = () => {
               </div>
             </div>
 
-            <button type="submit" className="checkout-submit-btn">
-              Xác nhận đặt hàng
-            </button>
+            {/* --- 3. ĐIỀU KIỆN HIỂN THỊ NÚT BẤM THANH TOÁN --- */}
+            {form.paymentMethod === "paypal" ? (
+              <div style={{ marginTop: "20px" }}>
+                <PayPalScriptProvider options={{ "client-id": "AbmysnbLGLU6VbeC4XPSpPOhxZ4ITh0DMOwhWDMdS54farre2EGHRsxswr_3R9ujfBiStBzgsrIP7qO5", currency: "USD" }}>
+                  <PayPalButtons
+                    style={{ layout: "vertical" }}
+                    onClick={(data, actions) => {
+                      // Bấm vào nút PayPal sẽ check form trước, nếu thiếu thông tin thì chặn không mở popup
+                      if (!validateForm()) {
+                        return actions.reject();
+                      }
+                    }}
+                    createOrder={handleCreateOrder}
+                    onApprove={handlePayPalApprove}
+                    onError={(err) => {
+                      console.error("PayPal Error: ", err);
+                      toast.error("Lỗi trong quá trình xử lý PayPal.");
+                    }}
+                  />
+                </PayPalScriptProvider>
+              </div>
+            ) : (
+              <button type="submit" className="checkout-submit-btn">
+                Xác nhận đặt hàng
+              </button>
+            )}
           </form>
 
-          {/* ORDER SUMMARY (Giữ nguyên của bạn) */}
+          {/* ORDER SUMMARY */}
           <div className="checkout-summary">
             <h2>Đơn hàng của bạn</h2>
             <div className="checkout-items">
