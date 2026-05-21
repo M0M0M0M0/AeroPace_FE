@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "../api/axiosClient";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import axiosRaw from "axios";
 
 import {
   User,
@@ -21,6 +22,12 @@ const Profile = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedWard, setSelectedWard] = useState("");
 
   const [activeTab, setActiveTab] = useState(
     location.state?.tab || "info",
@@ -35,6 +42,7 @@ const Profile = () => {
     dob: "",
     gender: "",
     address: "",
+    ward: "", district: "", province: "",
   });
 
   const [profileId, setProfileId] = useState(null);
@@ -52,6 +60,29 @@ const Profile = () => {
       setActiveTab(location.state.tab);
     }
   }, [location.state]);
+  useEffect(() => {
+    axiosRaw.get("https://esgoo.net/api-tinhthanh/1/0.htm").then((res) => {
+      if (res.data.error === 0) setProvinces(res.data.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (selectedProvince) {
+      axiosRaw.get(`https://esgoo.net/api-tinhthanh/2/${selectedProvince}.htm`).then((res) => {
+        if (res.data.error === 0) setDistricts(res.data.data);
+      });
+      setSelectedDistrict(""); setWards([]);
+    }
+  }, [selectedProvince]);
+
+  useEffect(() => {
+    if (selectedDistrict) {
+      axiosRaw.get(`https://esgoo.net/api-tinhthanh/3/${selectedDistrict}.htm`).then((res) => {
+        if (res.data.error === 0) setWards(res.data.data);
+      });
+      setSelectedWard("");
+    }
+  }, [selectedDistrict]);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -90,6 +121,9 @@ const Profile = () => {
           dob: data.dob || "",
           gender: data.gender || "",
           address: data.address || "",
+          ward: data.ward || "",
+          district: data.district || "",
+          province: data.province || "",
         });
       } catch (err) {
         console.log("LOAD PROFILE ERROR:", err);
@@ -141,12 +175,24 @@ const Profile = () => {
         dob: formData.dob,
         gender: formData.gender,
         address: formData.address,
+        ward: wards.find(w => w.id === selectedWard)?.full_name || formData.ward,
+        district: districts.find(d => d.id === selectedDistrict)?.full_name || formData.district,
+        province: provinces.find(p => p.id === selectedProvince)?.full_name || formData.province,
         userId: user.id,
       });
-
+      console.log("PAYLOAD:", {
+        fullName: formData.name,
+        phoneNumber: formData.phone_number,
+        dob: formData.dob,
+        gender: formData.gender,
+        address: formData.address,
+        ward: wards.find(w => w.id === selectedWard)?.full_name || formData.ward,
+        district: districts.find(d => d.id === selectedDistrict)?.full_name || formData.district,
+        province: provinces.find(p => p.id === selectedProvince)?.full_name || formData.province,
+      });
       alert("Cập nhật thành công!");
     } catch (err) {
-      console.log("UPDATE ERROR:", err.response || err);
+      console.log("UPDATE ERROR:", err.response?.data || err);
       alert("Cập nhật thất bại!");
     }
   };
@@ -430,15 +476,49 @@ const Profile = () => {
                 <div className="profile-form-group">
                   <label>Địa chỉ</label>
 
-                  <div className="profile-input-with-icon">
-                    <MapPin
-                      size={18}
-                      className="profile-input-icon"
-                    />
+                  <div className="profile-address-dropdowns">
+                    <select
+                      value={selectedProvince}
+                      onChange={(e) => setSelectedProvince(e.target.value)}
+                      className="profile-address-select"
+                    >
+                      <option value="">{formData.province || "Tỉnh/Thành phố"}</option>
+                      {provinces.map((p) => (
+                        <option key={p.id} value={p.id}>{p.full_name}</option>
+                      ))}
+                    </select>
 
+                    <select
+                      value={selectedDistrict}
+                      onChange={(e) => setSelectedDistrict(e.target.value)}
+                      disabled={!selectedProvince}
+                      className="profile-address-select"
+                    >
+                      <option value="">{formData.district || "Quận/Huyện"}</option>
+                      {districts.map((d) => (
+                        <option key={d.id} value={d.id}>{d.full_name}</option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={selectedWard}
+                      onChange={(e) => setSelectedWard(e.target.value)}
+                      disabled={!selectedDistrict}
+                      className="profile-address-select"
+                    >
+                      <option value="">{formData.ward || "Phường/Xã"}</option>
+                      {wards.map((w) => (
+                        <option key={w.id} value={w.id}>{w.full_name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="profile-input-with-icon profile-address-specific">
+                    <MapPin size={18} className="profile-input-icon" />
                     <input
                       type="text"
                       name="address"
+                      placeholder="Số nhà, ngõ, tên đường..."
                       value={formData.address}
                       onChange={handleChange}
                     />
@@ -514,7 +594,8 @@ const Profile = () => {
                             <p>
                               <MapPin size={14} />
                               Địa chỉ giao hàng:{" "}
-                              {order.shippingAddress}
+                              {[order.shippingAddress, order.ward, order.district, order.province]
+                                .filter(Boolean).join(", ") || "—"}
                             </p>
 
                             <p>

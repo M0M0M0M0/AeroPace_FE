@@ -75,6 +75,13 @@ const AdminLayout = () => {
             <Users size={20} />
             <span className="nav-label">Khách hàng</span>
           </Link>
+          <Link
+            to="/admin/shippings"
+            className={`nav-item ${isActive("/admin/shippings") ? "active" : ""}`}
+          >
+            <Settings size={20} />
+            <span className="nav-label">Phương thức vận chuyển</span>
+          </Link>
 
         </nav>
       </aside>

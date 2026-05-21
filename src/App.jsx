@@ -31,10 +31,11 @@ import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminProducts from "./pages/Admin/AdminProducts";
 import AdminOrders from "./pages/Admin/AdminOrders";
-import AdminSettings from "./pages/Admin/AdminSettings";
 import AdminCustomers from "./pages/Admin/AdminCustomer";
 import AdminCustomerDetail from "./pages/Admin/AdminCustomerDetail";
-import AdminCatalogPage from "./pages/admin/AdminCatalogPage";
+import AdminCatalogPage from "./pages/Admin/AdminCatalogPage";
+import AdminShippingPage from "./pages/Admin/AdminShippingPage";
+import AdminOrderDetail from "./pages/Admin/AdminOrderDetail";
 
 // Tạo một Layout riêng cho trang khách hàng (Chứa Navbar và Footer)
 const StoreLayout = () => {
@@ -83,7 +84,8 @@ function App() {
                 <Route path="customers" element={<AdminCustomers />} />
                 <Route path="customers/:id" element={<AdminCustomerDetail />} />
                 <Route path="orders" element={<AdminOrders />} />
-                <Route path="settings" element={<AdminSettings />} />
+                <Route path="orders/details/:id" element={<AdminOrderDetail />} />
+                <Route path="shippings" element={<AdminShippingPage />} />
               </Route>
             </Route>
           </Routes>

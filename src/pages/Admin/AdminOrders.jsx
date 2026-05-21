@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Eye, Edit, X } from "lucide-react";
+import { Eye, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./AdminOrders.css";
 
 const AdminOrders = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [allOrders, setAllOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,33 +18,6 @@ const AdminOrders = () => {
   const [filterStatus, setFilterStatus] = useState("ALL");
   const [filterDateFrom, setFilterDateFrom] = useState("");
   const [filterDateTo, setFilterDateTo] = useState("");
-
-  // ── Modals ────────────────────────────────────────────────────
-  const [statusModal, setStatusModal] = useState({
-    isOpen: false,
-    orderId: null,
-    currentStatus: "",
-    targetStatus: "",
-  });
-  const [detailModal, setDetailModal] = useState({
-    isOpen: false,
-    order: null,
-  });
-  const getNextValidStatuses = (currentStatus) => {
-    switch (currentStatus) {
-      case "PAID":
-      case "SHIP_COD":
-        return ["SHIPPING", "CANCELLED"];
-      case "SHIPPING":
-        return ["DELIVERED"];
-      case "DELIVERED":
-      case "CANCELLED":
-        return [];
-      default:
-        return [];
-    }
-  };
-
 
   // ── Fetch ─────────────────────────────────────────────────────
   const fetchOrders = async () => {
@@ -93,23 +68,6 @@ const AdminOrders = () => {
     filterDateTo,
   ]);
 
-  // ── Cập nhật trạng thái ───────────────────────────────────────
-  const handleConfirmStatusChange = async () => {
-    try {
-      await axios.put(
-        `http://localhost:8080/api/v1/admin/orders/${statusModal.orderId}/status?status=${statusModal.targetStatus}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        },
-      );
-      await fetchOrders();
-      setStatusModal({ isOpen: false, orderId: null, targetStatus: "" });
-    } catch (err) {
-      console.error(err);
-      alert("Cập nhật thất bại!");
-    }
-  };
 
   // ── Reset filters ─────────────────────────────────────────────
   const handleResetFilters = () => {
@@ -360,27 +318,9 @@ const AdminOrders = () => {
                       {order.totalPrice?.toLocaleString("vi-VN")} ₫
                     </td>
                     <td>
-                      <div className="ao-status-cell">
-                        <span className={getStatusClass(order.status)}>
-                          {getStatusLabel(order.status)}
-                        </span>
-                        {getNextValidStatuses(order.status).length > 0 && (
-                          <button
-                            className="ao-edit-status-btn"
-                            title="Cập nhật trạng thái"
-                            onClick={() =>
-                              setStatusModal({
-                                isOpen: true,
-                                orderId: order.id,
-                                currentStatus: order.status,
-                                targetStatus: getNextValidStatuses(order.status)[0],
-                              })
-                            }
-                          >
-                            <Edit size={14} />
-                          </button>
-                        )}
-                      </div>
+                      <span className={getStatusClass(order.status)}>
+                        {getStatusLabel(order.status)}
+                      </span>
                     </td>
                     <td className="ao-date">
                       {new Date(order.createdAt).toLocaleString("vi-VN")}
@@ -388,8 +328,7 @@ const AdminOrders = () => {
                     <td>
                       <button
                         className="ao-view-btn"
-                        title="Xem chi tiết"
-                        onClick={() => setDetailModal({ isOpen: true, order })}
+                        onClick={() => navigate(`/admin/orders/details/${order.id}`)}
                       >
                         <Eye size={16} /> Chi tiết
                       </button>
@@ -402,155 +341,6 @@ const AdminOrders = () => {
         </div>
       )}
 
-      {/* Modal cập nhật trạng thái */}
-      {statusModal.isOpen && (
-        <div
-          className="ao-overlay"
-          onClick={() =>
-            setStatusModal({ isOpen: false, orderId: null, targetStatus: "", currentStatus: "" })
-          }
-        >
-          <div className="ao-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="ao-modal-header">
-              <div>
-                <h3 className="ao-modal-title">Cập nhật trạng thái</h3>
-                <p className="ao-modal-sub">Đơn hàng #{statusModal.orderId}</p>
-              </div>
-              <button
-                className="ao-modal-close"
-                onClick={() =>
-                  setStatusModal({
-                    isOpen: false,
-                    orderId: null,
-                    targetStatus: "",
-                    currentStatus: "",
-                  })
-                }
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="ao-form-row">
-              <label>Trạng thái hiện tại</label>
-              <span className={getStatusClass(statusModal.currentStatus)}
-                style={{ display: "inline-block", marginTop: 4 }}>
-                {getStatusLabel(statusModal.currentStatus)}
-              </span>
-            </div>
-
-            <div className="ao-form-row">
-              <label>Chuyển sang</label>
-              <select
-                value={statusModal.targetStatus}
-                onChange={(e) =>
-                  setStatusModal({ ...statusModal, targetStatus: e.target.value })
-                }
-              >
-                {getNextValidStatuses(statusModal.currentStatus).map((s) => (
-                  <option key={s} value={s}>
-                    {getStatusLabel(s)}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="ao-modal-actions">
-              <button
-                className="ao-btn-cancel"
-                onClick={() =>
-                  setStatusModal({
-                    isOpen: false,
-                    orderId: null,
-                    targetStatus: "",
-                    currentStatus: "",
-                  })
-                }
-              >
-                Hủy
-              </button>
-              <button
-                className="ao-btn-save"
-                onClick={handleConfirmStatusChange}
-              >
-                Xác nhận
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal chi tiết đơn hàng */}
-      {detailModal.isOpen && detailModal.order && (
-        <div
-          className="ao-overlay"
-          onClick={() => setDetailModal({ isOpen: false, order: null })}
-        >
-          <div
-            className="ao-modal ao-modal-detail"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="ao-modal-header">
-              <div>
-                <h3 className="ao-modal-title">
-                  Chi tiết đơn hàng #{detailModal.order.id}
-                </h3>
-                <p className="ao-modal-sub">
-                  Đặt lúc:{" "}
-                  {new Date(detailModal.order.createdAt).toLocaleString(
-                    "vi-VN",
-                  )}
-                </p>
-              </div>
-              <button
-                className="ao-modal-close"
-                onClick={() => setDetailModal({ isOpen: false, order: null })}
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Thông tin người nhận */}
-            <div className="ao-detail-section">
-              <p className="ao-detail-section-label">Thông tin người nhận</p>
-              <p className="ao-detail-sub">
-                Tên người nhận: {detailModal.order.receiverName || "—"}
-              </p>
-              <p className="ao-detail-sub">Số điện thoại: {detailModal.order.phoneNumber}</p>
-              <p className="ao-detail-sub">
-                Địa chỉ giao hàng: {detailModal.order.shippingAddress}
-              </p>
-            </div>
-
-            {/* Sản phẩm */}
-            <div className="ao-detail-section">
-              <p className="ao-detail-section-label">Sản phẩm</p>
-              {detailModal.order.items?.map((item, idx) => (
-                <div key={idx} className="ao-detail-item">
-                  <span className="ao-detail-item-name">
-                    {item.productName}
-                    {item.variantName && (
-                      <span className="ao-detail-item-variant"> — {item.variantName}</span>
-                    )}
-                  </span>
-                  <span className="ao-detail-item-qty">x{item.quantity}</span>
-                  <span className="ao-detail-item-price">
-                    {item.price?.toLocaleString("vi-VN")} ₫
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Tổng tiền */}
-            <div className="ao-detail-total">
-              <span>Tổng tiền</span>
-              <span className="ao-detail-total-price">
-                {detailModal.order.totalPrice?.toLocaleString("vi-VN")} ₫
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

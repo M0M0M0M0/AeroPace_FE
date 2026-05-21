@@ -178,18 +178,20 @@ const ProductDetail = () => {
   };
 
   const handleBuyNow = () => {
-    if (!selectedVariant || effectiveMax === 0) return;
-    addToCart(
-      {
-        id: product.id,
-        name: product.name,
-        price: selectedVariant.price,
-        image,
-        variantId: selectedVariant.id,
-        option: selectedVariant.option1Value,
-      },
-      quantity,
-    );
+    if (!selectedVariant || maxStock === 0) return;
+    if (effectiveMax > 0) {
+      addToCart(
+        {
+          id: product.id,
+          name: product.name,
+          price: selectedVariant.price,
+          image,
+          variantId: selectedVariant.id,
+          option: selectedVariant.option1Value,
+        },
+        quantity,
+      );
+    }
     navigate("/cart");
   };
 
@@ -328,7 +330,7 @@ const ProductDetail = () => {
             <button
               onClick={handleBuyNow}
               className="pd-buy-btn"
-              disabled={!selectedVariant || effectiveMax === 0}
+              disabled={!selectedVariant || maxStock === 0}
             >
               Mua ngay
             </button>
