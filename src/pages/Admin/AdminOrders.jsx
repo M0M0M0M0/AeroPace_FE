@@ -67,8 +67,8 @@ const AdminOrders = () => {
       const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
 
       const [resFiltered, resAll] = await Promise.all([
-        axios.get(`http://localhost:8080/api/v1/orders?${params}`, { headers }),
-        axios.get(`http://localhost:8080/api/v1/orders?${paramsAll}`, { headers }),
+        axios.get(`http://localhost:8080/api/v1/admin/orders?${params}`, { headers }),
+        axios.get(`http://localhost:8080/api/v1/admin/orders?${paramsAll}`, { headers }),
       ]);
 
       setOrders(resFiltered.data);
@@ -97,7 +97,7 @@ const AdminOrders = () => {
   const handleConfirmStatusChange = async () => {
     try {
       await axios.put(
-        `http://localhost:8080/api/v1/orders/${statusModal.orderId}/status?status=${statusModal.targetStatus}`,
+        `http://localhost:8080/api/v1/admin/orders/${statusModal.orderId}/status?status=${statusModal.targetStatus}`,
         {},
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

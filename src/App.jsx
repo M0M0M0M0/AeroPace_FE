@@ -2,7 +2,7 @@ import React from "react";
 import { HashRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import AdminRoute from "./routes/AdminRoute";
 import ScrollToTop from "./components/ScrollToTop";
 
 // Các components Layout & chung
@@ -41,7 +41,7 @@ const StoreLayout = () => {
   return (
     <>
       <Navbar />
-      <Outlet /> 
+      <Outlet />
       <Footer />
     </>
   );
@@ -73,17 +73,18 @@ function App() {
             </Route>
 
             {/* 2. KHU VỰC CỦA ADMIN (Sử dụng AdminLayout với Sidebar & Header riêng) */}
-            {/* Có thể bọc bằng <ProtectedRoute> sau này để yêu cầu đăng nhập */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />{" "}
-              {/* Mặc định vào /admin sẽ hiển thị Dashboard */}
-              {/* Đường dẫn: /admin/users */}
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="catalog" element={<AdminCatalogPage />} />
-              <Route path="customers" element={<AdminCustomers />} />
-              <Route path="customers/:id" element={<AdminCustomerDetail />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="settings" element={<AdminSettings />} />
+            <Route element={<AdminRoute />}>
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboard />} />{" "}
+                {/* Mặc định vào /admin sẽ hiển thị Dashboard */}
+                {/* Đường dẫn: /admin/users */}
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="catalog" element={<AdminCatalogPage />} />
+                <Route path="customers" element={<AdminCustomers />} />
+                <Route path="customers/:id" element={<AdminCustomerDetail />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="settings" element={<AdminSettings />} />
+              </Route>
             </Route>
           </Routes>
         </Router>

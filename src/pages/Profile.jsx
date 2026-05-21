@@ -183,7 +183,7 @@ const Profile = () => {
 
     try {
       await axios.put(
-        `http://localhost:8080/api/v1/orders/${cancelModal.orderId}/status?status=CANCELLED`,
+        `http://localhost:8080/api/v1/orders/${cancelModal.orderId}/cancel`,
       );
 
       setOrders((prev) =>
@@ -289,8 +289,8 @@ const Profile = () => {
           <div className="profile-nav">
             <button
               className={`profile-nav-btn ${activeTab === "info"
-                  ? "profile-nav-btn-active"
-                  : ""
+                ? "profile-nav-btn-active"
+                : ""
                 }`}
               onClick={() => setActiveTab("info")}
             >
@@ -300,8 +300,8 @@ const Profile = () => {
 
             <button
               className={`profile-nav-btn ${activeTab === "orders"
-                  ? "profile-nav-btn-active"
-                  : ""
+                ? "profile-nav-btn-active"
+                : ""
                 }`}
               onClick={() => setActiveTab("orders")}
             >
@@ -487,7 +487,7 @@ const Profile = () => {
                         >
                           <div className="profile-order-card-header">
                             <span className="profile-order-id">
-                              ID đơn hàng: {order.id} 
+                              ID đơn hàng: {order.id}
                             </span>
 
                             <span

@@ -11,7 +11,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/v1/orders", {
+        const res = await axios.get("http://localhost:8080/api/v1/admin/orders", {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         setOrders(res.data);
