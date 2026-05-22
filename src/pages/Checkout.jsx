@@ -41,6 +41,8 @@ const Checkout = () => {
     specificAddress: "",
     paymentMethod: "cod",
   });
+  // ─── Payment ────────────────────────────────────────────────────────────────────
+  const [pendingOrderId, setPendingOrderId] = useState(null);
 
   // ─── 1. Load provinces once ──────────────────────────────────────────────────
   useEffect(() => {
@@ -208,7 +210,7 @@ const Checkout = () => {
     toast.success("Đặt hàng thành công!");
   };
 
-  const postOrder = (paymentMethod) =>
+  const postOrder = (paymentMethod, paymentOrderId = null) =>
     axios.post(
       `${API}/orders/checkout`,
       {
@@ -217,6 +219,10 @@ const Checkout = () => {
         phoneNumber: form.phone,
         paymentMethod,
         receiverName: form.name,
+        ward: selectedWard ? wards.find(w => w.id === selectedWard)?.full_name : profileInfo?.ward,
+        district: selectedDistrict ? districts.find(d => d.id === selectedDistrict)?.full_name : profileInfo?.district,
+        province: selectedProvince ? provinces.find(p => p.id === selectedProvince)?.full_name : profileInfo?.province,
+        ...(paymentOrderId && { paymentOrderId }),
       },
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
@@ -233,20 +239,47 @@ const Checkout = () => {
   };
 
   // ─── PayPal ──────────────────────────────────────────────────────────────────
-  const handleCreateOrder = (_data, actions) => {
-    const amountInUSD = (totalPrice / 25000).toFixed(2);
-    return actions.order.create({
-      purchase_units: [{ amount: { currency_code: "USD", value: amountInUSD } }],
+  const handleCreateOrder = async (_data, actions) => {
+    const paypalOrderId = await actions.order.create({
+      purchase_units: [{
+        amount: {
+          currency_code: "USD",
+          value: (totalPrice / 25000).toFixed(2)
+        }
+      }],
     });
+    try {
+      const res = await postOrder("paypal", paypalOrderId);
+      setPendingOrderId(res.data.id); // lưu orderId be
+    } catch {
+      toast.error("Không thể tạo đơn hàng.");
+      throw new Error("abort");
+    }
+
+    return paypalOrderId;
   };
 
+
   const handlePayPalApprove = async (_data, actions) => {
-    await actions.order.capture();
+    const details = await actions.order.capture();
+
+    const transactionId = details.purchase_units[0].payments.captures[0].id;
+    const paypalOrderId = details.id;
+
     try {
-      await postOrder("paypal");
+      await axios.patch(
+        `${API}/orders/${pendingOrderId}/payment`,
+        {
+          paymentOrderId: paypalOrderId,
+          paymentTransactionId: transactionId,
+          paymentStatus: "PAID",
+        },
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+      );
+
       executeOrderSuccess(getFullAddress(), "paypal");
     } catch {
-      toast.error("Thanh toán PayPal thành công nhưng không thể tạo đơn hàng.");
+      toast.error("Thanh toán thành công nhưng cập nhật đơn hàng thất bại.");
     }
   };
 
