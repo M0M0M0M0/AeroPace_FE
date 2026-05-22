@@ -382,7 +382,7 @@ const Checkout = () => {
               {/* Hiển thị địa chỉ đầy đủ từ profile (preview) */}
               {!useOtherAddress && profileInfo && (
                 <p className="checkout-address-preview">
-                   {[profileInfo.address, profileInfo.ward, profileInfo.district, profileInfo.province]
+                  {[profileInfo.address, profileInfo.ward, profileInfo.district, profileInfo.province]
                     .filter(Boolean)
                     .join(", ")}
                 </p>
@@ -394,8 +394,7 @@ const Checkout = () => {
               <h3>Phương thức thanh toán</h3>
               <div className="checkout-payment-grid">
                 {[
-                  { id: "cod",    label: "Thanh toán khi nhận hàng (COD)" },
-                  { id: "bank",   label: "Chuyển khoản ngân hàng" },
+                  { id: "stripe", label: "Thanh toán qua Stripe" },
                   { id: "paypal", label: "Thanh toán qua PayPal" },
                 ].map((m) => (
                   <div
@@ -416,6 +415,7 @@ const Checkout = () => {
                   options={{
                     "client-id": "AbmysnbLGLU6VbeC4XPSpPOhxZ4ITh0DMOwhWDMdS54farre2EGHRsxswr_3R9ujfBiStBzgsrIP7qO5",
                     currency: "USD",
+                    "disable-funding": "card",
                   }}
                 >
                   <PayPalButtons

@@ -44,7 +44,7 @@ const OrderSuccess = () => {
       </div>
 
       <div className="order-info">
-        <h2>Thông tin khách hàng</h2>
+        <h2>Thông tin người nhận </h2>
         <div className="info-grid">
           <p><strong>Họ tên:</strong> {order.customer.name}</p>
           <p><strong>Email:</strong> {order.customer.email}</p>
