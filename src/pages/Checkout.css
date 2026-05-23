@@ -210,6 +210,37 @@
   background: #ccc;
 }
 
+/* ── STRIPE CARD INPUT COMPLEX (Bản nâng cấp To & Rõ) ── */
+.stripe-card-container {
+  margin-top: 1.5rem;
+  padding: 1.5rem;            /* 🌟 TĂNG đệm lót từ 1.2rem lên 1.5rem để hộp dày và bề thế hơn */
+  border: 2px solid #333;     /* 🌟 TĂNG độ dày viền lên 2px và làm sáng nhẹ màu viền mặc định (#222 -> #333) */
+  background: #0d0d0d;        /* Làm nền hộp tối hơn một chút so với nền chung #111 để tạo chiều sâu */
+  border-radius: 0.75rem;
+  transition: all 0.25s ease; /* Thêm hiệu ứng mượt mà khi người dùng nhấn vào */
+}
+
+.stripe-card-container label {
+  display: block;
+  font-size: 0.95rem;         /* Tăng nhẹ cỡ chữ của tiêu đề "Thông tin thẻ..." */
+  color: #bbbbbb;             /* Làm sáng chữ tiêu đề lên một chút */
+  margin-bottom: 1rem;        /* Tăng khoảng cách từ tiêu đề xuống ô nhập thẻ */
+  font-weight: 600;           /* Làm chữ đậm và nét hơn */
+}
+
+/* 🌟 HIỆU ỨNG FOCUS (Khi khách hàng đang gõ số thẻ) */
+.StripeElement--focus {
+  border-color: #ffffff !important; /* Viền lập tức đổi sang màu trắng sáng rực rỡ */
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15); /* Thêm một lớp hào quang mờ xung quanh hộp để cực kỳ nổi bật */
+  background: #111111; /* Sáng nhẹ nền hộp lên để báo hiệu đang tương tác */
+}
+
+/* HIỆU ỨNG KHI KHÁCH NHẬP BỊ SAI SỐ THẺ */
+.StripeElement--invalid {
+  border-color: #ff4a4a !important; /* Viền chuyển sang đỏ rực cảnh báo */
+  box-shadow: 0 0 0 3px rgba(255, 74, 74, 0.2);
+}
+
 /* Responsive cho màn hình nhỏ: xếp dọc lại thay vì 3 cột ngang */
 @media (max-width: 768px) {
   .checkout-address-grid {
