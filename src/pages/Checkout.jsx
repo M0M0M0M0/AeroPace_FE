@@ -9,6 +9,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 const API = "http://localhost:8080/api/v1";
 const GEO = "https://esgoo.net/api-tinhthanh";
+const VAT_RATE = 0.1; // 10%
 
 const Checkout = () => {
   const { cart, clearCart } = useCart();
@@ -33,6 +34,11 @@ const Checkout = () => {
   const [useOtherReceiver, setUseOtherReceiver] = useState(false);
   const [useOtherAddress, setUseOtherAddress] = useState(false);
 
+  // ─── Shipping Methods ────────────────────────────────────────────────────────
+  const [shippingMethods, setShippingMethods] = useState([]);
+  const [selectedShipping, setSelectedShipping] = useState(null);
+  const [loadingShipping, setLoadingShipping] = useState(true);
+
   // ─── Form ────────────────────────────────────────────────────────────────────
   const [form, setForm] = useState({
     name: "",
@@ -41,8 +47,14 @@ const Checkout = () => {
     specificAddress: "",
     paymentMethod: "cod",
   });
-  // ─── Payment ────────────────────────────────────────────────────────────────────
+
+  // ─── Payment ────────────────────────────────────────────────────────────────
   const [pendingOrderId, setPendingOrderId] = useState(null);
+
+  // ─── Computed pricing ────────────────────────────────────────────────────────
+  const shippingFee = selectedShipping ? Number(selectedShipping.fee) : 0;
+  const vatAmount = Math.round(totalPrice * VAT_RATE);
+  const grandTotal = totalPrice + vatAmount + shippingFee;
 
   // ─── 1. Load provinces once ──────────────────────────────────────────────────
   useEffect(() => {
@@ -51,8 +63,26 @@ const Checkout = () => {
     });
   }, []);
 
-  // ─── 2. Auto-fill profile AFTER provinces are ready ─────────────────────────
-  // We split into two effects so we can react once provinces array is populated.
+  // ─── 2. Load shipping methods ─────────────────────────────────────────────────
+  useEffect(() => {
+    const fetchShipping = async () => {
+      try {
+        const res = await axios.get(`${API}/shipping-methods`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        const active = res.data.filter((m) => m.status !== "INACTIVE");
+        setShippingMethods(active);
+        if (active.length > 0) setSelectedShipping(active[0]);
+      } catch {
+        toast.error("Không thể tải phương thức vận chuyển.");
+      } finally {
+        setLoadingShipping(false);
+      }
+    };
+    fetchShipping();
+  }, []);
+
+  // ─── 3. Auto-fill profile AFTER provinces are ready ─────────────────────────
   useEffect(() => {
     if (!user?.id) { setLoadingProfile(false); return; }
 
@@ -70,7 +100,7 @@ const Checkout = () => {
           specificAddress: res.data.address || "",
         }));
       } catch {
-        // no profile → leave form empty, user fills manually
+        // no profile → leave form empty
       } finally {
         setLoadingProfile(false);
       }
@@ -79,7 +109,7 @@ const Checkout = () => {
     fetchProfile();
   }, [user?.id]); // eslint-disable-line
 
-  // ─── 3. Match province name → id once both are ready ─────────────────────────
+  // ─── 4. Match province name → id once both are ready ─────────────────────────
   useEffect(() => {
     if (!profileInfo?.province || !provinces.length || useOtherAddress) return;
     const matched = provinces.find(
@@ -88,7 +118,7 @@ const Checkout = () => {
     if (matched) setSelectedProvince(matched.id);
   }, [profileInfo, provinces, useOtherAddress]);
 
-  // ─── 4. Load districts when province changes ──────────────────────────────────
+  // ─── 5. Load districts when province changes ──────────────────────────────────
   useEffect(() => {
     if (!selectedProvince) { setDistricts([]); setSelectedDistrict(""); setWards([]); return; }
     axios.get(`${GEO}/2/${selectedProvince}.htm`).then((res) => {
@@ -98,7 +128,7 @@ const Checkout = () => {
     setWards([]);
   }, [selectedProvince]);
 
-  // ─── 5. Match district name → id once districts are ready ────────────────────
+  // ─── 6. Match district name → id once districts are ready ────────────────────
   useEffect(() => {
     if (!profileInfo?.district || !districts.length || useOtherAddress) return;
     const matched = districts.find(
@@ -107,7 +137,7 @@ const Checkout = () => {
     if (matched) setSelectedDistrict(matched.id);
   }, [profileInfo, districts, useOtherAddress]);
 
-  // ─── 6. Load wards when district changes ─────────────────────────────────────
+  // ─── 7. Load wards when district changes ─────────────────────────────────────
   useEffect(() => {
     if (!selectedDistrict) { setWards([]); setSelectedWard(""); return; }
     axios.get(`${GEO}/3/${selectedDistrict}.htm`).then((res) => {
@@ -116,7 +146,7 @@ const Checkout = () => {
     setSelectedWard("");
   }, [selectedDistrict]);
 
-  // ─── 7. Match ward name → id once wards are ready ────────────────────────────
+  // ─── 8. Match ward name → id once wards are ready ────────────────────────────
   useEffect(() => {
     if (!profileInfo?.ward || !wards.length || useOtherAddress) return;
     const matched = wards.find(
@@ -156,14 +186,12 @@ const Checkout = () => {
     setUseOtherAddress(false);
     if (profileInfo) {
       setForm((prev) => ({ ...prev, specificAddress: profileInfo.address || "" }));
-      // Re-trigger geo match chain by resetting; effects will re-run
       setSelectedProvince("");
       setSelectedDistrict("");
       setSelectedWard("");
     }
   };
 
-  // After revert, re-run province matching
   useEffect(() => {
     if (!useOtherAddress && profileInfo?.province && provinces.length) {
       const matched = provinces.find(
@@ -191,6 +219,10 @@ const Checkout = () => {
       toast.error("Vui lòng chọn đầy đủ Tỉnh / Huyện / Xã.");
       return false;
     }
+    if (!selectedShipping) {
+      toast.error("Vui lòng chọn phương thức vận chuyển.");
+      return false;
+    }
     return true;
   };
 
@@ -201,8 +233,12 @@ const Checkout = () => {
         order: {
           customer: { name: form.name, email: form.email, phone: form.phone, address: fullAddress },
           items: cartItems,
-          total: totalPrice,
+          subtotal: totalPrice,
+          vat: vatAmount,
+          shippingFee,
+          total: grandTotal,
           paymentMethod: method,
+          shippingMethod: selectedShipping?.name,
           date: new Date().toLocaleString(),
         },
       },
@@ -210,20 +246,24 @@ const Checkout = () => {
     toast.success("Đặt hàng thành công!");
   };
 
+  const buildOrderPayload = (paymentMethod, paymentOrderId = null) => ({
+    userId: user.id,
+    shippingAddress: form.specificAddress,
+    phoneNumber: form.phone,
+    paymentMethod,
+    receiverName: form.name,
+    ward: selectedWard ? wards.find((w) => w.id === selectedWard)?.full_name : profileInfo?.ward,
+    district: selectedDistrict ? districts.find((d) => d.id === selectedDistrict)?.full_name : profileInfo?.district,
+    province: selectedProvince ? provinces.find((p) => p.id === selectedProvince)?.full_name : profileInfo?.province,
+    vat: vatAmount,
+    shippingMethodId: selectedShipping?.id,
+    ...(paymentOrderId && { paymentOrderId }),
+  });
+
   const postOrder = (paymentMethod, paymentOrderId = null) =>
     axios.post(
       `${API}/orders/checkout`,
-      {
-        userId: user.id,
-        shippingAddress: form.specificAddress,
-        phoneNumber: form.phone,
-        paymentMethod,
-        receiverName: form.name,
-        ward: selectedWard ? wards.find(w => w.id === selectedWard)?.full_name : profileInfo?.ward,
-        district: selectedDistrict ? districts.find(d => d.id === selectedDistrict)?.full_name : profileInfo?.district,
-        province: selectedProvince ? provinces.find(p => p.id === selectedProvince)?.full_name : profileInfo?.province,
-        ...(paymentOrderId && { paymentOrderId }),
-      },
+      buildOrderPayload(paymentMethod, paymentOrderId),
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
 
@@ -244,25 +284,22 @@ const Checkout = () => {
       purchase_units: [{
         amount: {
           currency_code: "USD",
-          value: (totalPrice / 25000).toFixed(2)
-        }
+          value: (grandTotal / 25000).toFixed(2),
+        },
       }],
     });
     try {
       const res = await postOrder("paypal", paypalOrderId);
-      setPendingOrderId(res.data.id); // lưu orderId be
+      setPendingOrderId(res.data.id);
     } catch {
       toast.error("Không thể tạo đơn hàng.");
       throw new Error("abort");
     }
-
     return paypalOrderId;
   };
 
-
   const handlePayPalApprove = async (_data, actions) => {
     const details = await actions.order.capture();
-
     const transactionId = details.purchase_units[0].payments.captures[0].id;
     const paypalOrderId = details.id;
 
@@ -276,7 +313,6 @@ const Checkout = () => {
         },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
-
       executeOrderSuccess(getFullAddress(), "paypal");
     } catch {
       toast.error("Thanh toán thành công nhưng cập nhật đơn hàng thất bại.");
@@ -288,9 +324,6 @@ const Checkout = () => {
     return (
       <div className="checkout-empty">
         <p>Giỏ hàng trống.</p>
-        <button className="checkout-btn" onClick={() => navigate("/products")}>
-          Quay lại cửa hàng
-        </button>
       </div>
     );
 
@@ -362,7 +395,6 @@ const Checkout = () => {
                 )}
               </div>
 
-              {/* Dropdown chỉ hiện khi chọn địa chỉ khác */}
               {useOtherAddress && (
                 <div className="checkout-address-grid">
                   <select
@@ -402,7 +434,6 @@ const Checkout = () => {
                 </div>
               )}
 
-              {/* Địa chỉ cụ thể: readonly khi dùng địa chỉ profile, editable khi chọn khác */}
               <input
                 type="text"
                 placeholder="Số nhà, ngõ, tên đường..."
@@ -412,13 +443,46 @@ const Checkout = () => {
                 className={`checkout-input checkout-input-full${!useOtherAddress ? " checkout-input--readonly" : ""}`}
               />
 
-              {/* Hiển thị địa chỉ đầy đủ từ profile (preview) */}
               {!useOtherAddress && profileInfo && (
                 <p className="checkout-address-preview">
                   {[profileInfo.address, profileInfo.ward, profileInfo.district, profileInfo.province]
                     .filter(Boolean)
                     .join(", ")}
                 </p>
+              )}
+            </div>
+
+            {/* ── PHƯƠNG THỨC VẬN CHUYỂN ───────────────────────────────── */}
+            <div className="checkout-shipping">
+              <h3>Phương thức vận chuyển</h3>
+              {loadingShipping ? (
+                <span className="checkout-loading-text">Đang tải...</span>
+              ) : shippingMethods.length === 0 ? (
+                <p className="checkout-no-shipping">Không có phương thức vận chuyển khả dụng.</p>
+              ) : (
+                <div className="checkout-shipping-list">
+                  {shippingMethods.map((method) => (
+                    <label
+                      key={method.id}
+                      className={`checkout-shipping-card${selectedShipping?.id === method.id ? " active" : ""}`}
+                    >
+                      <input
+                        type="radio"
+                        name="shippingMethod"
+                        value={method.id}
+                        checked={selectedShipping?.id === method.id}
+                        onChange={() => setSelectedShipping(method)}
+                        className="checkout-shipping-radio"
+                      />
+                      <div className="checkout-shipping-info">
+                        <span className="checkout-shipping-name">{method.name}</span>
+                        <span className="checkout-shipping-fee">
+                          {Number(method.fee) === 0 ? "Miễn phí" : `${Number(method.fee).toLocaleString()} ₫`}
+                        </span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
               )}
             </div>
 
@@ -489,9 +553,30 @@ const Checkout = () => {
                 </div>
               ))}
             </div>
-            <div className="checkout-total">
-              <h3>Tổng tiền:</h3>
-              <p>{totalPrice.toLocaleString()} ₫</p>
+
+            {/* ── PRICE BREAKDOWN ───────────────────────────────────────── */}
+            <div className="checkout-price-breakdown">
+              <div className="checkout-price-row">
+                <span>Tạm tính</span>
+                <span>{totalPrice.toLocaleString()} ₫</span>
+              </div>
+              <div className="checkout-price-row">
+                <span>Phí vận chuyển</span>
+                <span>
+                  {shippingFee === 0
+                    ? <span className="checkout-free-tag">Miễn phí</span>
+                    : `${shippingFee.toLocaleString()} ₫`}
+                </span>
+              </div>
+              <div className="checkout-price-row">
+                <span>VAT (10%)</span>
+                <span>{vatAmount.toLocaleString()} ₫</span>
+              </div>
+              <div className="checkout-price-divider" />
+              <div className="checkout-total">
+                <h3>Tổng tiền</h3>
+                <p className="checkout-grand-total">{grandTotal.toLocaleString()} ₫</p>
+              </div>
             </div>
           </div>
         </div>
