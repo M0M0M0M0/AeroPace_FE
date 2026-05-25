@@ -137,7 +137,6 @@ const AdminProducts = () => {
       params.append("limit", limit);
       const res = await axios.get(`${BASE}/products/best-sellers?${params}`, { headers: authHeader() });
       setBestSellers(res.data || []);
-      console.log("Fetched best sellers:", res.data);
     } catch (err) {
       console.error(err);
     } finally {

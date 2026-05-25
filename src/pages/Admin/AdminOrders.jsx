@@ -11,7 +11,7 @@ const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
 
   // ── Filter states ─────────────────────────────────────────────
-  const [searchId, setSearchId] = useState("");
+  const [searchOrderCode, setSearchOrderCode] = useState("");
   const [searchName, setSearchName] = useState("");
   const [searchPhone, setSearchPhone] = useState("");
   const [searchAddress, setSearchAddress] = useState("");
@@ -23,7 +23,7 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     try {
       const params = new URLSearchParams();
-      if (searchId) params.append("id", searchId);
+      if (searchOrderCode) params.append("orderCode", searchOrderCode);
       if (searchName) params.append("receiverName", searchName);
       if (searchPhone) params.append("phoneNumber", searchPhone);
       if (searchAddress) params.append("shippingAddress", searchAddress);
@@ -32,7 +32,7 @@ const AdminOrders = () => {
       if (filterDateTo) params.append("dateTo", filterDateTo);
 
       const paramsAll = new URLSearchParams();
-      if (searchId) paramsAll.append("id", searchId);
+      if (searchOrderCode) paramsAll.append("orderCode", searchOrderCode);
       if (searchName) paramsAll.append("receiverName", searchName);
       if (searchPhone) paramsAll.append("phoneNumber", searchPhone);
       if (searchAddress) paramsAll.append("shippingAddress", searchAddress);
@@ -48,7 +48,6 @@ const AdminOrders = () => {
 
       setOrders(resFiltered.data);
       setAllOrders(resAll.data);
-      console.log("Fetched orders:", resFiltered.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -59,7 +58,7 @@ const AdminOrders = () => {
   useEffect(() => {
     fetchOrders();
   }, [
-    searchId,
+    searchOrderCode,
     searchName,
     searchPhone,
     searchAddress,
@@ -71,7 +70,7 @@ const AdminOrders = () => {
 
   // ── Reset filters ─────────────────────────────────────────────
   const handleResetFilters = () => {
-    setSearchId("");
+    setSearchOrderCode("");
     setSearchName("");
     setSearchPhone("");
     setSearchAddress("");
@@ -83,7 +82,7 @@ const AdminOrders = () => {
   // ── Filter + sort logic ───────────────────────────────────────
   const filteredOrders = orders
     .filter((o) => {
-      const matchId = searchId ? String(o.id).includes(searchId.trim()) : true;
+      const matchOrderCode = searchOrderCode ? String(o.orderCode).includes(searchOrderCode.trim()) : true;
       const matchName = searchName
         ? (o.receiverName || "")
           .toLowerCase()
@@ -112,7 +111,7 @@ const AdminOrders = () => {
       }
 
       return (
-        matchId &&
+        matchOrderCode &&
         matchName &&
         matchPhone &&
         matchAddress &&
@@ -124,7 +123,7 @@ const AdminOrders = () => {
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const hasActiveFilter =
-    searchId ||
+    searchOrderCode ||
     searchName ||
     searchPhone ||
     searchAddress ||
@@ -204,9 +203,9 @@ const AdminOrders = () => {
       <div className="ao-filter-bar">
         <input
           className="ao-filter-input ao-filter-id"
-          placeholder="ID"
-          value={searchId}
-          onChange={(e) => setSearchId(e.target.value)}
+          placeholder="Mã đơn hàng"
+          value={searchOrderCode}
+          onChange={(e) => setSearchOrderCode(e.target.value)}
         />
         <input
           className="ao-filter-input"
@@ -289,7 +288,7 @@ const AdminOrders = () => {
             <thead>
               <tr>
                 <th>#</th>
-                <th>ID</th>
+                <th>Mã đơn</th>
                 <th>Người nhận</th>
                 <th>SĐT</th>
                 <th>Địa chỉ</th>
@@ -308,9 +307,9 @@ const AdminOrders = () => {
                 </tr>
               ) : (
                 filteredOrders.map((order, idx) => (
-                  <tr key={order.id} className="ao-row">
+                  <tr key={order.orderCode} className="ao-row">
                     <td>{idx + 1}</td>
-                    <td className="ao-id">#{order.id}</td>
+                    <td className="ao-id">#{order.orderCode}</td>
                     <td className="ao-name">{order.receiverName || "—"}</td>
                     <td>{order.phoneNumber}</td>
                     <td className="ao-address">{order.shippingAddress}</td>
@@ -328,7 +327,7 @@ const AdminOrders = () => {
                     <td>
                       <button
                         className="ao-view-btn"
-                        onClick={() => navigate(`/admin/orders/details/${order.id}`)}
+                        onClick={() => navigate(`/admin/orders/details/${order.orderCode}`)}
                       >
                         <Eye size={16} /> Chi tiết
                       </button>

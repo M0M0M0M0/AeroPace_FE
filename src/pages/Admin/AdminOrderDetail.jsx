@@ -181,7 +181,7 @@ const CustomerModal = ({ userId, username, onClose }) => {
 };
 
 // ── Cancel Modal ──────────────────────────────────────────────────────────────
-const CancelModal = ({ orderId, onClose, onConfirm }) => {
+const CancelModal = ({ orderCode, onClose, onConfirm }) => {
     const [reason, setReason] = useState("");
     const [error, setError] = useState("");
 
@@ -199,7 +199,7 @@ const CancelModal = ({ orderId, onClose, onConfirm }) => {
                 <div className="od-modal-header">
                     <div>
                         <h3 className="od-modal-title">Hủy đơn hàng</h3>
-                        <p className="od-modal-sub">Đơn hàng #{orderId}</p>
+                        <p className="od-modal-sub">Đơn hàng #{orderCode}</p>
                     </div>
                     <button className="od-modal-close" onClick={onClose}><X size={18} /></button>
                 </div>
@@ -233,14 +233,14 @@ const CancelModal = ({ orderId, onClose, onConfirm }) => {
 // MAIN PAGE
 // ════════════════════════════════════════════════════════════════════════════════
 const AdminOrderDetail = () => {
-    const { id } = useParams();
+    const { orderCode } = useParams();
     const navigate = useNavigate();
 
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
 
     // Modals
-    const [productModal, setProductModal] = useState(null);   // item object
+    const [productModal, setProductModal] = useState(null);  
     const [customerModal, setCustomerModal] = useState(false);
     const [cancelModal, setCancelModal] = useState(false);
     const [updating, setUpdating] = useState(false);
@@ -249,7 +249,7 @@ const AdminOrderDetail = () => {
     const fetchOrder = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`${ADMIN}/orders/details/${id}`, { headers: authHeader() });
+            const res = await axios.get(`${ADMIN}/orders/details/${orderCode}`, { headers: authHeader() });
             setOrder(res.data);
             console.log("Order details:", res.data);
         } catch (err) {
@@ -259,7 +259,7 @@ const AdminOrderDetail = () => {
         }
     };
 
-    useEffect(() => { fetchOrder(); }, [id]);
+    useEffect(() => { fetchOrder(); }, [orderCode]);
 
     // ── Update status ────────────────────────────────────────────────────────
     const handleNextStatus = async () => {
@@ -268,7 +268,7 @@ const AdminOrderDetail = () => {
         setUpdating(true);
         try {
             await axios.put(
-                `${ADMIN}/orders/${id}/status?status=${next}`, {},
+                `${ADMIN}/orders/${orderCode}/status?status=${next}`, {},
                 { headers: authHeader() }
             );
             await fetchOrder();
@@ -285,7 +285,7 @@ const AdminOrderDetail = () => {
         setUpdating(true);
         try {
             await axios.put(
-                `${ADMIN}/orders/${id}/status?status=CANCELLED`,
+                `${ADMIN}/orders/${orderCode}/status?status=CANCELLED`,
                 { reason },
                 { headers: authHeader() }
             );
@@ -328,7 +328,7 @@ const AdminOrderDetail = () => {
                     <ArrowLeft size={18} /> Quay lại
                 </button>
                 <div className="od-topbar-info">
-                    <h1 className="od-title">Đơn hàng <span className="od-title-id">#{order.id}</span></h1>
+                    <h1 className="od-title">Đơn hàng <span className="od-title-id">#{order.orderCode}</span></h1>
                     <span className={`od-badge od-badge--${meta.cls}`}>
                         {meta.icon} {meta.label}
                     </span>
@@ -354,8 +354,8 @@ const AdminOrderDetail = () => {
                                     title="Xem chi tiết sản phẩm"
                                 >
                                     <div className="od-item-img-wrap">
-                                        {item.imageUrl
-                                            ? <img src={item.imageUrl} alt={item.productName} className="od-item-img" />
+                                        {item.productImgUrl
+                                            ? <img src={item.productImgUrl} alt={item.productName} className="od-item-img" />
                                             : <div className="od-item-img od-item-img--empty"><Package size={18} /></div>
                                         }
                                     </div>
@@ -487,7 +487,7 @@ const AdminOrderDetail = () => {
 
             {cancelModal && (
                 <CancelModal
-                    orderId={order.id}
+                    orderCode={order.orderCode}
                     onClose={() => setCancelModal(false)}
                     onConfirm={handleCancel}
                 />

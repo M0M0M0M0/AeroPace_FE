@@ -84,7 +84,7 @@ function App() {
                 <Route path="customers" element={<AdminCustomers />} />
                 <Route path="customers/:id" element={<AdminCustomerDetail />} />
                 <Route path="orders" element={<AdminOrders />} />
-                <Route path="orders/details/:id" element={<AdminOrderDetail />} />
+                <Route path="orders/details/:orderCode" element={<AdminOrderDetail />} />
                 <Route path="shippings" element={<AdminShippingPage />} />
               </Route>
             </Route>

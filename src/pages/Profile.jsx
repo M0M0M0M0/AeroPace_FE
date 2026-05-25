@@ -50,7 +50,8 @@ const Profile = () => {
 
   const [cancelModal, setCancelModal] = useState({
     open: false,
-    orderId: null,
+    orderCode: null,
+    note: "",
   });
 
   const [cancelling, setCancelling] = useState(false);
@@ -202,39 +203,35 @@ const Profile = () => {
     navigate("/login");
   };
 
-  const canCancel = (status) => {
-    return status === "PAID" || status === "SHIP_COD";
-  };
+  const canCancel = (status) => status === "PENDING" || status === "PAID";
 
-  const openCancelModal = (orderId) => {
+  const openCancelModal = (orderCode) => {
     setCancelModal({
       open: true,
-      orderId,
+      orderCode,
     });
   };
 
   const closeCancelModal = () => {
     if (cancelling) return;
-
-    setCancelModal({
-      open: false,
-      orderId: null,
-    });
+    setCancelModal({ open: false, orderCode: null, note: "" });
   };
 
   const handleConfirmCancel = async () => {
-    if (!cancelModal.orderId) return;
+    if (!cancelModal.orderCode) return;
 
     setCancelling(true);
 
     try {
       await axios.put(
-        `http://localhost:8080/api/v1/orders/${cancelModal.orderId}/cancel`,
+        `http://localhost:8080/api/v1/orders/${cancelModal.orderCode}/cancel`,
+        null,
+        { params: { cancelNote: cancelModal.note || undefined } }
       );
 
       setOrders((prev) =>
         prev.map((o) =>
-          o.id === cancelModal.orderId
+          o.orderCode === cancelModal.orderCode
             ? { ...o, status: "CANCELLED" }
             : o,
         ),
@@ -242,7 +239,7 @@ const Profile = () => {
 
       setCancelModal({
         open: false,
-        orderId: null,
+        orderCode: null,
       });
     } catch (err) {
       console.log("CANCEL ORDER ERROR:", err.response || err);
@@ -254,23 +251,13 @@ const Profile = () => {
 
   const getStatusLabel = (status) => {
     switch (status) {
-      case "PAID":
-        return "Đã thanh toán";
-
-      case "SHIP_COD":
-        return "Chờ giao hàng (COD) - Thanh toán khi nhận hàng";
-
-      case "SHIPPING":
-        return "Chờ giao hàng";
-
-      case "DELIVERED":
-        return "Đã giao hàng";
-
-      case "CANCELLED":
-        return "Đã hủy";
-
-      default:
-        return status;
+      case "PENDING": return "Chờ xác nhận";
+      case "PAID": return "Đã thanh toán";
+      case "SHIPPING": return "Đang giao hàng";
+      case "DELIVERED": return "Đã giao hàng";
+      case "COMPLETED": return "Hoàn thành";
+      case "CANCELLED": return "Đã hủy";
+      default: return status;
     }
   };
 
@@ -280,12 +267,6 @@ const Profile = () => {
         return {
           bg: "rgba(96, 165, 250, 0.2)",
           color: "#60a5fa",
-        };
-
-      case "SHIP_COD":
-        return {
-          bg: "rgba(250, 204, 21, 0.2)",
-          color: "#facc15",
         };
 
       case "SHIPPING":
@@ -305,6 +286,8 @@ const Profile = () => {
           bg: "rgba(248, 113, 113, 0.2)",
           color: "#f87171",
         };
+      case "PENDING": return { bg: "rgba(156, 163, 175, 0.2)", color: "#9ca3af" };
+      case "COMPLETED": return { bg: "rgba(74, 222, 128, 0.2)", color: "#4ade80" };
 
       default:
         return {
@@ -355,15 +338,6 @@ const Profile = () => {
               Lịch sử mua hàng
             </button>
 
-            {user?.role === "admin" && (
-              <button
-                className="profile-nav-btn"
-                onClick={() => navigate("/admin")}
-              >
-                <Shield size={18} />
-                Admin
-              </button>
-            )}
 
             <button
               className="profile-nav-btn profile-nav-btn-logout"
@@ -562,12 +536,12 @@ const Profile = () => {
 
                       return (
                         <div
-                          key={order.id}
+                          key={order.orderCode}
                           className="profile-order-card"
                         >
                           <div className="profile-order-card-header">
                             <span className="profile-order-id">
-                              ID đơn hàng: {order.id}
+                              Mã đơn: #{order.orderCode}
                             </span>
 
                             <span
@@ -647,6 +621,26 @@ const Profile = () => {
                                   )}
                                 </div>
                               )}
+                            {order.status === "CANCELLED" && order.cancelReason &&
+                              (order.cancelReason === "USER_CANCELLED" || order.cancelReason === "ADMIN_CANCELLED") && (
+                                <p style={{ color: "#f87171", fontSize: "0.85rem" }}>
+                                  {order.cancelNote || (order.cancelReason === "ADMIN_CANCELLED" ? "Admin hủy đơn" : "Người dùng hủy đơn")}
+                                </p>
+                              )}
+                            {order.status === "CANCELLED" && (
+                              <p style={{ color: "#f87171", fontSize: "0.85rem" }}>
+                                Lý do hủy: "{" "}
+                                {order.cancelReason === "USER_CANCELLED"
+                                  ? order.cancelNote || "Người dùng hủy đơn"
+                                  : order.cancelReason === "ADMIN_CANCELLED"
+                                    ? order.cancelNote || "Admin hủy đơn"
+                                    : order.cancelReason === "PAYMENT_TIMEOUT"
+                                      ? "Hết thời gian thanh toán"
+                                      : order.cancelReason === "PAYMENT_REPLACED"
+                                        ? "Người dùng khởi tạo thanh toán mới"
+                                        : "—"} "
+                              </p>
+                            )}
                           </div>
 
                           <div className="profile-order-card-footer">
@@ -659,7 +653,7 @@ const Profile = () => {
                               <button
                                 className="profile-cancel-order-btn"
                                 onClick={() =>
-                                  openCancelModal(order.id)
+                                  openCancelModal(order.orderCode)
                                 }
                               >
                                 <X size={15} />
@@ -690,11 +684,17 @@ const Profile = () => {
 
             <p>
               Bạn có chắc muốn hủy đơn hàng{" "}
-              <strong>#{cancelModal.orderId}</strong> không?
+              <strong>#{cancelModal.orderCode}</strong> không?
               <br />
               Hành động này không thể hoàn tác.
             </p>
-
+            <textarea
+              placeholder="Lý do hủy đơn (không bắt buộc)..."
+              value={cancelModal.note}
+              onChange={(e) => setCancelModal((prev) => ({ ...prev, note: e.target.value }))}
+              rows={3}
+              style={{ width: "100%", marginTop: "0.75rem", background: "#1a1a1a", color: "#fff", border: "1px solid #333", borderRadius: "8px", padding: "0.6rem", resize: "none" }}
+            />
             <div className="profile-cancel-modal-actions">
               <button
                 className="profile-cancel-modal-back"
