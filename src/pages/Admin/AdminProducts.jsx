@@ -108,7 +108,6 @@ const AdminProducts = () => {
       const res = await axios.get(`${BASE}/products/filter?${params}`, { headers: authHeader() });
       setProducts(res.data.products || res.data.content || []);
       setTotalPages(res.data.totalPages || 1);
-      console.log("Fetched products with filters:", res.data);
     } catch (err) {
       console.error(err);
     } finally {

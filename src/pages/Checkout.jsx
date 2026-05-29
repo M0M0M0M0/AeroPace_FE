@@ -11,7 +11,7 @@ import { Elements, CardElement, useStripe, useElements } from "@stripe/react-str
 
 const API = "http://localhost:8080/api/v1";
 const GEO = "https://esgoo.net/api-tinhthanh";
-const VAT_RATE = 0.1; // 10%
+const VAT_RATE = 0.1;
 const stripePromise = loadStripe("pk_test_51TZrIzCOSfqKuHsnETgOAQYMnaJrRIOOxiwiuQ8GzZWXrCxZI7wnySO0jmwxkCqxSLEmJqClgWYqgD3CjwMsXRRN00mUzZnt6j");
 
 const CheckoutForm = () => {
@@ -277,25 +277,34 @@ const CheckoutForm = () => {
     if (!validateForm()) return;
 
     try {
-      // ─── NẾU CHỌN PHƯƠNG THỨC STRIPE ───────────────────────────────────────
       if (form.paymentMethod === "stripe") {
         if (!stripe || !elements) {
-          toast.error("Hệ thống thanh toán Stripe chưa sẵn sàng. Vui lòng thử lại.");
+          toast.error("Hệ thống thanh toán Stripe chưa sẵn sàng.");
           return;
         }
 
-        // Bước A: Gọi Backend tạo PaymentIntent để lấy mã bảo mật clientSecret
+        // Bước A: Gửi toàn bộ thông tin, backend tạo order + PaymentIntent cùng lúc
         const intentRes = await axios.post(
           `${API}/orders/create-payment-intent`,
           {
-            amount: totalPrice, // Gửi tổng số tiền đơn hàng
-            currency: "vnd"
+            userId: user.id,
+            shippingAddress: form.specificAddress,
+            phoneNumber: form.phone,
+            paymentMethod: "stripe",
+            receiverName: form.name,
+            ward: selectedWard ? wards.find(w => w.id === selectedWard)?.full_name : profileInfo?.ward,
+            district: selectedDistrict ? districts.find(d => d.id === selectedDistrict)?.full_name : profileInfo?.district,
+            province: selectedProvince ? provinces.find(p => p.id === selectedProvince)?.full_name : profileInfo?.province,
+            vat: vatAmount,
+            shippingMethodId: selectedShipping?.id,
+            grandTotal: grandTotal, // để backend tạo PaymentIntent đúng số tiền
           },
           { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
-        const clientSecret = intentRes.data.clientSecret;
 
-        // Bước B: Gửi thông tin thẻ trực tiếp lên server Stripe để xác thực
+        const { clientSecret, orderId } = intentRes.data;
+
+        // Bước B: Xác nhận thẻ với Stripe
         const cardElement = elements.getElement(CardElement);
         const paymentResult = await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
@@ -317,12 +326,20 @@ const CheckoutForm = () => {
           toast.error("Giao dịch qua Stripe không thành công.");
           return;
         }
-        // Nếu chạy đến đây tức là tiền đã được trừ/xử lý thành công trên Stripe!
-      }
 
-      // ─── LƯU ĐƠN HÀNG VÀO DATABASE (Áp dụng cho cả COD và Stripe thành công) ───
-      await postOrder(form.paymentMethod);
-      executeOrderSuccess(getFullAddress(), form.paymentMethod);
+        // Bước C: Patch order với chargeId — giống PayPal
+        await axios.patch(
+          `${API}/orders/${orderId}/payment`,
+          {
+            paymentOrderId: paymentResult.paymentIntent.id,       // pi_xxx
+            paymentTransactionId: paymentResult.paymentIntent.latest_charge, // ch_xxx
+            paymentStatus: "PAID",
+          },
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+        );
+
+        executeOrderSuccess(getFullAddress(), "stripe");
+      }
     } catch (err) {
       toast.error("Đặt hàng thất bại.");
     }
@@ -369,7 +386,7 @@ const CheckoutForm = () => {
     }
   };
 
-  
+
 
   // ─── Guard ───────────────────────────────────────────────────────────────────
   if (!cartItems.length)
@@ -561,25 +578,25 @@ const CheckoutForm = () => {
               <div className="stripe-card-container">
                 <label>Thông tin thẻ tín dụng hoặc thẻ ghi nợ</label>
                 <CardElement
-                    options={{
-                      style: {
-                        base: {
-                          color: "#ffffff", // Chữ màu trắng tinh rực rỡ
-                          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                          fontSize: "18px", // 🌟 TĂNG kích thước chữ từ 15px lên 18px để to và rõ ràng hơn
-                          lineHeight: "32px", // 🌟 THÊM độ cao dòng để các số nhập vào không bị dính nhau, khung nhìn thoáng hơn
-                          letterSpacing: "0.025em", // Giãn chữ một chút cho dễ đọc chuỗi số thẻ dài
-                          "::placeholder": { 
-                            color: "#888888" // 🌟 LÀM SÁNG màu chữ gợi ý (Placeholder) từ #666 lên #888 để khách dễ nhìn thấy cấu trúc điền
-                          },
-                        },
-                        invalid: {
-                          color: "#ff4a4a", // Màu đỏ neon rõ ràng hơn khi nhập sai số thẻ
-                          iconColor: "#ff4a4a",
+                  options={{
+                    style: {
+                      base: {
+                        color: "#ffffff",
+                        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                        fontSize: "18px",
+                        lineHeight: "32px",
+                        letterSpacing: "0.025em",
+                        "::placeholder": {
+                          color: "#888888"
                         },
                       },
-                    }}
-                  />
+                      invalid: {
+                        color: "#ff4a4a",
+                        iconColor: "#ff4a4a",
+                      },
+                    },
+                  }}
+                />
               </div>
             )}
 

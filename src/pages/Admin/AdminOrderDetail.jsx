@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, X, ChevronRight, Truck, CheckCircle, XCircle, User, Phone, MapPin, FileText, Clock, Package } from "lucide-react";
+import {
+    ArrowLeft, X, ChevronRight, Truck, CheckCircle, XCircle,
+    User, Phone, MapPin, FileText, Clock, Package, ExternalLink,
+    CreditCard, AlertTriangle, RefreshCw
+} from "lucide-react";
 import axios from "axios";
 import "./AdminOrderDetail.css";
 
@@ -12,28 +16,44 @@ const authHeader = () => ({
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const STATUS_META = {
-    PAID: { label: "Đã thanh toán", cls: "paid", icon: <Clock size={14} /> },
-    SHIP_COD: { label: "Chờ giao (COD)", cls: "ship-cod", icon: <Clock size={14} /> },
-    SHIPPING: { label: "Đang giao", cls: "shipping", icon: <Truck size={14} /> },
-    DELIVERED: { label: "Đã giao", cls: "delivered", icon: <CheckCircle size={14} /> },
-    CANCELLED: { label: "Đã hủy", cls: "cancelled", icon: <XCircle size={14} /> },
+    PAID: { label: "Đã thanh toán", cls: "paid", icon: <CheckCircle size={12} /> },
+    PENDING: { label: "Chờ xử lý", cls: "pending", icon: <Clock size={12} /> },
+    SHIPPING: { label: "Đang giao", cls: "shipping", icon: <Truck size={12} /> },
+    DELIVERED: { label: "Đã giao", cls: "delivered", icon: <CheckCircle size={12} /> },
+    CANCELLED: { label: "Đã hủy", cls: "cancelled", icon: <XCircle size={12} /> },
+    COMPLETED: { label: "Hoàn tất", cls: "completed", icon: <CheckCircle size={12} /> },
+};
+
+const PAYMENT_META = {
+    STRIPE: { label: "Stripe", cls: "stripe" },
+    COD: { label: "PayPal", cls: "paypal" },
 };
 
 const getNextStatus = (status) => {
     switch (status) {
+        case "PENDING":
+            return "PAID";
+
         case "PAID":
-        case "SHIP_COD": return "SHIPPING";
-        case "SHIPPING": return "DELIVERED";
-        default: return null;
+            return "SHIPPING";
+
+        case "SHIPPING":
+            return "DELIVERED";
+
+        case "DELIVERED":
+            return "COMPLETED";
+
+        default:
+            return null;
     }
 };
 
-const canCancel = (status) => ["PAID", "SHIP_COD", "SHIPPING"].includes(status);
+const canCancel = (status) => ["PAID", "PENDING"].includes(status);
 
 const fmt = (n) => n?.toLocaleString("vi-VN") + " ₫";
 const fmtDate = (d) => d ? new Date(d).toLocaleString("vi-VN") : "—";
 
-// ── Product Detail Modal (view-only, giống AdminProducts) ─────────────────────
+// ── Product Detail Modal ──────────────────────────────────────────────────────
 const ProductDetailModal = ({ product, onClose }) => {
     if (!product) return null;
     return (
@@ -46,14 +66,11 @@ const ProductDetailModal = ({ product, onClose }) => {
                     </div>
                     <button className="od-modal-close" onClick={onClose}><X size={18} /></button>
                 </div>
-
-                {/* Ảnh */}
                 {product.imageUrl && (
                     <div className="od-product-image-wrap">
                         <img src={product.imageUrl} alt={product.productName} className="od-product-image" />
                     </div>
                 )}
-
                 <div className="od-product-fields">
                     <div className="od-field-row">
                         <span className="od-field-label">Tên sản phẩm</span>
@@ -84,9 +101,8 @@ const ProductDetailModal = ({ product, onClose }) => {
                         <span className="od-field-value od-field-value--price">{fmt(product.price * product.quantity)}</span>
                     </div>
                 </div>
-
                 <div className="od-modal-actions">
-                    <button className="od-btn-cancel" onClick={onClose}>Đóng</button>
+                    <button className="od-btn-ghost" onClick={onClose}>Đóng</button>
                 </div>
             </div>
         </div>
@@ -101,9 +117,7 @@ const CustomerModal = ({ userId, username, onClose }) => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const res = await axios.get(`${ADMIN}/customers/${userId}`, {
-                    headers: authHeader(),
-                });
+                const res = await axios.get(`${ADMIN}/customers/${userId}`, { headers: authHeader() });
                 setData(res.data);
             } catch (err) {
                 console.error(err);
@@ -124,56 +138,31 @@ const CustomerModal = ({ userId, username, onClose }) => {
                     </div>
                     <button className="od-modal-close" onClick={onClose}><X size={18} /></button>
                 </div>
-
                 {loading ? (
                     <div className="od-modal-loading">Đang tải...</div>
                 ) : !data ? (
                     <p style={{ color: "#555", fontSize: "0.875rem" }}>Không tải được thông tin.</p>
                 ) : (
                     <div className="od-product-fields">
-                        <div className="od-field-row">
-                            <span className="od-field-label">Username</span>
-                            <span className="od-field-value">{data.username || "—"}</span>
-                        </div>
-                        <div className="od-field-row">
-                            <span className="od-field-label">Email</span>
-                            <span className="od-field-value">{data.email || "—"}</span>
-                        </div>
-                        <div className="od-field-row">
-                            <span className="od-field-label">Họ tên</span>
-                            <span className="od-field-value">{data.fullName || "—"}</span>
-                        </div>
-                        <div className="od-field-row">
-                            <span className="od-field-label">Số điện thoại</span>
-                            <span className="od-field-value">{data.phoneNumber || "—"}</span>
-                        </div>
-                        <div className="od-field-row">
-                            <span className="od-field-label">Địa chỉ</span>
-                            <span className="od-field-value">{data.address || "—"}</span>
-                        </div>
-                        <div className="od-field-row">
-                            <span className="od-field-label">Giới tính</span>
-                            <span className="od-field-value">
-                                {data.gender === "male"
-                                    ? "Nam"
-                                    : data.gender === "female"
-                                        ? "Nữ"
-                                        : "—"}
-                            </span>
-                        </div>
-                        <div className="od-field-row">
-                            <span className="od-field-label">Ngày sinh</span>
-                            <span className="od-field-value">{data.dob || "—"}</span>
-                        </div>
-                        <div className="od-field-row">
-                            <span className="od-field-label">Ngày tạo TK</span>
-                            <span className="od-field-value">{data.createdAt ? new Date(data.createdAt).toLocaleString("vi-VN") : "—"}</span>
-                        </div>
+                        {[
+                            ["Username", data.username],
+                            ["Email", data.email],
+                            ["Họ tên", data.fullName],
+                            ["Số điện thoại", data.phoneNumber],
+                            ["Địa chỉ", data.address],
+                            ["Giới tính", data.gender === "male" ? "Nam" : data.gender === "female" ? "Nữ" : null],
+                            ["Ngày sinh", data.dob],
+                            ["Ngày tạo TK", data.createdAt ? new Date(data.createdAt).toLocaleString("vi-VN") : null],
+                        ].map(([label, val]) => (
+                            <div key={label} className="od-field-row">
+                                <span className="od-field-label">{label}</span>
+                                <span className="od-field-value">{val || "—"}</span>
+                            </div>
+                        ))}
                     </div>
                 )}
-
                 <div className="od-modal-actions">
-                    <button className="od-btn-cancel" onClick={onClose}>Đóng</button>
+                    <button className="od-btn-ghost" onClick={onClose}>Đóng</button>
                 </div>
             </div>
         </div>
@@ -186,10 +175,7 @@ const CancelModal = ({ orderCode, onClose, onConfirm }) => {
     const [error, setError] = useState("");
 
     const handleConfirm = () => {
-        if (!reason.trim()) {
-            setError("Vui lòng nhập lý do hủy đơn.");
-            return;
-        }
+        if (!reason.trim()) { setError("Vui lòng nhập lý do hủy đơn."); return; }
         onConfirm(reason.trim());
     };
 
@@ -203,11 +189,7 @@ const CancelModal = ({ orderCode, onClose, onConfirm }) => {
                     </div>
                     <button className="od-modal-close" onClick={onClose}><X size={18} /></button>
                 </div>
-
-                <p className="od-cancel-desc">
-                    Hành động này không thể hoàn tác. Vui lòng nhập lý do hủy đơn.
-                </p>
-
+                <p className="od-cancel-desc">Hành động này không thể hoàn tác. Vui lòng nhập lý do hủy đơn.</p>
                 <div className="od-form-row">
                     <label>Lý do hủy *</label>
                     <textarea
@@ -217,11 +199,9 @@ const CancelModal = ({ orderCode, onClose, onConfirm }) => {
                         onChange={(e) => { setReason(e.target.value); setError(""); }}
                     />
                 </div>
-
                 {error && <p className="od-form-error">{error}</p>}
-
                 <div className="od-modal-actions">
-                    <button className="od-btn-cancel" onClick={onClose}>Bỏ qua</button>
+                    <button className="od-btn-ghost" onClick={onClose}>Bỏ qua</button>
                     <button className="od-btn-danger" onClick={handleConfirm}>Xác nhận hủy</button>
                 </div>
             </div>
@@ -239,8 +219,7 @@ const AdminOrderDetail = () => {
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Modals
-    const [productModal, setProductModal] = useState(null);  
+    const [productModal, setProductModal] = useState(null);
     const [customerModal, setCustomerModal] = useState(false);
     const [cancelModal, setCancelModal] = useState(false);
     const [updating, setUpdating] = useState(false);
@@ -251,7 +230,7 @@ const AdminOrderDetail = () => {
         try {
             const res = await axios.get(`${ADMIN}/orders/details/${orderCode}`, { headers: authHeader() });
             setOrder(res.data);
-            console.log("Order details:", res.data);
+            console.log("Fetched order:", res.data);
         } catch (err) {
             console.error(err);
         } finally {
@@ -301,49 +280,59 @@ const AdminOrderDetail = () => {
 
     // ── Render ───────────────────────────────────────────────────────────────
     if (loading) {
-        return (
-            <div className="od-page">
-                <div className="od-loading">Đang tải chi tiết đơn hàng...</div>
-            </div>
-        );
+        return <div className="od-page"><div className="od-loading">Đang tải chi tiết đơn hàng...</div></div>;
     }
-
     if (!order) {
-        return (
-            <div className="od-page">
-                <div className="od-loading">Không tìm thấy đơn hàng.</div>
-            </div>
-        );
+        return <div className="od-page"><div className="od-loading">Không tìm thấy đơn hàng.</div></div>;
     }
 
-    const meta = STATUS_META[order.status] || {};
+    const statusMeta = STATUS_META[order.status] || {};
+    const paymentMeta = PAYMENT_META[order.paymentMethod] || { label: order.paymentMethod, cls: "default" };
     const nextStatus = getNextStatus(order.status);
     const nextMeta = nextStatus ? STATUS_META[nextStatus] : null;
 
+    // Tính phí ship và VAT từ order (hoặc fallback về 0)
+    const subTotal = order.subTotal ?? order.items?.reduce((s, i) => s + i.price * i.quantity, 0) ?? 0;
+    const shipFee = order.shippingFee ?? 0;
+    const vat = order.vat ?? 0;
+    const total = order.totalPrice ?? (subTotal + shipFee + vat);
+
+    // Lý do hủy / hoàn tiền
+    const hasCancelSection = order.status === "CANCELLED" && (order.cancelReason || order.cancelNote || order.refundReason);
+
     return (
         <div className="od-page">
-            {/* ── Back + Title ───────────────────────────────────────────────── */}
-            <div className="od-topbar">
-                <button className="od-back-btn" onClick={() => navigate("/admin/orders")}>
-                    <ArrowLeft size={18} /> Quay lại
-                </button>
-                <div className="od-topbar-info">
-                    <h1 className="od-title">Đơn hàng <span className="od-title-id">#{order.orderCode}</span></h1>
-                    <span className={`od-badge od-badge--${meta.cls}`}>
-                        {meta.icon} {meta.label}
-                    </span>
+
+            {/* ── Header ─────────────────────────────────────────────────────── */}
+            <div className="od-header">
+                <div className="od-header-left">
+                    <h1 className="od-title">Chi tiết đơn hàng</h1>
+                    <div className="od-header-meta">
+                        <span className="od-order-code">⊕ {order.orderCode}</span>
+                        <span className={`od-badge od-badge--${statusMeta.cls}`}>
+                            {statusMeta.icon} {statusMeta.label}
+                        </span>
+                        <span className={`od-badge od-badge--payment od-badge--${paymentMeta.cls}`}>
+                            <CreditCard size={12} /> {paymentMeta.label}
+                        </span>
+                    </div>
+                    <p className="od-created">Đặt lúc: {fmtDate(order.createdAt)}</p>
                 </div>
-                <p className="od-created">Đặt lúc: {fmtDate(order.createdAt)}</p>
+                <button className="od-back-btn" onClick={() => navigate("/admin/orders")}>
+                    <ArrowLeft size={16} /> Quay lại
+                </button>
             </div>
 
             {/* ── Content grid ───────────────────────────────────────────────── */}
             <div className="od-grid">
 
-                {/* LEFT: Items + Tổng tiền */}
+                {/* LEFT ─────────────────────────────────────────────────────── */}
                 <div className="od-col-main">
+
+                    {/* Sản phẩm */}
                     <div className="od-card">
                         <h2 className="od-card-title">
-                            <Package size={16} /> Sản phẩm ({order.items?.length || 0})
+                            <Package size={14} /> SẢN PHẨM ({order.items?.length || 0})
                         </h2>
                         <div className="od-items">
                             {order.items?.map((item, idx) => (
@@ -351,7 +340,6 @@ const AdminOrderDetail = () => {
                                     key={idx}
                                     className="od-item od-item--clickable"
                                     onClick={() => setProductModal(item)}
-                                    title="Xem chi tiết sản phẩm"
                                 >
                                     <div className="od-item-img-wrap">
                                         {item.productImgUrl
@@ -373,81 +361,186 @@ const AdminOrderDetail = () => {
                             ))}
                         </div>
 
-                        <div className="od-total-row">
-                            <span>Tổng cộng</span>
-                            <span className="od-total-price">{fmt(order.totalPrice)}</span>
+                        {/* Pricing summary */}
+                        <div className="od-pricing">
+                            <div className="od-pricing-row">
+                                <span>Tạm tính</span>
+                                <span>{fmt(subTotal)}</span>
+                            </div>
+                            {shipFee >= 0 && (
+                                <div className="od-pricing-row">
+                                    <span>Phí ship</span>
+                                    <span>{fmt(shipFee)}</span>
+                                </div>
+                            )}
+                            {vat > 0 && (
+                                <div className="od-pricing-row">
+                                    <span>VAT (10%)</span>
+                                    <span>{fmt(vat)}</span>
+                                </div>
+                            )}
+                            <div className="od-pricing-row od-pricing-row--total">
+                                <span>Tổng cộng</span>
+                                <span className="od-total-price">{fmt(total)}</span>
+                            </div>
                         </div>
                     </div>
-
-                    {/* Ghi chú */}
-                    {order.note && (
-                        <div className="od-card od-card--note">
-                            <h2 className="od-card-title"><FileText size={16} /> Ghi chú</h2>
-                            <p className="od-note-text">{order.note}</p>
-                        </div>
-                    )}
-                </div>
-
-                {/* RIGHT: Thông tin + Actions */}
-                <div className="od-col-side">
-
-                    {/* Thông tin người nhận */}
+                    {/* Thanh toán */}
                     <div className="od-card">
-                        <h2 className="od-card-title"><User size={16} /> Thông tin người nhận</h2>
+                        <h2 className="od-card-title">
+                            <CreditCard size={14} /> THANH TOÁN
+                        </h2>
+
                         <div className="od-info-list">
-                            {/* Username — clickable */}
-                            <div className="od-info-row od-info-row--username" onClick={() => setCustomerModal(true)} title="Xem thông tin tài khoản">
-                                <span className="od-info-icon"><User size={14} /></span>
+
+                            <div className="od-info-row">
+                                <span className="od-info-icon">
+                                    <CreditCard size={13} />
+                                </span>
+
                                 <div className="od-info-content">
-                                    <span className="od-info-label">Địa chỉ giao hàng</span>
+                                    <span className="od-info-label">
+                                        TRẠNG THÁI THANH TOÁN
+                                    </span>
+
                                     <span className="od-info-value">
-                                        {[order.shippingAddress, order.ward, order.district, order.province]
-                                            .filter(Boolean)
-                                            .join(", ") || "—"}
+                                        {order.paymentStatus || "—"}
                                     </span>
                                 </div>
                             </div>
 
                             <div className="od-info-row">
-                                <span className="od-info-icon"><User size={14} /></span>
+                                <span className="od-info-icon">
+                                    <FileText size={13} />
+                                </span>
+
                                 <div className="od-info-content">
-                                    <span className="od-info-label">Người nhận</span>
-                                    <span className="od-info-value">{order.receiverName || "—"}</span>
+                                    <span className="od-info-label">
+                                        PAYMENT ORDER ID
+                                    </span>
+
+                                    <span className="od-info-value od-info-value--mono">
+                                        {order.paymentOrderId || "—"}
+                                    </span>
                                 </div>
                             </div>
 
                             <div className="od-info-row">
-                                <span className="od-info-icon"><Phone size={14} /></span>
+                                <span className="od-info-icon">
+                                    <FileText size={13} />
+                                </span>
+
                                 <div className="od-info-content">
-                                    <span className="od-info-label">Số điện thoại</span>
-                                    <span className="od-info-value">{order.phoneNumber || "—"}</span>
+                                    <span className="od-info-label">
+                                        PAYMENT TRANSACTION ID
+                                    </span>
+
+                                    <span className="od-info-value od-info-value--mono">
+                                        {order.paymentTransactionId || "—"}
+                                    </span>
                                 </div>
                             </div>
 
-                            <div className="od-info-row">
-                                <span className="od-info-icon"><MapPin size={14} /></span>
-                                <div className="od-info-content">
-                                    <span className="od-info-label">Địa chỉ giao hàng</span>
-                                    <span className="od-info-value">{order.shippingAddress || "—"}</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
-                    {/* Actions */}
+                    {/* Ghi chú */}
+                    <div className="od-card od-card--note">
+                        <h2 className="od-card-title">
+                            <FileText size={14} /> GHI CHÚ ĐƠN HÀNG
+                        </h2>
+
+                        <p className="od-note-text">
+                            {order.note?.trim() || "Không có ghi chú"}
+                        </p>
+                    </div>
+
+                    {/* Lý do hủy / Hoàn tiền */}
+                    {hasCancelSection && (
+                        <div className="od-card od-card--cancel-info">
+                            <h2 className="od-card-title od-card-title--warn">
+                                <AlertTriangle size={14} /> LÝ DO HỦY / HOÀN TIỀN
+                            </h2>
+
+                            {order.cancelReason && (
+                                <div className="od-cancel-block">
+                                    <p className="od-cancel-block-label">LÝ DO HỦY</p>
+                                    <div className="od-cancel-tag od-cancel-tag--red">
+                                        <XCircle size={13} /> {order.cancelReason}
+                                    </div>
+                                </div>
+                            )}
+
+                            {order.cancelNote && (
+                                <div className="od-cancel-block">
+                                    <p className="od-cancel-block-label">GHI CHÚ HỦY</p>
+                                    <div className="od-cancel-tag od-cancel-tag--red-soft">
+                                        {order.cancelNote}
+                                    </div>
+                                </div>
+                            )}
+
+                            {order.refundReason && (
+                                <div className="od-cancel-block">
+                                    <p className="od-cancel-block-label">LÝ DO HOÀN TIỀN</p>
+                                    <div className="od-cancel-tag od-cancel-tag--yellow">
+                                        <RefreshCw size={13} /> {order.refundReason}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                {/* RIGHT ────────────────────────────────────────────────────── */}
+                <div className="od-col-side">
+
+                    {/* Người nhận */}
+                    <div className="od-card">
+                        <h2 className="od-card-title"><User size={14} /> NGƯỜI NHẬN</h2>
+                        <div className="od-info-list">
+                            <div className="od-info-row">
+                                <span className="od-info-icon"><User size={13} /></span>
+                                <div className="od-info-content">
+                                    <span className="od-info-label">TÊN NGƯỜI NHẬN</span>
+                                    <span className="od-info-value">{order.receiverName || "—"}</span>
+                                </div>
+                            </div>
+                            <div className="od-info-row">
+                                <span className="od-info-icon"><Phone size={13} /></span>
+                                <div className="od-info-content">
+                                    <span className="od-info-label">SỐ ĐIỆN THOẠI</span>
+                                    <span className="od-info-value">{order.phoneNumber || "—"}</span>
+                                </div>
+                            </div>
+                            <div className="od-info-row">
+                                <span className="od-info-icon"><MapPin size={13} /></span>
+                                <div className="od-info-content">
+                                    <span className="od-info-label">ĐỊA CHỈ GIAO HÀNG</span>
+                                    <span className="od-info-value">
+                                        {[order.shippingAddress, order.ward, order.district, order.province]
+                                            .filter(Boolean).join(", ") || "—"}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Xem tài khoản */}
+                        <button
+                            className="od-btn-view-account"
+                            onClick={() => setCustomerModal(true)}
+                        >
+                            <User size={14} /> Xem thông tin người đặt<ExternalLink size={13} />
+                        </button>
+                    </div>
+
+
+
+                    {/* Thao tác */}
                     {(nextStatus || canCancel(order.status)) && (
                         <div className="od-card od-card--actions">
-                            <h2 className="od-card-title">Thao tác</h2>
+                            <h2 className="od-card-title">THAO TÁC</h2>
                             <div className="od-action-btns">
-                                {canCancel(order.status) && (
-                                    <button
-                                        className="od-btn-cancel-order"
-                                        onClick={() => setCancelModal(true)}
-                                        disabled={updating}
-                                    >
-                                        <XCircle size={16} /> Hủy đơn hàng
-                                    </button>
-                                )}
                                 {nextStatus && nextMeta && (
                                     <button
                                         className="od-btn-next-status"
@@ -455,28 +548,29 @@ const AdminOrderDetail = () => {
                                         disabled={updating}
                                     >
                                         {updating ? "Đang cập nhật..." : (
-                                            <>
-                                                {nextMeta.icon}
-                                                Chuyển sang: {nextMeta.label}
-                                            </>
+                                            <>{nextMeta.icon} Chuyển sang: {nextMeta.label}</>
                                         )}
+                                    </button>
+                                )}
+                                {canCancel(order.status) && (
+                                    <button
+                                        className="od-btn-cancel-order"
+                                        onClick={() => setCancelModal(true)}
+                                        disabled={updating}
+                                    >
+                                        <XCircle size={14} /> Hủy đơn hàng
                                     </button>
                                 )}
                             </div>
                         </div>
                     )}
-
                 </div>
             </div>
 
             {/* ── Modals ─────────────────────────────────────────────────────── */}
             {productModal && (
-                <ProductDetailModal
-                    product={productModal}
-                    onClose={() => setProductModal(null)}
-                />
+                <ProductDetailModal product={productModal} onClose={() => setProductModal(null)} />
             )}
-
             {customerModal && (
                 <CustomerModal
                     userId={order.userId}
@@ -484,7 +578,6 @@ const AdminOrderDetail = () => {
                     onClose={() => setCustomerModal(false)}
                 />
             )}
-
             {cancelModal && (
                 <CancelModal
                     orderCode={order.orderCode}
