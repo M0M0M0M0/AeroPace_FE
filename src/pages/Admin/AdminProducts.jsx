@@ -79,7 +79,7 @@ const AdminProducts = () => {
 
   // ── Form ─────────────────────────────────────────────────────
   const emptyForm = {
-    name: "", description: "", brandId: "", slug: "", status: "DRAFT",
+    name: "", description: "", brandId: "", status: "DRAFT",
     option1Name: "", option2Name: "", option3Name: "",
     images: [],
     variants: [{ option1Value: "", option2Value: "", option3Value: "", price: "", stock: "", sku: "" }],
@@ -275,7 +275,7 @@ const AdminProducts = () => {
     try {
       if (modal.mode === "add") {
         const res = await axios.post(`${BASE}/products`, {
-          name: form.name, slug: form.slug || undefined, description: form.description, brandId: Number(form.brandId),
+          name: form.name, description: form.description, brandId: Number(form.brandId),
           option1Name: form.option1Name || null, option2Name: form.option2Name || null, option3Name: form.option3Name || null, status: form.status,
         }, { headers: authHeader() });
         const productId = res.data.id;
@@ -285,28 +285,40 @@ const AdminProducts = () => {
         for (const catId of form.categoryIds) await axios.post(`${BASE}/products/${productId}/categories/${catId}`, {}, { headers: authHeader() });
       } else {
         const productId = modal.product.id;
-        await axios.put(`${BASE}/products/${productId}`, { name: form.name, description: form.description, brandId: Number(form.brandId), option1Name: form.option1Name || null, option2Name: form.option2Name || null, option3Name: form.option3Name || null }, { headers: authHeader() });
-        if (form.status !== (modal.product.status || "DRAFT")) await axios.patch(`${BASE}/products/${productId}/status?status=${form.status}`, {}, { headers: authHeader() });
-        const activeFormVariants = form.variants.filter((v) => !v.isDeleted);
-        const oldActiveVariantIds = modal.product.variants?.filter((v) => !v.isDeleted).map((v) => v.id) || [];
-        const newVariantIds = activeFormVariants.filter((v) => v.id).map((v) => v.id);
-        for (const oldId of oldActiveVariantIds) { if (!newVariantIds.includes(oldId)) await axios.delete(`${BASE}/products/variants/${oldId}`, { headers: authHeader() }); }
-        for (const v of activeFormVariants) {
-          const payload = { productId, option1Value: v.option1Value, option2Value: v.option2Value || "", option3Value: v.option3Value || "", price: Number(v.price), stock: Number(v.stock) || 0, sku: v.sku || "" };
-          if (v.id) await axios.put(`${BASE}/products/variants/${v.id}`, payload, { headers: authHeader() });
-          else if (v.option1Value && v.price) await axios.post(`${BASE}/products/variants`, payload, { headers: authHeader() });
-        }
-        const oldImageIds = modal.product.images?.map((i) => i.id) || [];
-        const newImageIds = form.images.filter((i) => i.id).map((i) => i.id);
-        for (const oldId of oldImageIds) { if (!newImageIds.includes(oldId)) await axios.delete(`http://localhost:8080/api/v1/products/images/${oldId}`, { headers: authHeader() }); }
-        for (const img of form.images) { if (!img.id && img.imageUrl) await axios.post(`http://localhost:8080/api/v1/products/images`, { productId, imageUrl: img.imageUrl, position: img.position || 1 }, { headers: authHeader() }); }
-        const oldCatIds = modal.product.categories?.map((c) => c.id) || [];
-        for (const oldId of oldCatIds) { if (!form.categoryIds.includes(oldId)) await axios.delete(`${BASE}/products/${productId}/categories/${oldId}`, { headers: authHeader() }); }
-        for (const catId of form.categoryIds) { if (!oldCatIds.includes(catId)) await axios.post(`${BASE}/products/${productId}/categories/${catId}`, {}, { headers: authHeader() }); }
+
+        await axios.put(`${BASE}/products/${productId}/full-update`, {
+          // Product
+          name: form.name,
+          description: form.description,
+          brandId: Number(form.brandId),
+          option1Name: form.option1Name || null,
+          option2Name: form.option2Name || null,
+          option3Name: form.option3Name || null,
+          status: form.status,
+
+          // Variants
+          variants: form.variants.map((v) => ({
+            id: v.id || null,
+            option1Value: v.option1Value || "",
+            option2Value: v.option2Value || "",
+            option3Value: v.option3Value || "",
+            price: Number(v.price),
+            stock: Number(v.stock) || 0,
+            sku: v.sku || "",
+            isDeleted: v.isDeleted || false,
+          })),
+
+          // Images 
+          images: form.images.map((img) => ({
+            id: img.id || null,
+            imageUrl: img.imageUrl,
+            position: img.position || 1,
+          })),
+
+          // Categories
+          categoryIds: form.categoryIds,
+        }, { headers: authHeader() });
       }
-      await fetchProducts(0);
-      setPage(0);
-      closeModal();
     } catch (err) {
       console.error(err);
       alert("Lưu thất bại! " + (err.response?.data?.message || ""));
@@ -405,7 +417,7 @@ const AdminProducts = () => {
           <div className="adp-filter-field">
             <label className="adp-filter-label">Thương hiệu</label>
             <select className="adp-filter-input" value="" onChange={(e) => { if (e.target.value) toggleFilter(Number(e.target.value), filterBrand, setFilterBrand); }}>
-              <option value="">+ Thêm thương hiệu</option>
+              <option value="">Thương hiệu</option>
               {brands.filter((b) => !filterBrand.includes(b.id)).map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
             </select>
             <div className="adp-filter-tags">
@@ -415,7 +427,7 @@ const AdminProducts = () => {
           <div className="adp-filter-field">
             <label className="adp-filter-label">Danh mục</label>
             <select className="adp-filter-input" value="" onChange={(e) => { if (e.target.value) toggleFilter(Number(e.target.value), filterCategory, setFilterCategory); }}>
-              <option value="">+ Thêm danh mục</option>
+              <option value="">Danh mục</option>
               {categories.filter((c) => !filterCategory.includes(c.id)).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
             <div className="adp-filter-tags">
@@ -425,7 +437,7 @@ const AdminProducts = () => {
           <div className="adp-filter-field adp-filter-field--sm">
             <label className="adp-filter-label">Trạng thái</label>
             <select className="adp-filter-input" value="" onChange={(e) => { if (e.target.value) toggleFilter(e.target.value, filterStatus, setFilterStatus); }}>
-              <option value="">+ Trạng thái</option>
+              <option value="">Trạng thái</option>
               {["ACTIVE", "DRAFT", "ARCHIVED", "DELETED"].filter((s) => !filterStatus.includes(s)).map((s) => <option key={s} value={s}>{STATUS_CONFIG[s]?.label}</option>)}
             </select>
             <div className="adp-filter-tags">
@@ -576,7 +588,6 @@ const AdminProducts = () => {
                       ) : (
                         <>
                           <button className="adp-btn-edit" onClick={() => openEdit(product)}><Edit2 size={16} /></button>
-                          <button className="adp-btn-delete" onClick={() => handleDelete(product.id)}><Trash2 size={16} /></button>
                         </>
                       )}
                     </div>
@@ -622,16 +633,6 @@ const AdminProducts = () => {
               <label className="adp-form-label">Mô tả</label>
               <textarea className="adp-form-input adp-form-textarea" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Mô tả sản phẩm" disabled={isViewOnly} />
             </div>
-            <div className="adp-form-row">
-              <label className="adp-form-label">Slug</label>
-              <input
-                className="adp-form-input"
-                value={form.slug}
-                onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                placeholder="VD: ao-thun-nike (để trống tự generate)"
-                disabled={isViewOnly}
-              />
-            </div>
             {!isViewOnly ? (
               <div className="adp-form-row">
                 <label className="adp-form-label">Trạng thái sản phẩm</label>
@@ -639,6 +640,7 @@ const AdminProducts = () => {
                   <option value="DRAFT">Nháp</option>
                   <option value="ACTIVE">Đang bán</option>
                   <option value="ARCHIVED">Lưu trữ</option>
+                  <option value="DELETED">Ngừng bán hoàn toàn</option>
                 </select>
               </div>
             ) : (

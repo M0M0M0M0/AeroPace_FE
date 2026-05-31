@@ -283,7 +283,7 @@ const CheckoutForm = () => {
           return;
         }
 
-        // Bước A: Gửi toàn bộ thông tin, backend tạo order + PaymentIntent cùng lúc
+
         const intentRes = await axios.post(
           `${API}/orders/create-payment-intent`,
           {
@@ -297,14 +297,14 @@ const CheckoutForm = () => {
             province: selectedProvince ? provinces.find(p => p.id === selectedProvince)?.full_name : profileInfo?.province,
             vat: vatAmount,
             shippingMethodId: selectedShipping?.id,
-            grandTotal: grandTotal, // để backend tạo PaymentIntent đúng số tiền
+            grandTotal: grandTotal, 
           },
           { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
 
         const { clientSecret, orderId } = intentRes.data;
 
-        // Bước B: Xác nhận thẻ với Stripe
+        // Xác nhận thẻ với Stripe
         const cardElement = elements.getElement(CardElement);
         const paymentResult = await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
@@ -327,11 +327,11 @@ const CheckoutForm = () => {
           return;
         }
 
-        // Bước C: Patch order với chargeId — giống PayPal
+        // 
         await axios.patch(
           `${API}/orders/${orderId}/payment`,
           {
-            paymentOrderId: paymentResult.paymentIntent.id,       // pi_xxx
+            paymentOrderId: paymentResult.paymentIntent.id,      
             paymentTransactionId: paymentResult.paymentIntent.latest_charge, // ch_xxx
             paymentStatus: "PAID",
           },
@@ -680,7 +680,6 @@ const CheckoutForm = () => {
   );
 };
 
-// THÊM VÀO: Khởi tạo Component wrapper để cung cấp ngữ cảnh Stripe toàn cục
 const Checkout = () => {
   return (
     <Elements stripe={stripePromise}>
