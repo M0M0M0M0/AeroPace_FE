@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -62,6 +62,7 @@ const CheckoutForm = () => {
   const grandTotal = totalPrice + vatAmount + shippingFee;
 
   // ─── Prevent double click ────────────────────────────────────────────────────────
+  const isSubmittingRef = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // ─── 1. Load provinces once ──────────────────────────────────────────────────
@@ -276,7 +277,11 @@ const CheckoutForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     if (!validateForm()) return;
+
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
 
     try {
       if (form.paymentMethod === "stripe") {
@@ -344,6 +349,9 @@ const CheckoutForm = () => {
       }
     } catch (err) {
       toast.error("Đặt hàng thất bại.");
+    } finally {
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
     }
   };
 
