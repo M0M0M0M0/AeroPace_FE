@@ -19,7 +19,7 @@ const STATUS_META = {
     PAID: { label: "Đã thanh toán", cls: "paid", icon: <CheckCircle size={12} /> },
     PENDING: { label: "Chờ xử lý", cls: "pending", icon: <Clock size={12} /> },
     SHIPPING: { label: "Đang giao", cls: "shipping", icon: <Truck size={12} /> },
-    DELIVERED: { label: "Đã giao", cls: "delivered", icon: <CheckCircle size={12} /> },
+    DELIVERED: { label: "Đã giao - Chờ khách hàng xác nhận", cls: "delivered", icon: <CheckCircle size={12} /> },
     CANCELLED: { label: "Đã hủy", cls: "cancelled", icon: <XCircle size={12} /> },
     COMPLETED: { label: "Hoàn tất", cls: "completed", icon: <CheckCircle size={12} /> },
 };
@@ -39,9 +39,6 @@ const getNextStatus = (status) => {
 
         case "SHIPPING":
             return "DELIVERED";
-
-        case "DELIVERED":
-            return "COMPLETED";
 
         default:
             return null;
