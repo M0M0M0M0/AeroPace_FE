@@ -35,18 +35,15 @@ const getStatusStyle = (order) => {
 };
 
 const getCancelReason = (order) => {
-    if (order.cancelReason === "USER_CANCELLED")
-        return order.cancelNote || "Người dùng hủy đơn";
-    if (order.cancelReason === "ADMIN_CANCELLED")
-        return order.cancelNote || "Admin hủy đơn";
-    if (order.cancelReason === "PAYMENT_TIMEOUT")
-        return "Hết thời gian thanh toán";
-    if (order.cancelReason === "PAYMENT_REPLACED")
-        return "Người dùng khởi tạo thanh toán mới";
+    if (order.cancelType === "USER_CANCELLED")
+        return "Người dùng hủy đơn" + (order.cancelNote ? `: ${order.cancelNote}` : "");
+    if (order.cancelType === "ADMIN_CANCELLED")
+        return "Admin hủy đơn" + (order.cancelNote ? `: ${order.cancelNote}` : "");
+
     return "—";
 };
 
-const canCancel = (status) => status === "PENDING" || status === "PAID";
+const canCancel = (order) => order.status === "PENDING" || order.status === "PAID";
 
 const OrderDetail = () => {
     const { state } = useLocation();
@@ -180,9 +177,9 @@ const OrderDetail = () => {
                                         className="od-item-row od-item-clickable"
                                         onClick={() =>
                                             item.productId
-                                                ? navigate(`/product/${item.productId}`)
+                                                ? navigate(`/products/detail/${item.productId}`)
                                                 : item.productSlug
-                                                    ? navigate(`/product/${item.productSlug}`)
+                                                    ? navigate(`/products/detail/${item.productSlug}`)
                                                     : null
                                         }
                                         title="Xem sản phẩm"
@@ -228,13 +225,13 @@ const OrderDetail = () => {
                     <div className="od-footer">
                         {order.status === "CANCELLED" && (
                             <p className="od-cancel-reason">
-                                Lý do hủy: {getCancelReason(order)}
+                                {getCancelReason(order)}
                             </p>
                         )}
 
                         <div className="od-footer-row">
                             <div className="od-footer-actions">
-                                {canCancel(order.status) && (
+                                {canCancel(order) && (
                                     <button
                                         className="od-cancel-btn"
                                         onClick={() => setCancelModal({ open: true, note: "" })}
