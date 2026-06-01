@@ -94,6 +94,7 @@ const Profile = () => {
           `http://localhost:8080/api/v1/orders/user/${user.id}`
         );
         setOrders(res.data);
+        console.log("USER ORDERS:", res.data);
       } catch (err) {
         console.log("LOAD ORDERS ERROR:", err);
       }
@@ -239,7 +240,9 @@ const Profile = () => {
     navigate(`/order-detail/${order.orderCode}`, { state: { order } });
   };
 
-  const getStatusLabel = (status) => {
+  const getStatusLabel = (order) => {
+    if (order.paymentStatus === "REFUND_PENDING") return "Chờ hoàn tiền";
+    const status = order.status;
     switch (status) {
       case "PENDING": return "Chờ xác nhận";
       case "PAID": return "Đã thanh toán";
@@ -247,11 +250,14 @@ const Profile = () => {
       case "DELIVERED": return "Đã giao hàng";
       case "COMPLETED": return "Hoàn thành";
       case "CANCELLED": return "Đã hủy";
+      
       default: return status;
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (order) => {
+    if (order.paymentStatus === "REFUND_PENDING") return { bg: "rgba(251,146,60,0.2)", color: "#fb923c" };
+    const status = order.status;
     switch (status) {
       case "PAID": return { bg: "rgba(96,165,250,0.2)", color: "#60a5fa" };
       case "SHIPPING": return { bg: "rgba(251,146,60,0.2)", color: "#fb923c" };
@@ -267,7 +273,7 @@ const Profile = () => {
   const PREVIEW_LIMIT = 3;
 
   const renderOrderCard = (order) => {
-    const statusStyle = getStatusColor(order.status);
+    const statusStyle = getStatusColor(order);
     const items = order.items || [];
     const previewItems = items.slice(0, PREVIEW_LIMIT);
     const extraCount = items.length - PREVIEW_LIMIT;
@@ -286,7 +292,7 @@ const Profile = () => {
             className="profile-order-status"
             style={{ background: statusStyle.bg, color: statusStyle.color }}
           >
-            {getStatusLabel(order.status)}
+            {getStatusLabel(order)}
           </span>
         </div>
 

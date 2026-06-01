@@ -392,6 +392,31 @@
     cursor: not-allowed;
 }
 
+.od-confirm-received-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    background: rgba(74, 222, 128, 0.12);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.35);
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.od-confirm-received-btn:hover:not(:disabled) {
+    background: rgba(74, 222, 128, 0.25);
+    border-color: #4ade80;
+}
+
+.od-confirm-received-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* Responsive */
 
 @media (max-width: 600px) {

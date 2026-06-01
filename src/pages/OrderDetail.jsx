@@ -4,7 +4,9 @@ import axios from "../api/axiosClient";
 import { ArrowLeft, MapPin, Phone, User, Package, X } from "lucide-react";
 import "./OrderDetail.css";
 
-const getStatusLabel = (status) => {
+const getStatusLabel = (order) => {
+    if (order.paymentStatus === "REFUND_PENDING") return "Chờ hoàn tiền";
+    const status = order.status;
     switch (status) {
         case "PENDING": return "Chờ xác nhận";
         case "PAID": return "Đã thanh toán";
@@ -12,17 +14,21 @@ const getStatusLabel = (status) => {
         case "DELIVERED": return "Đã giao hàng";
         case "COMPLETED": return "Hoàn thành";
         case "CANCELLED": return "Đã hủy";
+        case "REFUND_PENDING": return "Chờ hoàn tiền";
         default: return status;
     }
 };
 
-const getStatusStyle = (status) => {
+const getStatusStyle = (order) => {
+    if (order.paymentStatus === "REFUND_PENDING") return { bg: "rgba(251,146,60,0.15)", color: "#fb923c" };
+    const status = order.status;
     switch (status) {
         case "PAID": return { bg: "rgba(96,165,250,0.15)", color: "#60a5fa" };
         case "SHIPPING": return { bg: "rgba(251,146,60,0.15)", color: "#fb923c" };
         case "DELIVERED": return { bg: "rgba(74,222,128,0.15)", color: "#4ade80" };
         case "COMPLETED": return { bg: "rgba(74,222,128,0.15)", color: "#4ade80" };
         case "CANCELLED": return { bg: "rgba(248,113,113,0.15)", color: "#f87171" };
+        case "REFUND_PENDING": return { bg: "rgba(251,146,60,0.15)", color: "#fb923c" };
         case "PENDING": return { bg: "rgba(156,163,175,0.15)", color: "#9ca3af" };
         default: return { bg: "#333", color: "#fff" };
     }
@@ -63,7 +69,7 @@ const OrderDetail = () => {
         );
     }
 
-    const statusStyle = getStatusStyle(order.status);
+    const statusStyle = getStatusStyle(order);
     const shippingAddress = [
         order.shippingAddress,
         order.ward,
@@ -72,6 +78,21 @@ const OrderDetail = () => {
     ]
         .filter(Boolean)
         .join(", ");
+
+    const handleConfirmReceived = async () => {
+        setConfirming(true);
+        try {
+            await axios.patch(
+                `http://localhost:8080/api/v1/orders/${order.orderCode}/confirm`
+            );
+            setOrder((prev) => ({ ...prev, status: "COMPLETED" }));
+        } catch (err) {
+            console.log("CONFIRM RECEIVED ERROR:", err.response || err);
+            alert("Xác nhận thất bại, vui lòng thử lại.");
+        } finally {
+            setConfirming(false);
+        }
+    };
 
     const handleConfirmCancel = async () => {
         setCancelling(true);
@@ -109,7 +130,7 @@ const OrderDetail = () => {
                             className="od-status-pill"
                             style={{ background: statusStyle.bg, color: statusStyle.color }}
                         >
-                            {getStatusLabel(order.status)}
+                            {getStatusLabel(order)}
                         </span>
                     </div>
 
@@ -220,6 +241,15 @@ const OrderDetail = () => {
                                     >
                                         <X size={15} />
                                         Hủy đơn hàng
+                                    </button>
+                                )}
+                                {order.status === "DELIVERED" && (
+                                    <button
+                                        className="od-confirm-received-btn"
+                                        disabled={confirming}
+                                        onClick={handleConfirmReceived}
+                                    >
+                                        {confirming ? "Đang xác nhận..." : "Đã nhận hàng"}
                                     </button>
                                 )}
                             </div>
