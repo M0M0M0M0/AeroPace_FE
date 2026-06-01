@@ -36,6 +36,7 @@ import AdminCustomerDetail from "./pages/Admin/AdminCustomerDetail";
 import AdminCatalogPage from "./pages/Admin/AdminCatalogPage";
 import AdminShippingPage from "./pages/Admin/AdminShippingPage";
 import AdminOrderDetail from "./pages/Admin/AdminOrderDetail";
+import AdminProductDetail from "./pages/Admin/AdminProductDetail";
 
 // Tạo một Layout riêng cho trang khách hàng (Chứa Navbar và Footer)
 const StoreLayout = () => {
@@ -85,6 +86,7 @@ function App() {
                 <Route path="customers/:id" element={<AdminCustomerDetail />} />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="orders/details/:orderCode" element={<AdminOrderDetail />} />
+                <Route path="products/:id" element={<AdminProductDetail />} />
                 <Route path="shippings" element={<AdminShippingPage />} />
               </Route>
             </Route>

@@ -1,0 +1,540 @@
+/* ── Page ────────────────────────────────────────────────────── */
+.apd-page {
+    position: relative;
+    color: #fff;
+}
+
+.apd-loading {
+    text-align: center;
+    padding: 80px 0;
+    color: #555;
+    font-size: 0.875rem;
+}
+
+/* ── Topbar ──────────────────────────────────────────────────── */
+.apd-topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.apd-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #a3a3a3;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.apd-back-btn:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.apd-topbar-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.apd-page-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.apd-save-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    margin-left: auto;
+}
+
+.apd-save-btn:hover:not(:disabled) {
+    opacity: 0.85;
+}
+
+.apd-save-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Grid layout ─────────────────────────────────────────────── */
+.apd-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .apd-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Card ────────────────────────────────────────────────────── */
+.apd-card {
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 16px;
+}
+
+.apd-card:last-child {
+    margin-bottom: 0;
+}
+
+.apd-card--actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.apd-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.apd-card-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 0 0 16px;
+}
+
+.apd-card-header .apd-card-title {
+    margin-bottom: 0;
+}
+
+/* ── Form elements ───────────────────────────────────────────── */
+.apd-form-row {
+    margin-bottom: 14px;
+}
+
+.apd-form-row:last-child {
+    margin-bottom: 0;
+}
+
+.apd-form-label {
+    display: block;
+    font-size: 0.78rem;
+    color: #888;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.apd-form-input {
+    width: 100%;
+    padding: 9px 12px;
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+
+.apd-form-input:focus {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.apd-form-input::placeholder {
+    color: #444;
+}
+
+.apd-form-input option {
+    background: #1a1a1a;
+}
+
+.apd-form-input:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.apd-form-textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.apd-form-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 600px) {
+    .apd-form-grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Brand / Category search ─────────────────────────────────── */
+.apd-search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.apd-search-icon {
+    position: absolute;
+    left: 9px;
+    color: #555;
+    pointer-events: none;
+}
+
+.apd-search-input {
+    width: 100%;
+    padding: 7px 10px 7px 28px;
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 7px;
+    color: #fff;
+    font-size: 0.82rem;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.apd-search-input:focus {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.apd-search-input::placeholder {
+    color: #444;
+}
+
+/* Brand select list */
+.apd-select-list {
+    height: 150px;
+    overflow-y: auto;
+    border-radius: 8px;
+    padding: 4px 0;
+    cursor: pointer;
+    scrollbar-width: thin;
+    scrollbar-color: #333 #1a1a1a;
+}
+
+.apd-select-list option {
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.apd-select-list option:checked {
+    background: #3b82f6;
+    color: #fff;
+}
+
+.apd-selected-hint {
+    font-size: 0.75rem;
+    color: #555;
+    margin: 6px 0 0;
+}
+
+.apd-selected-hint strong {
+    color: #4ade80;
+}
+
+/* Category picker */
+.apd-cat-count {
+    color: #3b82f6;
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.apd-cat-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px;
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    max-height: 180px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #333 #1a1a1a;
+}
+
+.apd-cat-chip {
+    padding: 4px 11px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    background: #2a2a2a;
+    color: #aaa;
+    border: 1px solid #333;
+    transition: all 0.15s;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.apd-cat-chip:hover {
+    background: #333;
+    color: #fff;
+}
+
+.apd-cat-chip--active {
+    background: #3b82f6;
+    color: #fff;
+    border-color: #3b82f6;
+}
+
+.apd-cat-chip--active:hover {
+    background: #2563eb;
+}
+
+.apd-cat-empty {
+    font-size: 0.8rem;
+    color: #555;
+    padding: 4px 6px;
+}
+
+/* ── Images ──────────────────────────────────────────────────── */
+.apd-empty-hint {
+    font-size: 0.82rem;
+    color: #555;
+    margin: 0;
+}
+
+.apd-image-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.apd-image-row .apd-form-input {
+    flex: 1;
+}
+
+.apd-image-pos {
+    color: #555;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.apd-image-preview {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #333;
+    flex-shrink: 0;
+}
+
+.apd-btn-remove {
+    background: transparent;
+    color: #ef4444;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.apd-btn-remove:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* ── Variants ────────────────────────────────────────────────── */
+.apd-variant-card {
+    background: #1a1a1a;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 10px;
+}
+
+.apd-variant-id {
+    font-size: 11px;
+    color: #555;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.apd-variant-id span {
+    color: #3b82f6;
+}
+
+.apd-btn-remove-variant {
+    margin-top: 10px;
+    background: transparent;
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 5px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: background 0.2s;
+}
+
+.apd-btn-remove-variant:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.apd-btn-add-sm {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.apd-btn-add-sm:hover {
+    background: rgba(34, 197, 94, 0.25);
+}
+
+.apd-btn-add-variant-bottom {
+    margin-top: 4px;
+}
+
+.apd-save-btn--full {
+    width: 100%;
+    justify-content: center;
+    margin-left: 0;
+}
+
+.apd-cancel-btn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #888;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.apd-cancel-btn:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}
+
+/* ── Leave confirm dialog ────────────────────────────────────── */
+.apd-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+.apd-confirm-dialog {
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 28px 24px;
+    width: 90%;
+    max-width: 380px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.apd-confirm-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.apd-confirm-desc {
+    font-size: 0.875rem;
+    color: #888;
+    margin: 0 0 8px;
+}
+
+.apd-confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.apd-confirm-btn-discard {
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1px solid #444;
+    background: transparent;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background 0.2s;
+}
+
+.apd-confirm-btn-discard:hover {
+    background: #1a1a1a;
+}
+
+.apd-confirm-btn-save {
+    padding: 8px 20px;
+    border-radius: 999px;
+    border: none;
+    background: #3b82f6;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.apd-confirm-btn-save:hover {
+    opacity: 0.85;
+}
+
+.apd-confirm-btn-save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
