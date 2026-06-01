@@ -1,9 +1,9 @@
-.od-page {
+.aod-page {
     position: relative;
     color: #fff;
 }
 
-.od-loading {
+.aod-loading {
     text-align: center;
     padding: 80px 0;
     color: #555;
@@ -11,7 +11,7 @@
 }
 
 /* ── Header ───────────────────────────────────────────────────── */
-.od-header {
+.aod-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -20,41 +20,41 @@
     flex-wrap: wrap;
 }
 
-.od-header-left {
+.aod-header-left {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.od-title {
+.aod-title {
     font-size: 1.35rem;
     font-weight: 700;
     margin: 0;
     color: #fff;
 }
 
-.od-header-meta {
+.aod-header-meta {
     display: flex;
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
 }
 
-.od-order-code {
+.aod-order-code {
     font-size: 0.78rem;
     color: #666;
     font-family: monospace;
     letter-spacing: 0.3px;
 }
 
-.od-created {
+.aod-created {
     font-size: 0.78rem;
     color: #555;
     margin: 0;
 }
 
 /* ── Back button ──────────────────────────────────────────────── */
-.od-back-btn {
+.aod-back-btn {
     display: flex;
     align-items: center;
     gap: 7px;
@@ -71,14 +71,14 @@
     flex-shrink: 0;
 }
 
-.od-back-btn:hover {
+.aod-back-btn:hover {
     border-color: rgba(255, 255, 255, 0.3);
     color: #fff;
     background: rgba(255, 255, 255, 0.04);
 }
 
 /* ── Status / payment badges ──────────────────────────────────── */
-.od-badge {
+.aod-badge {
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -89,21 +89,21 @@
     white-space: nowrap;
 }
 
-.od-badge--paid      { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
-.od-badge--ship-cod  { background: rgba(250, 204, 21, 0.15);  color: #facc15; }
-.od-badge--shipping  { background: rgba(251, 146, 60, 0.15);  color: #fb923c; }
-.od-badge--delivered { background: rgba(74, 222, 128, 0.15);  color: #4ade80; }
-.od-badge--cancelled { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+.aod-badge--paid      { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+.aod-badge--ship-cod  { background: rgba(250, 204, 21, 0.15);  color: #facc15; }
+.aod-badge--shipping  { background: rgba(251, 146, 60, 0.15);  color: #fb923c; }
+.aod-badge--delivered { background: rgba(74, 222, 128, 0.15);  color: #4ade80; }
+.aod-badge--cancelled { background: rgba(248, 113, 113, 0.15); color: #f87171; }
 
 /* Payment method badges */
-.od-badge--payment   { background: rgba(255,255,255,0.06); color: #a3a3a3; border: 1px solid rgba(255,255,255,0.1); }
-.od-badge--stripe    { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.2); }
-.od-badge--cod       { background: rgba(250, 204, 21, 0.12); color: #fbbf24; border: 1px solid rgba(250,204,21,0.2); }
-.od-badge--vnpay     { background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
-.od-badge--momo      { background: rgba(236, 72, 153, 0.12); color: #f472b6; border: 1px solid rgba(236,72,153,0.2); }
+.aod-badge--payment   { background: rgba(255,255,255,0.06); color: #a3a3a3; border: 1px solid rgba(255,255,255,0.1); }
+.aod-badge--stripe    { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.2); }
+.aod-badge--cod       { background: rgba(250, 204, 21, 0.12); color: #fbbf24; border: 1px solid rgba(250,204,21,0.2); }
+.aod-badge--vnpay     { background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+.aod-badge--momo      { background: rgba(236, 72, 153, 0.12); color: #f472b6; border: 1px solid rgba(236,72,153,0.2); }
 
 /* ── Grid layout ──────────────────────────────────────────────── */
-.od-grid {
+.aod-grid {
     display: grid;
     grid-template-columns: 1fr 300px;
     gap: 16px;
@@ -111,11 +111,11 @@
 }
 
 @media (max-width: 900px) {
-    .od-grid { grid-template-columns: 1fr; }
+    .aod-grid { grid-template-columns: 1fr; }
 }
 
 /* ── Card ─────────────────────────────────────────────────────── */
-.od-card {
+.aod-card {
     background: #111;
     border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 10px;
@@ -123,13 +123,13 @@
     margin-bottom: 14px;
 }
 
-.od-card:last-child { margin-bottom: 0; }
+.aod-card:last-child { margin-bottom: 0; }
 
-.od-card--note        { border-color: rgba(250, 204, 21, 0.12); }
-.od-card--actions     { border-color: rgba(255, 255, 255, 0.09); }
-.od-card--cancel-info { border-color: rgba(248, 113, 113, 0.15); }
+.aod-card--note        { border-color: rgba(250, 204, 21, 0.12); }
+.aod-card--actions     { border-color: rgba(255, 255, 255, 0.09); }
+.aod-card--cancel-info { border-color: rgba(248, 113, 113, 0.15); }
 
-.od-card-title {
+.aod-card-title {
     display: flex;
     align-items: center;
     gap: 7px;
@@ -141,15 +141,15 @@
     margin: 0 0 14px;
 }
 
-.od-card-title--warn { color: #f59e0b; }
+.aod-card-title--warn { color: #f59e0b; }
 
 /* ── Items list ───────────────────────────────────────────────── */
-.od-items {
+.aod-items {
     display: flex;
     flex-direction: column;
 }
 
-.od-item {
+.aod-item {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -157,9 +157,9 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.od-item:last-child { border-bottom: none; }
+.aod-item:last-child { border-bottom: none; }
 
-.od-item--clickable {
+.aod-item--clickable {
     cursor: pointer;
     border-radius: 8px;
     padding: 10px 8px;
@@ -167,12 +167,12 @@
     transition: background 0.15s;
 }
 
-.od-item--clickable:hover { background: #1a1a1a; }
-.od-item--clickable:hover .od-item-arrow { opacity: 1; color: #fff; }
+.aod-item--clickable:hover { background: #1a1a1a; }
+.aod-item--clickable:hover .aod-item-arrow { opacity: 1; color: #fff; }
 
-.od-item-img-wrap { flex-shrink: 0; }
+.aod-item-img-wrap { flex-shrink: 0; }
 
-.od-item-img {
+.aod-item-img {
     width: 48px;
     height: 48px;
     border-radius: 7px;
@@ -181,7 +181,7 @@
     display: block;
 }
 
-.od-item-img--empty {
+.aod-item-img--empty {
     width: 48px;
     height: 48px;
     background: #1a1a1a;
@@ -193,7 +193,7 @@
     color: #333;
 }
 
-.od-item-info {
+.aod-item-info {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -201,7 +201,7 @@
     min-width: 0;
 }
 
-.od-item-name {
+.aod-item-name {
     font-weight: 600;
     color: #e5e5e5;
     font-size: 0.875rem;
@@ -210,33 +210,33 @@
     text-overflow: ellipsis;
 }
 
-.od-item-variant { font-size: 0.75rem; color: #777; }
-.od-item-sku     { font-size: 0.7rem; color: #444; font-family: monospace; }
+.aod-item-variant { font-size: 0.75rem; color: #777; }
+.aod-item-sku     { font-size: 0.7rem; color: #444; font-family: monospace; }
 
-.od-item-right {
+.aod-item-right {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
 }
 
-.od-item-qty   { font-size: 0.82rem; color: #555; }
-.od-item-price { font-weight: 700; color: #e5e5e5; font-size: 0.875rem; white-space: nowrap; }
+.aod-item-qty   { font-size: 0.82rem; color: #555; }
+.aod-item-price { font-weight: 700; color: #e5e5e5; font-size: 0.875rem; white-space: nowrap; }
 
-.od-item-arrow {
+.aod-item-arrow {
     color: #333;
     opacity: 0;
     transition: opacity 0.15s;
 }
 
 /* ── Pricing summary ──────────────────────────────────────────── */
-.od-pricing {
+.aod-pricing {
     margin-top: 14px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     padding-top: 4px;
 }
 
-.od-pricing-row {
+.aod-pricing-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -246,9 +246,9 @@
     border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
-.od-pricing-row:last-child { border-bottom: none; }
+.aod-pricing-row:last-child { border-bottom: none; }
 
-.od-pricing-row--total {
+.aod-pricing-row--total {
     margin-top: 4px;
     padding-top: 12px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -258,14 +258,14 @@
     font-size: 0.9rem;
 }
 
-.od-total-price {
+.aod-total-price {
     font-size: 1.05rem;
     font-weight: 700;
     color: #fff;
 }
 
 /* ── Note ─────────────────────────────────────────────────────── */
-.od-note-text {
+.aod-note-text {
     color: #a3a3a3;
     font-size: 0.875rem;
     line-height: 1.65;
@@ -273,13 +273,13 @@
 }
 
 /* ── Cancel info section ──────────────────────────────────────── */
-.od-cancel-block {
+.aod-cancel-block {
     margin-bottom: 14px;
 }
 
-.od-cancel-block:last-child { margin-bottom: 0; }
+.aod-cancel-block:last-child { margin-bottom: 0; }
 
-.od-cancel-block-label {
+.aod-cancel-block-label {
     font-size: 0.68rem;
     font-weight: 700;
     color: #555;
@@ -288,7 +288,7 @@
     margin: 0 0 6px;
 }
 
-.od-cancel-tag {
+.aod-cancel-tag {
     display: flex;
     align-items: flex-start;
     gap: 7px;
@@ -298,33 +298,33 @@
     line-height: 1.5;
 }
 
-.od-cancel-tag--red {
+.aod-cancel-tag--red {
     background: rgba(248, 113, 113, 0.1);
     border: 1px solid rgba(248, 113, 113, 0.2);
     color: #fca5a5;
 }
 
-.od-cancel-tag--red-soft {
+.aod-cancel-tag--red-soft {
     background: rgba(248, 113, 113, 0.07);
     border: 1px solid rgba(248, 113, 113, 0.15);
     color: #d1d5db;
 }
 
-.od-cancel-tag--yellow {
+.aod-cancel-tag--yellow {
     background: rgba(250, 204, 21, 0.08);
     border: 1px solid rgba(250, 204, 21, 0.18);
     color: #fde68a;
 }
 
 /* ── Info list (người nhận) ───────────────────────────────────── */
-.od-info-list {
+.aod-info-list {
     display: flex;
     flex-direction: column;
     gap: 0;
     margin-bottom: 14px;
 }
 
-.od-info-row {
+.aod-info-row {
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -332,15 +332,15 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.od-info-row:last-child { border-bottom: none; }
+.aod-info-row:last-child { border-bottom: none; }
 
-.od-info-icon {
+.aod-info-icon {
     color: #444;
     margin-top: 1px;
     flex-shrink: 0;
 }
 
-.od-info-content {
+.aod-info-content {
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -348,7 +348,7 @@
     min-width: 0;
 }
 
-.od-info-label {
+.aod-info-label {
     font-size: 0.68rem;
     color: #555;
     text-transform: uppercase;
@@ -356,14 +356,14 @@
     font-weight: 600;
 }
 
-.od-info-value {
+.aod-info-value {
     font-size: 0.875rem;
     color: #e5e5e5;
     word-break: break-word;
 }
 
 /* Xem tài khoản button */
-.od-btn-view-account {
+.aod-btn-view-account {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -380,20 +380,20 @@
     transition: all 0.2s;
 }
 
-.od-btn-view-account:hover {
+.aod-btn-view-account:hover {
     border-color: rgba(255, 255, 255, 0.22);
     color: #fff;
     background: rgba(255, 255, 255, 0.07);
 }
 
 /* ── Action buttons ───────────────────────────────────────────── */
-.od-action-btns {
+.aod-action-btns {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.od-btn-next-status {
+.aod-btn-next-status {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -410,10 +410,10 @@
     transition: opacity 0.2s;
 }
 
-.od-btn-next-status:hover:not(:disabled) { opacity: 0.85; }
-.od-btn-next-status:disabled { opacity: 0.45; cursor: not-allowed; }
+.aod-btn-next-status:hover:not(:disabled) { opacity: 0.85; }
+.aod-btn-next-status:disabled { opacity: 0.45; cursor: not-allowed; }
 
-.od-btn-cancel-order {
+.aod-btn-cancel-order {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -430,15 +430,15 @@
     transition: all 0.2s;
 }
 
-.od-btn-cancel-order:hover:not(:disabled) {
+.aod-btn-cancel-order:hover:not(:disabled) {
     background: rgba(248, 113, 113, 0.13);
     border-color: rgba(248, 113, 113, 0.4);
 }
 
-.od-btn-cancel-order:disabled { opacity: 0.45; cursor: not-allowed; }
+.aod-btn-cancel-order:disabled { opacity: 0.45; cursor: not-allowed; }
 
 /* ── MODALS ────────────────────────────────────────────────────── */
-.od-overlay {
+.aod-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.75);
@@ -449,7 +449,7 @@
     padding: 20px;
 }
 
-.od-modal {
+.aod-modal {
     background: #111;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 14px;
@@ -463,28 +463,28 @@
     overflow-y: auto;
 }
 
-.od-modal--sm      { max-width: 420px; }
-.od-modal--product { max-width: 480px; }
+.aod-modal--sm      { max-width: 420px; }
+.aod-modal--product { max-width: 480px; }
 
-.od-modal-header {
+.aod-modal-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
 }
 
-.od-modal-title {
+.aod-modal-title {
     font-size: 1.05rem;
     font-weight: 700;
     margin: 0 0 4px;
 }
 
-.od-modal-sub {
+.aod-modal-sub {
     font-size: 0.78rem;
     color: #555;
     margin: 0;
 }
 
-.od-modal-close {
+.aod-modal-close {
     background: transparent;
     border: none;
     color: #555;
@@ -495,28 +495,28 @@
     transition: color 0.2s;
 }
 
-.od-modal-close:hover { color: #fff; }
+.aod-modal-close:hover { color: #fff; }
 
-.od-modal-loading {
+.aod-modal-loading {
     text-align: center;
     padding: 20px;
     color: #555;
     font-size: 0.875rem;
 }
 
-.od-modal-actions {
+.aod-modal-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
 }
 
 /* Product image */
-.od-product-image-wrap {
+.aod-product-image-wrap {
     display: flex;
     justify-content: center;
 }
 
-.od-product-image {
+.aod-product-image {
     width: 160px;
     height: 160px;
     object-fit: cover;
@@ -525,13 +525,13 @@
 }
 
 /* Fields */
-.od-product-fields {
+.aod-product-fields {
     display: flex;
     flex-direction: column;
     gap: 0;
 }
 
-.od-field-row {
+.aod-field-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -540,23 +540,23 @@
     gap: 14px;
 }
 
-.od-field-row:last-child { border-bottom: none; }
+.aod-field-row:last-child { border-bottom: none; }
 
-.od-field-row--total {
+.aod-field-row--total {
     padding-top: 12px;
     margin-top: 4px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     border-bottom: none;
 }
 
-.od-field-label {
+.aod-field-label {
     font-size: 0.75rem;
     color: #555;
     font-weight: 500;
     white-space: nowrap;
 }
 
-.od-field-value {
+.aod-field-value {
     font-size: 0.875rem;
     color: #e5e5e5;
     text-align: right;
@@ -564,30 +564,30 @@
     max-width: 260px;
 }
 
-.od-field-value--mono  { font-family: monospace; color: #888; }
-.od-field-value--price { color: #4ade80; font-weight: 700; }
+.aod-field-value--mono  { font-family: monospace; color: #888; }
+.aod-field-value--price { color: #4ade80; font-weight: 700; }
 
 /* Cancel modal */
-.od-cancel-desc {
+.aod-cancel-desc {
     font-size: 0.875rem;
     color: #888;
     margin: 0;
     line-height: 1.6;
 }
 
-.od-form-row {
+.aod-form-row {
     display: flex;
     flex-direction: column;
     gap: 7px;
 }
 
-.od-form-row label {
+.aod-form-row label {
     font-size: 0.78rem;
     color: #888;
     font-weight: 500;
 }
 
-.od-form-row textarea {
+.aod-form-row textarea {
     background: #1a1a1a;
     border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 7px;
@@ -600,10 +600,10 @@
     font-family: inherit;
 }
 
-.od-form-row textarea:focus { border-color: rgba(255, 255, 255, 0.25); }
-.od-form-row textarea::placeholder { color: #444; }
+.aod-form-row textarea:focus { border-color: rgba(255, 255, 255, 0.25); }
+.aod-form-row textarea::placeholder { color: #444; }
 
-.od-form-error {
+.aod-form-error {
     font-size: 0.8rem;
     color: #f87171;
     margin: 0;
@@ -614,7 +614,7 @@
 }
 
 /* Buttons */
-.od-btn-ghost {
+.aod-btn-ghost {
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.12);
     color: #888;
@@ -625,12 +625,12 @@
     transition: all 0.2s;
 }
 
-.od-btn-ghost:hover {
+.aod-btn-ghost:hover {
     border-color: rgba(255, 255, 255, 0.25);
     color: #fff;
 }
 
-.od-btn-danger {
+.aod-btn-danger {
     background: #ef4444;
     color: #fff;
     border: none;
@@ -642,4 +642,4 @@
     transition: opacity 0.2s;
 }
 
-.od-btn-danger:hover { opacity: 0.85; }
+.aod-btn-danger:hover { opacity: 0.85; }

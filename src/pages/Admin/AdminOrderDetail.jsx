@@ -54,52 +54,52 @@ const fmtDate = (d) => d ? new Date(d).toLocaleString("vi-VN") : "—";
 const ProductDetailModal = ({ product, onClose }) => {
     if (!product) return null;
     return (
-        <div className="od-overlay" onClick={onClose}>
-            <div className="od-modal od-modal--product" onClick={(e) => e.stopPropagation()}>
-                <div className="od-modal-header">
+        <div className="aod-overlay" onClick={onClose}>
+            <div className="aod-modal aod-modal--product" onClick={(e) => e.stopPropagation()}>
+                <div className="aod-modal-header">
                     <div>
-                        <h3 className="od-modal-title">Chi tiết sản phẩm</h3>
-                        <p className="od-modal-sub">#{product.productId} · {product.productName}</p>
+                        <h3 className="aod-modal-title">Chi tiết sản phẩm</h3>
+                        <p className="aod-modal-sub">#{product.productId} · {product.productName}</p>
                     </div>
-                    <button className="od-modal-close" onClick={onClose}><X size={18} /></button>
+                    <button className="aod-modal-close" onClick={onClose}><X size={18} /></button>
                 </div>
                 {product.imageUrl && (
-                    <div className="od-product-image-wrap">
-                        <img src={product.imageUrl} alt={product.productName} className="od-product-image" />
+                    <div className="aod-product-image-wrap">
+                        <img src={product.imageUrl} alt={product.productName} className="aod-product-image" />
                     </div>
                 )}
-                <div className="od-product-fields">
-                    <div className="od-field-row">
-                        <span className="od-field-label">Tên sản phẩm</span>
-                        <span className="od-field-value">{product.productName}</span>
+                <div className="aod-product-fields">
+                    <div className="aod-field-row">
+                        <span className="aod-field-label">Tên sản phẩm</span>
+                        <span className="aod-field-value">{product.productName}</span>
                     </div>
                     {product.variantName && (
-                        <div className="od-field-row">
-                            <span className="od-field-label">Phân loại</span>
-                            <span className="od-field-value">{product.variantName}</span>
+                        <div className="aod-field-row">
+                            <span className="aod-field-label">Phân loại</span>
+                            <span className="aod-field-value">{product.variantName}</span>
                         </div>
                     )}
                     {product.sku && (
-                        <div className="od-field-row">
-                            <span className="od-field-label">SKU</span>
-                            <span className="od-field-value od-field-value--mono">{product.sku}</span>
+                        <div className="aod-field-row">
+                            <span className="aod-field-label">SKU</span>
+                            <span className="aod-field-value aod-field-value--mono">{product.sku}</span>
                         </div>
                     )}
-                    <div className="od-field-row">
-                        <span className="od-field-label">Đơn giá</span>
-                        <span className="od-field-value od-field-value--price">{fmt(product.price)}</span>
+                    <div className="aod-field-row">
+                        <span className="aod-field-label">Đơn giá</span>
+                        <span className="aod-field-value aod-field-value--price">{fmt(product.price)}</span>
                     </div>
-                    <div className="od-field-row">
-                        <span className="od-field-label">Số lượng</span>
-                        <span className="od-field-value">x{product.quantity}</span>
+                    <div className="aod-field-row">
+                        <span className="aod-field-label">Số lượng</span>
+                        <span className="aod-field-value">x{product.quantity}</span>
                     </div>
-                    <div className="od-field-row od-field-row--total">
-                        <span className="od-field-label">Thành tiền</span>
-                        <span className="od-field-value od-field-value--price">{fmt(product.price * product.quantity)}</span>
+                    <div className="aod-field-row aod-field-row--total">
+                        <span className="aod-field-label">Thành tiền</span>
+                        <span className="aod-field-value aod-field-value--price">{fmt(product.price * product.quantity)}</span>
                     </div>
                 </div>
-                <div className="od-modal-actions">
-                    <button className="od-btn-ghost" onClick={onClose}>Đóng</button>
+                <div className="aod-modal-actions">
+                    <button className="aod-btn-ghost" onClick={onClose}>Đóng</button>
                 </div>
             </div>
         </div>
@@ -126,21 +126,21 @@ const CustomerModal = ({ userId, username, onClose }) => {
     }, [userId]);
 
     return (
-        <div className="od-overlay" onClick={onClose}>
-            <div className="od-modal" onClick={(e) => e.stopPropagation()}>
-                <div className="od-modal-header">
+        <div className="aod-overlay" onClick={onClose}>
+            <div className="aod-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="aod-modal-header">
                     <div>
-                        <h3 className="od-modal-title">Thông tin khách hàng</h3>
-                        <p className="od-modal-sub">@{username}</p>
+                        <h3 className="aod-modal-title">Thông tin khách hàng</h3>
+                        <p className="aod-modal-sub">@{username}</p>
                     </div>
-                    <button className="od-modal-close" onClick={onClose}><X size={18} /></button>
+                    <button className="aod-modal-close" onClick={onClose}><X size={18} /></button>
                 </div>
                 {loading ? (
-                    <div className="od-modal-loading">Đang tải...</div>
+                    <div className="aod-modal-loading">Đang tải...</div>
                 ) : !data ? (
                     <p style={{ color: "#555", fontSize: "0.875rem" }}>Không tải được thông tin.</p>
                 ) : (
-                    <div className="od-product-fields">
+                    <div className="aod-product-fields">
                         {[
                             ["Username", data.username],
                             ["Email", data.email],
@@ -151,15 +151,15 @@ const CustomerModal = ({ userId, username, onClose }) => {
                             ["Ngày sinh", data.dob],
                             ["Ngày tạo TK", data.createdAt ? new Date(data.createdAt).toLocaleString("vi-VN") : null],
                         ].map(([label, val]) => (
-                            <div key={label} className="od-field-row">
-                                <span className="od-field-label">{label}</span>
-                                <span className="od-field-value">{val || "—"}</span>
+                            <div key={label} className="aod-field-row">
+                                <span className="aod-field-label">{label}</span>
+                                <span className="aod-field-value">{val || "—"}</span>
                             </div>
                         ))}
                     </div>
                 )}
-                <div className="od-modal-actions">
-                    <button className="od-btn-ghost" onClick={onClose}>Đóng</button>
+                <div className="aod-modal-actions">
+                    <button className="aod-btn-ghost" onClick={onClose}>Đóng</button>
                 </div>
             </div>
         </div>
@@ -177,17 +177,17 @@ const CancelModal = ({ orderCode, onClose, onConfirm }) => {
     };
 
     return (
-        <div className="od-overlay" onClick={onClose}>
-            <div className="od-modal od-modal--sm" onClick={(e) => e.stopPropagation()}>
-                <div className="od-modal-header">
+        <div className="aod-overlay" onClick={onClose}>
+            <div className="aod-modal aod-modal--sm" onClick={(e) => e.stopPropagation()}>
+                <div className="aod-modal-header">
                     <div>
-                        <h3 className="od-modal-title">Hủy đơn hàng</h3>
-                        <p className="od-modal-sub">Đơn hàng #{orderCode}</p>
+                        <h3 className="aod-modal-title">Hủy đơn hàng</h3>
+                        <p className="aod-modal-sub">Đơn hàng #{orderCode}</p>
                     </div>
-                    <button className="od-modal-close" onClick={onClose}><X size={18} /></button>
+                    <button className="aod-modal-close" onClick={onClose}><X size={18} /></button>
                 </div>
-                <p className="od-cancel-desc">Hành động này không thể hoàn tác. Vui lòng nhập lý do hủy đơn.</p>
-                <div className="od-form-row">
+                <p className="aod-cancel-desc">Hành động này không thể hoàn tác. Vui lòng nhập lý do hủy đơn.</p>
+                <div className="aod-form-row">
                     <label>Lý do hủy *</label>
                     <textarea
                         placeholder="VD: Khách yêu cầu hủy, hàng hết hàng..."
@@ -196,10 +196,10 @@ const CancelModal = ({ orderCode, onClose, onConfirm }) => {
                         onChange={(e) => { setReason(e.target.value); setError(""); }}
                     />
                 </div>
-                {error && <p className="od-form-error">{error}</p>}
-                <div className="od-modal-actions">
-                    <button className="od-btn-ghost" onClick={onClose}>Bỏ qua</button>
-                    <button className="od-btn-danger" onClick={handleConfirm}>Xác nhận hủy</button>
+                {error && <p className="aod-form-error">{error}</p>}
+                <div className="aod-modal-actions">
+                    <button className="aod-btn-ghost" onClick={onClose}>Bỏ qua</button>
+                    <button className="aod-btn-danger" onClick={handleConfirm}>Xác nhận hủy</button>
                 </div>
             </div>
         </div>
@@ -277,10 +277,10 @@ const AdminOrderDetail = () => {
 
     // ── Render ───────────────────────────────────────────────────────────────
     if (loading) {
-        return <div className="od-page"><div className="od-loading">Đang tải chi tiết đơn hàng...</div></div>;
+        return <div className="aod-page"><div className="aod-loading">Đang tải chi tiết đơn hàng...</div></div>;
     }
     if (!order) {
-        return <div className="od-page"><div className="od-loading">Không tìm thấy đơn hàng.</div></div>;
+        return <div className="aod-page"><div className="aod-loading">Không tìm thấy đơn hàng.</div></div>;
     }
 
     const statusMeta = STATUS_META[order.status] || {};
@@ -298,141 +298,141 @@ const AdminOrderDetail = () => {
     const hasCancelSection = order.status === "CANCELLED" && (order.cancelReason || order.cancelNote || order.refundReason);
 
     return (
-        <div className="od-page">
+        <div className="aod-page">
 
             {/* ── Header ─────────────────────────────────────────────────────── */}
-            <div className="od-header">
-                <div className="od-header-left">
-                    <h1 className="od-title">Chi tiết đơn hàng</h1>
-                    <div className="od-header-meta">
-                        <span className="od-order-code">⊕ {order.orderCode}</span>
-                        <span className={`od-badge od-badge--${statusMeta.cls}`}>
+            <div className="aod-header">
+                <div className="aod-header-left">
+                    <h1 className="aod-title">Chi tiết đơn hàng</h1>
+                    <div className="aod-header-meta">
+                        <span className="aod-order-code">⊕ {order.orderCode}</span>
+                        <span className={`aod-badge aod-badge--${statusMeta.cls}`}>
                             {statusMeta.icon} {statusMeta.label}
                         </span>
-                        <span className={`od-badge od-badge--payment od-badge--${paymentMeta.cls}`}>
+                        <span className={`aod-badge aod-badge--payment aod-badge--${paymentMeta.cls}`}>
                             <CreditCard size={12} /> {paymentMeta.label}
                         </span>
                     </div>
-                    <p className="od-created">Đặt lúc: {fmtDate(order.createdAt)}</p>
+                    <p className="aod-created">Đặt lúc: {fmtDate(order.createdAt)}</p>
                 </div>
-                <button className="od-back-btn" onClick={() => navigate("/admin/orders")}>
+                <button className="aod-back-btn" onClick={() => navigate("/admin/orders")}>
                     <ArrowLeft size={16} /> Quay lại
                 </button>
             </div>
 
             {/* ── Content grid ───────────────────────────────────────────────── */}
-            <div className="od-grid">
+            <div className="aod-grid">
 
                 {/* LEFT ─────────────────────────────────────────────────────── */}
-                <div className="od-col-main">
+                <div className="aod-col-main">
 
                     {/* Sản phẩm */}
-                    <div className="od-card">
-                        <h2 className="od-card-title">
+                    <div className="aod-card">
+                        <h2 className="aod-card-title">
                             <Package size={14} /> SẢN PHẨM ({order.items?.length || 0})
                         </h2>
-                        <div className="od-items">
+                        <div className="aod-items">
                             {order.items?.map((item, idx) => (
                                 <div
                                     key={idx}
-                                    className="od-item od-item--clickable"
+                                    className="aod-item aod-item--clickable"
                                     onClick={() => setProductModal(item)}
                                 >
-                                    <div className="od-item-img-wrap">
+                                    <div className="aod-item-img-wrap">
                                         {item.productImgUrl
-                                            ? <img src={item.productImgUrl} alt={item.productName} className="od-item-img" />
-                                            : <div className="od-item-img od-item-img--empty"><Package size={18} /></div>
+                                            ? <img src={item.productImgUrl} alt={item.productName} className="aod-item-img" />
+                                            : <div className="aod-item-img aod-item-img--empty"><Package size={18} /></div>
                                         }
                                     </div>
-                                    <div className="od-item-info">
-                                        <span className="od-item-name">{item.productName}</span>
-                                        {item.variantName && <span className="od-item-variant">{item.variantName}</span>}
-                                        {item.sku && <span className="od-item-sku">SKU: {item.sku}</span>}
+                                    <div className="aod-item-info">
+                                        <span className="aod-item-name">{item.productName}</span>
+                                        {item.variantName && <span className="aod-item-variant">{item.variantName}</span>}
+                                        {item.sku && <span className="aod-item-sku">SKU: {item.sku}</span>}
                                     </div>
-                                    <div className="od-item-right">
-                                        <span className="od-item-qty">x{item.quantity}</span>
-                                        <span className="od-item-price">{fmt(item.price)}</span>
-                                        <ChevronRight size={14} className="od-item-arrow" />
+                                    <div className="aod-item-right">
+                                        <span className="aod-item-qty">x{item.quantity}</span>
+                                        <span className="aod-item-price">{fmt(item.price)}</span>
+                                        <ChevronRight size={14} className="aod-item-arrow" />
                                     </div>
                                 </div>
                             ))}
                         </div>
 
                         {/* Pricing summary */}
-                        <div className="od-pricing">
-                            <div className="od-pricing-row">
+                        <div className="aod-pricing">
+                            <div className="aod-pricing-row">
                                 <span>Tạm tính</span>
                                 <span>{fmt(subTotal)}</span>
                             </div>
                             {shipFee >= 0 && (
-                                <div className="od-pricing-row">
+                                <div className="aod-pricing-row">
                                     <span>Phí ship</span>
                                     <span>{fmt(shipFee)}</span>
                                 </div>
                             )}
                             {vat > 0 && (
-                                <div className="od-pricing-row">
+                                <div className="aod-pricing-row">
                                     <span>VAT (10%)</span>
                                     <span>{fmt(vat)}</span>
                                 </div>
                             )}
-                            <div className="od-pricing-row od-pricing-row--total">
+                            <div className="aod-pricing-row aod-pricing-row--total">
                                 <span>Tổng cộng</span>
-                                <span className="od-total-price">{fmt(total)}</span>
+                                <span className="aod-total-price">{fmt(total)}</span>
                             </div>
                         </div>
                     </div>
                     {/* Thanh toán */}
-                    <div className="od-card">
-                        <h2 className="od-card-title">
+                    <div className="aod-card">
+                        <h2 className="aod-card-title">
                             <CreditCard size={14} /> THANH TOÁN
                         </h2>
 
-                        <div className="od-info-list">
+                        <div className="aod-info-list">
 
-                            <div className="od-info-row">
-                                <span className="od-info-icon">
+                            <div className="aod-info-row">
+                                <span className="aod-info-icon">
                                     <CreditCard size={13} />
                                 </span>
 
-                                <div className="od-info-content">
-                                    <span className="od-info-label">
+                                <div className="aod-info-content">
+                                    <span className="aod-info-label">
                                         TRẠNG THÁI THANH TOÁN
                                     </span>
 
-                                    <span className="od-info-value">
+                                    <span className="aod-info-value">
                                         {order.paymentStatus || "—"}
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="od-info-row">
-                                <span className="od-info-icon">
+                            <div className="aod-info-row">
+                                <span className="aod-info-icon">
                                     <FileText size={13} />
                                 </span>
 
-                                <div className="od-info-content">
-                                    <span className="od-info-label">
+                                <div className="aod-info-content">
+                                    <span className="aod-info-label">
                                         PAYMENT ORDER ID
                                     </span>
 
-                                    <span className="od-info-value od-info-value--mono">
+                                    <span className="aod-info-value aod-info-value--mono">
                                         {order.paymentOrderId || "—"}
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="od-info-row">
-                                <span className="od-info-icon">
+                            <div className="aod-info-row">
+                                <span className="aod-info-icon">
                                     <FileText size={13} />
                                 </span>
 
-                                <div className="od-info-content">
-                                    <span className="od-info-label">
+                                <div className="aod-info-content">
+                                    <span className="aod-info-label">
                                         PAYMENT TRANSACTION ID
                                     </span>
 
-                                    <span className="od-info-value od-info-value--mono">
+                                    <span className="aod-info-value aod-info-value--mono">
                                         {order.paymentTransactionId || "—"}
                                     </span>
                                 </div>
@@ -442,45 +442,45 @@ const AdminOrderDetail = () => {
                     </div>
 
                     {/* Ghi chú */}
-                    <div className="od-card od-card--note">
-                        <h2 className="od-card-title">
+                    <div className="aod-card aod-card--note">
+                        <h2 className="aod-card-title">
                             <FileText size={14} /> GHI CHÚ ĐƠN HÀNG
                         </h2>
 
-                        <p className="od-note-text">
+                        <p className="aod-note-text">
                             {order.note?.trim() || "Không có ghi chú"}
                         </p>
                     </div>
 
                     {/* Lý do hủy / Hoàn tiền */}
                     {hasCancelSection && (
-                        <div className="od-card od-card--cancel-info">
-                            <h2 className="od-card-title od-card-title--warn">
+                        <div className="aod-card aod-card--cancel-info">
+                            <h2 className="aod-card-title aod-card-title--warn">
                                 <AlertTriangle size={14} /> LÝ DO HỦY / HOÀN TIỀN
                             </h2>
 
                             {order.cancelReason && (
-                                <div className="od-cancel-block">
-                                    <p className="od-cancel-block-label">LÝ DO HỦY</p>
-                                    <div className="od-cancel-tag od-cancel-tag--red">
+                                <div className="aod-cancel-block">
+                                    <p className="aod-cancel-block-label">LÝ DO HỦY</p>
+                                    <div className="aod-cancel-tag aod-cancel-tag--red">
                                         <XCircle size={13} /> {order.cancelReason}
                                     </div>
                                 </div>
                             )}
 
                             {order.cancelNote && (
-                                <div className="od-cancel-block">
-                                    <p className="od-cancel-block-label">GHI CHÚ HỦY</p>
-                                    <div className="od-cancel-tag od-cancel-tag--red-soft">
+                                <div className="aod-cancel-block">
+                                    <p className="aod-cancel-block-label">GHI CHÚ HỦY</p>
+                                    <div className="aod-cancel-tag aod-cancel-tag--red-soft">
                                         {order.cancelNote}
                                     </div>
                                 </div>
                             )}
 
                             {order.refundReason && (
-                                <div className="od-cancel-block">
-                                    <p className="od-cancel-block-label">LÝ DO HOÀN TIỀN</p>
-                                    <div className="od-cancel-tag od-cancel-tag--yellow">
+                                <div className="aod-cancel-block">
+                                    <p className="aod-cancel-block-label">LÝ DO HOÀN TIỀN</p>
+                                    <div className="aod-cancel-tag aod-cancel-tag--yellow">
                                         <RefreshCw size={13} /> {order.refundReason}
                                     </div>
                                 </div>
@@ -490,31 +490,31 @@ const AdminOrderDetail = () => {
                 </div>
 
                 {/* RIGHT ────────────────────────────────────────────────────── */}
-                <div className="od-col-side">
+                <div className="aod-col-side">
 
                     {/* Người nhận */}
-                    <div className="od-card">
-                        <h2 className="od-card-title"><User size={14} /> NGƯỜI NHẬN</h2>
-                        <div className="od-info-list">
-                            <div className="od-info-row">
-                                <span className="od-info-icon"><User size={13} /></span>
-                                <div className="od-info-content">
-                                    <span className="od-info-label">TÊN NGƯỜI NHẬN</span>
-                                    <span className="od-info-value">{order.receiverName || "—"}</span>
+                    <div className="aod-card">
+                        <h2 className="aod-card-title"><User size={14} /> NGƯỜI NHẬN</h2>
+                        <div className="aod-info-list">
+                            <div className="aod-info-row">
+                                <span className="aod-info-icon"><User size={13} /></span>
+                                <div className="aod-info-content">
+                                    <span className="aod-info-label">TÊN NGƯỜI NHẬN</span>
+                                    <span className="aod-info-value">{order.receiverName || "—"}</span>
                                 </div>
                             </div>
-                            <div className="od-info-row">
-                                <span className="od-info-icon"><Phone size={13} /></span>
-                                <div className="od-info-content">
-                                    <span className="od-info-label">SỐ ĐIỆN THOẠI</span>
-                                    <span className="od-info-value">{order.phoneNumber || "—"}</span>
+                            <div className="aod-info-row">
+                                <span className="aod-info-icon"><Phone size={13} /></span>
+                                <div className="aod-info-content">
+                                    <span className="aod-info-label">SỐ ĐIỆN THOẠI</span>
+                                    <span className="aod-info-value">{order.phoneNumber || "—"}</span>
                                 </div>
                             </div>
-                            <div className="od-info-row">
-                                <span className="od-info-icon"><MapPin size={13} /></span>
-                                <div className="od-info-content">
-                                    <span className="od-info-label">ĐỊA CHỈ GIAO HÀNG</span>
-                                    <span className="od-info-value">
+                            <div className="aod-info-row">
+                                <span className="aod-info-icon"><MapPin size={13} /></span>
+                                <div className="aod-info-content">
+                                    <span className="aod-info-label">ĐỊA CHỈ GIAO HÀNG</span>
+                                    <span className="aod-info-value">
                                         {[order.shippingAddress, order.ward, order.district, order.province]
                                             .filter(Boolean).join(", ") || "—"}
                                     </span>
@@ -524,7 +524,7 @@ const AdminOrderDetail = () => {
 
                         {/* Xem tài khoản */}
                         <button
-                            className="od-btn-view-account"
+                            className="aod-btn-view-account"
                             onClick={() => setCustomerModal(true)}
                         >
                             <User size={14} /> Xem thông tin người đặt<ExternalLink size={13} />
@@ -535,12 +535,12 @@ const AdminOrderDetail = () => {
 
                     {/* Thao tác */}
                     {(nextStatus || canCancel(order.status)) && (
-                        <div className="od-card od-card--actions">
-                            <h2 className="od-card-title">THAO TÁC</h2>
-                            <div className="od-action-btns">
+                        <div className="aod-card aod-card--actions">
+                            <h2 className="aod-card-title">THAO TÁC</h2>
+                            <div className="aod-action-btns">
                                 {nextStatus && nextMeta && (
                                     <button
-                                        className="od-btn-next-status"
+                                        className="aod-btn-next-status"
                                         onClick={handleNextStatus}
                                         disabled={updating}
                                     >
@@ -551,7 +551,7 @@ const AdminOrderDetail = () => {
                                 )}
                                 {canCancel(order.status) && (
                                     <button
-                                        className="od-btn-cancel-order"
+                                        className="aod-btn-cancel-order"
                                         onClick={() => setCancelModal(true)}
                                         disabled={updating}
                                     >
