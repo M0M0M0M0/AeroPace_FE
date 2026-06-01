@@ -61,6 +61,9 @@ const CheckoutForm = () => {
   const vatAmount = Math.round(totalPrice * VAT_RATE);
   const grandTotal = totalPrice + vatAmount + shippingFee;
 
+  // ─── Prevent double click ────────────────────────────────────────────────────────
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // ─── 1. Load provinces once ──────────────────────────────────────────────────
   useEffect(() => {
     axios.get(`${GEO}/1/0.htm`).then((res) => {
@@ -248,7 +251,6 @@ const CheckoutForm = () => {
         },
       },
     });
-    toast.success("Đặt hàng thành công!");
   };
 
   const buildOrderPayload = (paymentMethod, paymentOrderId = null) => ({
@@ -297,7 +299,7 @@ const CheckoutForm = () => {
             province: selectedProvince ? provinces.find(p => p.id === selectedProvince)?.full_name : profileInfo?.province,
             vat: vatAmount,
             shippingMethodId: selectedShipping?.id,
-            grandTotal: grandTotal, 
+            grandTotal: grandTotal,
           },
           { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
@@ -331,7 +333,7 @@ const CheckoutForm = () => {
         await axios.patch(
           `${API}/orders/${orderId}/payment`,
           {
-            paymentOrderId: paymentResult.paymentIntent.id,      
+            paymentOrderId: paymentResult.paymentIntent.id,
             paymentTransactionId: paymentResult.paymentIntent.latest_charge, // ch_xxx
             paymentStatus: "PAID",
           },
@@ -625,8 +627,12 @@ const CheckoutForm = () => {
                 </PayPalScriptProvider>
               </div>
             ) : (
-              <button type="submit" className="checkout-submit-btn">
-                Xác nhận đặt hàng
+              <button
+                type="submit"
+                className="checkout-submit-btn"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Đang xử lý..." : "Xác nhận đặt hàng"}
               </button>
             )}
           </form>
