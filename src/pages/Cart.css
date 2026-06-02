@@ -174,7 +174,7 @@
 
 .cart-card--warning {
   border: 1px solid #fca5a5;
-  background: #e5e4e47f7;
+  background: #e5e4e4;
 }
 
 .cart-stock-warning {
@@ -193,7 +193,7 @@
   gap: 6px;
   color: #dc2626;
   font-size: 13px;
-  background: #e5e4e41f1;
+  background: #e5e4e4;
   border: 1px solid #fca5a5;
   border-radius: 8px;
   padding: 10px 14px;
