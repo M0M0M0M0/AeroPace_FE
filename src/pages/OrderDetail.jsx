@@ -30,7 +30,7 @@ const getStatusStyle = (order) => {
         case "CANCELLED": return { bg: "rgba(248,113,113,0.15)", color: "#f87171" };
         case "REFUND_PENDING": return { bg: "rgba(251,146,60,0.15)", color: "#fb923c" };
         case "PENDING": return { bg: "rgba(156,163,175,0.15)", color: "#9ca3af" };
-        default: return { bg: "#333", color: "#fff" };
+        default: return { bg: "#333", color: "#e5e4e4" };
     }
 };
 
@@ -52,6 +52,7 @@ const OrderDetail = () => {
     const [order, setOrder] = useState(state?.order || null);
     const [cancelModal, setCancelModal] = useState({ open: false, note: "" });
     const [cancelling, setCancelling] = useState(false);
+    const [confirming, setConfirming] = useState(false);
 
     if (!order) {
         return (
@@ -186,9 +187,9 @@ const OrderDetail = () => {
                                     >
                                         {/* Product image */}
                                         <div className="od-item-img-wrap">
-                                            {item.imageUrl ? (
+                                            {item.productImgUrl ? (
                                                 <img
-                                                    src={item.imageUrl}
+                                                    src={item.productImgUrl}
                                                     alt={item.productName}
                                                     className="od-item-img"
                                                 />

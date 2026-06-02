@@ -7,7 +7,7 @@
 
 body {
   background-color: rgb(0, 0, 0, 0.9);
-  color: #fff;
+  color: #e5e4e4;
   min-height: 100vh;
   line-height: 1.5;
 }
@@ -73,7 +73,7 @@ button {
 }
 
 .btn {
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
   padding: 0.8rem 1.6rem;
   border-radius: 50px;
@@ -110,6 +110,7 @@ button {
   margin-top: 20px;
   padding: 0 20px;
 }
+
 .featured-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -131,12 +132,15 @@ button {
 .sport-card:nth-child(1) {
   animation-delay: 0.2s;
 }
+
 .sport-card:nth-child(2) {
   animation-delay: 0.4s;
 }
+
 .sport-card:nth-child(3) {
   animation-delay: 0.6s;
 }
+
 .sport-card:nth-child(4) {
   animation-delay: 0.8s;
 }
@@ -159,7 +163,7 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #fff;
+  color: #e5e4e4;
   font-weight: 600;
   font-size: 1.2rem;
   opacity: 0;
@@ -208,7 +212,7 @@ button {
   top: 10px;
   right: 10px;
   background: #000;
-  color: #fff;
+  color: #e5e4e4;
   border-radius: 50%;
   padding: 8px;
   cursor: pointer;
@@ -243,17 +247,17 @@ button {
 .btn-outline {
   display: inline-block;
   padding: 8px 16px;
-  border: 2px solid #fff;
+  border: 2px solid #e5e4e4;
   border-radius: 25px;
   background: transparent;
-  color: #fff;
+  color: #e5e4e4;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.3s ease;
 }
 
 .btn-outline:hover {
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
 }
 
@@ -291,7 +295,7 @@ button {
   position: absolute;
   inset: 0;
   background: rgb(250, 249, 249);
-  color: #fff;
+  color: #e5e4e4;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -311,7 +315,7 @@ button {
 }
 
 .scroll-btn {
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
   border: none;
   padding: 6px 10px;
@@ -332,6 +336,7 @@ button {
     opacity: 0;
     transform: translateY(40px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -364,19 +369,24 @@ button {
 /* === Featured Products (hiển thị 8 sản phẩm, 4 cột mỗi hàng) === */
 .featured-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* ✅ 4 cột / hàng */
+  grid-template-columns: repeat(4, 1fr);
+  /* ✅ 4 cột / hàng */
   gap: 25px;
-  padding: 0 6%; /* ✅ Canh lề đều với các section khác */
+  padding: 0 6%;
+  /* ✅ Canh lề đều với các section khác */
 }
 
 @media (max-width: 992px) {
   .featured-grid {
-    grid-template-columns: repeat(2, 1fr); /* Tablet */
+    grid-template-columns: repeat(2, 1fr);
+    /* Tablet */
   }
 }
+
 @media (max-width: 600px) {
   .featured-grid {
-    grid-template-columns: 1fr; /* Mobile */
+    grid-template-columns: 1fr;
+    /* Mobile */
   }
 }
 
@@ -392,7 +402,8 @@ button {
   display: flex;
   gap: 20px;
   width: max-content;
-  animation: scrollIcons 25s linear infinite; /* ✅ Tự động cuộn qua trái */
+  animation: scrollIcons 25s linear infinite;
+  /* ✅ Tự động cuộn qua trái */
 }
 
 .scroll-item {
@@ -415,7 +426,7 @@ button {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  color: #fff;
+  color: #e5e4e4;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -433,10 +444,12 @@ button {
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-50%);
   }
 }
+
 /* === Featured Products Hover Enhancement === */
 .product-card {
   transition:
@@ -445,8 +458,10 @@ button {
 }
 
 .product-card:hover {
-  transform: translateY(-8px) scale(1.03); /* Nhẹ nâng lên và phóng to */
-  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1); /* Bóng nổi nhẹ */
+  transform: translateY(-8px) scale(1.03);
+  /* Nhẹ nâng lên và phóng to */
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+  /* Bóng nổi nhẹ */
 }
 
 .product-image img {
@@ -454,7 +469,8 @@ button {
 }
 
 .product-card:hover .product-image img {
-  transform: scale(1.1); /* Ảnh phóng nhẹ khi hover */
+  transform: scale(1.1);
+  /* Ảnh phóng nhẹ khi hover */
 }
 
 .cart-btn {
@@ -467,7 +483,8 @@ button {
 
 .product-card:hover .cart-btn {
   opacity: 1;
-  transform: scale(1); /* Nút giỏ hàng hiện ra */
+  transform: scale(1);
+  /* Nút giỏ hàng hiện ra */
 }
 
 .btn-outline {
@@ -475,9 +492,10 @@ button {
 }
 
 .btn-outline:hover {
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
 }
+
 /* Cart */
 .cart-empty {
   min-height: 80vh;
@@ -491,7 +509,7 @@ button {
 
 .cart-page {
   background: #000;
-  color: #fff;
+  color: #e5e4e4;
   min-height: 100vh;
   padding: 5rem 6%;
 }
@@ -606,10 +624,11 @@ button {
   flex-wrap: wrap;
   margin-top: 1rem;
 }
+
 /* Checkout */
 .checkout-page {
   background: #000;
-  color: #fff;
+  color: #e5e4e4;
   min-height: 100vh;
   padding: 5rem 6%;
 }
@@ -648,7 +667,7 @@ button {
   border-radius: 50px;
   border: 1px solid #333;
   background: #111;
-  color: #fff;
+  color: #e5e4e4;
 }
 
 .payment-methods {
@@ -672,16 +691,16 @@ button {
 
 .payment-card:hover {
   background: #222;
-  border-color: #fff;
+  border-color: #e5e4e4;
 }
 
 .payment-card.active {
   background: #222;
-  border-color: #fff;
+  border-color: #e5e4e4;
 }
 
 .btn {
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
   padding: 0.8rem 1.6rem;
   border-radius: 50px;
@@ -759,10 +778,11 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
 /* Order Success */
 .order-success-page {
   background: #000;
-  color: #fff;
+  color: #e5e4e4;
   min-height: 100vh;
   padding: 5rem 6%;
   display: flex;
@@ -773,14 +793,14 @@ button {
 
 .success-icon {
   font-size: 6rem;
-  border: 4px solid #fff;
+  border: 4px solid #e5e4e4;
   border-radius: 50%;
   width: 6rem;
   height: 6rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: #e5e4e4;
   box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
   transition: transform 0.3s ease-in-out;
 }
@@ -842,8 +862,10 @@ button {
 
 .order-items {
   max-height: 400px;
-  overflow-y: auto; /* chỉ cho scroll dọc */
-  overflow-x: hidden; /* chặn scroll ngang */
+  overflow-y: auto;
+  /* chỉ cho scroll dọc */
+  overflow-x: hidden;
+  /* chặn scroll ngang */
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -895,7 +917,7 @@ button {
 }
 
 .btn {
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
   padding: 0.8rem 1.6rem;
   border-radius: 50px;
@@ -911,7 +933,7 @@ button {
 
 .page-center {
   background: #000;
-  color: #fff;
+  color: #e5e4e4;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -926,15 +948,17 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
 .cart-page {
   background: #000;
-  color: #fff;
+  color: #e5e4e4;
   min-height: 100vh;
   padding: 4rem 1rem;
 }
 
 .container {
-  max-width: 1200px; /* Giới hạn giống navbar */
+  max-width: 1200px;
+  /* Giới hạn giống navbar */
   margin: 0 auto;
 }
 
@@ -1000,7 +1024,7 @@ button {
 .btn {
   padding: 0.75rem 1.5rem;
   border-radius: 999px;
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
   font-weight: bold;
   cursor: pointer;
@@ -1009,17 +1033,19 @@ button {
 
 .btn-red {
   background: #c00;
-  color: #fff;
+  color: #e5e4e4;
 }
+
 .checkout-page {
   background: #000;
-  color: #fff;
+  color: #e5e4e4;
   min-height: 100vh;
   padding: 4rem 1rem;
 }
 
 .container {
-  max-width: 1200px; /* Giống navbar */
+  max-width: 1200px;
+  /* Giống navbar */
   margin: 0 auto;
 }
 
@@ -1060,7 +1086,7 @@ button {
   border-radius: 999px;
   border: 1px solid #333;
   background: #222;
-  color: #fff;
+  color: #e5e4e4;
   outline: none;
 }
 
@@ -1087,7 +1113,7 @@ button {
 
 .payment-card.active {
   background: #333;
-  border-color: #fff;
+  border-color: #e5e4e4;
 }
 
 .order-items {
@@ -1137,8 +1163,7 @@ button {
   border-radius: 999px;
   border: none;
   cursor: pointer;
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
   font-weight: bold;
 }
-

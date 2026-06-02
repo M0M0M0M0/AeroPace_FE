@@ -1,6 +1,6 @@
 .checkout-page {
   background: #000;
-  color: #fff;
+  color: #e5e4e4;
   min-height: 100vh;
   padding: 5rem 6%;
 }
@@ -45,7 +45,7 @@
   border-radius: 6px;
   border: 1px solid #333;
   background: #222;
-  color: #fff;
+  color: #e5e4e4;
   cursor: pointer;
 }
 
@@ -60,7 +60,7 @@
   border-radius: 50px;
   border: 1px solid #333;
   background: #111;
-  color: #fff;
+  color: #e5e4e4;
 }
 
 /* PAYMENT */
@@ -86,7 +86,7 @@
 .checkout-payment-card.active,
 .checkout-payment-card:hover {
   background: #222;
-  border-color: #fff;
+  border-color: #e5e4e4;
 }
 
 /* ORDER */
@@ -141,6 +141,7 @@
     grid-template-columns: 1fr;
   }
 }
+
 /* --- THÊM PHẦN CSS NÀY DÀNH CHO ĐỊA CHỈ --- */
 
 .checkout-address-section {
@@ -157,7 +158,8 @@
 
 .checkout-address-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr; /* Chia làm 3 cột bằng nhau */
+  grid-template-columns: 1fr 1fr 1fr;
+  /* Chia làm 3 cột bằng nhau */
   gap: 1rem;
 }
 
@@ -167,12 +169,13 @@
   border-radius: 50px;
   border: 1px solid #333;
   background: #111;
-  color: #fff;
+  color: #e5e4e4;
   font-size: 14px;
   cursor: pointer;
   outline: none;
-  appearance: none; /* Xóa mũi tên mặc định của trình duyệt để đẹp hơn */
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  appearance: none;
+  /* Xóa mũi tên mặc định của trình duyệt để đẹp hơn */
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23e5e4e4%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem top 50%;
   background-size: 0.65rem auto;
@@ -188,7 +191,8 @@
 }
 
 .checkout-input-full {
-  width: 100%; /* Dành cho ô số nhà chiếm toàn bộ chiều ngang */
+  width: 100%;
+  /* Dành cho ô số nhà chiếm toàn bộ chiều ngang */
   box-sizing: border-box;
 }
 
@@ -196,7 +200,7 @@
 .checkout-submit-btn {
   padding: 1rem;
   border-radius: 999px;
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
   font-weight: bold;
   font-size: 1.1rem;
@@ -213,31 +217,43 @@
 /* ── STRIPE CARD INPUT COMPLEX (Bản nâng cấp To & Rõ) ── */
 .stripe-card-container {
   margin-top: 1.5rem;
-  padding: 1.5rem;            /* 🌟 TĂNG đệm lót từ 1.2rem lên 1.5rem để hộp dày và bề thế hơn */
-  border: 2px solid #333;     /* 🌟 TĂNG độ dày viền lên 2px và làm sáng nhẹ màu viền mặc định (#222 -> #333) */
-  background: #0d0d0d;        /* Làm nền hộp tối hơn một chút so với nền chung #111 để tạo chiều sâu */
+  padding: 1.5rem;
+  /* 🌟 TĂNG đệm lót từ 1.2rem lên 1.5rem để hộp dày và bề thế hơn */
+  border: 2px solid #333;
+  /* 🌟 TĂNG độ dày viền lên 2px và làm sáng nhẹ màu viền mặc định (#222 -> #333) */
+  background: #0d0d0d;
+  /* Làm nền hộp tối hơn một chút so với nền chung #111 để tạo chiều sâu */
   border-radius: 0.75rem;
-  transition: all 0.25s ease; /* Thêm hiệu ứng mượt mà khi người dùng nhấn vào */
+  transition: all 0.25s ease;
+  /* Thêm hiệu ứng mượt mà khi người dùng nhấn vào */
 }
 
 .stripe-card-container label {
   display: block;
-  font-size: 0.95rem;         /* Tăng nhẹ cỡ chữ của tiêu đề "Thông tin thẻ..." */
-  color: #bbbbbb;             /* Làm sáng chữ tiêu đề lên một chút */
-  margin-bottom: 1rem;        /* Tăng khoảng cách từ tiêu đề xuống ô nhập thẻ */
-  font-weight: 600;           /* Làm chữ đậm và nét hơn */
+  font-size: 0.95rem;
+  /* Tăng nhẹ cỡ chữ của tiêu đề "Thông tin thẻ..." */
+  color: #bbbbbb;
+  /* Làm sáng chữ tiêu đề lên một chút */
+  margin-bottom: 1rem;
+  /* Tăng khoảng cách từ tiêu đề xuống ô nhập thẻ */
+  font-weight: 600;
+  /* Làm chữ đậm và nét hơn */
 }
 
 /* 🌟 HIỆU ỨNG FOCUS (Khi khách hàng đang gõ số thẻ) */
 .StripeElement--focus {
-  border-color: #ffffff !important; /* Viền lập tức đổi sang màu trắng sáng rực rỡ */
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15); /* Thêm một lớp hào quang mờ xung quanh hộp để cực kỳ nổi bật */
-  background: #111111; /* Sáng nhẹ nền hộp lên để báo hiệu đang tương tác */
+  border-color: #e5e4e4 !important;
+  /* Viền lập tức đổi sang màu trắng sáng rực rỡ */
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+  /* Thêm một lớp hào quang mờ xung quanh hộp để cực kỳ nổi bật */
+  background: #111111;
+  /* Sáng nhẹ nền hộp lên để báo hiệu đang tương tác */
 }
 
 /* HIỆU ỨNG KHI KHÁCH NHẬP BỊ SAI SỐ THẺ */
 .StripeElement--invalid {
-  border-color: #ff4a4a !important; /* Viền chuyển sang đỏ rực cảnh báo */
+  border-color: #ff4a4a !important;
+  /* Viền chuyển sang đỏ rực cảnh báo */
   box-shadow: 0 0 0 3px rgba(255, 74, 74, 0.2);
 }
 
@@ -250,7 +266,7 @@
 
 .checkout-page {
   background: #000;
-  color: #fff;
+  color: #e5e4e4;
   min-height: 100vh;
   padding: 5rem 6%;
 }
@@ -300,7 +316,7 @@
   border-radius: 6px;
   border: 1px solid #333;
   background: #222;
-  color: #fff;
+  color: #e5e4e4;
   cursor: pointer;
   font-size: 0.85rem;
   transition: border-color 0.2s;
@@ -321,7 +337,7 @@
   border-radius: 50px;
   border: 1px solid #333;
   background: #111;
-  color: #fff;
+  color: #e5e4e4;
   font-size: 14px;
   outline: none;
   transition: border-color 0.2s;
@@ -360,12 +376,12 @@
   border-radius: 50px;
   border: 1px solid #333;
   background: #111;
-  color: #fff;
+  color: #e5e4e4;
   font-size: 14px;
   cursor: pointer;
   outline: none;
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23e5e4e4%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem top 50%;
   background-size: 0.65rem auto;
@@ -426,7 +442,7 @@
 }
 
 .checkout-shipping-card.active {
-  border-color: #fff;
+  border-color: #e5e4e4;
   background: #1a1a1a;
 }
 
@@ -435,7 +451,7 @@
 }
 
 .checkout-shipping-radio {
-  accent-color: #fff;
+  accent-color: #e5e4e4;
   width: 16px;
   height: 16px;
   flex-shrink: 0;
@@ -460,7 +476,7 @@
 }
 
 .checkout-shipping-card.active .checkout-shipping-fee {
-  color: #fff;
+  color: #e5e4e4;
 }
 
 /* PAYMENT */
@@ -492,14 +508,14 @@
 .checkout-payment-card.active,
 .checkout-payment-card:hover {
   background: #222;
-  border-color: #fff;
+  border-color: #e5e4e4;
 }
 
 /* Submit */
 .checkout-submit-btn {
   padding: 1rem;
   border-radius: 999px;
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
   font-weight: bold;
   font-size: 1.1rem;
@@ -607,7 +623,7 @@
 .checkout-grand-total {
   font-size: 1.3rem;
   font-weight: bold;
-  color: #fff;
+  color: #e5e4e4;
   margin: 0;
 }
 

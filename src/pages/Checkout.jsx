@@ -591,7 +591,7 @@ const CheckoutForm = () => {
                   options={{
                     style: {
                       base: {
-                        color: "#ffffff",
+                        color: "#e5e4e4",
                         fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
                         fontSize: "18px",
                         lineHeight: "32px",

@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       closeButton
       toastOptions={{
         duration: 2500,
-        style: { background: "#000", color: "#fff", borderRadius: "12px" },
+        style: { background: "#000", color: "#e5e4e4", borderRadius: "12px" },
       }}
       offset={"4rem"}
       gap={8}

@@ -13,7 +13,7 @@ input[type="number"] {
 /* ── WRAPPER ─────────────────────────────────────────────────── */
 .pd-wrapper {
   background: #000;
-  color: #fff;
+  color: #e5e4e4;
   min-height: 100vh;
   padding: 5rem 6%;
 }
@@ -75,7 +75,7 @@ input[type="number"] {
 }
 
 .pd-thumb.active {
-  border: 2px solid #fff;
+  border: 2px solid #e5e4e4;
   opacity: 1;
 }
 
@@ -115,7 +115,7 @@ input[type="number"] {
 }
 
 .pd-variant-selected {
-  color: #fff;
+  color: #e5e4e4;
   font-weight: 700;
 }
 
@@ -130,21 +130,21 @@ input[type="number"] {
   border-radius: 999px;
   border: 1px solid #333;
   background: #111;
-  color: #fff;
+  color: #e5e4e4;
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.2s ease;
 }
 
 .pd-variant-item:hover:not(.disabled) {
-  border-color: #fff;
+  border-color: #e5e4e4;
   transform: translateY(-2px);
 }
 
 .pd-variant-item.active {
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
-  border-color: #fff;
+  border-color: #e5e4e4;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
@@ -183,7 +183,7 @@ input[type="number"] {
 .pd-qty-box button {
   padding: 0.3rem 0.8rem;
   background: #111;
-  color: #fff;
+  color: #e5e4e4;
   cursor: pointer;
   border: none;
 }
@@ -192,7 +192,7 @@ input[type="number"] {
   width: 50px;
   text-align: center;
   background: #111;
-  color: #fff;
+  color: #e5e4e4;
   border: none;
   outline: none;
   -moz-appearance: textfield;
@@ -214,7 +214,7 @@ input[type="number"] {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
   padding: 0.8rem 1.6rem;
   border-radius: 50px;
@@ -224,11 +224,13 @@ input[type="number"] {
   border: none;
 }
 
-.pd-add-btn:hover:not(:disabled) { transform: scale(1.05); }
+.pd-add-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
 
 .pd-buy-btn {
   flex: 1;
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
   border: none;
   padding: 0.9rem;
@@ -238,7 +240,9 @@ input[type="number"] {
   transition: 0.25s;
 }
 
-.pd-buy-btn:hover:not(:disabled) { transform: scale(1.05); }
+.pd-buy-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
 
 .pd-add-btn:disabled,
 .pd-buy-btn:disabled {
@@ -263,7 +267,9 @@ input[type="number"] {
   transition: 0.3s;
 }
 
-.pd-adv-item span { color: #ddd; }
+.pd-adv-item span {
+  color: #ddd;
+}
 
 /* ── DESCRIPTION ─────────────────────────────────────────────── */
 .pd-desc {
@@ -294,12 +300,13 @@ input[type="number"] {
   display: block;
   margin: 10px auto;
 }
+
 .pd-variant-in-cart-badge {
   position: absolute;
   top: -6px;
   right: -6px;
   background: #e53e3e;
-  color: #fff;
+  color: #e5e4e4;
   font-size: 11px;
   font-weight: 600;
   border-radius: 50%;

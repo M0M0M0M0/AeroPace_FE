@@ -3,14 +3,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #000; /* Nền đen sâu */
+  background-color: #000;
+  /* Nền đen sâu */
   padding: 20px;
 }
 
 .login-card {
   width: 100%;
   max-width: 420px;
-  background: #0f0f0f; /* Lớp nền thẻ sáng hơn một chút */
+  background: #0f0f0f;
+  /* Lớp nền thẻ sáng hơn một chút */
   padding: 40px;
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -23,7 +25,7 @@
 }
 
 .login-header h2 {
-  color: #fff;
+  color: #e5e4e4;
   font-size: 1.8rem;
   margin-bottom: 10px;
 }
@@ -57,14 +59,14 @@
   background: #1a1a1a;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  color: #fff;
+  color: #e5e4e4;
   font-size: 0.95rem;
   transition: all 0.3s ease;
 }
 
 .input-group input:focus {
   outline: none;
-  border-color: #fff;
+  border-color: #e5e4e4;
   background: #222;
 }
 
@@ -93,7 +95,7 @@
   justify-content: center;
   align-items: center;
   gap: 10px;
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
   border: none;
   padding: 14px;
@@ -119,10 +121,11 @@
 }
 
 .login-footer a {
-  color: #fff;
+  color: #e5e4e4;
   text-decoration: none;
   font-weight: 500;
 }
+
 /* --- Các class mới cho thông báo hiện đại --- */
 .modern-alert {
   display: flex;
@@ -156,6 +159,7 @@
   cursor: not-allowed;
   transform: none;
 }
+
 /* Modal Overlay */
 .login-modal-overlay {
   position: fixed;
@@ -169,7 +173,7 @@
 }
 
 .login-modal-card {
-  background: #fff;
+  background: #e5e4e4;
   border-radius: 16px;
   padding: 2rem;
   width: 90%;
@@ -185,6 +189,7 @@
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -214,7 +219,7 @@
   margin: 0.5rem auto 1rem;
   width: 72px;
   height: 72px;
-  background: #fff5f5;
+  background: #e5e4e45f5;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -237,7 +242,7 @@
 
 .login-modal-btn {
   background: #e53e3e;
-  color: #fff;
+  color: #e5e4e4;
   border: none;
   border-radius: 8px;
   padding: 0.65rem 2rem;
@@ -257,6 +262,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);

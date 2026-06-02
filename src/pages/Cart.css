@@ -10,7 +10,7 @@
 
 .cart-page {
   background: #000;
-  color: #fff;
+  color: #e5e4e4;
   min-height: 100vh;
   padding: 4rem 6%;
 }
@@ -91,7 +91,7 @@
   padding: 0.3rem 0.5rem;
   cursor: pointer;
   transition: background 0.3s ease;
-  color: #fff;
+  color: #e5e4e4;
   border: none;
 }
 
@@ -112,7 +112,7 @@
   cursor: pointer;
   transition: background 0.3s ease;
   border: none;
-  color: #fff;
+  color: #e5e4e4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -145,7 +145,7 @@
 .cart-page-btn {
   padding: 0.75rem 1.5rem;
   border-radius: 999px;
-  background: #fff;
+  background: #e5e4e4;
   color: #000;
   font-weight: bold;
   cursor: pointer;
@@ -159,7 +159,7 @@
 
 .cart-page-btn-red {
   background: #c00;
-  color: #fff;
+  color: #e5e4e4;
 }
 
 .cart-page-btn-red:hover {
@@ -168,7 +168,7 @@
 
 .cart-card--warning {
   border: 1px solid #fca5a5;
-  background: #fff7f7;
+  background: #e5e4e47f7;
 }
 
 .cart-stock-warning {
@@ -187,12 +187,13 @@
   gap: 6px;
   color: #dc2626;
   font-size: 13px;
-  background: #fff1f1;
+  background: #e5e4e41f1;
   border: 1px solid #fca5a5;
   border-radius: 8px;
   padding: 10px 14px;
   margin-top: 12px;
 }
+
 .cart-confirm-overlay {
   position: fixed;
   inset: 0;
@@ -220,7 +221,7 @@
 .cart-confirm-dialog h3 {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #fff;
+  color: #e5e4e4;
 }
 
 .cart-confirm-dialog p {
@@ -255,7 +256,7 @@
   border-radius: 999px;
   border: none;
   background: #c00;
-  color: #fff;
+  color: #e5e4e4;
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 600;
@@ -265,6 +266,7 @@
 .cart-confirm-btn-delete:hover {
   background: #e00;
 }
+
 .cart-select-all {
   display: flex;
   align-items: center;
@@ -272,7 +274,7 @@
   padding: 0 1rem;
   margin-bottom: -0.5rem;
   font-size: 1.1rem;
-  color: #fff;
+  color: #e5e4e4;
 }
 
 .cart-select-all label {
@@ -285,7 +287,8 @@
   width: 22px;
   height: 22px;
   cursor: pointer;
-  accent-color: #c00; /* Màu đỏ cho checkbox khi được tick (phù hợp với nút xóa) */
+  accent-color: #c00;
+  /* Màu đỏ cho checkbox khi được tick (phù hợp với nút xóa) */
   flex-shrink: 0;
 }
 

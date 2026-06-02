@@ -250,7 +250,7 @@ const Profile = () => {
       case "DELIVERED": return "Đã giao hàng";
       case "COMPLETED": return "Hoàn thành";
       case "CANCELLED": return "Đã hủy";
-      
+
       default: return status;
     }
   };
@@ -265,7 +265,7 @@ const Profile = () => {
       case "COMPLETED": return { bg: "rgba(74,222,128,0.2)", color: "#4ade80" };
       case "CANCELLED": return { bg: "rgba(248,113,113,0.2)", color: "#f87171" };
       case "PENDING": return { bg: "rgba(156,163,175,0.2)", color: "#9ca3af" };
-      default: return { bg: "#333", color: "#fff" };
+      default: return { bg: "#333", color: "#e5e4e4" };
     }
   };
 
@@ -302,9 +302,9 @@ const Profile = () => {
             {previewItems.map((item, idx) => (
               <div key={idx} className="profile-order-preview-row">
                 <div className="profile-order-preview-img-wrap">
-                  {item.imageUrl ? (
+                  {item.productImgUrl ? (
                     <img
-                      src={item.imageUrl}
+                      src={item.productImgUrl}
                       alt={item.productName}
                       className="profile-order-preview-img"
                     />

@@ -288,7 +288,7 @@ const AdminShippingPage = () => {
                                     background: "#1a1a1a",
                                     border: "1px solid rgba(255,255,255,0.1)",
                                     borderRadius: "8px",
-                                    color: "#fff",
+                                    color: "#e5e4e4",
                                     padding: "10px 14px",
                                     fontSize: "0.9rem",
                                     outline: "none",

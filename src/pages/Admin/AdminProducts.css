@@ -1,7 +1,7 @@
 /* ── Page ────────────────────────────────────────────────────── */
 .adp-page {
   position: relative;
-  color: #fff;
+  color: #e5e4e4;
 }
 
 /* ── Header ──────────────────────────────────────────────────── */
@@ -31,7 +31,7 @@
   align-items: center;
   gap: 8px;
   background: #3b82f6;
-  color: #fff;
+  color: #e5e4e4;
   border: none;
   padding: 10px 18px;
   border-radius: 8px;
@@ -107,7 +107,7 @@
   background: #1a1a1a;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 7px;
-  color: #fff;
+  color: #e5e4e4;
   padding: 8px 12px;
   font-size: 0.85rem;
   outline: none;
@@ -155,7 +155,7 @@
 }
 
 .adp-filter-result strong {
-  color: #fff;
+  color: #e5e4e4;
 }
 
 .adp-filter-reset {
@@ -217,7 +217,7 @@
 .adp-table {
   width: 100%;
   border-collapse: collapse;
-  color: #fff;
+  color: #e5e4e4;
   text-align: left;
   font-size: 0.9rem;
 }
@@ -231,7 +231,7 @@
   padding: 14px 16px;
   font-size: 0.78rem;
   font-weight: 600;
-  color: #a3a3a3;
+  color: #e5e4e4;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   white-space: nowrap;
@@ -256,7 +256,7 @@
 }
 
 .adp-id {
-  color: #fff;
+  color: #e5e4e4;
   font-size: 0.82rem;
 }
 
@@ -387,7 +387,7 @@
   border-radius: 99px;
   border: 1px solid #333;
   background: #1a1a1a;
-  color: #aaa;
+  color: #e5e4e4;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.15s;
@@ -395,12 +395,12 @@
 
 .adp-bs-preset-btn:hover {
   background: #2a2a2a;
-  color: #fff;
+  color: #e5e4e4;
 }
 
 .adp-bs-preset-btn--active {
   background: #f59e0b;
-  color: #fff;
+  color: #e5e4e4;
   border-color: #f59e0b;
 }
 
@@ -414,7 +414,7 @@
   padding: 4px 12px;
   border-radius: 6px;
   background: #1d4ed8;
-  color: #fff;
+  color: #e5e4e4;
   border: none;
   font-size: 12px;
   cursor: pointer;
@@ -448,14 +448,14 @@
 
 .adp-bs-limit-btn--active {
   background: #1d4ed8;
-  color: #fff;
+  color: #e5e4e4;
   border-color: #1d4ed8;
 }
 
 .adp-rank-badge {
   display: inline-block;
   background: #f59e0b;
-  color: #fff;
+  color: #e5e4e4;
   font-size: 10px;
   font-weight: 700;
   padding: 1px 5px;
@@ -486,7 +486,7 @@
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: #1a1a1a;
-  color: #fff;
+  color: #e5e4e4;
   cursor: pointer;
   transition: background 0.2s;
 }

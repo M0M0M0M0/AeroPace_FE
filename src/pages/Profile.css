@@ -2,7 +2,7 @@
   min-height: 100vh;
   padding: 100px 20px 50px;
   background-color: #000;
-  color: #fff;
+  color: #e5e4e4;
 }
 
 .profile-container {
@@ -79,11 +79,11 @@
 
 .profile-nav-btn:hover {
   background-color: rgba(255, 255, 255, 0.05);
-  color: #fff;
+  color: #e5e4e4;
 }
 
 .profile-nav-btn-active {
-  background-color: #fff;
+  background-color: #e5e4e4;
   color: #000;
 }
 
@@ -158,7 +158,7 @@
   background-color: #1a1a1a;
   border: 1px solid #333;
   border-radius: 8px;
-  color: #fff;
+  color: #e5e4e4;
   font-size: 0.95rem;
   outline: none;
   transition: border-color 0.3s;
@@ -166,7 +166,7 @@
 }
 
 .profile-input-with-icon input:focus {
-  border-color: #fff;
+  border-color: #e5e4e4;
 }
 
 .profile-input-with-icon input:disabled {
@@ -181,7 +181,7 @@
   background-color: #1a1a1a;
   border: 1px solid #333;
   border-radius: 8px;
-  color: #fff;
+  color: #e5e4e4;
   font-size: 0.95rem;
   outline: none;
   transition: border-color 0.3s;
@@ -193,12 +193,12 @@
 }
 
 .profile-input-with-icon select:focus {
-  border-color: #fff;
+  border-color: #e5e4e4;
 }
 
 .profile-input-with-icon select option {
   background-color: #1a1a1a;
-  color: #fff;
+  color: #e5e4e4;
 }
 
 .profile-input-with-icon select:disabled {
@@ -213,7 +213,7 @@
   justify-content: center;
   gap: 10px;
   padding: 12px 20px;
-  background-color: #fff;
+  background-color: #e5e4e4;
   color: #000;
   border: none;
   border-radius: 8px;
@@ -451,7 +451,7 @@
 
 .profile-view-detail-btn:hover {
   border-color: #888;
-  color: #fff;
+  color: #e5e4e4;
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -528,7 +528,7 @@
   border-radius: 8px;
   border: none;
   background: #f87171;
-  color: #fff;
+  color: #e5e4e4;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
@@ -559,7 +559,7 @@
   background-color: #1a1a1a;
   border: 1px solid #333;
   border-radius: 8px;
-  color: #fff;
+  color: #e5e4e4;
   font-size: 0.9rem;
   outline: none;
   transition: border-color 0.3s;
@@ -574,12 +574,12 @@
 }
 
 .profile-address-select:focus {
-  border-color: #fff;
+  border-color: #e5e4e4;
 }
 
 .profile-address-select option {
   background-color: #1a1a1a;
-  color: #fff;
+  color: #e5e4e4;
 }
 
 .profile-address-select:disabled {

@@ -87,9 +87,9 @@ const AdminOrders = () => {
     .filter((o) => {
       let matchStatus = true;
       if (filterStatus === "PENDING_ACTION") {
-        matchStatus = o.status === "PAID" || o.paymentStatus === "REFUND_PENDING";
-      } else if (filterStatus === "REFUND_PENDING") {
-        matchStatus = o.paymentStatus === "REFUND_PENDING";
+        matchStatus = o.status === "PAID";
+      } else if (filterStatus === "CANCELLED") {
+        matchStatus = o.status === "CANCELLED" || o.paymentStatus === "REFUND_PENDING";
       } else if (filterStatus !== "ALL") {
         matchStatus = o.status === filterStatus;
       }
@@ -102,7 +102,7 @@ const AdminOrders = () => {
     filterStatus !== "PENDING_ACTION" || filterDateFrom || filterDateTo;
 
   const getStatusLabel = (order) => {
-    if (order.paymentStatus === "REFUND_PENDING") return "Chờ hoàn tiền";
+    if (order.paymentStatus === "REFUNDED") return "Đã hoàn tiền";
     switch (order.status) {
       case "PENDING": return "Chờ thanh toán";
       case "PAID": return "Chờ giao hàng";
@@ -115,7 +115,7 @@ const AdminOrders = () => {
   };
 
   const getStatusClass = (order) => {
-    if (order.paymentStatus === "REFUND_PENDING") return "ao-badge refund-pending";
+    if (order.paymentStatus === "REFUNDED") return "ao-badge refunded";
     switch (order.status) {
       case "PENDING": return "ao-badge pending";
       case "PAID": return "ao-badge paid";
@@ -132,13 +132,13 @@ const AdminOrders = () => {
     {
       key: "PENDING_ACTION",
       label: "Cần xử lý",
-      count: statOrders.filter(o => o.status === "PAID" || o.paymentStatus === "REFUND_PENDING").length,
+      count: statOrders.filter(o => o.status === "PAID").length,
     },
-    { key: "PAID", label: "Chờ giao hàng", count: statOrders.filter(o => o.status === "PAID").length },
-    { key: "REFUND_PENDING", label: "Chờ hoàn tiền", count: statOrders.filter(o => o.paymentStatus === "REFUND_PENDING").length },
     { key: "SHIPPING", label: "Đang giao", count: statOrders.filter(o => o.status === "SHIPPING").length },
-    { key: "DELIVERED", label: "Đã giao - Chờ xác nhận", count: statOrders.filter(o => o.status === "DELIVERED").length },
-    { key: "CANCELLED", label: "Đã hủy", count: statOrders.filter(o => o.status === "CANCELLED").length },
+    { key: "DELIVERED", label: "Đã giao/Chờ xác nhận", count: statOrders.filter(o => o.status === "DELIVERED").length },
+    { key: "COMPLETED", label: "Hoàn thành", count: statOrders.filter(o => o.status === "COMPLETED").length },
+    { key: "CANCELLED", label: "Đã hủy/Chờ hoàn tiền", count: statOrders.filter(o => o.status === "CANCELLED" || o.paymentStatus === "REFUND_PENDING").length },
+    { key: "REFUNDED", label: "Đã hoàn tiền", count: statOrders.filter(o => o.paymentStatus === "REFUNDED").length },
   ];
 
   return (
@@ -181,12 +181,11 @@ const AdminOrders = () => {
           <option value="ALL">Tất cả</option>
           <option value="PENDING_ACTION">Cần xử lý</option>
           <option value="PENDING">Chờ thanh toán</option>
-          <option value="PAID">Chờ giao hàng</option>
-          <option value="REFUND_PENDING">Chờ hoàn tiền</option>
           <option value="SHIPPING">Đang giao</option>
           <option value="DELIVERED">Đã giao - Chờ khách hàng xác nhận</option>
           <option value="COMPLETED">Hoàn thành</option>
-          <option value="CANCELLED">Đã hủy</option>
+          <option value="CANCELLED">Đã hủy/Chờ hoàn tiền</option>
+          <option value="REFUNDED">Đã hoàn tiền</option>
         </select>
       </div>
 

@@ -2,28 +2,32 @@
 
 /* Định nghĩa một vài biến màu sắc giống trang About Us trước để đồng bộ */
 :root {
-  --contact-bg: #2c2c2c; 
-  --contact-text-dark: #ffffff;
-  --contact-text-muted: #ffffff;
-  --contact-accent: #cdcdcd; /* Màu cam điểm nhấn */
-  --contact-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  --contact-bg: #2c2c2c;
+  --contact-text-dark: #e5e4e4;
+  --contact-text-muted: #e5e4e4;
+  --contact-accent: #cdcdcd;
+  /* Màu cam điểm nhấn */
+  --contact-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 .contact-page-wrapper {
   background-color: var(--contact-bg);
-  padding: 80px 10%; /* Spacing rộng rãi */
+  padding: 80px 10%;
+  /* Spacing rộng rãi */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .contact-container {
   display: flex;
-  gap: 50px; /* Khoảng cách giữa 2 cột */
+  gap: 50px;
+  /* Khoảng cách giữa 2 cột */
   align-items: flex-start;
 }
 
 /* --- Cột thông tin --- */
 .contact-info-col {
-  flex: 1; /* Chiếm 1 phần */
+  flex: 1;
+  /* Chiếm 1 phần */
 }
 
 .contact-title {
@@ -62,7 +66,8 @@
 
 .contact-icon-box {
   color: var(--contact-accent);
-  background-color: rgba(243, 156, 18, 0.1); /* Nền cam nhạt cho icon */
+  background-color: rgba(243, 156, 18, 0.1);
+  /* Nền cam nhạt cho icon */
   padding: 15px;
   border-radius: 50%;
   display: flex;
@@ -84,23 +89,28 @@
 
 /* --- Cột bản đồ --- */
 .contact-map-col {
-  flex: 1; /* Chiếm 1 phần còn lại */
+  flex: 1;
+  /* Chiếm 1 phần còn lại */
   height: 100%;
-  min-height: 400px; /* Chiều cao tối thiểu cho map trên Desktop */
+  min-height: 400px;
+  /* Chiều cao tối thiểu cho map trên Desktop */
 }
 
 .map-canvas {
   width: 100%;
-  height: 500px; /* Chiều cao cố định cho map */
+  height: 500px;
+  /* Chiều cao cố định cho map */
   border-radius: 15px;
-  overflow: hidden; /* Để bo góc thẻ iframe */
-  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+  overflow: hidden;
+  /* Để bo góc thẻ iframe */
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
 }
 
 /* --- Responsive cho Mobile --- */
 @media (max-width: 992px) {
   .contact-container {
-    flex-direction: column; /* Chuyển thành 1 cột dọc */
+    flex-direction: column;
+    /* Chuyển thành 1 cột dọc */
     gap: 40px;
   }
 

@@ -1,6 +1,5 @@
-.admin-container .lucide-shopping-cart {
-  color: #a3a3a3;
-}
+
+
 /* ================================================================
    ADMIN DASHBOARD — dark theme, consistent với AdminCustomers.css
    ================================================================ */
@@ -8,7 +7,7 @@
 /* ── Page ────────────────────────────────────────────────────── */
 .ad-page {
   position: relative;
-  color: #fff;
+  color: #e5e4e4;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -37,7 +36,7 @@
 
 .ad-subtitle {
   font-size: 0.875rem;
-  color: #666;
+  color: #e5e4e4;
   margin: 0;
 }
 
@@ -55,6 +54,7 @@
   font-weight: 600;
   transition: all 0.2s;
 }
+
 .ad-export-btn:hover {
   background: rgba(34, 197, 94, 0.25);
 }
@@ -85,18 +85,22 @@
   justify-content: center;
   flex-shrink: 0;
 }
+
 .ad-stat-icon.green {
   background: rgba(34, 197, 94, 0.15);
   color: #22c55e;
 }
+
 .ad-stat-icon.blue {
   background: rgba(59, 130, 246, 0.15);
   color: #3b82f6;
 }
+
 .ad-stat-icon.yellow {
   background: rgba(250, 204, 21, 0.15);
   color: #facc15;
 }
+
 .ad-stat-icon.teal {
   background: rgba(74, 222, 128, 0.15);
   color: #4ade80;
@@ -111,14 +115,14 @@
 
 .ad-stat-label {
   font-size: 0.78rem;
-  color: #666;
+  color: #e5e4e4;
   white-space: nowrap;
 }
 
 .ad-stat-value {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #fff;
+  color: #e5e4e4;
   white-space: nowrap;
 }
 
@@ -134,7 +138,7 @@
   font-size: 1rem;
   font-weight: 700;
   margin: 0 0 20px;
-  color: #fff;
+  color: #e5e4e4;
 }
 
 .ad-empty {
@@ -143,8 +147,7 @@
 }
 
 /* ── Bar chart ───────────────────────────────────────────────── */
-.ad-chart-card {
-}
+.ad-chart-card {}
 
 .ad-chart {
   display: flex;
@@ -223,9 +226,11 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   transition: background 0.15s;
 }
+
 .ad-row:last-child {
   border-bottom: none;
 }
+
 .ad-row:hover {
   background: #1a1a1a;
 }
@@ -241,9 +246,11 @@
   font-size: 0.82rem;
   font-weight: 600;
 }
+
 .ad-td-muted {
   color: #a3a3a3;
 }
+
 .ad-td-price {
   color: #4ade80;
   font-weight: 700;
@@ -258,22 +265,27 @@
   font-weight: 600;
   white-space: nowrap;
 }
+
 .ad-badge.paid {
   background: rgba(96, 165, 250, 0.15);
   color: #60a5fa;
 }
+
 .ad-badge.ship-cod {
   background: rgba(250, 204, 21, 0.15);
   color: #facc15;
 }
+
 .ad-badge.shipping {
   background: rgba(251, 146, 60, 0.15);
   color: #fb923c;
 }
+
 .ad-badge.delivered {
   background: rgba(74, 222, 128, 0.15);
   color: #4ade80;
 }
+
 .ad-badge.cancelled {
   background: rgba(248, 113, 113, 0.15);
   color: #f87171;

@@ -1,7 +1,7 @@
 /* ── Page ────────────────────────────────────────────────────── */
 .apd-page {
     position: relative;
-    color: #fff;
+    color: #e5e4e4;
 }
 
 .apd-loading {
@@ -39,7 +39,7 @@
 
 .apd-back-btn:hover {
     border-color: rgba(255, 255, 255, 0.3);
-    color: #fff;
+    color: #e5e4e4;
     background: rgba(255, 255, 255, 0.04);
 }
 
@@ -62,7 +62,7 @@
     align-items: center;
     gap: 7px;
     background: #3b82f6;
-    color: #fff;
+    color: #e5e4e4;
     border: none;
     padding: 10px 22px;
     border-radius: 8px;
@@ -158,7 +158,7 @@
     padding: 9px 12px;
     background: #1a1a1a;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
+    color: #e5e4e4;
     border-radius: 8px;
     box-sizing: border-box;
     font-size: 0.875rem;
@@ -222,7 +222,7 @@
     background: #1a1a1a;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 7px;
-    color: #fff;
+    color: #e5e4e4;
     font-size: 0.82rem;
     outline: none;
     box-sizing: border-box;
@@ -255,7 +255,7 @@
 
 .apd-select-list option:checked {
     background: #3b82f6;
-    color: #fff;
+    color: #e5e4e4;
 }
 
 .apd-selected-hint {
@@ -304,12 +304,12 @@
 
 .apd-cat-chip:hover {
     background: #333;
-    color: #fff;
+    color: #e5e4e4;
 }
 
 .apd-cat-chip--active {
     background: #3b82f6;
-    color: #fff;
+    color: #e5e4e4;
     border-color: #3b82f6;
 }
 
@@ -455,7 +455,7 @@
 
 .apd-cancel-btn:hover {
     border-color: rgba(255, 255, 255, 0.25);
-    color: #fff;
+    color: #e5e4e4;
 }
 
 /* ── Leave confirm dialog ────────────────────────────────────── */
@@ -486,7 +486,7 @@
 .apd-confirm-title {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #fff;
+    color: #e5e4e4;
     margin: 0;
 }
 
@@ -523,7 +523,7 @@
     border-radius: 999px;
     border: none;
     background: #3b82f6;
-    color: #fff;
+    color: #e5e4e4;
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 600;

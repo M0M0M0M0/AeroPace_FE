@@ -36,52 +36,52 @@ const AdminLayout = () => {
       {/* --- SIDEBAR --- */}
       <aside className={`admin-sidebar ${isSidebarOpen ? "open" : "closed"}`}>
         <div className="sidebar-logo">
-          <Link to="/" style={{ textDecoration: "none", color: "#fff" }}>
+          <Link to="/" style={{ textDecoration: "none", color: "#e5e4e4" }}>
             <h2>{isSidebarOpen ? "AERO PACE" : "AP"}</h2>
           </Link>
         </div>
         <nav className="sidebar-nav">
           <Link
             to="/admin"
-            className={`nav-item ${isActive("/admin") ? "active" : ""}`}
+            className={`a-nav-item ${isActive("/admin") ? "active" : ""}`}
           >
             <LayoutDashboard size={20} />
-            <span className="nav-label">Tổng quan</span>
+            <span className="a-nav-label">Tổng quan</span>
           </Link>
           <Link
             to="/admin/orders"
-            className={`nav-item ${isActive("/admin/orders") ? "active" : ""}`}
+            className={`a-nav-item ${isActive("/admin/orders") ? "active" : ""}`}
           >
             <ShoppingCart size={20} />
-            <span className="nav-label">Đơn hàng</span>
+            <span className="a-nav-label">Đơn hàng</span>
           </Link>
           <Link
             to="/admin/products"
-            className={`nav-item ${isActive("/admin/products") ? "active" : ""}`}
+            className={`a-nav-item ${isActive("/admin/products") ? "active" : ""}`}
           >
             <Package size={20} />
-            <span className="nav-label">Sản phẩm</span>
+            <span className="a-nav-label">Sản phẩm</span>
           </Link>
           <Link
             to="/admin/catalog"
-            className={`nav-item ${isActive("/admin/catalog") ? "active" : ""}`}
+            className={`a-nav-item ${isActive("/admin/catalog") ? "active" : ""}`}
           >
             <Tag size={20} />
-            <span className="nav-label">Danh mục & Brand</span>
+            <span className="a-nav-label">Danh mục & Brand</span>
           </Link>
           <Link
             to="/admin/customers"
-            className={`nav-item ${isActive("/admin/customers") ? "active" : ""}`}
+            className={`a-nav-item ${isActive("/admin/customers") ? "active" : ""}`}
           >
             <Users size={20} />
-            <span className="nav-label">Khách hàng</span>
+            <span className="a-nav-label">Khách hàng</span>
           </Link>
           <Link
             to="/admin/shippings"
-            className={`nav-item ${isActive("/admin/shippings") ? "active" : ""}`}
+            className={`a-nav-item ${isActive("/admin/shippings") ? "active" : ""}`}
           >
-            <Settings size={20} />
-            <span className="nav-label">Phương thức vận chuyển</span>
+
+            <span className="a-nav-label">Phương thức vận chuyển</span>
           </Link>
 
         </nav>
@@ -102,7 +102,7 @@ const AdminLayout = () => {
           <div className="header-right">
             <div className="admin-profile">
               <img
-                src="https://ui-avatars.com/api/?name=Admin&background=fff&color=000"
+                src="https://ui-avatars.com/api/?name=Admin&background=e5e4e4&color=000"
                 alt="Admin"
                 className="avatar"
               />

@@ -24,11 +24,13 @@
 
 .policy-title {
   font-size: 2.5rem;
-  font-weight: 800; /* Rất đậm cho tiêu đề */
-  color: #ffffff;
+  font-weight: 800;
+  /* Rất đậm cho tiêu đề */
+  color: #e5e4e4;
   margin-bottom: 15px;
   text-transform: uppercase;
-  letter-spacing: -0.5px; /* Thu hẹp khoảng cách chữ cho hiện đại */
+  letter-spacing: -0.5px;
+  /* Thu hẹp khoảng cách chữ cho hiện đại */
 }
 
 .policy-date {
@@ -46,7 +48,7 @@
 
 .policy-section h3 {
   font-size: 1.4rem;
-  color: #ffffff;
+  color: #e5e4e4;
   margin-bottom: 15px;
   font-weight: 600;
 }
@@ -65,12 +67,12 @@
   .policy-wrapper {
     padding-top: 90px;
   }
-  
+
   .policy-container {
     margin: 0 15px;
     padding: 30px;
   }
-  
+
   .policy-title {
     font-size: 1.8rem;
   }
