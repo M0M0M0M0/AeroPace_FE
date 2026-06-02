@@ -91,6 +91,14 @@
   text-transform: uppercase;
 }
 
+.abu-section-title {
+  text-align: center;
+  margin: 20px 0 40px;
+  animation: fadeUp 0.8s ease-out forwards;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
 /* Responsive cho mobile */
 @media (max-width: 768px) {
   .about-grid {

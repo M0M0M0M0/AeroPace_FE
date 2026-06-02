@@ -41,7 +41,7 @@ const AboutUs = () => {
 
       {/* Core Values Section */}
       <section className="values-section">
-        <div className="section-title">
+        <div className="abu-section-title">
           <h2>Giá Trị Cốt Lõi</h2>
         </div>
         <div className="values-grid">

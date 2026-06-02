@@ -67,7 +67,11 @@
 .cart-info h2 {
   font-size: 1.1rem;
   font-weight: 600;
+  text-decoration: underline;
+  margin-bottom: 0.25rem;
 }
+
+
 
 .cart-info .cart-variant {
   font-size: 0.9rem;
@@ -84,6 +88,7 @@
   align-items: center;
   gap: 0.5rem;
 }
+
 
 .cart-quantity button {
   background: #222;
@@ -107,7 +112,7 @@
 .cart-remove {
   background: #c0392b;
   border-radius: 50%;
-  padding: 0.4rem;
+  padding: 0.5rem;
   margin-left: 0.5rem;
   cursor: pointer;
   transition: background 0.3s ease;
@@ -131,7 +136,8 @@
   border-radius: 1rem;
   padding: 1rem;
   font-size: 1.2rem;
-  font-weight: 600;
+  font-weight: bold;
+  border-top: 1px solid #333;
 }
 
 .cart-page-actions {
@@ -292,16 +298,8 @@
   flex-shrink: 0;
 }
 
-/* Chỉnh lại thẻ .cart-info để các class bên trong ăn CSS chuẩn xác do lúc trước tên class bị nhầm ở JSX */
-.cart-info h2 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
 
-.cart-info h2:hover {
-  text-decoration: underline;
-}
+
 
 .cart-variant {
   font-size: 0.9rem;

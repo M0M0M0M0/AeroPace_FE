@@ -236,6 +236,7 @@ const CheckoutForm = () => {
   };
 
   const executeOrderSuccess = (fullAddress, method) => {
+    console.log("executeOrderSuccess called", { fullAddress, method });
     clearCart();
     navigate("/order-success", {
       state: {
@@ -410,7 +411,7 @@ const CheckoutForm = () => {
   return (
     <div className="checkout-page">
       <div className="container">
-        <h1 className="section-title">Thanh toán</h1>
+        <h1 className="checkout-section-title">Thanh toán</h1>
 
         <div className="checkout-grid">
           {/* ── FORM ─────────────────────────────────────────────────────── */}
