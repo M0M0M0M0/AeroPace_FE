@@ -11,16 +11,17 @@ import {
   Tag,
 } from "lucide-react";
 import "./AdminLayout.css";
+import { useAuth } from "../../context/AuthContext";
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
+    logout();
     navigate("/login");
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
   };
 
   const isActive = (path) => {
