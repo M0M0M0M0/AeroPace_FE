@@ -27,7 +27,7 @@ const Register = () => {
 
     // validate password
     if (password !== confirmPassword) {
-      setMessage({ type: "error", text: "Mật khẩu xác nhận không khớp!" });
+      setMessage({ type: "error", text: "Confirm password does not match!" });
       return;
     }
 
@@ -42,7 +42,7 @@ const Register = () => {
 
       setMessage({
         type: "success",
-        text: "Đăng ký thành công! Đang chuyển hướng...",
+        text: "Registration successful! Redirecting...",
       });
 
       setTimeout(() => {
@@ -52,7 +52,7 @@ const Register = () => {
 
       setMessage({
         type: "error",
-        text: error.response?.data?.message || "Đăng ký thất bại!",
+        text: error.response?.data?.message || "Registration failed!",
       });
     } finally {
       setIsLoading(false);
@@ -63,8 +63,8 @@ const Register = () => {
     <div className="login-page">
       <div className="login-card">
         <div className="login-header">
-          <h2>Tạo tài khoản mới</h2>
-          <p>Tham gia cùng AEROPACE ngay hôm nay</p>
+          <h2>Create New Account</h2>
+          <p>Join AEROPACE today</p>
         </div>
 
         {message.text && (
@@ -83,7 +83,7 @@ const Register = () => {
             <User className="input-icon" size={20} />
             <input
               type="text"
-              placeholder="Họ và tên"
+              placeholder="Full Name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
@@ -96,7 +96,7 @@ const Register = () => {
             <Mail className="input-icon" size={20} />
             <input
               type="email"
-              placeholder="Email của bạn"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -109,7 +109,7 @@ const Register = () => {
             <Lock className="input-icon" size={20} />
             <input
               type="password"
-              placeholder="Mật khẩu"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -120,7 +120,7 @@ const Register = () => {
             <Lock className="input-icon" size={20} />
             <input
               type="password"
-              placeholder="Xác nhận mật khẩu"
+              placeholder="Confirm Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
@@ -133,13 +133,13 @@ const Register = () => {
             disabled={isLoading}
           >
             <UserPlus size={20} />
-            <span>{isLoading ? "Đang xử lý..." : "Đăng ký"}</span>
+            <span>{isLoading ? "Processing..." : "Sign Up"}</span>
           </button>
         </form>
 
         <div className="login-footer">
           <p>
-            Đã có tài khoản? <Link to="/login">Đăng nhập ngay</Link>
+            Already have an account? <Link to="/login">Log in now</Link>
           </p>
         </div>
       </div>
