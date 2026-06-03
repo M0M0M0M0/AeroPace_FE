@@ -155,7 +155,7 @@ export const CartProvider = ({ children }) => {
       });
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.message || "Thêm vào giỏ thất bại");
+        throw new Error(err.message || "Add to cart failed");
       }
       const data = await res.json();
       setCart(data);
@@ -204,7 +204,7 @@ export const CartProvider = ({ children }) => {
       );
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.message || "Cập nhật thất bại");
+        throw new Error(err.message || "Update failed");
       }
       const data = await res.json();
       setCart(data);
@@ -214,7 +214,7 @@ export const CartProvider = ({ children }) => {
       );
       const cartItem = cart?.items?.find((i) => i.cartItemId === cartItemId);
       if (cartItem && quantity > cartItem.stock) {
-        toast.warning("Số lượng vượt quá tồn kho!");
+        toast.warning("Quantity exceeds available stock!");
         return;
       }
       saveLocalCart(localItems);
@@ -302,16 +302,16 @@ export const CartProvider = ({ children }) => {
         { id: item.id, variantId: availableVariant?.id || null },
         1,
       );
-      toast.success(`Đã thêm ${item.name} vào giỏ hàng!`, {
+      toast.success(`Added ${item.name} to cart!`, {
         id: `add-to-cart`,
         description: availableVariant?.option1Value
-          ? `Phân loại: ${availableVariant.option1Value}`
+          ? `Variant: ${availableVariant.option1Value}`
           : undefined,
-        action: { label: "Xem giỏ hàng", onClick: () => navigate("/cart") },
+        action: { label: "View Cart", onClick: () => navigate("/cart") },
       });
     } catch (err) {
       console.error(err);
-      toast.error("Thêm vào giỏ hàng thất bại", {
+      toast.error("Failed to add to cart", {
         id: `add-to-cart-error-${item.id}`,
       });
     }
