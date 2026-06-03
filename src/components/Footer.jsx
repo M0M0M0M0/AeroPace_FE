@@ -31,35 +31,35 @@ function Footer() {
         <div className="footer-col">
           <h2 className="footer-logo">AEROPACE</h2>
           <p className="footer-text">
-            Từ máy chạy đến đường đua<br/> Trọn bộ hành trang, bứt phá giới hạn. <br />
-            Khám phá ngay kho trang bị chuyên nghiệp giúp bạn bứt tốc trên mọi cung đường!
+            From treadmil to racetrack<br/> Optimal gear, break your limits. <br />
+            Discover the professional gear that helps you accelerate on every track!
           </p>
         </div>
 
         {/* Cột 2 - Liên kết */}  
         <div className="footer-col" style={{ transitionDelay: "0.1s" }}>
-          <h3 className="footer-title">Khám phá</h3>
+          <h3 className="footer-title">Explore</h3>
           <ul className="footer-links">
-            <li><Link to="/">Trang chủ</Link></li>
-            <li><Link to="/products">Sản phẩm</Link></li>
-            <li><Link to="/aboutus">Giới thiệu</Link></li>
-            <li><Link to="/contact">Liên hệ</Link></li>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/products">Products</Link></li>
+            <li><Link to="/aboutus">About Us</Link></li>
+            <li><Link to="/contact">Contact</Link></li>
           </ul>
         </div>
 
         {/* Cột 3 - Hỗ trợ */}
         <div className="footer-col" style={{ transitionDelay: "0.2s" }}>
-          <h3 className="footer-title">Hỗ trợ</h3>
+          <h3 className="footer-title">Support</h3>
           <ul className="footer-links">
-            <li><Link to="/chinh-sach-doi-tra">Chính sách đổi trả</Link></li>
-            <li><Link to="/chinh-sach-bao-hanh">Chính sách bảo hành</Link></li>
-            <li><Link to="/chinh-sach-bao-mat">Chính sách bảo mật</Link></li>
+            <li><Link to="/chinh-sach-doi-tra">Return Policy</Link></li>
+            <li><Link to="/chinh-sach-bao-hanh">Warranty Policy</Link></li>
+            <li><Link to="/chinh-sach-bao-mat">Privacy Policy</Link></li>
           </ul>
         </div>
 
         {/* Cột 4 - Mạng xã hội */}
         <div className="footer-col" style={{ transitionDelay: "0.3s" }}>
-          <h3 className="footer-title">Theo dõi chúng tôi</h3>
+          <h3 className="footer-title">Follow Us</h3>
           <div className="footer-socials">
             {[
               { icon: Facebook, url: "https://facebook.com" },
