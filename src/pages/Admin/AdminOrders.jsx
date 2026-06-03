@@ -102,14 +102,14 @@ const AdminOrders = () => {
     filterStatus !== "PENDING_ACTION" || filterDateFrom || filterDateTo;
 
   const getStatusLabel = (order) => {
-    if (order.paymentStatus === "REFUNDED") return "Đã hoàn tiền";
+    if (order.paymentStatus === "REFUNDED") return "REFUNDED";
     switch (order.status) {
-      case "PENDING": return "Chờ thanh toán";
-      case "PAID": return "Chờ giao hàng";
-      case "SHIPPING": return "Đang giao";
-      case "DELIVERED": return "Đã giao";
-      case "COMPLETED": return "Hoàn thành";
-      case "CANCELLED": return "Đã hủy";
+      case "PENDING": return "PENDING";
+      case "PAID": return "WAITING FOR DELIVERY";
+      case "SHIPPING": return "SHIPPING";
+      case "DELIVERED": return "DELIVERED - WAITING FOR CONFIRMATION";
+      case "COMPLETED": return "COMPLETED";
+      case "CANCELLED": return "CANCELLED";
       default: return order.status;
     }
   };
@@ -131,22 +131,22 @@ const AdminOrders = () => {
     { key: "ALL", label: "Tổng đơn", count: statOrders.length },
     {
       key: "PENDING_ACTION",
-      label: "Cần xử lý",
+      label: "PENDING ACTION",
       count: statOrders.filter(o => o.status === "PAID").length,
     },
-    { key: "SHIPPING", label: "Đang giao", count: statOrders.filter(o => o.status === "SHIPPING").length },
-    { key: "DELIVERED", label: "Đã giao/Chờ xác nhận", count: statOrders.filter(o => o.status === "DELIVERED").length },
-    { key: "COMPLETED", label: "Hoàn thành", count: statOrders.filter(o => o.status === "COMPLETED").length },
-    { key: "CANCELLED", label: "Đã hủy/Chờ hoàn tiền", count: statOrders.filter(o => o.status === "CANCELLED" || o.paymentStatus === "REFUND_PENDING").length },
-    { key: "REFUNDED", label: "Đã hoàn tiền", count: statOrders.filter(o => o.paymentStatus === "REFUNDED").length },
+    { key: "SHIPPING", label: "SHIPPING", count: statOrders.filter(o => o.status === "SHIPPING").length },
+    { key: "DELIVERED", label: "DELIVERED - WAITING FOR CONFIRMATION", count: statOrders.filter(o => o.status === "DELIVERED").length },
+    { key: "COMPLETED", label: "COMPLETED", count: statOrders.filter(o => o.status === "COMPLETED").length },
+    { key: "CANCELLED", label: "CANCELLED - WAITING FOR REFUND", count: statOrders.filter(o => o.status === "CANCELLED" || o.paymentStatus === "REFUND_PENDING").length },
+    { key: "REFUNDED", label: "REFUNDED", count: statOrders.filter(o => o.paymentStatus === "REFUNDED").length },
   ];
 
   return (
     <div className="ao-page">
       <div className="ao-header">
         <div>
-          <h1 className="ao-title">Đơn hàng</h1>
-          <p className="ao-subtitle">Quản lý tất cả đơn hàng</p>
+          <h1 className="ao-title">Orders</h1>
+          <p className="ao-subtitle">Manage all orders</p>
         </div>
       </div>
 
@@ -167,79 +167,79 @@ const AdminOrders = () => {
 
       {/* Filter bar */}
       <div className="ao-filter-bar">
-        <input className="ao-filter-input ao-filter-id" placeholder="Mã đơn hàng"
+        <input className="ao-filter-input ao-filter-id" placeholder="Order ID"
           value={searchOrderCode} onChange={(e) => setSearchOrderCode(e.target.value)} />
-        <input className="ao-filter-input" placeholder="Người nhận"
+        <input className="ao-filter-input" placeholder="Receiver Name / Username"
           value={searchName} onChange={(e) => setSearchName(e.target.value)} />
-        <input className="ao-filter-input" placeholder="Số điện thoại"
+        <input className="ao-filter-input" placeholder="Phone Number"
           value={searchPhone} onChange={(e) => setSearchPhone(e.target.value)} />
-        <input className="ao-filter-input" placeholder="Địa chỉ"
+        <input className="ao-filter-input" placeholder="Shipping Address"
           value={searchAddress} onChange={(e) => setSearchAddress(e.target.value)} />
 
         <select className="ao-filter-select" value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}>
-          <option value="ALL">Tất cả</option>
-          <option value="PENDING_ACTION">Cần xử lý</option>
-          <option value="PENDING">Chờ thanh toán</option>
-          <option value="SHIPPING">Đang giao</option>
-          <option value="DELIVERED">Đã giao - Chờ khách hàng xác nhận</option>
-          <option value="COMPLETED">Hoàn thành</option>
-          <option value="CANCELLED">Đã hủy/Chờ hoàn tiền</option>
-          <option value="REFUNDED">Đã hoàn tiền</option>
+          <option value="ALL">All</option>
+          <option value="PENDING_ACTION">Pending Action</option>
+          <option value="PENDING">Pending Payment</option>
+          <option value="SHIPPING">Shipping</option>
+          <option value="DELIVERED">Delivered - Awaiting Confirmation</option>
+          <option value="COMPLETED">Completed</option>
+          <option value="CANCELLED">Cancelled - Awaiting Refund</option>
+          <option value="REFUNDED">Refunded</option>
         </select>
       </div>
 
       {/* Date filter */}
       <div className="ao-filter-bar ao-filter-bar-date">
         <div className="ao-filter-date-group">
-          <label className="ao-filter-date-label">Từ ngày</label>
+          <label className="ao-filter-date-label">From date</label>
           <input type="date" className="ao-filter-input ao-filter-date"
             value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)} />
         </div>
         <span className="ao-filter-date-sep">→</span>
         <div className="ao-filter-date-group">
-          <label className="ao-filter-date-label">Đến ngày</label>
+          <label className="ao-filter-date-label">To date</label>
           <input type="date" className="ao-filter-input ao-filter-date"
             value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)}
             min={filterDateFrom} />
         </div>
         {hasActiveFilter && (
           <button className="ao-filter-reset" onClick={handleResetFilters}>
-            ✕ Xoá bộ lọc
+            ✕ Clear Filters
           </button>
         )}
       </div>
 
       {hasActiveFilter && (
         <p className="ao-filter-result">
-          Tìm thấy <strong>{filteredOrders.length}</strong> / {allOrders.length} đơn hàng
+          Found <strong>{filteredOrders.length}</strong> / {allOrders.length} orders
         </p>
       )}
 
       {/* Table */}
       {loading ? (
-        <div className="ao-loading">Đang tải...</div>
+        <div className="ao-loading">Loading...</div>
       ) : (
         <div className="ao-table-wrap">
           <table className="ao-table">
             <thead>
               <tr>
                 <th>#</th>
-                <th>Mã đơn</th>
-                <th>Người nhận</th>
-                <th>SĐT</th>
-                <th>Địa chỉ</th>
-                <th>Tổng tiền</th>
-                <th>Trạng thái</th>
-                <th>Ngày đặt</th>
-                <th>Thao tác</th>
+                <th>Order ID</th>
+                <th>Receiver</th>
+                <th>Phone</th>
+                <th>Shipping Address</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Order Date</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredOrders.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="ao-empty-row">
-                    Không tìm thấy đơn hàng nào.
+                    No orders found.
                   </td>
                 </tr>
               ) : (
@@ -266,7 +266,7 @@ const AdminOrders = () => {
                         className="ao-view-btn"
                         onClick={() => navigate(`/admin/orders/details/${order.orderCode}`)}
                       >
-                        <Eye size={16} /> Chi tiết
+                        <Eye size={16} /> View Details
                       </button>
                     </td>
                   </tr>
