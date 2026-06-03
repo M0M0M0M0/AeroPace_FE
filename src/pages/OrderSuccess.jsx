@@ -47,11 +47,11 @@ const OrderSuccess = () => {
       </div>
 
       {/* Chi tiết đơn hàng */}
-      <div className="order-items-container">
+      <div className="order-success-items-container">
         <h2>Chi tiết đơn hàng</h2>
-        <div className="order-items">
+        <div className="order-success-items">
           {order.items.map((item, idx) => (
-            <div key={item.cartItemId || idx} className="order-item">
+            <div key={item.cartItemId || idx} className="order-success-item">
               <div className="order-success-order-left">
                 <img src={item.image} alt={item.productName} />
                 <div>
@@ -86,7 +86,7 @@ const OrderSuccess = () => {
           </div>
         </div>
 
-        <div className="order-total">
+        <div className="order-success-total">
           <span>Tổng cộng:</span>
           <span>{order.total?.toLocaleString()} ₫</span>
         </div>

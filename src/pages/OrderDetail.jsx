@@ -121,7 +121,7 @@ const OrderDetail = () => {
     return (
         <div className="od-page">
             <div className="od-container">
-                <button className="od-back-btn" onClick={() => navigate(-1)}>
+                <button className="od-back-btn" onClick={handleBack}>
                     <ArrowLeft size={16} /> Return
                 </button>
 
