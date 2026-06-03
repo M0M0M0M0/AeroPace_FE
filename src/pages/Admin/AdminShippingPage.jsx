@@ -72,12 +72,12 @@ const AdminShippingPage = () => {
     const handleSubmit = async () => {
         setError("");
         if (!modal.data.name.trim()) {
-            setError("Tên phương thức không được để trống.");
+            setError("Shipping method name is required.");
             return;
         }
         const feeNum = parseFloat(modal.data.fee);
         if (modal.data.fee === "" || isNaN(feeNum) || feeNum < 0) {
-            setError("Phí vận chuyển phải là số không âm.");
+            setError("Shipping fee must be a non-negative number.");
             return;
         }
         const payload = modal.mode === "add"
@@ -96,7 +96,7 @@ const AdminShippingPage = () => {
             await fetchShippings();
             closeModal();
         } catch (err) {
-            const msg = err.response?.data?.message || "Đã có lỗi xảy ra.";
+            const msg = err.response?.data?.message || "An error occurred.";
             setError(msg);
         }
     };
@@ -110,7 +110,7 @@ const AdminShippingPage = () => {
             setDeleteModal({ open: false, id: null, name: "" });
         } catch (err) {
             console.error(err);
-            alert("Xóa thất bại!");
+            alert("Failed to delete!");
         }
     };
 
@@ -134,8 +134,8 @@ const AdminShippingPage = () => {
             {/* Header */}
             <div className="cp-header">
                 <div>
-                    <h1 className="cp-title">Phương thức vận chuyển</h1>
-                    <p className="cp-subtitle">Quản lý các hình thức giao hàng và phí vận chuyển</p>
+                    <h1 className="cp-title">Shipping Methods</h1>
+                    <p className="cp-subtitle">Manage shipping methods and their associated fees</p>
                 </div>
             </div>
 
@@ -144,42 +144,42 @@ const AdminShippingPage = () => {
             <div className="cp-toolbar">
                 <input
                     className="cp-search"
-                    placeholder="Tìm theo ID..."
+                    placeholder="Search by ID..."
                     value={idSearch}
                     onChange={(e) => setIdSearch(e.target.value)}
                     style={{ maxWidth: 140 }}
                 />
                 <input
                     className="cp-search"
-                    placeholder="Tìm phương thức..."
+                    placeholder="Search shipping methods..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
                 <button className="cp-btn-add" onClick={openAdd}>
-                    <Plus size={16} /> Thêm mới
+                    <Plus size={16} /> Add New
                 </button>
             </div>
 
             {/* Table */}
             {loading ? (
-                <div className="cp-loading">Đang tải...</div>
+                <div className="cp-loading">Loading...</div>
             ) : (
                 <div className="cp-table-wrap">
                     <table className="cp-table">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Tên phương thức</th>
-                                <th>Phí vận chuyển</th>
-                                <th>Trạng thái</th>
-                                <th>Thao tác</th>
+                                <th>Shipping Method</th>
+                                <th>Shipping Fee</th>
+                                <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filtered.length === 0 ? (
                                 <tr>
                                     <td colSpan={5} className="cp-empty-row">
-                                        Không tìm thấy phương thức nào.
+                                        No shipping methods found.
                                     </td>
                                 </tr>
                             ) : (
@@ -200,7 +200,7 @@ const AdminShippingPage = () => {
                                                 color: s.status === "ACTIVE" ? "#4ade80" : "#f87171",
                                                 border: `1px solid ${s.status === "ACTIVE" ? "rgba(74,222,128,0.3)" : "rgba(248,113,113,0.3)"}`,
                                             }}>
-                                                {s.status === "ACTIVE" ? "Hoạt động" : "Vô hiệu"}
+                                                {s.status === "ACTIVE" ? "Active" : "Inactive"}
                                             </span>
                                         </td>
                                         <td>
@@ -208,7 +208,7 @@ const AdminShippingPage = () => {
                                                 <button
                                                     className="cp-action-btn cp-edit-btn"
                                                     onClick={() => openEdit(s)}
-                                                    title="Chỉnh sửa"
+                                                    title="Edit"
                                                 >
                                                     <Pencil size={15} />
                                                 </button>
@@ -217,7 +217,7 @@ const AdminShippingPage = () => {
                                                     onClick={() =>
                                                         setDeleteModal({ open: true, id: s.id, name: s.name })
                                                     }
-                                                    title="Xóa"
+                                                    title="Delete"
                                                 >
                                                     <Trash2 size={15} />
                                                 </button>
@@ -239,8 +239,8 @@ const AdminShippingPage = () => {
                             <div>
                                 <h3 className="cp-modal-title">
                                     {modal.mode === "add"
-                                        ? "Thêm phương thức mới"
-                                        : "Chỉnh sửa phương thức"}
+                                        ? "Add New Shipping Method"
+                                        : "Edit Shipping Method"}
                                 </h3>
                                 <p className="cp-modal-sub">
                                     {modal.mode === "edit" && `ID: #${modal.id}`}
@@ -252,10 +252,10 @@ const AdminShippingPage = () => {
                         </div>
 
                         <div className="cp-form-row">
-                            <label>Tên phương thức *</label>
+                            <label>Shipping Method Name *</label>
                             <input
                                 type="text"
-                                placeholder="VD: Giao hàng tiêu chuẩn..."
+                                placeholder="e.g., Standard Delivery..."
                                 value={modal.data.name}
                                 onChange={(e) =>
                                     setModal({ ...modal, data: { ...modal.data, name: e.target.value } })
@@ -265,11 +265,11 @@ const AdminShippingPage = () => {
                         </div>
 
                         <div className="cp-form-row">
-                            <label>Phí vận chuyển (VNĐ) *</label>
+                            <label>Shipping Fee (VNĐ) *</label>
                             <input
                                 type="number"
                                 min="0"
-                                placeholder="VD: 30000"
+                                placeholder="e.g., 30000"
                                 value={modal.data.fee}
                                 onChange={(e) =>
                                     setModal({ ...modal, data: { ...modal.data, fee: e.target.value } })
@@ -278,7 +278,7 @@ const AdminShippingPage = () => {
                             />
                         </div>
                         <div className="cp-form-row">
-                            <label>Trạng thái</label>
+                            <label>Status</label>
                             <select
                                 value={modal.data.status}
                                 onChange={(e) =>
@@ -296,8 +296,8 @@ const AdminShippingPage = () => {
                                     cursor: "pointer",
                                 }}
                             >
-                                <option value="ACTIVE">Hoạt động</option>
-                                <option value="DISABLE">Vô hiệu</option>
+                                <option value="ACTIVE">Active</option>
+                                <option value="DISABLE">Disabled</option>
                             </select>
                         </div>
 
@@ -305,10 +305,10 @@ const AdminShippingPage = () => {
 
                         <div className="cp-modal-actions">
                             <button className="cp-btn-cancel" onClick={closeModal}>
-                                Hủy
+                                Cancel
                             </button>
                             <button className="cp-btn-save" onClick={handleSubmit}>
-                                {modal.mode === "add" ? "Thêm mới" : "Lưu thay đổi"}
+                                {modal.mode === "add" ? "Add New" : "Save Changes"}
                             </button>
                         </div>
                     </div>
@@ -326,7 +326,7 @@ const AdminShippingPage = () => {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="cp-modal-header">
-                            <h3 className="cp-modal-title">Xác nhận xóa</h3>
+                            <h3 className="cp-modal-title">Confirm Deletion</h3>
                             <button
                                 className="cp-modal-close"
                                 onClick={() => setDeleteModal({ open: false, id: null, name: "" })}
@@ -335,19 +335,20 @@ const AdminShippingPage = () => {
                             </button>
                         </div>
                         <p className="cp-delete-msg">
-                            Bạn có chắc muốn xóa phương thức{" "}
-                            <strong>"{deleteModal.name}"</strong>? Hành động này không thể
-                            hoàn tác.
+                            Are you sure you want to delete the shipping method{" "}
+                            <strong>"{deleteModal.name}"</strong>? This action cannot be
+
+                            undone.
                         </p>
                         <div className="cp-modal-actions">
                             <button
                                 className="cp-btn-cancel"
                                 onClick={() => setDeleteModal({ open: false, id: null, name: "" })}
                             >
-                                Hủy
+                                Cancel
                             </button>
                             <button className="cp-btn-danger" onClick={handleDelete}>
-                                Xóa
+                                Delete
                             </button>
                         </div>
                     </div>

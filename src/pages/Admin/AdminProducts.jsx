@@ -11,10 +11,10 @@ const authHeader = () => ({
 
 // ── Status config ─────────────────────────────────────────────
 const STATUS_CONFIG = {
-  ACTIVE:   { label: "Đang bán",  color: "#16a34a", bg: "#dcfce7" },
-  DRAFT:    { label: "Nháp",      color: "#ca8a04", bg: "#fef9c3" },
-  ARCHIVED: { label: "Lưu trữ",  color: "#6b7280", bg: "#f3f4f6" },
-  DELETED:  { label: "Đã xóa",   color: "#dc2626", bg: "#fee2e2" },
+  ACTIVE:   { label: "Active",  color: "#16a34a", bg: "#dcfce7" },
+  DRAFT:    { label: "Draft",      color: "#ca8a04", bg: "#fef9c3" },
+  ARCHIVED: { label: "Archived",  color: "#6b7280", bg: "#f3f4f6" },
+  DELETED:  { label: "Deleted",   color: "#dc2626", bg: "#fee2e2" },
 };
 
 const StatusBadge = ({ status }) => {
@@ -32,10 +32,10 @@ const StatusBadge = ({ status }) => {
 
 // ── Best seller presets ───────────────────────────────────────
 const PRESETS = [
-  { label: "Tuần này", getValue: () => { const now = new Date(); const day = now.getDay() || 7; const mon = new Date(now); mon.setDate(now.getDate() - day + 1); return { dateFrom: mon.toISOString().slice(0, 10), dateTo: now.toISOString().slice(0, 10) }; } },
-  { label: "Tháng này", getValue: () => { const now = new Date(); return { dateFrom: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`, dateTo: now.toISOString().slice(0, 10) }; } },
-  { label: "30 ngày", getValue: () => { const now = new Date(); const from = new Date(now); from.setDate(now.getDate() - 30); return { dateFrom: from.toISOString().slice(0, 10), dateTo: now.toISOString().slice(0, 10) }; } },
-  { label: "90 ngày", getValue: () => { const now = new Date(); const from = new Date(now); from.setDate(now.getDate() - 90); return { dateFrom: from.toISOString().slice(0, 10), dateTo: now.toISOString().slice(0, 10) }; } },
+  { label: "This Week", getValue: () => { const now = new Date(); const day = now.getDay() || 7; const mon = new Date(now); mon.setDate(now.getDate() - day + 1); return { dateFrom: mon.toISOString().slice(0, 10), dateTo: now.toISOString().slice(0, 10) }; } },
+  { label: "This Month", getValue: () => { const now = new Date(); return { dateFrom: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`, dateTo: now.toISOString().slice(0, 10) }; } },
+  { label: "30 Days", getValue: () => { const now = new Date(); const from = new Date(now); from.setDate(now.getDate() - 30); return { dateFrom: from.toISOString().slice(0, 10), dateTo: now.toISOString().slice(0, 10) }; } },
+  { label: "90 Days", getValue: () => { const now = new Date(); const from = new Date(now); from.setDate(now.getDate() - 90); return { dateFrom: from.toISOString().slice(0, 10), dateTo: now.toISOString().slice(0, 10) }; } },
 ];
 
 const AdminProducts = () => {
@@ -186,11 +186,11 @@ const AdminProducts = () => {
       {/* HEADER */}
       <div className="adp-header">
         <div>
-          <h2 className="adp-title">Quản lý Sản phẩm</h2>
-          <p className="adp-subtitle">Quản lý toàn bộ sản phẩm trong hệ thống</p>
+          <h2 className="adp-title">Product Management</h2>
+          <p className="adp-subtitle">Manage all products in the system</p>
         </div>
         <button className="adp-btn-add" onClick={() => navigate("/admin/products/new")}>
-          <Plus size={18} /> Thêm sản phẩm
+          <Plus size={18} /> Add Product
         </button>
       </div>
 
@@ -198,33 +198,33 @@ const AdminProducts = () => {
       <div className="adp-filter-wrap">
         <div className="adp-filter-bar">
           <div className="adp-filter-field">
-            <label className="adp-filter-label">Tên sản phẩm</label>
+            <label className="adp-filter-label">Product Name</label>
             <div className="adp-filter-input-wrap">
               <Search size={14} className="adp-filter-icon" />
-              <input className="adp-filter-input" placeholder="Tìm tên..." value={filterName}
+              <input className="adp-filter-input" placeholder="Search name..." value={filterName}
                 onChange={(e) => { setFilterName(e.target.value); setPage(0); }} />
             </div>
           </div>
           <div className="adp-filter-field adp-filter-field--sm">
-            <label className="adp-filter-label">ID sản phẩm</label>
-            <input className="adp-filter-input" placeholder="VD: 12" value={filterProductId}
+            <label className="adp-filter-label">Product ID</label>
+            <input className="adp-filter-input" placeholder="e.g., 12" value={filterProductId}
               onChange={(e) => { setFilterProductId(e.target.value); setPage(0); }} />
           </div>
           <div className="adp-filter-field adp-filter-field--sm">
-            <label className="adp-filter-label">ID biến thể</label>
-            <input className="adp-filter-input" placeholder="VD: 5" value={filterVariantId}
+            <label className="adp-filter-label">Variant ID</label>
+            <input className="adp-filter-input" placeholder="e.g., 5" value={filterVariantId}
               onChange={(e) => { setFilterVariantId(e.target.value); setPage(0); }} />
           </div>
           <div className="adp-filter-field adp-filter-field--sm">
             <label className="adp-filter-label">SKU</label>
-            <input className="adp-filter-input" placeholder="VD: NK-001" value={filterSku}
+            <input className="adp-filter-input" placeholder="e.g., NK-001" value={filterSku}
               onChange={(e) => { setFilterSku(e.target.value); setPage(0); }} />
           </div>
           <div className="adp-filter-field">
-            <label className="adp-filter-label">Thương hiệu</label>
+            <label className="adp-filter-label">Brand</label>
             <select className="adp-filter-input" value=""
               onChange={(e) => { if (e.target.value) toggleFilter(Number(e.target.value), filterBrand, setFilterBrand); }}>
-              <option value="">Thương hiệu</option>
+              <option value="">Brand</option>
               {brands.filter((b) => !filterBrand.includes(b.id)).map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
             </select>
             <div className="adp-filter-tags">
@@ -235,10 +235,10 @@ const AdminProducts = () => {
             </div>
           </div>
           <div className="adp-filter-field">
-            <label className="adp-filter-label">Danh mục</label>
+            <label className="adp-filter-label">Category</label>
             <select className="adp-filter-input" value=""
               onChange={(e) => { if (e.target.value) toggleFilter(Number(e.target.value), filterCategory, setFilterCategory); }}>
-              <option value="">Danh mục</option>
+              <option value="">Category</option>
               {categories.filter((c) => !filterCategory.includes(c.id)).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
             <div className="adp-filter-tags">
@@ -249,10 +249,10 @@ const AdminProducts = () => {
             </div>
           </div>
           <div className="adp-filter-field adp-filter-field--sm">
-            <label className="adp-filter-label">Trạng thái</label>
+            <label className="adp-filter-label">Status</label>
             <select className="adp-filter-input" value=""
               onChange={(e) => { if (e.target.value) toggleFilter(e.target.value, filterStatus, setFilterStatus); }}>
-              <option value="">Trạng thái</option>
+              <option value="">Status</option>
               {["ACTIVE", "DRAFT", "ARCHIVED", "DELETED"].filter((s) => !filterStatus.includes(s))
                 .map((s) => <option key={s} value={s}>{STATUS_CONFIG[s]?.label}</option>)}
             </select>
@@ -264,22 +264,22 @@ const AdminProducts = () => {
             </div>
           </div>
           <div className="adp-filter-field adp-filter-field--range">
-            <label className="adp-filter-label">Khoảng giá (₫)</label>
+            <label className="adp-filter-label">Price Range (₫)</label>
             <div className="adp-filter-range">
-              <input className="adp-filter-input" type="number" placeholder="Từ" value={filterPriceMin}
+              <input className="adp-filter-input" type="number" placeholder="From" value={filterPriceMin}
                 onChange={(e) => { setFilterPriceMin(e.target.value); setPage(0); }} />
               <span className="adp-filter-range-sep">—</span>
-              <input className="adp-filter-input" type="number" placeholder="Đến" value={filterPriceMax}
+              <input className="adp-filter-input" type="number" placeholder="To" value={filterPriceMax}
                 onChange={(e) => { setFilterPriceMax(e.target.value); setPage(0); }} />
             </div>
           </div>
           <div className="adp-filter-field adp-filter-field--range">
-            <label className="adp-filter-label">Tồn kho</label>
+            <label className="adp-filter-label">Stock Level</label>
             <div className="adp-filter-range">
-              <input className="adp-filter-input" type="number" placeholder="Từ" value={filterStockMin}
+              <input className="adp-filter-input" type="number" placeholder="From" value={filterStockMin}
                 onChange={(e) => { setFilterStockMin(e.target.value); setPage(0); }} />
               <span className="adp-filter-range-sep">—</span>
-              <input className="adp-filter-input" type="number" placeholder="Đến" value={filterStockMax}
+              <input className="adp-filter-input" type="number" placeholder="To" value={filterStockMax}
                 onChange={(e) => { setFilterStockMax(e.target.value); setPage(0); }} />
             </div>
           </div>
@@ -288,10 +288,10 @@ const AdminProducts = () => {
         {/* Best Sellers */}
         <div className="adp-bs-section">
           <div className="adp-bs-header">
-            <span className="adp-filter-label">Bán chạy nhất</span>
+            <span className="adp-filter-label">Best Sellers</span>
             {bsMode && (
               <button className="adp-bs-clear" onClick={clearBsMode}>
-                <X size={13} /> Tắt filter
+                <X size={13} /> Disable filter
               </button>
             )}
           </div>
@@ -312,7 +312,7 @@ const AdminProducts = () => {
               <input type="date" className="adp-filter-input adp-filter-date" value={bsDateTo} min={bsDateFrom}
                 onChange={(e) => { setBsDateTo(e.target.value); setBsPreset(null); }} />
               <button className="adp-bs-apply-btn" onClick={handleBsCustomApply} disabled={!bsDateFrom || !bsDateTo}>
-                Áp dụng
+                Apply
               </button>
             </div>
             <div className="adp-bs-limit">
@@ -334,17 +334,17 @@ const AdminProducts = () => {
               {bsMode ? (
                 <span className="adp-filter-result">
                   <Trophy size={13} style={{ marginRight: 4 }} />
-                  Top <strong>{bestSellers.length}</strong> sản phẩm bán chạy nhất
+                  Top <strong>{bestSellers.length}</strong> Best Sellers
                   {bsDateFrom && bsDateTo && ` (${bsDateFrom} → ${bsDateTo})`}
                 </span>
               ) : (
                 <span className="adp-filter-result">
-                  Tìm thấy <strong>{products.length}</strong> sản phẩm
+                  Found <strong>{products.length}</strong> products
                 </span>
               )}
               {hasActiveFilter && (
                 <button className="adp-filter-reset" onClick={resetFilters}>
-                  <X size={13} /> Xoá bộ lọc
+                  <X size={13} /> Clear filters
                 </button>
               )}
             </>
@@ -357,17 +357,17 @@ const AdminProducts = () => {
         <table className="adp-table">
           <thead>
             <tr>
-              <th>Ảnh</th><th>ID</th><th>Tên sản phẩm</th>
-              <th>Thương hiệu</th><th>Danh mục</th><th>Trạng thái</th>
-              <th>Giá</th><th>Tồn kho</th>
-              {bsMode && <th>Đã bán</th>}
+              <th>Images</th><th>ID</th><th>Name</th>
+              <th>Brand</th><th>Category</th><th>Status</th>
+              <th>Price</th><th>Stock</th>
+              {bsMode && <th>Sold</th>}
               <th>Variants</th>
-              {!bsMode && <th>Thao tác</th>}
+              {!bsMode && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
             {displayLoading ? (
-              <tr><td colSpan={10} className="adp-empty-row">Đang tải...</td></tr>
+              <tr><td colSpan={10} className="adp-empty-row">Loading...</td></tr>
             ) : displayProducts.length > 0 ? displayProducts.map((product, idx) => (
               <tr key={product.id} className="adp-row">
                 <td>
@@ -393,8 +393,8 @@ const AdminProducts = () => {
                 <td className="adp-variant-count">
                   {(() => {
                     const active = product.variants?.filter((v) => !v.isDeleted) || [];
-                    if (!active.length) return "0 phân loại";
-                    return `${active.length} phân loại - ${active.map((v) => `#${v.id}`).join(", ")}`;
+                    if (!active.length) return "0 classify";
+                    return `${active.length} classify - ${active.map((v) => `#${v.id}`).join(", ")}`;
                   })()}
                 </td>
                 {!bsMode && (
@@ -419,7 +419,7 @@ const AdminProducts = () => {
               </tr>
             )) : (
               <tr><td colSpan={bsMode ? 9 : 10} className="adp-empty-row">
-                {bsMode ? "Chưa có dữ liệu bán chạy. Chọn khoảng thời gian để xem." : "Không tìm thấy sản phẩm."}
+                {bsMode ? "No data available for best sellers. Choose a time range to view." : "No products found."}
               </td></tr>
             )}
           </tbody>

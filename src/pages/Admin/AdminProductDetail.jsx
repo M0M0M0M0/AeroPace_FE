@@ -10,10 +10,10 @@ const authHeader = () => ({
 });
 
 const STATUS_CONFIG = {
-  ACTIVE:   { label: "Đang bán",  color: "#16a34a", bg: "#dcfce7" },
-  DRAFT:    { label: "Nháp",      color: "#ca8a04", bg: "#fef9c3" },
-  ARCHIVED: { label: "Lưu trữ",  color: "#6b7280", bg: "#f3f4f6" },
-  DELETED:  { label: "Đã xóa",   color: "#dc2626", bg: "#fee2e2" },
+  ACTIVE:   { label: "Active",  color: "#16a34a", bg: "#dcfce7" },
+  DRAFT:    { label: "Draft",      color: "#ca8a04", bg: "#fef9c3" },
+  ARCHIVED: { label: "Archived",  color: "#6b7280", bg: "#f3f4f6" },
+  DELETED:  { label: "Deleted",   color: "#dc2626", bg: "#fee2e2" },
 };
 
 const StatusBadge = ({ status }) => {
@@ -135,7 +135,7 @@ const AdminProductDetail = () => {
       try {
         await axios.delete(`${BASE}/products/variants/${v.id}`, { headers: authHeader() });
         setForm({ ...form, variants: form.variants.filter((_, i) => i !== idx) });
-      } catch { alert("Xóa variant thất bại!"); }
+      } catch { alert("Failed to delete variant!"); }
     } else {
       setForm({ ...form, variants: form.variants.filter((_, i) => i !== idx) });
     }
@@ -154,7 +154,7 @@ const AdminProductDetail = () => {
 
   // ── Save ──────────────────────────────────────────────────────
   const handleSave = async () => {
-    if (!form.name || !form.brandId) { alert("Vui lòng điền tên sản phẩm và chọn thương hiệu!"); return; }
+    if (!form.name || !form.brandId) { alert("Please fill in the product name and select a brand!"); return; }
 
     const optionChecks = [
       { nameField: "option1Name", valueField: "option1Value", label: "Option 1" },
@@ -165,7 +165,7 @@ const AdminProductDetail = () => {
     for (const { nameField, valueField, label } of optionChecks) {
       const hasValue = form.variants.some((v) => !v.isDeleted && v[valueField] && v[valueField].trim() !== "");
       if (hasValue && !form[nameField]?.trim()) {
-        alert(`Bạn đã nhập giá trị cho ${label} nhưng chưa đặt tên!\nVui lòng điền tên ${label} (VD: "Màu sắc", "Size") trước khi lưu.`);
+        alert(`You have entered a value for ${label} but haven't set a name!\nPlease enter a name for ${label} (e.g., "Color", "Size") before saving.`);
         return;
       }
     }
@@ -174,9 +174,9 @@ const AdminProductDetail = () => {
     try {
       if (mode === "add") {
         const validVariants = form.variants.filter((v) => v.price);
-        if (validVariants.length === 0) { alert("Vui lòng thêm ít nhất 1 variant với giá hợp lệ!"); return; }
+        if (validVariants.length === 0) { alert("Please add at least 1 variant with a valid price!"); return; }
         if (validVariants.some((v) => Number(v.price) < 1500)) {
-          alert("Giá sản phẩm phải tối thiểu 1.500 ₫ để có thể thanh toán."); return;
+          alert("Product price must be at least 1,500 ₫ to be eligible for checkout."); return;
         }
 
         await axios.post(`${BASE}/products/full-create`, {
@@ -198,7 +198,7 @@ const AdminProductDetail = () => {
 
       } else {
         const invalidPrice = form.variants.filter((v) => !v.isDeleted && Number(v.price) < 1500);
-        if (invalidPrice.length > 0) { alert("Giá sản phẩm phải tối thiểu 1.500 ₫ để có thể thanh toán."); return; }
+        if (invalidPrice.length > 0) { alert("Product price must be at least 1,500 ₫ to be eligible for checkout."); return; }
 
         await axios.put(`${BASE}/products/${id}/full-update`, {
           name: form.name, description: form.description, brandId: Number(form.brandId),
@@ -217,7 +217,7 @@ const AdminProductDetail = () => {
       }
     } catch (err) {
       console.error(err);
-      alert("Lưu thất bại! " + (err.response?.data?.message || ""));
+      alert("Failed to save! " + (err.response?.data?.message || ""));
     } finally {
       setSaving(false);
     }
@@ -229,19 +229,19 @@ const AdminProductDetail = () => {
   if (loading) {
     return (
       <div className="apd-page">
-        <div className="apd-loading">Đang tải sản phẩm...</div>
+        <div className="apd-loading">Loading product...</div>
       </div>
     );
   }
 
-  const pageTitle = mode === "add" ? "Thêm sản phẩm mới" : mode === "edit" ? "Chỉnh sửa sản phẩm" : "Chi tiết sản phẩm";
+  const pageTitle = mode === "add" ? "Add New Product" : mode === "edit" ? "Edit Product" : "Product Details";
 
   return (
     <div className="apd-page">
       {/* ── Topbar ─────────────────────────────────────────────── */}
       <div className="apd-topbar">
         <button className="apd-back-btn" onClick={handleBack}>
-          <ArrowLeft size={16} /> Quay lại
+          <ArrowLeft size={16} /> Return
         </button>
         <div className="apd-topbar-info">
           <h1 className="apd-page-title">{pageTitle}</h1>
@@ -249,7 +249,7 @@ const AdminProductDetail = () => {
         </div>
         {!isViewOnly && (
           <button className="apd-save-btn" onClick={handleSave} disabled={saving}>
-            {saving ? "Đang lưu..." : "Lưu sản phẩm"}
+            {saving ? "Saving..." : "Save Product"}
           </button>
         )}
       </div>
@@ -262,20 +262,20 @@ const AdminProductDetail = () => {
 
           {/* Thông tin cơ bản */}
           <div className="apd-card">
-            <h2 className="apd-card-title">Thông tin cơ bản</h2>
+            <h2 className="apd-card-title">Basic Information</h2>
 
             <div className="apd-form-row">
-              <label className="apd-form-label">Tên sản phẩm *</label>
+              <label className="apd-form-label">Product Name *</label>
               <input className="apd-form-input" value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="Tên sản phẩm" disabled={isViewOnly} />
+                placeholder="Product Name" disabled={isViewOnly} />
             </div>
 
             <div className="apd-form-row">
-              <label className="apd-form-label">Mô tả</label>
+              <label className="apd-form-label">Description</label>
               <textarea className="apd-form-input apd-form-textarea" value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                placeholder="Mô tả sản phẩm" disabled={isViewOnly} />
+                placeholder="Product Description" disabled={isViewOnly} />
             </div>
 
             {mode === "add" && (
@@ -288,14 +288,14 @@ const AdminProductDetail = () => {
             )}
 
             <div className="apd-form-row">
-              <label className="apd-form-label">Trạng thái</label>
+              <label className="apd-form-label">Status</label>
               {!isViewOnly ? (
                 <select className="apd-form-input" value={form.status}
                   onChange={(e) => setForm({ ...form, status: e.target.value })}>
-                  <option value="DRAFT">Nháp</option>
-                  <option value="ACTIVE">Đang bán</option>
-                  <option value="ARCHIVED">Lưu trữ</option>
-                  <option value="DELETED">Ngừng bán hoàn toàn</option>
+                  <option value="DRAFT">Draft</option>
+                  <option value="ACTIVE">Active</option>
+                  <option value="ARCHIVED">Archived</option>
+                  <option value="DELETED">Deleted</option>
                 </select>
               ) : (
                 <StatusBadge status={form.status} />
@@ -305,14 +305,14 @@ const AdminProductDetail = () => {
 
           {/* Options */}
           <div className="apd-card">
-            <h2 className="apd-card-title">Tên Options</h2>
+            <h2 className="apd-card-title">Option Names</h2>
             <div className="apd-form-grid-3">
               {["option1Name", "option2Name", "option3Name"].map((field, i) => (
                 <div key={field} className="apd-form-row">
                   <label className="apd-form-label">Option {i + 1}</label>
                   <input className="apd-form-input" value={form[field]}
                     onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-                    placeholder="VD: Màu sắc" disabled={isViewOnly} />
+                    placeholder="VD: Color" disabled={isViewOnly} />
                 </div>
               ))}
             </div>
@@ -321,21 +321,21 @@ const AdminProductDetail = () => {
           {/* Hình ảnh */}
           <div className="apd-card">
             <div className="apd-card-header">
-              <h2 className="apd-card-title">Hình ảnh ({form.images.length})</h2>
+              <h2 className="apd-card-title">Images ({form.images.length})</h2>
               {!isViewOnly && (
                 <button className="apd-btn-add-sm" onClick={addImage}>
-                  <Plus size={14} /> Thêm ảnh
+                  <Plus size={14} /> Add Image
                 </button>
               )}
             </div>
             {form.images.length === 0 && (
-              <p className="apd-empty-hint">Chưa có hình ảnh nào.</p>
+              <p className="apd-empty-hint">No images available.</p>
             )}
             {form.images.map((img, idx) => (
               <div key={idx} className="apd-image-row">
                 <input className="apd-form-input" value={img.imageUrl}
                   onChange={(e) => updateImage(idx, e.target.value)}
-                  placeholder="URL hình ảnh" disabled={isViewOnly} />
+                  placeholder="Image URL" disabled={isViewOnly} />
                 <span className="apd-image-pos">#{img.position}</span>
                 {img.imageUrl && <img src={img.imageUrl} alt="" className="apd-image-preview" />}
                 {!isViewOnly && (
@@ -353,7 +353,7 @@ const AdminProductDetail = () => {
               <h2 className="apd-card-title">Variants ({form.variants.filter((v) => !v.isDeleted).length})</h2>
               {!isViewOnly && (
                 <button className="apd-btn-add-sm" onClick={addVariant}>
-                  <Plus size={14} /> Thêm variant
+                  <Plus size={14} /> Add Variant
                 </button>
               )}
             </div>
@@ -381,27 +381,27 @@ const AdminProductDetail = () => {
                   </div>
                   <div className="apd-form-grid-3">
                     <div className="apd-form-row">
-                      <label className="apd-form-label">Giá *</label>
+                      <label className="apd-form-label">Price *</label>
                       <input className="apd-form-input" type="number" value={v.price}
                         onChange={(e) => updateVariant(idx, "price", e.target.value)}
-                        placeholder="VD: 500000" disabled={isViewOnly} />
+                        placeholder="e.g., 500000" disabled={isViewOnly} />
                     </div>
                     <div className="apd-form-row">
-                      <label className="apd-form-label">Tồn kho</label>
+                      <label className="apd-form-label">Stock</label>
                       <input className="apd-form-input" type="number" value={v.stock}
                         onChange={(e) => updateVariant(idx, "stock", e.target.value)}
-                        placeholder="VD: 10" disabled={isViewOnly} />
+                        placeholder="e.g., 10" disabled={isViewOnly} />
                     </div>
                     <div className="apd-form-row">
                       <label className="apd-form-label">SKU</label>
                       <input className="apd-form-input" value={v.sku}
                         onChange={(e) => updateVariant(idx, "sku", e.target.value)}
-                        placeholder="VD: NK-AIR-RED-40" disabled={isViewOnly} />
+                        placeholder="e.g., NK-AIR-RED-40" disabled={isViewOnly} />
                     </div>
                   </div>
                   {!isViewOnly && form.variants.filter((x) => !x.isDeleted).length > 1 && (
                     <button className="apd-btn-remove-variant" onClick={() => removeVariant(idx)}>
-                      Xóa variant này
+                      Remove this variant
                     </button>
                   )}
                 </div>
@@ -410,7 +410,7 @@ const AdminProductDetail = () => {
 
             {!isViewOnly && (
               <button className="apd-btn-add-sm apd-btn-add-variant-bottom" onClick={addVariant}>
-                <Plus size={14} /> Thêm variant
+                <Plus size={14} /> Add Variant
               </button>
             )}
           </div>
@@ -421,10 +421,10 @@ const AdminProductDetail = () => {
 
           {/* Thương hiệu */}
           <div className="apd-card">
-            <h2 className="apd-card-title">Thương hiệu *</h2>
+            <h2 className="apd-card-title">Brand *</h2>
             <div className="apd-search-wrap">
               <Search size={13} className="apd-search-icon" />
-              <input className="apd-search-input" placeholder="Tìm thương hiệu..."
+              <input className="apd-search-input" placeholder="Find brand..."
                 value={brandSearch} onChange={(e) => setBrandSearch(e.target.value)}
                 disabled={isViewOnly} />
             </div>
@@ -433,12 +433,12 @@ const AdminProductDetail = () => {
               onChange={(e) => setForm({ ...form, brandId: e.target.value })}
               disabled={isViewOnly}>
               {filteredBrands.length === 0
-                ? <option disabled>Không tìm thấy</option>
+                ? <option disabled>Brand not found</option>
                 : filteredBrands.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
             </select>
             {form.brandId && (
               <p className="apd-selected-hint">
-                Đã chọn: <strong>{brands.find((b) => String(b.id) === String(form.brandId))?.name}</strong>
+                Selected: <strong>{brands.find((b) => String(b.id) === String(form.brandId))?.name}</strong>
               </p>
             )}
           </div>
@@ -446,20 +446,20 @@ const AdminProductDetail = () => {
           {/* Danh mục */}
           <div className="apd-card">
             <h2 className="apd-card-title">
-              Danh mục
+              Category
               {form.categoryIds.length > 0 && (
-                <span className="apd-cat-count"> ({form.categoryIds.length} đã chọn)</span>
+                <span className="apd-cat-count"> ({form.categoryIds.length} selected)</span>
               )}
             </h2>
             <div className="apd-search-wrap">
               <Search size={13} className="apd-search-icon" />
-              <input className="apd-search-input" placeholder="Tìm danh mục..."
+              <input className="apd-search-input" placeholder="Find category..."
                 value={catSearch} onChange={(e) => setCatSearch(e.target.value)}
                 disabled={isViewOnly} />
             </div>
             <div className="apd-cat-picker">
               {filteredCats.length === 0
-                ? <span className="apd-cat-empty">Không tìm thấy</span>
+                ? <span className="apd-cat-empty">Category not found</span>
                 : filteredCats.map((c) => (
                   <span key={c.id}
                     onClick={() => !isViewOnly && toggleCategory(c.id)}
@@ -475,10 +475,10 @@ const AdminProductDetail = () => {
           {!isViewOnly && (
             <div className="apd-card apd-card--actions">
               <button className="apd-save-btn apd-save-btn--full" onClick={handleSave} disabled={saving}>
-                {saving ? "Đang lưu..." : "Lưu sản phẩm"}
+                {saving ? "Saving..." : "Save Product"}
               </button>
               <button className="apd-cancel-btn" onClick={handleBack}>
-                Huỷ
+                Cancel
               </button>
             </div>
           )}
@@ -489,17 +489,17 @@ const AdminProductDetail = () => {
       {showLeaveConfirm && (
         <div className="apd-confirm-overlay" onClick={() => setShowLeaveConfirm(false)}>
           <div className="apd-confirm-dialog" onClick={(e) => e.stopPropagation()}>
-            <h3 className="apd-confirm-title">Bạn có thay đổi chưa lưu</h3>
-            <p className="apd-confirm-desc">Thoát sẽ mất các thay đổi chưa được lưu.</p>
+            <h3 className="apd-confirm-title">You have unsaved changes</h3>
+            <p className="apd-confirm-desc">Exiting will lose your unsaved changes.</p>
             <div className="apd-confirm-actions">
               <button className="apd-confirm-btn-discard"
                 onClick={() => { setShowLeaveConfirm(false); navigate("/admin/products"); }}>
-                Bỏ thay đổi
+                Discard Changes
               </button>
               <button className="apd-confirm-btn-save"
                 onClick={() => { setShowLeaveConfirm(false); handleSave(); }}
                 disabled={saving}>
-                {saving ? "Đang lưu..." : "Lưu & thoát"}
+                {saving ? "Saving..." : "Save & Exit"}
               </button>
             </div>
           </div>

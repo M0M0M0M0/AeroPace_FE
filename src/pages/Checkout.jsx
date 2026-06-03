@@ -221,15 +221,15 @@ const CheckoutForm = () => {
   const validateForm = () => {
     const { name, email, phone, specificAddress } = form;
     if (!name || !email || !phone || !specificAddress) {
-      toast.error("Vui lòng điền đầy đủ thông tin người nhận.");
+      toast.error("Please fill in all required fields.");
       return false;
     }
     if (useOtherAddress && (!selectedProvince || !selectedDistrict || !selectedWard)) {
-      toast.error("Vui lòng chọn đầy đủ Tỉnh / Huyện / Xã.");
+      toast.error("Please select the full address details.");
       return false;
     }
     if (!selectedShipping) {
-      toast.error("Vui lòng chọn phương thức vận chuyển.");
+      toast.error("Please select a shipping method.");
       return false;
     }
     return true;
@@ -287,7 +287,7 @@ const CheckoutForm = () => {
     try {
       if (form.paymentMethod === "stripe") {
         if (!stripe || !elements) {
-          toast.error("Hệ thống thanh toán Stripe chưa sẵn sàng.");
+          toast.error("Payment system Stripe is not ready.");
           return;
         }
 
@@ -326,12 +326,12 @@ const CheckoutForm = () => {
         });
 
         if (paymentResult.error) {
-          toast.error(`Thanh toán thất bại: ${paymentResult.error.message}`);
+          toast.error(`Payment failed: ${paymentResult.error.message}`);
           return;
         }
 
         if (paymentResult.paymentIntent.status !== "succeeded") {
-          toast.error("Giao dịch qua Stripe không thành công.");
+          toast.error("Transaction via Stripe was not successful.");
           return;
         }
 
@@ -349,7 +349,7 @@ const CheckoutForm = () => {
         executeOrderSuccess(getFullAddress(), "stripe");
       }
     } catch (err) {
-      toast.error("Đặt hàng thất bại.");
+      toast.error("Failed to place the order.");
     } finally {
       isSubmittingRef.current = false;
       setIsSubmitting(false);
@@ -370,7 +370,7 @@ const CheckoutForm = () => {
       const res = await postOrder("paypal", paypalOrderId);
       setPendingOrderId(res.data.id);
     } catch {
-      toast.error("Không thể tạo đơn hàng.");
+      toast.error("Failed to create order.");
       throw new Error("abort");
     }
     return paypalOrderId;
@@ -393,7 +393,7 @@ const CheckoutForm = () => {
       );
       executeOrderSuccess(getFullAddress(), "paypal");
     } catch {
-      toast.error("Thanh toán thành công nhưng cập nhật đơn hàng thất bại.");
+      toast.error("Payment successful but failed to update order.");
     }
   };
 
@@ -403,7 +403,7 @@ const CheckoutForm = () => {
   if (!cartItems.length)
     return (
       <div className="checkout-empty">
-        <p>Giỏ hàng trống.</p>
+        <p>Your cart is empty.</p>
       </div>
     );
 
@@ -411,7 +411,7 @@ const CheckoutForm = () => {
   return (
     <div className="checkout-page">
       <div className="container">
-        <h1 className="checkout-section-title">Thanh toán</h1>
+        <h1 className="checkout-section-title">Checkout</h1>
 
         <div className="checkout-grid">
           {/* ── FORM ─────────────────────────────────────────────────────── */}
@@ -419,16 +419,16 @@ const CheckoutForm = () => {
 
             {/* ── THÔNG TIN NGƯỜI NHẬN ─────────────────────────────────── */}
             <div className="checkout-form-header">
-              <h2>Thông tin người nhận</h2>
+              <h2>Receiver Information</h2>
               {loadingProfile ? (
-                <span className="checkout-loading-text">Đang tải...</span>
+                <span className="checkout-loading-text">Loading...</span>
               ) : !useOtherReceiver ? (
                 <button type="button" className="checkout-use-info-btn" onClick={handleUseOtherReceiver}>
-                  Người nhận khác
+                  Other Receiver
                 </button>
               ) : (
                 <button type="button" className="checkout-use-info-btn" onClick={handleRevertReceiver}>
-                  Dùng thông tin của tôi
+                  Use My Information
                 </button>
               )}
             </div>
@@ -436,7 +436,7 @@ const CheckoutForm = () => {
             <div className="checkout-form-grid">
               <input
                 type="text"
-                placeholder="Họ và tên"
+                placeholder="Full Name"
                 value={form.name}
                 readOnly={!useOtherReceiver}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -452,7 +452,7 @@ const CheckoutForm = () => {
               />
               <input
                 type="text"
-                placeholder="Số điện thoại"
+                placeholder="Phone Number"
                 value={form.phone}
                 readOnly={!useOtherReceiver}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -463,14 +463,14 @@ const CheckoutForm = () => {
             {/* ── ĐỊA CHỈ NHẬN HÀNG ───────────────────────────────────── */}
             <div className="checkout-address-section">
               <div className="checkout-form-header">
-                <h3>Địa chỉ nhận hàng</h3>
+                <h3>Delivery Address</h3>
                 {!useOtherAddress ? (
                   <button type="button" className="checkout-use-info-btn" onClick={handleUseOtherAddress}>
-                    Địa chỉ khác
+                    Other Address
                   </button>
                 ) : (
                   <button type="button" className="checkout-use-info-btn" onClick={handleRevertAddress}>
-                    Dùng địa chỉ của tôi
+                    Use My Address
                   </button>
                 )}
               </div>
@@ -482,7 +482,7 @@ const CheckoutForm = () => {
                     value={selectedProvince}
                     onChange={(e) => setSelectedProvince(e.target.value)}
                   >
-                    <option value="">Tỉnh / Thành phố</option>
+                    <option value="">Province / City</option>
                     {provinces.map((p) => (
                       <option key={p.id} value={p.id}>{p.full_name}</option>
                     ))}
@@ -494,7 +494,7 @@ const CheckoutForm = () => {
                     onChange={(e) => setSelectedDistrict(e.target.value)}
                     disabled={!selectedProvince}
                   >
-                    <option value="">Quận / Huyện</option>
+                    <option value="">District / Town</option>
                     {districts.map((d) => (
                       <option key={d.id} value={d.id}>{d.full_name}</option>
                     ))}
@@ -506,7 +506,7 @@ const CheckoutForm = () => {
                     onChange={(e) => setSelectedWard(e.target.value)}
                     disabled={!selectedDistrict}
                   >
-                    <option value="">Phường / Xã</option>
+                    <option value="">Ward / Commune</option>
                     {wards.map((w) => (
                       <option key={w.id} value={w.id}>{w.full_name}</option>
                     ))}
@@ -516,7 +516,7 @@ const CheckoutForm = () => {
 
               <input
                 type="text"
-                placeholder="Số nhà, ngõ, tên đường..."
+                placeholder="House number, alley, street name..."
                 value={form.specificAddress}
                 readOnly={!useOtherAddress}
                 onChange={(e) => setForm({ ...form, specificAddress: e.target.value })}
@@ -534,11 +534,11 @@ const CheckoutForm = () => {
 
             {/* ── PHƯƠNG THỨC VẬN CHUYỂN ───────────────────────────────── */}
             <div className="checkout-shipping">
-              <h3>Phương thức vận chuyển</h3>
+              <h3>Delivery Method</h3>
               {loadingShipping ? (
-                <span className="checkout-loading-text">Đang tải...</span>
+                <span className="checkout-loading-text">Loading...</span>
               ) : shippingMethods.length === 0 ? (
-                <p className="checkout-no-shipping">Không có phương thức vận chuyển khả dụng.</p>
+                <p className="checkout-no-shipping">No available delivery methods.</p>
               ) : (
                 <div className="checkout-shipping-list">
                   {shippingMethods.map((method) => (
@@ -557,7 +557,7 @@ const CheckoutForm = () => {
                       <div className="checkout-shipping-info">
                         <span className="checkout-shipping-name">{method.name}</span>
                         <span className="checkout-shipping-fee">
-                          {Number(method.fee) === 0 ? "Miễn phí" : `${Number(method.fee).toLocaleString()} ₫`}
+                          {Number(method.fee) === 0 ? "Free" : `${Number(method.fee).toLocaleString()} ₫`}
                         </span>
                       </div>
                     </label>
@@ -568,11 +568,11 @@ const CheckoutForm = () => {
 
             {/* ── PHƯƠNG THỨC THANH TOÁN ────────────────────────────────── */}
             <div className="checkout-payment">
-              <h3>Phương thức thanh toán</h3>
+              <h3>Payment Method</h3>
               <div className="checkout-payment-grid">
                 {[
-                  { id: "stripe", label: "Thanh toán qua Stripe" },
-                  { id: "paypal", label: "Thanh toán qua PayPal" },
+                  { id: "stripe", label: "Pay with Stripe" },
+                  { id: "paypal", label: "Pay with PayPal" },
                 ].map((m) => (
                   <div
                     key={m.id}
@@ -587,7 +587,7 @@ const CheckoutForm = () => {
             {/* ── NÚT XÁC NHẬN / STRIPE ─────────────────────────────────── */}
             {form.paymentMethod === "stripe" && (
               <div className="stripe-card-container">
-                <label>Thông tin thẻ tín dụng hoặc thẻ ghi nợ</label>
+                <label>Credit or debit card information</label>
                 <CardElement
                   options={{
                     style: {
@@ -630,7 +630,7 @@ const CheckoutForm = () => {
                     onApprove={handlePayPalApprove}
                     onError={(err) => {
                       console.error("PayPal Error:", err);
-                      toast.error("Lỗi trong quá trình xử lý PayPal.");
+                      toast.error("Error processing PayPal payment.");
                     }}
                   />
                 </PayPalScriptProvider>
@@ -641,14 +641,14 @@ const CheckoutForm = () => {
                 className="checkout-submit-btn"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Đang xử lý..." : "Xác nhận đặt hàng"}
+                {isSubmitting ? "Processing..." : "Confirm Order"}
               </button>
             )}
           </form>
 
           {/* ── ORDER SUMMARY ─────────────────────────────────────────────── */}
           <div className="checkout-summary">
-            <h2>Đơn hàng của bạn</h2>
+            <h2>Your Order</h2>
             <div className="checkout-items">
               {cartItems.map((item) => (
                 <div key={item.cartItemId} className="checkout-item">
@@ -667,14 +667,14 @@ const CheckoutForm = () => {
             {/* ── PRICE BREAKDOWN ───────────────────────────────────────── */}
             <div className="checkout-price-breakdown">
               <div className="checkout-price-row">
-                <span>Tạm tính</span>
+                <span>Subtotal</span>
                 <span>{totalPrice.toLocaleString()} ₫</span>
               </div>
               <div className="checkout-price-row">
-                <span>Phí vận chuyển</span>
+                <span>Shipping Fee</span>
                 <span>
                   {shippingFee === 0
-                    ? <span className="checkout-free-tag">Miễn phí</span>
+                    ? <span className="checkout-free-tag">Free</span>
                     : `${shippingFee.toLocaleString()} ₫`}
                 </span>
               </div>
@@ -684,7 +684,7 @@ const CheckoutForm = () => {
               </div>
               <div className="checkout-price-divider" />
               <div className="checkout-total">
-                <h3>Tổng tiền</h3>
+                <h3>Grand Total</h3>
                 <p className="checkout-grand-total">{grandTotal.toLocaleString()} ₫</p>
               </div>
             </div>
