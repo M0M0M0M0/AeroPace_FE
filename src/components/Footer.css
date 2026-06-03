@@ -2,16 +2,12 @@
   background: black;
   color: white;
   border-top: 1px solid #222;
-  /* margin-top: 80px; */
   padding-top: 60px;
   opacity: 0;
-  transform: translateY(50px);
-  transition: all 0.8s ease-out;
 }
 
 .footer-wrapper.visible {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .footer-container {
@@ -25,13 +21,10 @@
 
 .footer-col {
   opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.7s ease;
 }
 
 .footer-wrapper.visible .footer-col {
   opacity: 1;
-  transform: translateY(0);
 }
 
 /* Logo + text */
@@ -99,13 +92,11 @@
   color: #777;
   font-size: 0.85rem;
   opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.7s ease 0.4s;
+
 }
 
 .footer-wrapper.visible .footer-bottom {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .footer-team {
