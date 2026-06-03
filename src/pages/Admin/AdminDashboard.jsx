@@ -74,11 +74,11 @@ const AdminDashboard = () => {
   // ================= HELPERS =================
   const getStatusLabel = (status) => {
     switch (status) {
-      case "PAID": return "Đã thanh toán";
-      case "SHIP_COD": return "Chờ giao (COD)";
-      case "SHIPPING": return "Đang giao";
-      case "DELIVERED": return "Đã giao";
-      case "CANCELLED": return "Đã hủy";
+      case "PAID": return "Paid";
+      case "SHIP_COD": return "Pending Delivery (COD)";
+      case "SHIPPING": return "In Transit";
+      case "DELIVERED": return "Delivered";
+      case "CANCELLED": return "Cancelled";
       default: return status;
     }
   };
@@ -99,18 +99,18 @@ const AdminDashboard = () => {
     return `T${parseInt(month)}/${year}`;
   };
 
-  if (loading) return <div className="ad-loading">Đang tải...</div>;
+  if (loading) return <div className="ad-loading">Loading...</div>;
 
   return (
     <div className="ad-page">
       {/* HEADER */}
       <div className="ad-header">
         <div>
-          <h1 className="ad-title">Tổng quan hệ thống</h1>
-          <p className="ad-subtitle">Thống kê và báo cáo đơn hàng</p>
+          <h1 className="ad-title">System Dashboard</h1>
+          <p className="ad-subtitle">Statistics and Order Reports</p>
         </div>
         <button className="ad-export-btn" onClick={handleExportData}>
-          <Download size={18} /> Xuất Excel
+          <Download size={18} /> Export Excel
         </button>
       </div>
 
@@ -119,38 +119,38 @@ const AdminDashboard = () => {
         <div className="ad-stat-card">
           <div className="ad-stat-icon green"><DollarSign size={20} /></div>
           <div className="ad-stat-body">
-            <span className="ad-stat-label">Tổng doanh thu</span>
+            <span className="ad-stat-label">Total Revenue</span>
             <span className="ad-stat-value">{totalRevenue.toLocaleString("vi-VN")} ₫</span>
           </div>
         </div>
         <div className="ad-stat-card">
           <div className="ad-stat-icon blue"><ShoppingBag size={20} /></div>
           <div className="ad-stat-body">
-            <span className="ad-stat-label">Tổng đơn hàng</span>
-            <span className="ad-stat-value">{totalOrders} đơn</span>
+            <span className="ad-stat-label">Total Orders</span>
+            <span className="ad-stat-value">{totalOrders} orders</span>
           </div>
         </div>
         <div className="ad-stat-card">
           <div className="ad-stat-icon yellow"><Clock size={20} /></div>
           <div className="ad-stat-body">
-            <span className="ad-stat-label">Chờ xử lý</span>
-            <span className="ad-stat-value">{pendingOrders} đơn</span>
+            <span className="ad-stat-label">Pending Orders</span>
+            <span className="ad-stat-value">{pendingOrders} orders</span>
           </div>
         </div>
         <div className="ad-stat-card">
           <div className="ad-stat-icon teal"><TrendingUp size={20} /></div>
           <div className="ad-stat-body">
-            <span className="ad-stat-label">Đã giao thành công</span>
-            <span className="ad-stat-value">{deliveredOrders} đơn</span>
+            <span className="ad-stat-label">Delivered Orders</span>
+            <span className="ad-stat-value">{deliveredOrders} orders</span>
           </div>
         </div>
       </div>
 
       {/* BIỂU ĐỒ DOANH THU THEO THÁNG */}
       <div className="ad-card ad-chart-card">
-        <h3 className="ad-card-title">Doanh thu theo tháng</h3>
+        <h3 className="ad-card-title">Monthly Revenue</h3>
         {sortedMonths.length === 0 ? (
-          <p className="ad-empty">Chưa có dữ liệu</p>
+          <p className="ad-empty">No data available</p>
         ) : (
           <div className="ad-chart">
             {sortedMonths.map((key) => {
@@ -177,17 +177,17 @@ const AdminDashboard = () => {
 
       {/* BẢNG 10 ĐƠN GẦN NHẤT */}
       <div className="ad-card">
-        <h3 className="ad-card-title">10 đơn hàng gần nhất</h3>
+        <h3 className="ad-card-title">10 Most Recent Orders</h3>
         <div className="ad-table-wrap">
           <table className="ad-table">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Người nhận</th>
-                <th>SĐT</th>
-                <th>Tổng tiền</th>
-                <th>Trạng thái</th>
-                <th>Ngày đặt</th>
+                <th>Receiver</th>
+                <th>Phone Number</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Order Date</th>
               </tr>
             </thead>
             <tbody>
