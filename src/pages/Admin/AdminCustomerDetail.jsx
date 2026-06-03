@@ -28,7 +28,7 @@ const AdminCustomerDetail = ({ customer, onClose, onUpdateSuccess }) => {
 
   const handleSave = async () => {
     if (!form.fullName.trim()) {
-      setError("Họ tên không được để trống.");
+      setError("Full name cannot be empty.");
       return;
     }
     setError("");
@@ -39,10 +39,10 @@ const AdminCustomerDetail = ({ customer, onClose, onUpdateSuccess }) => {
       });
       onUpdateSuccess(res.data);
     } catch (err) {
-      console.error("Lỗi cập nhật:", err.response?.status, err.response?.data);
+      console.error("Update error:", err.response?.status, err.response?.data);
       const msg =
         err.response?.data?.message ||
-        `Cập nhật thất bại (${err.response?.status ?? "Network Error"})`;
+        `Update failed (${err.response?.status ?? "Network Error"})`;
       setError(msg);
     } finally {
       setSaving(false);
@@ -55,7 +55,7 @@ const AdminCustomerDetail = ({ customer, onClose, onUpdateSuccess }) => {
         {/* Modal Header */}
         <div className="ac-modal-header">
           <div>
-            <h2 className="ac-modal-title">Chi tiết khách hàng</h2>
+            <h2 className="ac-modal-title">Customer Details</h2>
             <p className="ac-modal-sub">
               ID: #{customer.userId} · {customer.username}
             </p>
@@ -77,7 +77,7 @@ const AdminCustomerDetail = ({ customer, onClose, onUpdateSuccess }) => {
             <span
               className={`ac-badge ${customer.status === "ACTIVE" ? "active" : "locked"}`}
             >
-              {customer.status === "ACTIVE" ? "Hoạt động" : "Đã khoá"}
+              {customer.status === "ACTIVE" ? "Active" : "Locked"}
             </span>
           </div>
         </div>
@@ -90,7 +90,7 @@ const AdminCustomerDetail = ({ customer, onClose, onUpdateSuccess }) => {
           </div>
           <div className="ac-form-row">
             <label>
-              Họ và tên <span className="ac-required">*</span>
+              Full Name <span className="ac-required">*</span>
             </label>
             <input
               name="fullName"
@@ -99,7 +99,7 @@ const AdminCustomerDetail = ({ customer, onClose, onUpdateSuccess }) => {
             />
           </div>
           <div className="ac-form-row">
-            <label>Số điện thoại</label>
+            <label>Phone Number</label>
             <input
               name="phoneNumber"
               value={form.phoneNumber}
@@ -107,7 +107,7 @@ const AdminCustomerDetail = ({ customer, onClose, onUpdateSuccess }) => {
             />
           </div>
           <div className="ac-form-row">
-            <label>Địa chỉ</label>
+            <label>Address</label>
             <input
               name="address"
               value={form.address}
@@ -115,16 +115,16 @@ const AdminCustomerDetail = ({ customer, onClose, onUpdateSuccess }) => {
             />
           </div>
           <div className="ac-form-row">
-            <label>Giới tính</label>
+            <label>Gender</label>
             <select name="gender" value={form.gender} onChange={handleChange}>
-              <option value="">-- Chọn --</option>
-              <option value="Nam">Nam</option>
-              <option value="Nữ">Nữ</option>
-              <option value="Khác">Khác</option>
+              <option value="">-- Select --</option>
+              <option value="Nam">Male</option>
+              <option value="Nữ">Female</option>
+              <option value="Khác">Other</option>
             </select>
           </div>
           <div className="ac-form-row">
-            <label>Ngày sinh</label>
+            <label>Date of Birth</label>
             <input
               type="date"
               name="dob"
@@ -140,14 +140,14 @@ const AdminCustomerDetail = ({ customer, onClose, onUpdateSuccess }) => {
         {/* Actions */}
         <div className="ac-modal-actions">
           <button className="ac-btn-cancel" onClick={onClose}>
-            Huỷ
+            Cancel
           </button>
           <button
             className="ac-btn-save"
             onClick={handleSave}
             disabled={saving}
           >
-            {saving ? "Đang lưu..." : "Lưu thay đổi"}
+            {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </div>

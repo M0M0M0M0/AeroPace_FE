@@ -58,7 +58,7 @@ const AdminCustomers = () => {
         ),
       );
       showToast(
-        data.status === "ACTIVE" ? "Đã mở khoá tài khoản" : "Đã khoá tài khoản",
+        data.status === "ACTIVE" ? "Account unlocked" : "Account locked",
       );
     } catch (err) {
       console.error("Lỗi toggle lock:", err);
@@ -73,7 +73,7 @@ const AdminCustomers = () => {
       ),
     );
     setSelected(null);
-    showToast("Cập nhật thông tin thành công");
+    showToast("Update information successfully");
   };
 
   // ── Reset filters ─────────────────────────────────────────────
@@ -122,8 +122,8 @@ const AdminCustomers = () => {
       {/* Header */}
       <div className="ac-header">
         <div>
-          <h1 className="ac-title">Khách hàng</h1>
-          <p className="ac-subtitle">Quản lý tài khoản khách hàng</p>
+          <h1 className="ac-title">Customers</h1>
+          <p className="ac-subtitle">Manage customer accounts</p>
         </div>
       </div>
 
@@ -134,7 +134,7 @@ const AdminCustomers = () => {
           onClick={() => setFilterStatus("ALL")}
         >
           <span className="ac-stat-num">{customers.length}</span>
-          <span className="ac-stat-label">Tổng khách hàng</span>
+          <span className="ac-stat-label">Total Customers</span>
         </div>
 
         <div
@@ -144,7 +144,7 @@ const AdminCustomers = () => {
           <span className="ac-stat-num">
             {customers.filter((c) => c.status === "ACTIVE").length}
           </span>
-          <span className="ac-stat-label">Đang hoạt động</span>
+          <span className="ac-stat-label">Active</span>
         </div>
 
         <div
@@ -154,7 +154,7 @@ const AdminCustomers = () => {
           <span className="ac-stat-num">
             {customers.filter((c) => c.status === "LOCKED").length}
           </span>
-          <span className="ac-stat-label">Đã khoá</span>
+          <span className="ac-stat-label">Locked</span>
         </div>
       </div>
 
@@ -168,7 +168,7 @@ const AdminCustomers = () => {
         />
         <input
           className="ac-filter-input"
-          placeholder="Họ tên"
+          placeholder="Full Name / Username"
           value={searchName}
           onChange={(e) => setSearchName(e.target.value)}
         />
@@ -180,7 +180,7 @@ const AdminCustomers = () => {
         />
         <input
           className="ac-filter-input"
-          placeholder="Số điện thoại"
+          placeholder="Phone Number"
           value={searchPhone}
           onChange={(e) => setSearchPhone(e.target.value)}
         />
@@ -189,13 +189,13 @@ const AdminCustomers = () => {
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
         >
-          <option value="ALL">Tất cả trạng thái</option>
-          <option value="ACTIVE">Đang hoạt động</option>
-          <option value="LOCKED">Đã khoá</option>
+          <option value="ALL">All Statuses</option>
+          <option value="ACTIVE">Active</option>
+          <option value="LOCKED">Locked</option>
         </select>
         {hasActiveFilter && (
           <button className="ac-filter-reset" onClick={handleResetFilters}>
-            ✕ Xoá bộ lọc
+            ✕ Clear Filters
           </button>
         )}
       </div>
@@ -203,14 +203,13 @@ const AdminCustomers = () => {
       {/* Result count */}
       {hasActiveFilter && (
         <p className="ac-filter-result">
-          Tìm thấy <strong>{filtered.length}</strong> / {customers.length} khách
-          hàng
+          Found <strong>{filtered.length}</strong> / {customers.length} customers
         </p>
       )}
 
       {/* Table */}
       {loading ? (
-        <div className="ac-loading">Đang tải...</div>
+        <div className="ac-loading">Loading...</div>
       ) : (
         <div className="ac-table-wrap">
           <table className="ac-table">
@@ -219,19 +218,19 @@ const AdminCustomers = () => {
                 <th>#</th>
                 <th>ID</th>
                 <th>Username</th>
-                <th>Họ tên</th>
+                <th>Full Name</th>
                 <th>Email</th>
-                <th>Số điện thoại</th>
-                <th>Ngày tạo</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
+                <th>Phone Number</th>
+                <th>Created Date</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="ac-empty-row">
-                    Không tìm thấy khách hàng
+                    No customers found
                   </td>
                 </tr>
               ) : (
@@ -242,7 +241,7 @@ const AdminCustomers = () => {
                     <td className="ac-username">{c.username}</td>
                     <td>
                       {c.fullName || (
-                        <span className="ac-empty">Chưa cập nhật</span>
+                        <span className="ac-empty">Not updated</span>
                       )}
                     </td>
                     <td>{c.email}</td>
@@ -258,7 +257,7 @@ const AdminCustomers = () => {
                       <span
                         className={`ac-badge ${c.status === "ACTIVE" ? "active" : "locked"}`}
                       >
-                        {c.status === "ACTIVE" ? "Hoạt động" : "Đã khoá"}
+                        {c.status === "ACTIVE" ? "Active" : "Locked"}
                       </span>
                     </td>
                     <td>
@@ -267,13 +266,13 @@ const AdminCustomers = () => {
                           className={`ac-lock-btn ${c.status === "ACTIVE" ? "lock" : "unlock"}`}
                           onClick={(e) => handleToggleLock(c.userId, e)}
                         >
-                          {c.status === "ACTIVE" ? "Khoá" : "Mở khoá"}
+                          {c.status === "ACTIVE" ? "Lock" : "Unlock"}
                         </button>
                         <button
                           className="ac-edit-btn"
                           onClick={() => setSelected(c)}
                         >
-                          Sửa
+                          Edit
                         </button>
                       </div>
                     </td>
