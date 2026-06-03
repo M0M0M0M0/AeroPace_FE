@@ -16,7 +16,7 @@ const CompareModal = ({ isOpen, onClose, compareItems }) => {
           const data = await res.json();
           setDetailedProducts(data);
         } catch (err) {
-          console.error("Lỗi lấy dữ liệu so sánh:", err);
+          console.error("Error retrieving comparison data:", err);
         } finally {
           setLoading(false);
         }
@@ -32,18 +32,18 @@ const CompareModal = ({ isOpen, onClose, compareItems }) => {
     <div className="compare-modal-overlay" onClick={onClose}>
       <div className="compare-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="compare-modal-header">
-          <h2>So sánh sản phẩm</h2>
+          <h2>Comparing Products</h2>
           <button className="close-modal-btn" onClick={onClose}><X size={24} /></button>
         </div>
 
         <div className="compare-modal-body">
           {loading ? (
-            <div className="loading-spinner">Đang tải dữ liệu...</div>
+            <div className="loading-spinner">Loading data...</div>
           ) : (
             <table className="compare-table">
               <thead>
                 <tr>
-                  <th style={{ minWidth: "120px" }}>Đặc điểm</th>
+                  <th style={{ minWidth: "120px" }}>Features</th>
                   {detailedProducts.map((p) => (
                     <th key={p.id}>
                       <img src={p.images?.[0]?.imageUrl} alt={p.name} />
@@ -54,7 +54,7 @@ const CompareModal = ({ isOpen, onClose, compareItems }) => {
               </thead>
               <tbody>
                 <tr>
-                  <td>Giá thành</td>
+                  <td>Price</td>
                   {detailedProducts.map((p) => (
                     <td key={p.id} className="compare-price">
                       {p.variants?.[0]?.price?.toLocaleString()} ₫
@@ -62,13 +62,13 @@ const CompareModal = ({ isOpen, onClose, compareItems }) => {
                   ))}
                 </tr>
                 <tr>
-                  <td>Thương hiệu</td>
+                  <td>Brand</td>
                   {detailedProducts.map((p) => (
-                    <td key={p.id}>{p.brand || "Đang cập nhật"}</td>
+                    <td key={p.id}>{p.brand || "Updating"}</td>
                   ))}
                 </tr>
                 <tr>
-                  <td>Danh mục</td>
+                  <td>Category</td>
                   {detailedProducts.map((p) => (
                     <td key={p.id}>{p.categories?.[0]?.name || "N/A"}</td>
                   ))}
