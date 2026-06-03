@@ -6,23 +6,23 @@ function Contact() {
   const contactDetails = [
     {
       icon: MapPin,
-      title: "Địa chỉ cửa hàng",
-      content: "Tòa nhà FPT Polytechnic, 13 Trịnh Văn Bô, Nam Từ Liêm, Hà Nội",
+      title: "Address",
+      content: "FPT Polytechnic Building, 13 Trịnh Văn Bô, Nam Từ Liêm, Hà Nội",
     },
     {
       icon: Phone,
-      title: "Số điện thoại",
+      title: "Phone Number",
       content: "(+84) 123 456 789",
     },
     {
       icon: Mail,
-      title: "Email liên hệ",
+      title: "Email",
       content: "support@shoestore.vn",
     },
     {
       icon: Clock,
-      title: "Giờ mở cửa",
-      content: "Thứ 2 - Chủ Nhật: 09:00 - 21:00",
+      title: "Opening Hours",
+      content: "Monday - Sunday: 09:00 - 21:00",
     },
   ];
 
@@ -31,9 +31,9 @@ function Contact() {
       <div className="contact-container">
         {/* Bên trái: Thông tin liên hệ */}
         <div className="contact-info-col">
-          <h1 className="contact-title">Liên hệ với chúng tôi</h1>
+          <h1 className="contact-title">Contact Us</h1>
           <p className="contact-subtitle">
-            Đội ngũ Shoestore luôn sẵn sàng hỗ trợ bạn 24/7.
+            The Shoestore team is always ready to assist you 24/7.
           </p>
 
           <div className="contact-details-list">
