@@ -19,7 +19,7 @@ class ErrorBoundary extends React.Component {
             return (
                 this.props.fallback || (
                     <div style={{ padding: 40, color: "#e5e4e4", background: "#000", minHeight: "100vh" }}>
-                        <h2>Đã xảy ra lỗi</h2>
+                        <h2>An error has occurred</h2>
                         <p style={{ color: "#888" }}>{this.state.error?.message}</p>
                         <button
                             onClick={() => {
@@ -28,7 +28,7 @@ class ErrorBoundary extends React.Component {
                             }}
                             style={{ marginTop: 16, padding: "8px 16px", cursor: "pointer" }}
                         >
-                            Quay lại
+                            Return
                         </button>
                     </div>
                 )
