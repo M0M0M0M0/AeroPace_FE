@@ -46,42 +46,42 @@ const AdminLayout = () => {
             className={`a-nav-item ${isActive("/admin") ? "active" : ""}`}
           >
             <LayoutDashboard size={20} />
-            <span className="a-nav-label">Tổng quan</span>
+            <span className="a-nav-label">Dashboard</span>
           </Link>
           <Link
             to="/admin/orders"
             className={`a-nav-item ${isActive("/admin/orders") ? "active" : ""}`}
           >
             <ShoppingCart size={20} />
-            <span className="a-nav-label">Đơn hàng</span>
+            <span className="a-nav-label">Orders</span>
           </Link>
           <Link
             to="/admin/products"
             className={`a-nav-item ${isActive("/admin/products") ? "active" : ""}`}
           >
             <Package size={20} />
-            <span className="a-nav-label">Sản phẩm</span>
+            <span className="a-nav-label">Products</span>
           </Link>
           <Link
             to="/admin/catalog"
             className={`a-nav-item ${isActive("/admin/catalog") ? "active" : ""}`}
           >
             <Tag size={20} />
-            <span className="a-nav-label">Danh mục & Brand</span>
+            <span className="a-nav-label">Categories & Brands</span>
           </Link>
           <Link
             to="/admin/customers"
             className={`a-nav-item ${isActive("/admin/customers") ? "active" : ""}`}
           >
             <Users size={20} />
-            <span className="a-nav-label">Khách hàng</span>
+            <span className="a-nav-label">Customers</span>
           </Link>
           <Link
             to="/admin/shippings"
             className={`a-nav-item ${isActive("/admin/shippings") ? "active" : ""}`}
           >
 
-            <span className="a-nav-label">Phương thức vận chuyển</span>
+            <span className="a-nav-label">Shipping Methods</span>
           </Link>
 
         </nav>
