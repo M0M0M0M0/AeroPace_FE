@@ -126,38 +126,38 @@ const Home = () => {
         <div className="home-hero-overlay">
           <h1 className="home-hero-title">Just Feel The Power</h1>
           <p className="home-hero-subtitle">
-            Phụ kiện chạy bộ cao cấp — tối ưu hiệu suất, thoải mái và sẵn sàng
-            cho mọi cung đường.
+            High-end running equipment — optimized performance, comfort, and ready
+            for any trail.
           </p>
           <Link to="/products" className="home-btn">
-            Khám phá ngay
+            Explore Now
           </Link>
         </div>
       </section>
 
       <section className="home-sport-section">
-        <h2 className="home-section-title">Giày Chạy Bộ</h2>
+        <h2 className="home-section-title">Running Shoes</h2>
         <div className="home-sport-grid">
           {featured.slice(0, 5).map(renderCard)}
         </div>
       </section>
 
       <section className="home-sport-section">
-        <h2 className="home-section-title">Dép Chạy Bộ</h2>
+        <h2 className="home-section-title">Running Sandals</h2>
         <div className="home-sport-grid">
           {featured.slice(6, 11).map(renderCard)}
         </div>
       </section>
 
       <section className="home-sport-section">
-        <h2 className="home-section-title">Kính Thể Thao</h2>
+        <h2 className="home-section-title">Sports Glasses</h2>
         <div className="home-sport-grid">
           {featured.slice(11, 16).map(renderCard)}
         </div>
       </section>
 
       <section className="home-sport-section">
-        <h2 className="home-section-title">Đồng Hồ Thể Thao</h2>
+        <h2 className="home-section-title">Sports Watches</h2>
         <div className="home-sport-grid">
           {featured.slice(16, 22).map(renderCard)}
         </div>
@@ -199,10 +199,10 @@ const Home = () => {
                     />
                   )}
                   {outOfStock && (
-                    <div className="home-out-of-stock-badge">Hết hàng</div>
+                    <div className="home-out-of-stock-badge">Out of Stock</div>
                   )}
                   {!outOfStock && maxed && (
-                    <div className="home-out-of-stock-badge">Đã đủ hàng</div>
+                    <div className="home-out-of-stock-badge">Maxed Out</div>
                   )}
                   <div className="home-scroll-overlay">
                     <p>{item.name}</p>
@@ -219,7 +219,7 @@ const Home = () => {
                         onClick={(e) => e.stopPropagation()}
                         className="home-scroll-btn"
                       >
-                        Mua ngay
+                        Buy Now
                       </Link>
                     </div>
                   </div>
@@ -242,7 +242,7 @@ const Home = () => {
         </div>
         <div className="compare-actions">
           <button className="btn-compare-now" onClick={() => setIsCompareModalOpen(true)}>
-            So sánh ngay ({compareList.length})
+            Compare Now ({compareList.length})
           </button>
         </div>
       </div>
