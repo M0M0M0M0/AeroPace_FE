@@ -64,7 +64,7 @@ function Navbar() {
             <div className="navbar-search">
               <input
                 type="text"
-                placeholder="Tìm giày chạy bộ, đồ tập..."
+                placeholder="Search for running shoes, workout gear..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 onKeyDown={handleSearch}
@@ -82,7 +82,7 @@ function Navbar() {
                 isActive ? "navlink active" : "navlink"
               }
             >
-              Trang chủ
+              Home
             </NavLink>
             <NavLink
               to="/products"
@@ -90,7 +90,7 @@ function Navbar() {
                 isActive ? "navlink active" : "navlink"
               }
             >
-              Sản phẩm
+              Products
             </NavLink>
           </div>
 
@@ -117,20 +117,20 @@ function Navbar() {
                     state={{ tab: "info" }}
                     className="dropdown-item"
                   >
-                    <UserCircle size={16} /> Thông tin cá nhân
+                    <UserCircle size={16} /> Personal Information
                   </Link>
                   <Link
                     to="/profile"
                     state={{ tab: "orders" }}
                     className="dropdown-item"
                   >
-                    <Package size={16} /> Lịch sử đơn hàng
+                    <Package size={16} /> Order History
                   </Link>
 
                   {/* Nút quay lại trang quản trị chỉ dành cho Admin */}
                   {user.role === "admin" && (
                     <Link to="/admin" className="dropdown-item">
-                      <Settings size={16} /> Trang quản trị
+                      <Settings size={16} /> Admin Dashboard
                     </Link>
                   )}
 
@@ -138,7 +138,7 @@ function Navbar() {
                     onClick={handleLogout}
                     className="dropdown-item logout-btn"
                   >
-                    <LogOut size={16} /> Đăng xuất
+                    <LogOut size={16} /> Sign Out
                   </button>
                 </div>
               </div>
@@ -149,7 +149,7 @@ function Navbar() {
                 state={{ from: location.pathname }}
               >
                 <User size={20} />
-                <span>Đăng nhập</span>
+                <span>Sign In</span>
               </Link>
             )}
           </div>
