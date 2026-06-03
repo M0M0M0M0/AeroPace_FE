@@ -237,7 +237,12 @@ const Profile = () => {
   };
 
   const handleViewDetail = (order) => {
-    navigate(`/order-detail/${order.orderCode}`, { state: { order } });
+    navigate(`/order-detail/${order.orderCode}`, {
+      state: {
+        order,
+        fromTab: "orders"
+      }
+    });
   };
 
   const getStatusLabel = (order) => {
