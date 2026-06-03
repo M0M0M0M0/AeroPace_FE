@@ -11,9 +11,9 @@ const OrderSuccess = () => {
   if (!order) {
     return (
       <div className="order-success-page-center">
-        <p>Không có đơn hàng để hiển thị.</p>
+        <p>No order data available for display.</p>
         <button className="btn" onClick={() => navigate("/products")}>
-          Quay lại cửa hàng
+          Return to Store
         </button>
       </div>
     );
@@ -29,26 +29,26 @@ const OrderSuccess = () => {
       </div>
 
       <div className="order-success-message">
-        <h1>Cảm ơn bạn đã mua hàng!</h1>
+        <h1>Thank you for your purchase!</h1>
         <p>
-          Đơn hàng của bạn đã được ghi nhận vào <strong>{order.date}</strong>.
+          Your order has been received on <strong>{order.date}</strong>.
         </p>
       </div>
 
       <div className="order-success-info">
-        <h2>Thông tin người nhận </h2>
+        <h2>Recipient Information</h2>
         <div className="order-success-info-grid">
-          <p><strong>Họ tên:</strong> {order.customer.name}</p>
+          <p><strong>Name:</strong> {order.customer.name}</p>
           <p><strong>Email:</strong> {order.customer.email}</p>
-          <p><strong>SĐT:</strong> {order.customer.phone}</p>
-          <p><strong>Địa chỉ:</strong> {order.customer.address}, {order.customer.city}, {order.customer.postal}</p>
-          <p className="full-width"><strong>Phương thức thanh toán:</strong> {order.paymentMethod.toUpperCase()}</p>
+          <p><strong>Phone:</strong> {order.customer.phone}</p>
+          <p><strong>Address:</strong> {order.customer.address}, {order.customer.city}, {order.customer.postal}</p>
+          <p className="full-width"><strong>Payment Method:</strong> {order.paymentMethod.toUpperCase()}</p>
         </div>
       </div>
 
       {/* Chi tiết đơn hàng */}
       <div className="order-items-container">
-        <h2>Chi tiết đơn hàng</h2>
+        <h2>Order Details</h2>
         <div className="order-items">
           {order.items.map((item, idx) => (
             <div key={item.cartItemId || idx} className="order-item">
@@ -67,7 +67,7 @@ const OrderSuccess = () => {
         {/* Price breakdown */}
         <div className="order-success-breakdown">
           <div className="order-success-breakdown-row">
-            <span>Tạm tính</span>
+            <span>Subtotal</span>
             <span>{order.subtotal?.toLocaleString()} ₫</span>
           </div>
           <div className="order-success-breakdown-row">
@@ -76,7 +76,7 @@ const OrderSuccess = () => {
           </div>
           <div className="order-success-breakdown-row">
             <span>
-              Phí vận chuyển
+              Shipping Fee
               <br />
               <span style={{ fontSize: "0.82rem", color: "#888" }}>
                 {order.shippingMethod || "—"}
@@ -87,7 +87,7 @@ const OrderSuccess = () => {
         </div>
 
         <div className="order-total">
-          <span>Tổng cộng:</span>
+          <span>Total:</span>
           <span>{order.total?.toLocaleString()} ₫</span>
         </div>
       </div>
@@ -95,7 +95,7 @@ const OrderSuccess = () => {
       {/*  Quay lại cửa hàng */}
       <div className="text-center mt-6">
         <Link to="/products" className="btn">
-          Quay lại cửa hàng
+          Return to Store
         </Link>
       </div>
     </div>
