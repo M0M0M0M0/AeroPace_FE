@@ -25,11 +25,11 @@ export const usePreferences = () => {
       updatedList = compareList.filter((item) => item.id !== product.id);
     } else {
       if (compareList.length >= 3) {
-        toast.error("Chỉ có thể so sánh tối đa 3 sản phẩm");
+        toast.error("You can only compare up to 3 products");
         return;
       }
       updatedList = [...compareList, product];
-      toast.success("Đã thêm vào danh sách so sánh");
+      toast.success("Product added to comparison list");
     }
     setCompareList(updatedList);
     localStorage.setItem("compareList", JSON.stringify(updatedList));
