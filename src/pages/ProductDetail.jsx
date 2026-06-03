@@ -172,8 +172,8 @@ const ProductDetail = () => {
       },
       quantity,
     );
-    toast.success(`Đã thêm "${product.name}" vào giỏ hàng!`, {
-      action: { label: "Xem giỏ hàng", onClick: () => navigate("/cart") },
+    toast.success(`Add "${product.name}" to cart!`, {
+      action: { label: "View Cart", onClick: () => navigate("/cart") },
     });
   };
 
@@ -196,9 +196,9 @@ const ProductDetail = () => {
   };
 
   const advantages = [
-    { icon: <Package size={20} />, text: "Đóng gói cẩn thận" },
-    { icon: <Truck size={20} />, text: "Giao hàng nhanh" },
-    { icon: <ShieldCheck size={20} />, text: "Đảm bảo chất lượng" },
+    { icon: <Package size={20} />, text: "Careful Packaging" },
+    { icon: <Truck size={20} />, text: "Fast Shipping" },
+    { icon: <ShieldCheck size={20} />, text: "Quality Guarantee" },
   ];
 
   return (
@@ -272,17 +272,17 @@ const ProductDetail = () => {
             <div className="pd-stock-row">
               <p className="pd-stock">
                 {maxStock > 0 ? (
-                  `Còn ${maxStock} sản phẩm`
+                  `In Stock: ${maxStock} items`
                 ) : (
-                  <span className="pd-out-of-stock">Hết hàng</span>
+                  <span className="pd-out-of-stock">Out of Stock</span>
                 )}
               </p>
               {inCart > 0 && (
                 <p className="pd-in-cart-info">
                   <ShoppingCart size={14} />
-                  Đang có <strong>{inCart}</strong> trong giỏ
+                  Currently in cart: <strong>{inCart}</strong>
                   {effectiveMax === 0 && maxStock > 0 && (
-                    <span className="pd-maxed-label"> · Đã đạt tối đa</span>
+                    <span className="pd-maxed-label"> · Maximum reached</span>
                   )}
                 </p>
               )}
@@ -290,7 +290,7 @@ const ProductDetail = () => {
           )}
 
           <div className="pd-qty-row">
-            <span>Số lượng:</span>
+            <span>Quantity:</span>
             <div className="pd-qty-box">
               <button
                 onClick={decrement}
@@ -315,7 +315,7 @@ const ProductDetail = () => {
               </button>
             </div>
             {effectiveMax > 0 && quantity >= effectiveMax && (
-              <span className="pd-qty-max">Tối đa còn {effectiveMax}</span>
+              <span className="pd-qty-max">Maximum available: {effectiveMax}</span>
             )}
           </div>
 
@@ -325,14 +325,14 @@ const ProductDetail = () => {
               className="pd-add-btn"
               disabled={!selectedVariant || effectiveMax === 0}
             >
-              <ShoppingCart size={20} /> Thêm vào giỏ
+              <ShoppingCart size={20} /> Add to Cart
             </button>
             <button
               onClick={handleBuyNow}
               className="pd-buy-btn"
               disabled={!selectedVariant || maxStock === 0}
             >
-              Mua ngay
+              Buy Now
             </button>
           </div>
 
@@ -348,7 +348,7 @@ const ProductDetail = () => {
       </div>
 
       <div className="pd-desc">
-        <h2>Mô tả sản phẩm</h2>
+        <h2>Product Description</h2>
         <div
           dangerouslySetInnerHTML={{ __html: product.description }}
           className="pd-desc-content"
