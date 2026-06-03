@@ -4,9 +4,9 @@ import './AboutUs.css';
 
 const AboutUs = () => {
   const coreValues = [
-    { title: "Tận Tâm", desc: "Luôn đặt khách hàng làm trọng tâm trong mọi hoạt động." },
-    { title: "Chất Lượng", desc: "Cung cấp những sản phẩm chạy bộ chính hãng tốt nhất." },
-    { title: "Cộng Đồng", desc: "Lan tỏa tinh thần thể thao đến mọi người dân Việt Nam." }
+    { title: "Devotion", desc: "Always put customers at the center of all activities." },
+    { title: "Quality", desc: "Provide the best authentic running products." },
+    { title: "Community", desc: "Spread the spirit of sports to people across Vietnam." }
   ];
 
   return (
@@ -14,8 +14,8 @@ const AboutUs = () => {
       {/* Hero Section */}
       <section className="about-hero">
         <div className="hero-content">
-          <h1>CHÚNG TÔI LÀ AI?</h1>
-          <p>Hành trình mang lại sức khỏe và niềm vui qua từng bước chạy.</p>
+          <h1>WHO ARE WE?</h1>
+          <p>Our journey to bring health and joy through every run.</p>
         </div>
       </section>
 
@@ -23,18 +23,18 @@ const AboutUs = () => {
       <section className="about-section">
         <div className="about-grid">
           <div className="about-text">
-            <h2>Câu Chuyện Của Chúng Tôi</h2>
+            <h2>Our Story</h2>
             <p>
-              Bắt đầu từ niềm đam mê chạy bộ cháy bỏng, chúng tôi hiểu rằng một đôi giày tốt 
-              không chỉ là phụ kiện, mà là người bạn đồng hành trên mọi cung đường.
+              Starting from a passion for running, we understand that a good pair of shoes 
+              is not just an accessory, but a companion on every journey.
             </p>
             <p>
-              Được thành lập với mục tiêu hỗ trợ cộng đồng runner, chúng tôi không ngừng 
-              tìm kiếm những công nghệ mới nhất để bảo vệ đôi chân của bạn.
+              Founded with the goal of supporting the running community, we continuously 
+              seek the latest technologies to protect your feet.
             </p>
           </div>
           <div className="about-image">
-            <img src="https://www.womensrunning.co.uk/wp-content/uploads/2018/09/half-marathon-race.png" alt="Hành trình" />
+            <img src="https://www.womensrunning.co.uk/wp-content/uploads/2018/09/half-marathon-race.png" alt="Journey" />
           </div>
         </div>
       </section>
@@ -42,7 +42,7 @@ const AboutUs = () => {
       {/* Core Values Section */}
       <section className="values-section">
         <div className="abu-section-title">
-          <h2>Giá Trị Cốt Lõi</h2>
+          <h2>Core Values</h2>
         </div>
         <div className="values-grid">
           {coreValues.map((value, index) => (
@@ -61,12 +61,12 @@ const AboutUs = () => {
             <img src="https://img.cand.com.vn/resize/800x800/NewFiles/Images/2023/11/16/1-1700110703839.jpg" alt="Tầm nhìn" />
           </div>
           <div className="about-text">
-            <h2>Tầm Nhìn & Sứ Mệnh</h2>
+            <h2>Vision & Mission</h2>
             <p>
-              Trở thành điểm đến tin cậy nhất cho cộng đồng chạy bộ tại Việt Nam, 
-              không chỉ về sản phẩm mà còn về kiến thức và trải nghiệm.
+              To become the most trusted destination for the running community in Vietnam, 
+              not only for our products but also for knowledge and experience.
             </p>
-            <button className="cta-button">Khám Phá Thêm</button>
+            <button className="cta-button">Discover More</button>
           </div>
         </div>
       </section>
