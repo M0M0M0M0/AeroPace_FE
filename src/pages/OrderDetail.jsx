@@ -48,18 +48,26 @@ const canCancel = (order) => order.status === "PENDING" || order.status === "PAI
 const OrderDetail = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
+    const fromTab = state?.fromTab;
 
     const [order, setOrder] = useState(state?.order || null);
     const [cancelModal, setCancelModal] = useState({ open: false, note: "" });
     const [cancelling, setCancelling] = useState(false);
     const [confirming, setConfirming] = useState(false);
 
+    const handleBack = () => {
+        if (fromTab) {
+            navigate("/profile", { state: { tab: fromTab } });
+        } else {
+            navigate(-1);
+        }
+    };
     if (!order) {
         return (
             <div className="od-page">
                 <div className="od-container">
                     <p style={{ color: "#888" }}>Không tìm thấy đơn hàng.</p>
-                    <button className="od-back-btn" onClick={() => navigate(-1)}>
+                    <button className="od-back-btn" onClick={handleBack}>
                         <ArrowLeft size={16} /> Quay lại
                     </button>
                 </div>
