@@ -17,7 +17,7 @@ function Contact() {
     {
       icon: Mail,
       title: "Email",
-      content: "support@shoestore.vn",
+      content: "support@aeropace.vn",
     },
     {
       icon: Clock,
@@ -33,7 +33,7 @@ function Contact() {
         <div className="contact-info-col">
           <h1 className="contact-title">Contact Us</h1>
           <p className="contact-subtitle">
-            The Shoestore team is always ready to assist you 24/7.
+            The AeroPace team is always ready to assist you 24/7.
           </p>
 
           <div className="contact-details-list">
