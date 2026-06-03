@@ -222,31 +222,31 @@ const Products = () => {
 
         <div className="prd-content">
           <div className="prd-header-top">
-            <h2 className="prd-main-title">Tất cả sản phẩm</h2>
+            <h2 className="prd-main-title">All Products</h2>
               <div className="prd-sort-options">
               <button 
                 className={`prd-sort-btn ${sortBy === 'asc' ? 'active' : ''}`} 
                 onClick={() => setSortBy(sortBy === 'asc' ? '' : 'asc')}
               >
-               Giá tăng dần
+               Price: Low to High
               </button>
             <button 
               className={`prd-sort-btn ${sortBy === 'desc' ? 'active' : ''}`} 
               onClick={() => setSortBy(sortBy === 'desc' ? '' : 'desc')}
             >
-              Giá giảm dần
+              Price: High to Low
             </button>
             <button 
               className={`prd-sort-btn ${sortBy === 'newest' ? 'active' : ''}`} 
               onClick={() => setSortBy(sortBy === 'newest' ? '' : 'newest')}
             >
-              Mới nhất
+              Newest
             </button>
             <button 
               className={`prd-sort-btn ${sortBy === 'bestseller' ? 'active' : ''}`} 
               onClick={() => setSortBy(sortBy === 'bestseller' ? '' : 'bestseller')}
             >
-              Bán chạy nhất
+              Best Sellers
             </button>
             </div>
             </div>
@@ -294,14 +294,14 @@ const Products = () => {
                   setMaxPrice("");
                 }}
               >
-                Xóa tất cả
+                Clear All
               </button>
             )}
           </div>
 
           <div className="prd-grid">
             {products.length === 0 ? (
-              <div className="prd-empty">Không có sản phẩm phù hợp</div>
+              <div className="prd-empty">No matching products found</div>
             ) : (
               products.map((item) => {
                 const image = item.images?.[0]?.imageUrl;
@@ -328,7 +328,7 @@ const Products = () => {
                         <button 
                           className="action-icon-btn" 
                           onClick={(e) => toggleCompare(item, e)}
-                          title="So sánh"
+                          title="Compare"
                         >
                           <ArrowLeftRight 
                             size={18} 
@@ -339,8 +339,8 @@ const Products = () => {
 
                       {/* Các badge hiện tại */}
                       
-                      {!outOfStock && maxed && <div className="prd-out-of-stock-badge">Đã đạt giới hạn</div>}
-                      {cartQty > 0 && <div className="prd-in-cart-badge">Trong giỏ: {cartQty}</div>}
+                      {!outOfStock && maxed && <div className="prd-out-of-stock-badge">Maxed Out</div>}
+                      {cartQty > 0 && <div className="prd-in-cart-badge">In Cart: {cartQty}</div>}
                       
                       <div className="prd-card-top" style={{ backgroundImage: `url(${image})` }} />
                       <div className={`prd-card-bottom ${activeId === item.id ? "prd-clicked" : ""}`}>
@@ -390,7 +390,7 @@ const Products = () => {
         </div>
         <div className="compare-actions">
           <button className="btn-compare-now" onClick={() => setIsCompareModalOpen(true)}>
-            So sánh ngay ({compareList.length})
+            Compare Now ({compareList.length})
           </button>
         </div>
         <CompareModal 
