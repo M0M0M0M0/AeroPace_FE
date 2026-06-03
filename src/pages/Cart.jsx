@@ -33,7 +33,7 @@ const Cart = () => {
     cart.items.forEach((item) => {
       const prevPrice = prevPricesRef.current[item.cartItemId];
       if (prevPrice !== undefined && prevPrice !== item.price) {
-        toast.warning(`Giá "${item.productName}" vừa thay đổi`, {
+        toast.warning(`Price of "${item.productName}" just changed`, {
           description: `${prevPrice.toLocaleString()} ₫ → ${item.price.toLocaleString()} ₫`,
         });
       }
@@ -58,9 +58,9 @@ const Cart = () => {
   if (!cart || !cart.items || cart.items.length === 0)
     return (
       <div className="cart-empty">
-        <p>Giỏ hàng trống.</p>
+        <p>Cart is empty.</p>
         <button className="cart-btn" onClick={() => navigate("/products")}>
-          Quay lại cửa hàng
+          Back to Store
         </button>
       </div>
     );
@@ -68,7 +68,7 @@ const Cart = () => {
   return (
     <div className="cart-page">
       <div className="cart-container">
-        <h1 className="cart-section-title">Giỏ hàng của bạn</h1>
+        <h1 className="cart-section-title">Your Cart</h1>
 
         <div className="cart-items">
           {cart.items.map((item) => {
@@ -115,13 +115,13 @@ const Cart = () => {
                   {outOfStock && (
                     <p className="cart-stock-warning">
                       <AlertTriangle size={13} />
-                      Sản phẩm đã hết hàng
+                      Product is out of stock
                     </p>
                   )}
                   {!outOfStock && exceedsStock && (
                     <p className="cart-stock-warning">
                       <AlertTriangle size={13} />
-                      Chỉ còn {item.stockAvailable} sản phẩm
+                      Only {item.stockAvailable} items left in stock
                     </p>
                   )}
                 </div>
@@ -167,7 +167,7 @@ const Cart = () => {
 
           {/* Total */}
           <div className="cart-total">
-            <h2>Tổng tiền tạm tính:</h2>
+            <h2>Total (Estimated):</h2>
             <p className="total-price">{totalAmount.toLocaleString()} ₫</p>
           </div>
 
@@ -175,14 +175,14 @@ const Cart = () => {
           {hasInvalidItems && (
             <p className="cart-global-warning">
               <AlertTriangle size={14} />
-              Một số sản phẩm vượt quá tồn kho hoặc đã hết hàng. Vui lòng điều chỉnh trước khi thanh toán.
+              Some products exceed stock or are out of stock. Please adjust before checkout.
             </p>
           )}
 
           {/* Actions */}
           <div className="cart-page-actions">
             <button className="cart-page-btn" onClick={() => setShowConfirm(true)}>
-              Xóa tất cả
+              Delete All
             </button>
 
             <button
@@ -196,7 +196,7 @@ const Cart = () => {
                 }
               }}
             >
-              Thanh toán ({cart.items.length})
+              Checkout ({cart.items.length})
             </button>
           </div>
         </div>
@@ -206,17 +206,17 @@ const Cart = () => {
       {showConfirm && (
         <div className="cart-confirm-overlay" onClick={() => setShowConfirm(false)}>
           <div className="cart-confirm-dialog" onClick={(e) => e.stopPropagation()}>
-            <h3>Xóa toàn bộ giỏ hàng?</h3>
-            <p>Hành động này không thể hoàn tác.</p>
+            <h3>Delete entire cart?</h3>
+            <p>This action cannot be undone.</p>
             <div className="cart-confirm-actions">
               <button className="cart-confirm-btn-cancel" onClick={() => setShowConfirm(false)}>
-                Hủy
+                Cancel
               </button>
               <button
                 className="cart-confirm-btn-delete"
                 onClick={() => { clearCart(); setShowConfirm(false); }}
               >
-                Xóa tất cả
+                Delete All
               </button>
             </div>
           </div>
