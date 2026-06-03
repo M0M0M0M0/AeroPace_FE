@@ -137,19 +137,19 @@ const Profile = () => {
     e.preventDefault();
     const phoneRegex = /^[0-9]+$/;
     if (formData.phone_number && !phoneRegex.test(formData.phone_number)) {
-      alert("SĐT chỉ được chứa số!");
+      alert("Phone number must contain only digits!");
       return;
     }
     if (formData.dob) {
       const today = new Date();
       const inputDate = new Date(formData.dob);
       if (inputDate >= today) {
-        alert("Ngày sinh phải là quá khứ!");
+        alert("Date of birth must be in the past!");
         return;
       }
     }
     if (!profileId) {
-      alert("Chưa có profile để cập nhật!");
+      alert("No profile found to update!");
       return;
     }
     try {
@@ -169,10 +169,10 @@ const Profile = () => {
           formData.province,
         userId: user.id,
       });
-      alert("Cập nhật thành công!");
+      alert("Update successful!");
     } catch (err) {
       console.log("UPDATE ERROR:", err.response?.data || err);
-      alert("Cập nhật thất bại!");
+      alert("Update failed!");
     }
   };
 
@@ -211,7 +211,7 @@ const Profile = () => {
       setCancelModal({ open: false, orderCode: null, note: "" });
     } catch (err) {
       console.log("CANCEL ORDER ERROR:", err.response || err);
-      alert("Hủy đơn thất bại!");
+      alert("Failed to cancel the order!");
     } finally {
       setCancelling(false);
     }
@@ -230,7 +230,7 @@ const Profile = () => {
       );
     } catch (err) {
       console.log("CONFIRM RECEIVED ERROR:", err.response || err);
-      alert("Xác nhận thất bại, vui lòng thử lại.");
+      alert("Failed to confirm receipt, please try again.");
     } finally {
       setConfirmingOrder(null);
     }
@@ -246,15 +246,15 @@ const Profile = () => {
   };
 
   const getStatusLabel = (order) => {
-    if (order.paymentStatus === "REFUND_PENDING") return "Chờ hoàn tiền";
+    if (order.paymentStatus === "REFUND_PENDING") return "Waiting for refund";
     const status = order.status;
     switch (status) {
-      case "PENDING": return "Chờ xác nhận";
-      case "PAID": return "Đã thanh toán";
-      case "SHIPPING": return "Đang giao hàng";
-      case "DELIVERED": return "Đã giao hàng";
-      case "COMPLETED": return "Hoàn thành";
-      case "CANCELLED": return "Đã hủy";
+      case "PENDING": return "Waiting for confirmation";
+      case "PAID": return "Paid";
+      case "SHIPPING": return "In transit";
+      case "DELIVERED": return "Delivered";
+      case "COMPLETED": return "Completed";
+      case "CANCELLED": return "Cancelled";
 
       default: return status;
     }
@@ -331,7 +331,7 @@ const Profile = () => {
               </div>
             ))}
             {extraCount > 0 && (
-              <p className="profile-order-more">+{extraCount} sản phẩm khác...</p>
+              <p className="profile-order-more">+{extraCount} other products...</p>
             )}
           </div>
         )}
@@ -339,7 +339,7 @@ const Profile = () => {
         {/* Footer */}
         <div className="profile-order-card-footer">
           <span className="profile-order-total">
-            Tổng: {order.totalPrice?.toLocaleString()} ₫
+            Total: {order.totalPrice?.toLocaleString()} ₫
           </span>
 
           <div className="profile-order-actions">
@@ -350,8 +350,8 @@ const Profile = () => {
                 onClick={() => handleConfirmReceived(order.orderCode)}
               >
                 {confirmingOrder === order.orderCode
-                  ? "Đang xác nhận..."
-                  : "Đã nhận hàng"}
+                  ? "Waiting for confirmation..."
+                  : "Mark as received"}
               </button>
             )}
 
@@ -359,7 +359,7 @@ const Profile = () => {
               className="profile-view-detail-btn"
               onClick={() => handleViewDetail(order)}
             >
-              Xem chi tiết
+              View details
               <ArrowRight size={14} />
             </button>
           </div>
@@ -379,7 +379,7 @@ const Profile = () => {
             </div>
             <h3>{formData.name || "User"}</h3>
             <p>
-              {user?.role === "admin" ? "Quản trị viên" : "Thành viên tiêu chuẩn"}
+              {user?.role === "admin" ? "Administrator" : "Standard User"}
             </p>
           </div>
 
@@ -389,7 +389,7 @@ const Profile = () => {
               onClick={() => setActiveTab("info")}
             >
               <User size={18} />
-              Thông tin cá nhân
+              Personal Information
             </button>
 
             <button
@@ -397,7 +397,7 @@ const Profile = () => {
               onClick={() => setActiveTab("orders")}
             >
               <Package size={18} />
-              Lịch sử mua hàng
+              Order History
             </button>
 
             <button
@@ -405,7 +405,7 @@ const Profile = () => {
               onClick={handleLogout}
             >
               <LogOut size={18} />
-              Đăng xuất
+              Logout
             </button>
           </div>
         </div>
@@ -415,12 +415,12 @@ const Profile = () => {
           {/* --- INFO TAB --- */}
           {activeTab === "info" && (
             <div className="profile-tab-pane profile-slide-up">
-              <h2 className="profile-tab-title">Thông tin cá nhân</h2>
+              <h2 className="profile-tab-title">Personal Information</h2>
 
               <form onSubmit={handleSaveInfo} className="profile-form">
                 <div className="profile-form-row">
                   <div className="profile-form-group">
-                    <label>Họ và tên</label>
+                    <label>Full Name</label>
                     <div className="profile-input-with-icon">
                       <User size={18} className="profile-input-icon" />
                       <input
@@ -448,7 +448,7 @@ const Profile = () => {
                 </div>
 
                 <div className="profile-form-group">
-                  <label>Số điện thoại</label>
+                  <label>Phone Number</label>
                   <div className="profile-input-with-icon">
                     <Phone size={18} className="profile-input-icon" />
                     <input
@@ -461,7 +461,7 @@ const Profile = () => {
                 </div>
 
                 <div className="profile-form-group">
-                  <label>Ngày sinh</label>
+                  <label>Date of Birth</label>
                   <div className="profile-input-with-icon">
                     <input
                       type="date"
@@ -473,30 +473,30 @@ const Profile = () => {
                 </div>
 
                 <div className="profile-form-group">
-                  <label>Giới tính</label>
+                  <label>Gender</label>
                   <div className="profile-input-with-icon">
                     <select
                       name="gender"
                       value={formData.gender}
                       onChange={handleChange}
                     >
-                      <option value="">-- Chọn --</option>
-                      <option value="male">Nam</option>
-                      <option value="female">Nữ</option>
-                      <option value="other">Khác</option>
+                      <option value="">-- Select --</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
                     </select>
                   </div>
                 </div>
 
                 <div className="profile-form-group">
-                  <label>Địa chỉ</label>
+                  <label>Address</label>
                   <div className="profile-address-dropdowns">
                     <select
                       value={selectedProvince}
                       onChange={(e) => setSelectedProvince(e.target.value)}
                       className="profile-address-select"
                     >
-                      <option value="">{formData.province || "Tỉnh/Thành phố"}</option>
+                      <option value="">{formData.province || "Province/City"}</option>
                       {provinces.map((p) => (
                         <option key={p.id} value={p.id}>{p.full_name}</option>
                       ))}
@@ -508,7 +508,7 @@ const Profile = () => {
                       disabled={!selectedProvince}
                       className="profile-address-select"
                     >
-                      <option value="">{formData.district || "Quận/Huyện"}</option>
+                      <option value="">{formData.district || "District/County"}</option>
                       {districts.map((d) => (
                         <option key={d.id} value={d.id}>{d.full_name}</option>
                       ))}
@@ -520,7 +520,7 @@ const Profile = () => {
                       disabled={!selectedDistrict}
                       className="profile-address-select"
                     >
-                      <option value="">{formData.ward || "Phường/Xã"}</option>
+                      <option value="">{formData.ward || "Ward/Commune"}</option>
                       {wards.map((w) => (
                         <option key={w.id} value={w.id}>{w.full_name}</option>
                       ))}
@@ -532,7 +532,7 @@ const Profile = () => {
                     <input
                       type="text"
                       name="address"
-                      placeholder="Số nhà, ngõ, tên đường..."
+                      placeholder="House number, alley, street name..."
                       value={formData.address}
                       onChange={handleChange}
                     />
@@ -541,7 +541,7 @@ const Profile = () => {
 
                 <button type="submit" className="profile-save-btn">
                   <Save size={18} />
-                  Lưu Thay Đổi
+                  Save Changes
                 </button>
               </form>
             </div>
@@ -550,12 +550,12 @@ const Profile = () => {
           {/* --- ORDERS TAB --- */}
           {activeTab === "orders" && (
             <div className="profile-tab-pane profile-slide-up">
-              <h2 className="profile-tab-title">Lịch sử mua hàng</h2>
+              <h2 className="profile-tab-title">Order History</h2>
 
               {orders.length === 0 ? (
                 <div className="profile-empty-orders">
                   <Package size={50} color="#555" />
-                  <p>Chưa có đơn hàng</p>
+                  <p>No orders found</p>
                 </div>
               ) : (
                 <div className="profile-orders-list">
