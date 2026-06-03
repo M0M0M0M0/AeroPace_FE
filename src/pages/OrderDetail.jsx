@@ -5,16 +5,16 @@ import { ArrowLeft, MapPin, Phone, User, Package, X } from "lucide-react";
 import "./OrderDetail.css";
 
 const getStatusLabel = (order) => {
-    if (order.paymentStatus === "REFUND_PENDING") return "Chờ hoàn tiền";
+    if (order.paymentStatus === "REFUND_PENDING") return "REFUND_PENDING";
     const status = order.status;
     switch (status) {
-        case "PENDING": return "Chờ xác nhận";
-        case "PAID": return "Đã thanh toán";
-        case "SHIPPING": return "Đang giao hàng";
-        case "DELIVERED": return "Đã giao hàng";
-        case "COMPLETED": return "Hoàn thành";
-        case "CANCELLED": return "Đã hủy";
-        case "REFUND_PENDING": return "Chờ hoàn tiền";
+        case "PENDING": return "Pending";
+        case "PAID": return "PAID";
+        case "SHIPPING": return "SHIPPING";
+        case "DELIVERED": return "DELIVERED";
+        case "COMPLETED": return "COMPLETED";
+        case "CANCELLED": return "CANCELLED";
+        case "REFUND_PENDING": return "REFUND_PENDING";
         default: return status;
     }
 };
@@ -36,9 +36,9 @@ const getStatusStyle = (order) => {
 
 const getCancelReason = (order) => {
     if (order.cancelType === "USER_CANCELLED")
-        return "Người dùng hủy đơn" + (order.cancelNote ? `: ${order.cancelNote}` : "");
+        return "User Cancelled" + (order.cancelNote ? `: ${order.cancelNote}` : "");
     if (order.cancelType === "ADMIN_CANCELLED")
-        return "Admin hủy đơn" + (order.cancelNote ? `: ${order.cancelNote}` : "");
+        return "Admin Cancelled" + (order.cancelNote ? `: ${order.cancelNote}` : "");
 
     return "—";
 };
@@ -66,9 +66,9 @@ const OrderDetail = () => {
         return (
             <div className="od-page">
                 <div className="od-container">
-                    <p style={{ color: "#888" }}>Không tìm thấy đơn hàng.</p>
+                    <p style={{ color: "#888" }}>Cannot find the order.</p>
                     <button className="od-back-btn" onClick={handleBack}>
-                        <ArrowLeft size={16} /> Quay lại
+                        <ArrowLeft size={16} /> Return
                     </button>
                 </div>
             </div>
@@ -94,7 +94,7 @@ const OrderDetail = () => {
             setOrder((prev) => ({ ...prev, status: "COMPLETED" }));
         } catch (err) {
             console.log("CONFIRM RECEIVED ERROR:", err.response || err);
-            alert("Xác nhận thất bại, vui lòng thử lại.");
+            alert("Failed to confirm receipt, please try again.");
         } finally {
             setConfirming(false);
         }
@@ -112,7 +112,7 @@ const OrderDetail = () => {
             setCancelModal({ open: false, note: "" });
         } catch (err) {
             console.log("CANCEL ORDER ERROR:", err.response || err);
-            alert("Hủy đơn thất bại!");
+            alert("Failed to cancel the order!");
         } finally {
             setCancelling(false);
         }
@@ -122,14 +122,14 @@ const OrderDetail = () => {
         <div className="od-page">
             <div className="od-container">
                 <button className="od-back-btn" onClick={() => navigate(-1)}>
-                    <ArrowLeft size={16} /> Quay lại
+                    <ArrowLeft size={16} /> Return
                 </button>
 
                 <div className="od-card">
                     {/* Header */}
                     <div className="od-header">
                         <div className="od-header-left">
-                            <h2 className="od-title">Chi tiết đơn hàng</h2>
+                            <h2 className="od-title">Order Details</h2>
                             <span className="od-code">#{order.orderCode}</span>
                         </div>
                         <span
@@ -144,28 +144,28 @@ const OrderDetail = () => {
 
                     {/* Shipping info */}
                     <div className="od-section">
-                        <h3 className="od-section-title">Thông tin giao hàng</h3>
+                        <h3 className="od-section-title">Shipping Information</h3>
                         <div className="od-info-grid">
                             {order.receiverName && (
                                 <div className="od-info-row">
                                     <User size={15} className="od-info-icon" />
-                                    <span className="od-info-label">Người nhận</span>
+                                    <span className="od-info-label">Receiver</span>
                                     <span className="od-info-value">{order.receiverName}</span>
                                 </div>
                             )}
                             <div className="od-info-row">
                                 <Phone size={15} className="od-info-icon" />
-                                <span className="od-info-label">Số điện thoại</span>
+                                <span className="od-info-label">Phone Number</span>
                                 <span className="od-info-value">{order.phoneNumber || "—"}</span>
                             </div>
                             <div className="od-info-row">
                                 <MapPin size={15} className="od-info-icon" />
-                                <span className="od-info-label">Địa chỉ</span>
+                                <span className="od-info-label">Address</span>
                                 <span className="od-info-value">{shippingAddress || "—"}</span>
                             </div>
                             <div className="od-info-row">
                                 <Package size={15} className="od-info-icon" />
-                                <span className="od-info-label">Ngày đặt</span>
+                                <span className="od-info-label">Order Date</span>
                                 <span className="od-info-value">
                                     {new Date(order.createdAt).toLocaleString("vi-VN")}
                                 </span>
@@ -177,7 +177,7 @@ const OrderDetail = () => {
 
                     {/* Items — clickable, with image */}
                     <div className="od-section">
-                        <h3 className="od-section-title">Danh sách sản phẩm</h3>
+                        <h3 className="od-section-title">Product List</h3>
                         {order.items && order.items.length > 0 ? (
                             <div className="od-items">
                                 {order.items.map((item, idx) => (
@@ -223,7 +223,7 @@ const OrderDetail = () => {
                             </div>
                         ) : (
                             <p style={{ color: "#666", fontSize: "0.9rem" }}>
-                                Không có sản phẩm.
+                                No products available.
                             </p>
                         )}
                     </div>
@@ -246,7 +246,7 @@ const OrderDetail = () => {
                                         onClick={() => setCancelModal({ open: true, note: "" })}
                                     >
                                         <X size={15} />
-                                        Hủy đơn hàng
+                                        Cancel Order
                                     </button>
                                 )}
                                 {order.status === "DELIVERED" && (
@@ -255,12 +255,12 @@ const OrderDetail = () => {
                                         disabled={confirming}
                                         onClick={handleConfirmReceived}
                                     >
-                                        {confirming ? "Đang xác nhận..." : "Đã nhận hàng"}
+                                        {confirming ? "Confirming receipt..." : "Mark as Received"}
                                     </button>
                                 )}
                             </div>
                             <div className="od-total-row">
-                                <span className="od-total-label">Tổng cộng</span>
+                                <span className="od-total-label">Total</span>
                                 <span className="od-total-value">
                                     {order.totalPrice?.toLocaleString()} ₫
                                 </span>
@@ -277,15 +277,15 @@ const OrderDetail = () => {
                     onClick={() => { if (!cancelling) setCancelModal({ open: false, note: "" }); }}
                 >
                     <div className="od-modal" onClick={(e) => e.stopPropagation()}>
-                        <h3>Xác nhận hủy đơn</h3>
+                        <h3>Confirm Order Cancellation</h3>
                         <p>
-                            Bạn có chắc muốn hủy đơn hàng{" "}
-                            <strong>#{order.orderCode}</strong> không?
+                            Are you sure you want to cancel order{" "}
+                            <strong>#{order.orderCode}</strong>?
                             <br />
-                            Hành động này không thể hoàn tác.
+                            This action cannot be undone.
                         </p>
                         <textarea
-                            placeholder="Lý do hủy đơn (không bắt buộc)..."
+                            placeholder="Reason for cancellation (optional)..."
                             value={cancelModal.note}
                             onChange={(e) =>
                                 setCancelModal((prev) => ({ ...prev, note: e.target.value }))
@@ -299,14 +299,14 @@ const OrderDetail = () => {
                                 onClick={() => setCancelModal({ open: false, note: "" })}
                                 disabled={cancelling}
                             >
-                                Quay lại
+                                Back
                             </button>
                             <button
                                 className="od-modal-confirm"
                                 onClick={handleConfirmCancel}
                                 disabled={cancelling}
                             >
-                                {cancelling ? "Đang hủy..." : "Xác nhận hủy"}
+                                {cancelling ? "Cancelling..." : "Confirm Cancellation"}
                             </button>
                         </div>
                     </div>
