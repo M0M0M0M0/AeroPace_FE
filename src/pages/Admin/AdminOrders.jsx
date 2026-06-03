@@ -107,7 +107,7 @@ const AdminOrders = () => {
       case "PENDING": return "Chờ thanh toán";
       case "PAID": return "Chờ giao hàng";
       case "SHIPPING": return "Đang giao";
-      case "DELIVERED": return "Đã giao - Chờ khách hàng xác nhận";
+      case "DELIVERED": return "Đã giao";
       case "COMPLETED": return "Hoàn thành";
       case "CANCELLED": return "Đã hủy";
       default: return order.status;

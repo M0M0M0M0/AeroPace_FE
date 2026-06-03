@@ -28,7 +28,6 @@ const PAYMENT_META = {
     STRIPE: { label: "Stripe", cls: "stripe" },
     COD: { label: "PayPal", cls: "paypal" },
 };
-
 const getNextStatus = (status) => {
     switch (status) {
         case "PENDING":
@@ -205,6 +204,68 @@ const CancelModal = ({ orderCode, onClose, onConfirm }) => {
         </div>
     );
 };
+// confirm modal khi chuyển trạng thái đơn hàng 
+const ConfirmStatusModal = ({
+    currentStatus,
+    nextStatus,
+    nextLabel,
+    onClose,
+    onConfirm,
+    loading
+}) => {
+    return (
+        <div className="aod-overlay" onClick={onClose}>
+            <div
+                className="aod-modal aod-modal--sm"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className="aod-modal-header">
+                    <div>
+                        <h3 className="aod-modal-title">
+                            Xác nhận chuyển trạng thái
+                        </h3>
+
+                        <p className="aod-modal-sub">
+                            {currentStatus} → {nextStatus}
+                        </p>
+                    </div>
+
+                    <button
+                        className="aod-modal-close"
+                        onClick={onClose}
+                    >
+                        <X size={18} />
+                    </button>
+                </div>
+
+                <p className="aod-confirm-desc">
+                    Bạn có chắc chắn muốn chuyển đơn hàng sang trạng thái
+                    <strong> {nextLabel}</strong>?
+                </p>
+
+                <div className="aod-modal-actions">
+                    <button
+                        className="aod-btn-ghost"
+                        onClick={onClose}
+                        disabled={loading}
+                    >
+                        Hủy
+                    </button>
+
+                    <button
+                        className="aod-btn-confirm-status"
+                        onClick={onConfirm}
+                        disabled={loading}
+                    >
+                        {loading
+                            ? "Đang cập nhật..."
+                            : "Xác nhận"}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 // ════════════════════════════════════════════════════════════════════════════════
 // MAIN PAGE
@@ -220,6 +281,8 @@ const AdminOrderDetail = () => {
     const [customerModal, setCustomerModal] = useState(false);
     const [cancelModal, setCancelModal] = useState(false);
     const [updating, setUpdating] = useState(false);
+    const [confirmStatusModal, setConfirmStatusModal] = useState(false);
+
 
     // ── Fetch ────────────────────────────────────────────────────────────────
     const fetchOrder = async () => {
@@ -241,12 +304,17 @@ const AdminOrderDetail = () => {
     const handleNextStatus = async () => {
         const next = getNextStatus(order.status);
         if (!next) return;
+
         setUpdating(true);
+
         try {
             await axios.put(
-                `${ADMIN}/orders/${orderCode}/status?status=${next}`, {},
+                `${ADMIN}/orders/${orderCode}/status?status=${next}`,
+                {},
                 { headers: authHeader() }
             );
+
+            setConfirmStatusModal(false);
             await fetchOrder();
         } catch (err) {
             console.error(err);
@@ -541,7 +609,7 @@ const AdminOrderDetail = () => {
                                 {nextStatus && nextMeta && (
                                     <button
                                         className="aod-btn-next-status"
-                                        onClick={handleNextStatus}
+                                        onClick={() => setConfirmStatusModal(true)}
                                         disabled={updating}
                                     >
                                         {updating ? "Đang cập nhật..." : (
@@ -580,6 +648,16 @@ const AdminOrderDetail = () => {
                     orderCode={order.orderCode}
                     onClose={() => setCancelModal(false)}
                     onConfirm={handleCancel}
+                />
+            )}
+            {confirmStatusModal && nextMeta && (
+                <ConfirmStatusModal
+                    currentStatus={statusMeta.label}
+                    nextStatus={nextStatus}
+                    nextLabel={nextMeta.label}
+                    loading={updating}
+                    onClose={() => setConfirmStatusModal(false)}
+                    onConfirm={handleNextStatus}
                 />
             )}
         </div>
