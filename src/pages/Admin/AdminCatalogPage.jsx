@@ -101,7 +101,7 @@ const AdminCatalogPage = () => {
   const handleBrandSubmit = async () => {
     setBrandError("");
     if (!brandModal.data.name.trim()) {
-      setBrandError("Tên brand không được để trống.");
+      setBrandError("Brand name is required.");
       return;
     }
     try {
@@ -117,7 +117,7 @@ const AdminCatalogPage = () => {
       await fetchBrands();
       closeBrandModal();
     } catch (err) {
-      const msg = err.response?.data?.message || "Đã có lỗi xảy ra.";
+      const msg = err.response?.data?.message || "An error occurred.";
       setBrandError(msg);
     }
   };
@@ -157,7 +157,7 @@ const AdminCatalogPage = () => {
   const handleCatSubmit = async () => {
     setCatError("");
     if (!catModal.data.name.trim()) {
-      setCatError("Tên category không được để trống.");
+      setCatError("Category name is required.");
       return;
     }
     try {
@@ -173,7 +173,7 @@ const AdminCatalogPage = () => {
       await fetchCategories();
       closeCatModal();
     } catch (err) {
-      const msg = err.response?.data?.message || "Đã có lỗi xảy ra.";
+      const msg = err.response?.data?.message || "An error occurred.";
       setCatError(msg);
     }
   };
@@ -210,8 +210,8 @@ const AdminCatalogPage = () => {
       {/* Header */}
       <div className="cp-header">
         <div>
-          <h1 className="cp-title">Danh mục & Thương hiệu</h1>
-          <p className="cp-subtitle">Quản lý brand và category sản phẩm</p>
+          <h1 className="cp-title">Categories & Brands</h1>
+          <p className="cp-subtitle">Manage product brands and categories</p>
         </div>
       </div>
 
@@ -223,7 +223,7 @@ const AdminCatalogPage = () => {
           title="Chuyển sang tab Thương hiệu"
         >
           <span className="cp-stat-num">{brands.length}</span>
-          <span className="cp-stat-label">Tổng brand</span>
+          <span className="cp-stat-label">Total Brands</span>
         </div>
         <div
           className={`cp-stat-card cp-stat-card--clickable ${tab === "category" ? "cp-stat-card--active" : ""}`}
@@ -231,7 +231,7 @@ const AdminCatalogPage = () => {
           title="Chuyển sang tab Danh mục"
         >
           <span className="cp-stat-num">{categories.length}</span>
-          <span className="cp-stat-label">Tổng category</span>
+          <span className="cp-stat-label">Total Categories</span>
         </div>
       </div>
 
@@ -241,13 +241,13 @@ const AdminCatalogPage = () => {
           className={`cp-tab ${tab === "brand" ? "active" : ""}`}
           onClick={() => setTab("brand")}
         >
-          Thương hiệu
+          Brand
         </button>
         <button
           className={`cp-tab ${tab === "category" ? "active" : ""}`}
           onClick={() => setTab("category")}
         >
-          Danh mục
+          Category
         </button>
       </div>
 
@@ -257,24 +257,24 @@ const AdminCatalogPage = () => {
           <div className="cp-toolbar">
             <input
               className="cp-search"
-              placeholder="Tìm theo ID..."
+              placeholder="Search by ID..."
               value={brandIdSearch}
               onChange={(e) => setBrandIdSearch(e.target.value)}
               style={{ maxWidth: 140 }}
             />
             <input
               className="cp-search"
-              placeholder="Tìm brand..."
+              placeholder="Search brands..."
               value={brandSearch}
               onChange={(e) => setBrandSearch(e.target.value)}
             />
             <button className="cp-btn-add" onClick={openAddBrand}>
-              <Plus size={16} /> Thêm brand
+              <Plus size={16} /> Add Brand
             </button>
           </div>
 
           {brandLoading ? (
-            <div className="cp-loading">Đang tải...</div>
+            <div className="cp-loading">Loading...</div>
           ) : (
             <div className="cp-table-wrap">
               <table className="cp-table">
@@ -282,15 +282,15 @@ const AdminCatalogPage = () => {
                   <tr>
                     <th>#</th>
                     <th>ID</th>
-                    <th>Tên thương hiệu</th>
-                    <th>Thao tác</th>
+                    <th>Brand Name</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredBrands.length === 0 ? (
                     <tr>
                       <td colSpan={4} className="cp-empty-row">
-                        Không tìm thấy brand nào.
+                        No brands found.
                       </td>
                     </tr>
                   ) : (
@@ -339,24 +339,24 @@ const AdminCatalogPage = () => {
           <div className="cp-toolbar">
             <input
               className="cp-search"
-              placeholder="Tìm theo ID..."
+              placeholder="Search by ID..."
               value={catIdSearch}
               onChange={(e) => setCatIdSearch(e.target.value)}
               style={{ maxWidth: 140 }}
             />
             <input
               className="cp-search"
-              placeholder="Tìm category..."
+              placeholder="Search categories..."
               value={catSearch}
               onChange={(e) => setCatSearch(e.target.value)}
             />
             <button className="cp-btn-add" onClick={openAddCat}>
-              <Plus size={16} /> Thêm category
+              <Plus size={16} /> Add Category
             </button>
           </div>
 
           {catLoading ? (
-            <div className="cp-loading">Đang tải...</div>
+            <div className="cp-loading">Loading...</div>
           ) : (
             <div className="cp-table-wrap">
               <table className="cp-table">
@@ -364,16 +364,16 @@ const AdminCatalogPage = () => {
                   <tr>
                     <th>#</th>
                     <th>ID</th>
-                    <th>Tên danh mục</th>
-                    <th>Mô tả</th>
-                    <th>Thao tác</th>
+                    <th>Category Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredCats.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="cp-empty-row">
-                        Không tìm thấy category nào.
+                        No categories found.
                       </td>
                     </tr>
                   ) : (
@@ -426,7 +426,7 @@ const AdminCatalogPage = () => {
             <div className="cp-modal-header">
               <div>
                 <h3 className="cp-modal-title">
-                  {brandModal.mode === "add" ? "Thêm brand mới" : "Chỉnh sửa brand"}
+                  {brandModal.mode === "add" ? "Add New Brand" : "Edit Brand"}
                 </h3>
                 <p className="cp-modal-sub">
                   {brandModal.mode === "edit" && `ID: #${brandModal.id}`}
@@ -438,10 +438,10 @@ const AdminCatalogPage = () => {
             </div>
 
             <div className="cp-form-row">
-              <label>Tên thương hiệu *</label>
+              <label>Brand Name *</label>
               <input
                 type="text"
-                placeholder="Nhập tên brand..."
+                placeholder="Enter brand name..."
                 value={brandModal.data.name}
                 onChange={(e) =>
                   setBrandModal({
@@ -457,10 +457,10 @@ const AdminCatalogPage = () => {
 
             <div className="cp-modal-actions">
               <button className="cp-btn-cancel" onClick={closeBrandModal}>
-                Hủy
+                Cancel
               </button>
               <button className="cp-btn-save" onClick={handleBrandSubmit}>
-                {brandModal.mode === "add" ? "Thêm mới" : "Lưu thay đổi"}
+                {brandModal.mode === "add" ? "Add New" : "Save Changes"}
               </button>
             </div>
           </div>
@@ -474,7 +474,7 @@ const AdminCatalogPage = () => {
             <div className="cp-modal-header">
               <div>
                 <h3 className="cp-modal-title">
-                  {catModal.mode === "add" ? "Thêm category mới" : "Chỉnh sửa category"}
+                  {catModal.mode === "add" ? "Add New Category" : "Edit Category"}
                 </h3>
                 <p className="cp-modal-sub">
                   {catModal.mode === "edit" && `ID: #${catModal.id}`}
@@ -486,10 +486,10 @@ const AdminCatalogPage = () => {
             </div>
 
             <div className="cp-form-row">
-              <label>Tên danh mục *</label>
+              <label>Category Name *</label>
               <input
                 type="text"
-                placeholder="Nhập tên category..."
+                placeholder="Enter category name..."
                 value={catModal.data.name}
                 onChange={(e) =>
                   setCatModal({
@@ -501,9 +501,9 @@ const AdminCatalogPage = () => {
             </div>
 
             <div className="cp-form-row">
-              <label>Mô tả</label>
+              <label>Description</label>
               <textarea
-                placeholder="Nhập mô tả (tuỳ chọn)..."
+                placeholder="Enter description (optional)..."
                 value={catModal.data.description}
                 rows={3}
                 onChange={(e) =>
@@ -519,10 +519,10 @@ const AdminCatalogPage = () => {
 
             <div className="cp-modal-actions">
               <button className="cp-btn-cancel" onClick={closeCatModal}>
-                Hủy
+                Cancel
               </button>
               <button className="cp-btn-save" onClick={handleCatSubmit}>
-                {catModal.mode === "add" ? "Thêm mới" : "Lưu thay đổi"}
+                {catModal.mode === "add" ? "Add New" : "Save Changes"}
               </button>
             </div>
           </div>
@@ -539,7 +539,7 @@ const AdminCatalogPage = () => {
         >
           <div className="cp-modal cp-modal-delete" onClick={(e) => e.stopPropagation()}>
             <div className="cp-modal-header">
-              <h3 className="cp-modal-title">Xác nhận xóa</h3>
+              <h3 className="cp-modal-title">Confirm Deletion</h3>
               <button
                 className="cp-modal-close"
                 onClick={() =>
@@ -550,9 +550,8 @@ const AdminCatalogPage = () => {
               </button>
             </div>
             <p className="cp-delete-msg">
-              Bạn có chắc muốn xóa brand{" "}
-              <strong>"{brandDeleteModal.name}"</strong>? Hành động này không
-              thể hoàn tác.
+              Are you sure you want to delete the brand{" "}
+              <strong>"{brandDeleteModal.name}"</strong>? This action cannot be undone.
             </p>
             <div className="cp-modal-actions">
               <button
@@ -561,10 +560,10 @@ const AdminCatalogPage = () => {
                   setBrandDeleteModal({ open: false, id: null, name: "" })
                 }
               >
-                Hủy
+                Cancel
               </button>
               <button className="cp-btn-danger" onClick={handleBrandDelete}>
-                Xóa
+                Delete
               </button>
             </div>
           </div>
@@ -581,7 +580,7 @@ const AdminCatalogPage = () => {
         >
           <div className="cp-modal cp-modal-delete" onClick={(e) => e.stopPropagation()}>
             <div className="cp-modal-header">
-              <h3 className="cp-modal-title">Xác nhận xóa</h3>
+              <h3 className="cp-modal-title">Confirm Deletion</h3>
               <button
                 className="cp-modal-close"
                 onClick={() =>
@@ -592,9 +591,8 @@ const AdminCatalogPage = () => {
               </button>
             </div>
             <p className="cp-delete-msg">
-              Bạn có chắc muốn xóa category{" "}
-              <strong>"{catDeleteModal.name}"</strong>? Hành động này không thể
-              hoàn tác.
+              Are you sure you want to delete the category{" "}
+              <strong>"{catDeleteModal.name}"</strong>? This action cannot be undone.
             </p>
             <div className="cp-modal-actions">
               <button
@@ -603,10 +601,10 @@ const AdminCatalogPage = () => {
                   setCatDeleteModal({ open: false, id: null, name: "" })
                 }
               >
-                Hủy
+                Cancel
               </button>
               <button className="cp-btn-danger" onClick={handleCatDelete}>
-                Xóa
+                Delete
               </button>
             </div>
           </div>
