@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         setUser(null);
-        alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!");
+        alert("Log in session has expired. Please log in again!");
       } else {
         setUser(JSON.parse(savedUser));
       }
