@@ -765,3 +765,36 @@
 .aod-btn-danger:hover {
     opacity: 0.85;
 }
+
+.aod-confirm-desc {
+    font-size: 0.875rem;
+    color: #888;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.aod-confirm-desc strong {
+    color: #e5e4e4;
+    font-weight: 600;
+}
+
+.aod-btn-confirm-status {
+    background: #e5e4e4;
+    color: #000;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 700;
+    transition: opacity 0.2s;
+}
+
+.aod-btn-confirm-status:hover:not(:disabled) {
+    opacity: 0.85;
+}
+
+.aod-btn-confirm-status:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
