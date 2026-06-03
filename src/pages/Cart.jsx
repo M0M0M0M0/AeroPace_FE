@@ -59,7 +59,7 @@ const Cart = () => {
     return (
       <div className="cart-empty">
         <p>Cart is empty.</p>
-        <button className="cart-btn" onClick={() => navigate("/products")}>
+        <button className="btn" onClick={() => navigate("/products")}>
           Back to Store
         </button>
       </div>
