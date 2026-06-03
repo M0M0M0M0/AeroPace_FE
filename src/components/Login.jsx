@@ -14,12 +14,12 @@ const LockedAccountModal = ({ onClose }) => (
       <div className="login-modal-icon">
         <ShieldX size={40} color="#e53e3e" />
       </div>
-      <h3 className="login-modal-title">Tài khoản bị khóa</h3>
+      <h3 className="login-modal-title">Account Locked</h3>
       <p className="login-modal-message">
-        Tài khoản của bạn hiện đang bị khóa. Vui lòng liên hệ nhân viên để được hỗ trợ.
+        Your account is currently locked. Please contact staff for assistance.
       </p>
       <button className="login-modal-btn" onClick={onClose}>
-        Đã hiểu
+        Understood
       </button>
     </div>
   </div>
@@ -63,7 +63,7 @@ const Login = () => {
     } catch (error) {
       setMessage({
         type: "error",
-        text: error.response?.data?.message || "Đăng nhập thất bại!",
+        text: error.response?.data?.message || "Login failed!",
       });
     }
   };
@@ -76,8 +76,8 @@ const Login = () => {
 
       <div className="login-card">
         <div className="login-header">
-          <h2>Chào mừng trở lại</h2>
-          <p>Đăng nhập để tiếp tục trải nghiệm AEROPACE</p>
+          <h2>Welcome Back</h2>
+          <p>Sign in to continue your AEROPACE experience</p>
         </div>
         {message.text && (
           <div className={`modern-alert alert-${message.type}`}>
@@ -94,7 +94,7 @@ const Login = () => {
             <Mail className="input-icon" size={20} />
             <input
               type="email"
-              placeholder="Email của bạn"
+              placeholder="Your Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -104,7 +104,7 @@ const Login = () => {
             <Lock className="input-icon" size={20} />
             <input
               type="password"
-              placeholder="Mật khẩu"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -115,17 +115,17 @@ const Login = () => {
               <input type="checkbox" /> Ghi nhớ tôi
             </label> */}
             <a href="#" className="forgot-password">
-              Quên mật khẩu?
+              Forgot Password?
             </a>
           </div>
           <button type="submit" className="login-submit-btn">
             <LogIn size={20} />
-            <span>Đăng nhập</span>
+            <span>Sign In</span>
           </button>
         </form>
         <div className="login-footer">
           <p>
-            Chưa có tài khoản? <Link to="/register">Đăng ký ngay</Link>
+            Don't have an account? <Link to="/register">Sign up now</Link>
           </p>
         </div>
       </div>
