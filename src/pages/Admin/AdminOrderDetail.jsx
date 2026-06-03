@@ -16,12 +16,12 @@ const authHeader = () => ({
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const STATUS_META = {
-    PAID: { label: "Đã thanh toán", cls: "paid", icon: <CheckCircle size={12} /> },
-    PENDING: { label: "Chờ xử lý", cls: "pending", icon: <Clock size={12} /> },
-    SHIPPING: { label: "Đang giao", cls: "shipping", icon: <Truck size={12} /> },
-    DELIVERED: { label: "Đã giao - Chờ khách hàng xác nhận", cls: "delivered", icon: <CheckCircle size={12} /> },
-    CANCELLED: { label: "Đã hủy", cls: "cancelled", icon: <XCircle size={12} /> },
-    COMPLETED: { label: "Hoàn tất", cls: "completed", icon: <CheckCircle size={12} /> },
+    PAID: { label: "Paid", cls: "paid", icon: <CheckCircle size={12} /> },
+    PENDING: { label: "Pending", cls: "pending", icon: <Clock size={12} /> },
+    SHIPPING: { label: "Shipping", cls: "shipping", icon: <Truck size={12} /> },
+    DELIVERED: { label: "Delivered", cls: "delivered", icon: <CheckCircle size={12} /> },
+    CANCELLED: { label: "Cancelled", cls: "cancelled", icon: <XCircle size={12} /> },
+    COMPLETED: { label: "Completed", cls: "completed", icon: <CheckCircle size={12} /> },
 };
 
 const PAYMENT_META = {
@@ -57,7 +57,7 @@ const ProductDetailModal = ({ product, onClose }) => {
             <div className="aod-modal aod-modal--product" onClick={(e) => e.stopPropagation()}>
                 <div className="aod-modal-header">
                     <div>
-                        <h3 className="aod-modal-title">Chi tiết sản phẩm</h3>
+                        <h3 className="aod-modal-title">Product Details</h3>
                         <p className="aod-modal-sub">#{product.productId} · {product.productName}</p>
                     </div>
                     <button className="aod-modal-close" onClick={onClose}><X size={18} /></button>
@@ -69,12 +69,12 @@ const ProductDetailModal = ({ product, onClose }) => {
                 )}
                 <div className="aod-product-fields">
                     <div className="aod-field-row">
-                        <span className="aod-field-label">Tên sản phẩm</span>
+                        <span className="aod-field-label">Product Name</span>
                         <span className="aod-field-value">{product.productName}</span>
                     </div>
                     {product.variantName && (
                         <div className="aod-field-row">
-                            <span className="aod-field-label">Phân loại</span>
+                            <span className="aod-field-label">Variant</span>
                             <span className="aod-field-value">{product.variantName}</span>
                         </div>
                     )}
@@ -85,20 +85,20 @@ const ProductDetailModal = ({ product, onClose }) => {
                         </div>
                     )}
                     <div className="aod-field-row">
-                        <span className="aod-field-label">Đơn giá</span>
+                        <span className="aod-field-label">Unit Price</span>
                         <span className="aod-field-value aod-field-value--price">{fmt(product.price)}</span>
                     </div>
                     <div className="aod-field-row">
-                        <span className="aod-field-label">Số lượng</span>
+                        <span className="aod-field-label">Quantity</span>
                         <span className="aod-field-value">x{product.quantity}</span>
                     </div>
                     <div className="aod-field-row aod-field-row--total">
-                        <span className="aod-field-label">Thành tiền</span>
+                        <span className="aod-field-label">Total</span>
                         <span className="aod-field-value aod-field-value--price">{fmt(product.price * product.quantity)}</span>
                     </div>
                 </div>
                 <div className="aod-modal-actions">
-                    <button className="aod-btn-ghost" onClick={onClose}>Đóng</button>
+                    <button className="aod-btn-ghost" onClick={onClose}>Close</button>
                 </div>
             </div>
         </div>
@@ -129,26 +129,26 @@ const CustomerModal = ({ userId, username, onClose }) => {
             <div className="aod-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="aod-modal-header">
                     <div>
-                        <h3 className="aod-modal-title">Thông tin khách hàng</h3>
+                        <h3 className="aod-modal-title">Customer Information</h3>
                         <p className="aod-modal-sub">@{username}</p>
                     </div>
                     <button className="aod-modal-close" onClick={onClose}><X size={18} /></button>
                 </div>
                 {loading ? (
-                    <div className="aod-modal-loading">Đang tải...</div>
+                    <div className="aod-modal-loading">Loading...</div>
                 ) : !data ? (
-                    <p style={{ color: "#555", fontSize: "0.875rem" }}>Không tải được thông tin.</p>
+                    <p style={{ color: "#555", fontSize: "0.875rem" }}>Failed to load information.</p>
                 ) : (
                     <div className="aod-product-fields">
                         {[
                             ["Username", data.username],
                             ["Email", data.email],
-                            ["Họ tên", data.fullName],
-                            ["Số điện thoại", data.phoneNumber],
-                            ["Địa chỉ", data.address],
-                            ["Giới tính", data.gender === "male" ? "Nam" : data.gender === "female" ? "Nữ" : null],
-                            ["Ngày sinh", data.dob],
-                            ["Ngày tạo TK", data.createdAt ? new Date(data.createdAt).toLocaleString("vi-VN") : null],
+                            ["Full Name", data.fullName],
+                            ["Phone Number", data.phoneNumber],
+                            ["Address", data.address],
+                            ["Gender", data.gender === "male" ? "Male" : data.gender === "female" ? "Female" : null],
+                            ["Date of Birth", data.dob],
+                            ["Account Creation Date", data.createdAt ? new Date(data.createdAt).toLocaleString("vi-VN") : null],
                         ].map(([label, val]) => (
                             <div key={label} className="aod-field-row">
                                 <span className="aod-field-label">{label}</span>
@@ -158,7 +158,7 @@ const CustomerModal = ({ userId, username, onClose }) => {
                     </div>
                 )}
                 <div className="aod-modal-actions">
-                    <button className="aod-btn-ghost" onClick={onClose}>Đóng</button>
+                    <button className="aod-btn-ghost" onClick={onClose}>Close</button>
                 </div>
             </div>
         </div>
@@ -171,7 +171,7 @@ const CancelModal = ({ orderCode, onClose, onConfirm }) => {
     const [error, setError] = useState("");
 
     const handleConfirm = () => {
-        if (!reason.trim()) { setError("Vui lòng nhập lý do hủy đơn."); return; }
+        if (!reason.trim()) { setError("Please enter the reason for canceling the order."); return; }
         onConfirm(reason.trim());
     };
 
@@ -180,16 +180,16 @@ const CancelModal = ({ orderCode, onClose, onConfirm }) => {
             <div className="aod-modal aod-modal--sm" onClick={(e) => e.stopPropagation()}>
                 <div className="aod-modal-header">
                     <div>
-                        <h3 className="aod-modal-title">Hủy đơn hàng</h3>
-                        <p className="aod-modal-sub">Đơn hàng #{orderCode}</p>
+                        <h3 className="aod-modal-title">Cancel Order</h3>
+                        <p className="aod-modal-sub">Order #{orderCode}</p>
                     </div>
                     <button className="aod-modal-close" onClick={onClose}><X size={18} /></button>
                 </div>
-                <p className="aod-cancel-desc">Hành động này không thể hoàn tác. Vui lòng nhập lý do hủy đơn.</p>
+                <p className="aod-cancel-desc">This action cannot be undone. Please enter the reason for canceling the order.</p>
                 <div className="aod-form-row">
-                    <label>Lý do hủy *</label>
+                    <label>Reason for Cancellation *</label>
                     <textarea
-                        placeholder="VD: Khách yêu cầu hủy, hàng hết hàng..."
+                        placeholder="E.g.: Customer requested cancellation, item out of stock..."
                         value={reason}
                         rows={3}
                         onChange={(e) => { setReason(e.target.value); setError(""); }}
@@ -197,8 +197,8 @@ const CancelModal = ({ orderCode, onClose, onConfirm }) => {
                 </div>
                 {error && <p className="aod-form-error">{error}</p>}
                 <div className="aod-modal-actions">
-                    <button className="aod-btn-ghost" onClick={onClose}>Bỏ qua</button>
-                    <button className="aod-btn-danger" onClick={handleConfirm}>Xác nhận hủy</button>
+                    <button className="aod-btn-ghost" onClick={onClose}>Close</button>
+                    <button className="aod-btn-danger" onClick={handleConfirm}>Confirm Cancellation</button>
                 </div>
             </div>
         </div>
@@ -318,7 +318,7 @@ const AdminOrderDetail = () => {
             await fetchOrder();
         } catch (err) {
             console.error(err);
-            alert("Cập nhật thất bại!");
+            alert("Failed to update status!");
         } finally {
             setUpdating(false);
         }
@@ -337,7 +337,7 @@ const AdminOrderDetail = () => {
             await fetchOrder();
         } catch (err) {
             console.error(err);
-            alert("Hủy thất bại!");
+            alert("Failed to cancel order!");
         } finally {
             setUpdating(false);
         }
@@ -345,10 +345,10 @@ const AdminOrderDetail = () => {
 
     // ── Render ───────────────────────────────────────────────────────────────
     if (loading) {
-        return <div className="aod-page"><div className="aod-loading">Đang tải chi tiết đơn hàng...</div></div>;
+        return <div className="aod-page"><div className="aod-loading">Loading order details...</div></div>;
     }
     if (!order) {
-        return <div className="aod-page"><div className="aod-loading">Không tìm thấy đơn hàng.</div></div>;
+        return <div className="aod-page"><div className="aod-loading">Order not found.</div></div>;
     }
 
     const statusMeta = STATUS_META[order.status] || {};
@@ -371,7 +371,7 @@ const AdminOrderDetail = () => {
             {/* ── Header ─────────────────────────────────────────────────────── */}
             <div className="aod-header">
                 <div className="aod-header-left">
-                    <h1 className="aod-title">Chi tiết đơn hàng</h1>
+                    <h1 className="aod-title">Order Details</h1>
                     <div className="aod-header-meta">
                         <span className="aod-order-code">⊕ {order.orderCode}</span>
                         <span className={`aod-badge aod-badge--${statusMeta.cls}`}>
@@ -381,10 +381,10 @@ const AdminOrderDetail = () => {
                             <CreditCard size={12} /> {paymentMeta.label}
                         </span>
                     </div>
-                    <p className="aod-created">Đặt lúc: {fmtDate(order.createdAt)}</p>
+                    <p className="aod-created">Ordered at: {fmtDate(order.createdAt)}</p>
                 </div>
                 <button className="aod-back-btn" onClick={() => navigate("/admin/orders")}>
-                    <ArrowLeft size={16} /> Quay lại
+                    <ArrowLeft size={16} /> Back
                 </button>
             </div>
 
@@ -397,7 +397,7 @@ const AdminOrderDetail = () => {
                     {/* Sản phẩm */}
                     <div className="aod-card">
                         <h2 className="aod-card-title">
-                            <Package size={14} /> SẢN PHẨM ({order.items?.length || 0})
+                            <Package size={14} /> PRODUCTS ({order.items?.length || 0})
                         </h2>
                         <div className="aod-items">
                             {order.items?.map((item, idx) => (
@@ -429,12 +429,12 @@ const AdminOrderDetail = () => {
                         {/* Pricing summary */}
                         <div className="aod-pricing">
                             <div className="aod-pricing-row">
-                                <span>Tạm tính</span>
+                                <span>Subtotal</span>
                                 <span>{fmt(subTotal)}</span>
                             </div>
                             {shipFee >= 0 && (
                                 <div className="aod-pricing-row">
-                                    <span>Phí ship</span>
+                                    <span>Shipping Fee</span>
                                     <span>{fmt(shipFee)}</span>
                                 </div>
                             )}
@@ -445,7 +445,7 @@ const AdminOrderDetail = () => {
                                 </div>
                             )}
                             <div className="aod-pricing-row aod-pricing-row--total">
-                                <span>Tổng cộng</span>
+                                <span>Total</span>
                                 <span className="aod-total-price">{fmt(total)}</span>
                             </div>
                         </div>
@@ -453,7 +453,7 @@ const AdminOrderDetail = () => {
                     {/* Thanh toán */}
                     <div className="aod-card">
                         <h2 className="aod-card-title">
-                            <CreditCard size={14} /> THANH TOÁN
+                            <CreditCard size={14} /> PAYMENT
                         </h2>
 
                         <div className="aod-info-list">
@@ -465,7 +465,7 @@ const AdminOrderDetail = () => {
 
                                 <div className="aod-info-content">
                                     <span className="aod-info-label">
-                                        TRẠNG THÁI THANH TOÁN
+                                        PAYMENT STATUS
                                     </span>
 
                                     <span className="aod-info-value">
@@ -512,7 +512,7 @@ const AdminOrderDetail = () => {
                     {/* Ghi chú */}
                     <div className="aod-card aod-card--note">
                         <h2 className="aod-card-title">
-                            <FileText size={14} /> GHI CHÚ ĐƠN HÀNG
+                            <FileText size={14} /> ORDER NOTE
                         </h2>
 
                         <p className="aod-note-text">
@@ -524,12 +524,12 @@ const AdminOrderDetail = () => {
                     {hasCancelSection && (
                         <div className="aod-card aod-card--cancel-info">
                             <h2 className="aod-card-title aod-card-title--warn">
-                                <AlertTriangle size={14} /> LÝ DO HỦY / HOÀN TIỀN
+                                <AlertTriangle size={14} /> CANCEL / REFUND REASON
                             </h2>
 
                             {order.cancelReason && (
                                 <div className="aod-cancel-block">
-                                    <p className="aod-cancel-block-label">LÝ DO HỦY</p>
+                                    <p className="aod-cancel-block-label">CANCEL REASON</p>
                                     <div className="aod-cancel-tag aod-cancel-tag--red">
                                         <XCircle size={13} /> {order.cancelReason}
                                     </div>
@@ -538,7 +538,7 @@ const AdminOrderDetail = () => {
 
                             {order.cancelNote && (
                                 <div className="aod-cancel-block">
-                                    <p className="aod-cancel-block-label">GHI CHÚ HỦY</p>
+                                    <p className="aod-cancel-block-label">CANCEL NOTE</p>
                                     <div className="aod-cancel-tag aod-cancel-tag--red-soft">
                                         {order.cancelNote}
                                     </div>
@@ -547,7 +547,7 @@ const AdminOrderDetail = () => {
 
                             {order.refundReason && (
                                 <div className="aod-cancel-block">
-                                    <p className="aod-cancel-block-label">LÝ DO HOÀN TIỀN</p>
+                                    <p className="aod-cancel-block-label">REFUND REASON</p>
                                     <div className="aod-cancel-tag aod-cancel-tag--yellow">
                                         <RefreshCw size={13} /> {order.refundReason}
                                     </div>
@@ -562,26 +562,26 @@ const AdminOrderDetail = () => {
 
                     {/* Người nhận */}
                     <div className="aod-card">
-                        <h2 className="aod-card-title"><User size={14} /> NGƯỜI NHẬN</h2>
+                        <h2 className="aod-card-title"><User size={14} /> RECEIVER</h2>
                         <div className="aod-info-list">
                             <div className="aod-info-row">
                                 <span className="aod-info-icon"><User size={13} /></span>
                                 <div className="aod-info-content">
-                                    <span className="aod-info-label">TÊN NGƯỜI NHẬN</span>
+                                    <span className="aod-info-label">RECEIVER NAME</span>
                                     <span className="aod-info-value">{order.receiverName || "—"}</span>
                                 </div>
                             </div>
                             <div className="aod-info-row">
                                 <span className="aod-info-icon"><Phone size={13} /></span>
                                 <div className="aod-info-content">
-                                    <span className="aod-info-label">SỐ ĐIỆN THOẠI</span>
+                                    <span className="aod-info-label">PHONE NUMBER</span>
                                     <span className="aod-info-value">{order.phoneNumber || "—"}</span>
                                 </div>
                             </div>
                             <div className="aod-info-row">
                                 <span className="aod-info-icon"><MapPin size={13} /></span>
                                 <div className="aod-info-content">
-                                    <span className="aod-info-label">ĐỊA CHỈ GIAO HÀNG</span>
+                                    <span className="aod-info-label">SHIPPING ADDRESS</span>
                                     <span className="aod-info-value">
                                         {[order.shippingAddress, order.ward, order.district, order.province]
                                             .filter(Boolean).join(", ") || "—"}
@@ -595,7 +595,7 @@ const AdminOrderDetail = () => {
                             className="aod-btn-view-account"
                             onClick={() => setCustomerModal(true)}
                         >
-                            <User size={14} /> Xem thông tin người đặt<ExternalLink size={13} />
+                            <User size={14} /> View Customer Information<ExternalLink size={13} />
                         </button>
                     </div>
 
@@ -604,7 +604,7 @@ const AdminOrderDetail = () => {
                     {/* Thao tác */}
                     {(nextStatus || canCancel(order.status)) && (
                         <div className="aod-card aod-card--actions">
-                            <h2 className="aod-card-title">THAO TÁC</h2>
+                            <h2 className="aod-card-title">ACTIONS</h2>
                             <div className="aod-action-btns">
                                 {nextStatus && nextMeta && (
                                     <button
@@ -612,8 +612,8 @@ const AdminOrderDetail = () => {
                                         onClick={() => setConfirmStatusModal(true)}
                                         disabled={updating}
                                     >
-                                        {updating ? "Đang cập nhật..." : (
-                                            <>{nextMeta.icon} Chuyển sang: {nextMeta.label}</>
+                                        {updating ? "Updating..." : (
+                                            <>{nextMeta.icon} Change to: {nextMeta.label}</>
                                         )}
                                     </button>
                                 )}
@@ -623,7 +623,7 @@ const AdminOrderDetail = () => {
                                         onClick={() => setCancelModal(true)}
                                         disabled={updating}
                                     >
-                                        <XCircle size={14} /> Hủy đơn hàng
+                                        <XCircle size={14} /> Cancel Order
                                     </button>
                                 )}
                             </div>
