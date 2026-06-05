@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Edit2, Plus, X, Search, Eye, Trophy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -11,10 +11,10 @@ const authHeader = () => ({
 
 // ── Status config ─────────────────────────────────────────────
 const STATUS_CONFIG = {
-  ACTIVE:   { label: "Active",  color: "#16a34a", bg: "#dcfce7" },
-  DRAFT:    { label: "Draft",      color: "#ca8a04", bg: "#fef9c3" },
-  ARCHIVED: { label: "Archived",  color: "#6b7280", bg: "#f3f4f6" },
-  DELETED:  { label: "Deleted",   color: "#dc2626", bg: "#fee2e2" },
+  ACTIVE: { label: "Active", color: "#16a34a", bg: "#dcfce7" },
+  DRAFT: { label: "Draft", color: "#ca8a04", bg: "#fef9c3" },
+  ARCHIVED: { label: "Archived", color: "#6b7280", bg: "#f3f4f6" },
+  DELETED: { label: "Deleted", color: "#dc2626", bg: "#fee2e2" },
 };
 
 const StatusBadge = ({ status }) => {
@@ -30,6 +30,7 @@ const StatusBadge = ({ status }) => {
   );
 };
 
+
 // ── Best seller presets ───────────────────────────────────────
 const PRESETS = [
   { label: "This Week", getValue: () => { const now = new Date(); const day = now.getDay() || 7; const mon = new Date(now); mon.setDate(now.getDate() - day + 1); return { dateFrom: mon.toISOString().slice(0, 10), dateTo: now.toISOString().slice(0, 10) }; } },
@@ -41,73 +42,96 @@ const PRESETS = [
 const AdminProducts = () => {
   const navigate = useNavigate();
 
-  const [products, setProducts]     = useState([]);
-  const [brands, setBrands]         = useState([]);
+  const [products, setProducts] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading]       = useState(true);
+  const [loading, setLoading] = useState(true);
+
+  // ── Delay api call ───────────────────────────────────────
+  const debounceRef = useRef(null);
+
+  const setFilterDebounced = (setter) => (e) => {
+    const val = e.target.value;
+    setter(val);
+    setPage(0);
+  };
 
   // ── Pagination ────────────────────────────────────────────────
-  const [page, setPage]             = useState(0);
+  const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
   // ── Filter states ─────────────────────────────────────────────
-  const [filterName, setFilterName]           = useState("");
+  const [filterName, setFilterName] = useState("");
   const [filterProductId, setFilterProductId] = useState("");
   const [filterVariantId, setFilterVariantId] = useState("");
-  const [filterSku, setFilterSku]             = useState("");
-  const [filterBrand, setFilterBrand]         = useState([]);
-  const [filterCategory, setFilterCategory]   = useState([]);
-  const [filterPriceMin, setFilterPriceMin]   = useState("");
-  const [filterPriceMax, setFilterPriceMax]   = useState("");
-  const [filterStockMin, setFilterStockMin]   = useState("");
-  const [filterStockMax, setFilterStockMax]   = useState("");
-  const [filterStatus, setFilterStatus]       = useState([]);
+  const [filterSku, setFilterSku] = useState("");
+  const [filterBrand, setFilterBrand] = useState([]);
+  const [filterCategory, setFilterCategory] = useState([]);
+  const [filterPriceMin, setFilterPriceMin] = useState("");
+  const [filterPriceMax, setFilterPriceMax] = useState("");
+  const [filterStockMin, setFilterStockMin] = useState("");
+  const [filterStockMax, setFilterStockMax] = useState("");
+  const [filterStatus, setFilterStatus] = useState([]);
 
   // ── Best sellers mode ─────────────────────────────────────────
-  const [bsMode, setBsMode]         = useState(false);
-  const [bsPreset, setBsPreset]     = useState(null);
+  const [bsMode, setBsMode] = useState(false);
+  const [bsPreset, setBsPreset] = useState(null);
   const [bsDateFrom, setBsDateFrom] = useState("");
-  const [bsDateTo, setBsDateTo]     = useState("");
-  const [bsLimit, setBsLimit]       = useState(10);
-  const [bsLoading, setBsLoading]   = useState(false);
+  const [bsDateTo, setBsDateTo] = useState("");
+  const [bsLimit, setBsLimit] = useState(10);
+  const [bsLoading, setBsLoading] = useState(false);
   const [bestSellers, setBestSellers] = useState([]);
 
   // ── Fetch products ────────────────────────────────────────────
+  const abortRef = useRef(null);
   const fetchProducts = useCallback(async (currentPage = page) => {
+    if (abortRef.current) abortRef.current.abort();
+    abortRef.current = new AbortController();
+
     setLoading(true);
     try {
       const params = new URLSearchParams();
       params.append("page", currentPage);
-      if (filterName)       params.append("name", filterName);
-      if (filterProductId)  params.append("productId", filterProductId);
-      if (filterVariantId)  params.append("variantId", filterVariantId);
-      if (filterSku)        params.append("sku", filterSku);
+      if (filterName) params.append("name", filterName);
+      if (filterProductId) params.append("productId", filterProductId);
+      if (filterVariantId) params.append("variantId", filterVariantId);
+      if (filterSku) params.append("sku", filterSku);
       filterBrand.forEach((id) => params.append("brands", id));
       filterCategory.forEach((id) => params.append("categories", id));
-      if (filterPriceMin)   params.append("minPrice", filterPriceMin);
-      if (filterPriceMax)   params.append("maxPrice", filterPriceMax);
-      if (filterStockMin)   params.append("stockMin", filterStockMin);
-      if (filterStockMax)   params.append("stockMax", filterStockMax);
+      if (filterPriceMin) params.append("minPrice", filterPriceMin);
+      if (filterPriceMax) params.append("maxPrice", filterPriceMax);
+      if (filterStockMin) params.append("stockMin", filterStockMin);
+      if (filterStockMax) params.append("stockMax", filterStockMax);
       filterStatus.forEach((s) => params.append("statuses", s));
+      console.log("Fetching products with params:", params.toString());
 
-      const res = await axios.get(`${BASE}/products/filter?${params}`, { headers: authHeader() });
+      const res = await axios.get(`${BASE}/products/filter?${params}`, { headers: authHeader(), signal: abortRef.current.signal });
       setProducts(res.data.products || res.data.content || []);
       setTotalPages(res.data.totalPages || 1);
+      console.log(res.data);
     } catch (err) {
+      if (axios.isCancel(err)) return;
       console.error(err);
     } finally {
       setLoading(false);
     }
   }, [page, filterName, filterProductId, filterVariantId, filterSku, filterBrand, filterCategory,
-      filterPriceMin, filterPriceMax, filterStockMin, filterStockMax, filterStatus]);
+    filterPriceMin, filterPriceMax, filterStockMin, filterStockMax, filterStatus]);
 
-  const fetchBrands     = async () => { const r = await axios.get(`http://localhost:8080/api/v1/brands`); setBrands(r.data); };
+  const fetchBrands = async () => { const r = await axios.get(`http://localhost:8080/api/v1/brands`); setBrands(r.data); };
   const fetchCategories = async () => { const r = await axios.get(`http://localhost:8080/api/v1/categories`); setCategories(r.data); };
 
   useEffect(() => { fetchBrands(); fetchCategories(); }, []);
-  useEffect(() => { if (!bsMode) fetchProducts(page); },
-    [page, filterName, filterProductId, filterVariantId, filterSku, filterBrand, filterCategory,
-     filterPriceMin, filterPriceMax, filterStockMin, filterStockMax, filterStatus, bsMode]);
+  useEffect(() => {
+    if (bsMode) return;
+
+    const timer = setTimeout(() => {
+      fetchProducts(page);
+    }, 500); // chờ 500ms
+
+    return () => clearTimeout(timer);
+  }, [page, filterName, filterProductId, filterVariantId, filterSku, filterBrand, filterCategory,
+    filterPriceMin, filterPriceMax, filterStockMin, filterStockMax, filterStatus, bsMode]);
 
   // ── Best sellers ──────────────────────────────────────────────
   const fetchBestSellers = useCallback(async (dateFrom, dateTo, limit) => {
@@ -179,7 +203,7 @@ const AdminProducts = () => {
     variants?.filter((v) => !v.isDeleted).reduce((sum, v) => sum + (Number(v.stock) || 0), 0) || 0;
 
   const displayProducts = bsMode ? bestSellers : products;
-  const displayLoading  = bsMode ? bsLoading  : loading;
+  const displayLoading = bsMode ? bsLoading : loading;
 
   return (
     <div className="adp-page">
@@ -228,10 +252,12 @@ const AdminProducts = () => {
               {brands.filter((b) => !filterBrand.includes(b.id)).map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
             </select>
             <div className="adp-filter-tags">
-              {filterBrand.map((id) => { const b = brands.find((x) => x.id === id); return b ? (
-                <span key={id} className="adp-filter-tag">{b.name}
-                  <button onClick={() => toggleFilter(id, filterBrand, setFilterBrand)}>✕</button>
-                </span>) : null; })}
+              {filterBrand.map((id) => {
+                const b = brands.find((x) => x.id === id); return b ? (
+                  <span key={id} className="adp-filter-tag">{b.name}
+                    <button onClick={() => toggleFilter(id, filterBrand, setFilterBrand)}>✕</button>
+                  </span>) : null;
+              })}
             </div>
           </div>
           <div className="adp-filter-field">
@@ -242,10 +268,12 @@ const AdminProducts = () => {
               {categories.filter((c) => !filterCategory.includes(c.id)).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
             <div className="adp-filter-tags">
-              {filterCategory.map((id) => { const c = categories.find((x) => x.id === id); return c ? (
-                <span key={id} className="adp-filter-tag">{c.name}
-                  <button onClick={() => toggleFilter(id, filterCategory, setFilterCategory)}>✕</button>
-                </span>) : null; })}
+              {filterCategory.map((id) => {
+                const c = categories.find((x) => x.id === id); return c ? (
+                  <span key={id} className="adp-filter-tag">{c.name}
+                    <button onClick={() => toggleFilter(id, filterCategory, setFilterCategory)}>✕</button>
+                  </span>) : null;
+              })}
             </div>
           </div>
           <div className="adp-filter-field adp-filter-field--sm">
