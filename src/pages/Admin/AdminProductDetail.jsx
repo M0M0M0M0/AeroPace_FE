@@ -10,10 +10,10 @@ const authHeader = () => ({
 });
 
 const STATUS_CONFIG = {
-  ACTIVE:   { label: "Active",  color: "#16a34a", bg: "#dcfce7" },
-  DRAFT:    { label: "Draft",      color: "#ca8a04", bg: "#fef9c3" },
-  ARCHIVED: { label: "Archived",  color: "#6b7280", bg: "#f3f4f6" },
-  DELETED:  { label: "Deleted",   color: "#dc2626", bg: "#fee2e2" },
+  ACTIVE: { label: "Active", color: "#16a34a", bg: "#dcfce7" },
+  DRAFT: { label: "Draft", color: "#ca8a04", bg: "#fef9c3" },
+  ARCHIVED: { label: "Archived", color: "#6b7280", bg: "#f3f4f6" },
+  DELETED: { label: "Deleted", color: "#dc2626", bg: "#fee2e2" },
 };
 
 const StatusBadge = ({ status }) => {
@@ -38,23 +38,23 @@ const emptyForm = {
 };
 
 const AdminProductDetail = () => {
-  const { id }             = useParams();
-  const [searchParams]     = useSearchParams();
-  const navigate           = useNavigate();
+  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   // mode: "add" | "edit" | "view"
   const mode = id === "new" ? "add" : (searchParams.get("mode") || "edit");
   const isViewOnly = mode === "view";
 
-  const [form, setForm]             = useState(emptyForm);
+  const [form, setForm] = useState(emptyForm);
   const [initialForm, setInitialForm] = useState(null);
-  const [brands, setBrands]         = useState([]);
+  const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [saving, setSaving]         = useState(false);
-  const [loading, setLoading]       = useState(mode !== "add");
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(mode !== "add");
 
-  const [brandSearch, setBrandSearch]   = useState("");
-  const [catSearch, setCatSearch]       = useState("");
+  const [brandSearch, setBrandSearch] = useState("");
+  const [catSearch, setCatSearch] = useState("");
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   // ── Load brands & categories ──────────────────────────────────
@@ -66,6 +66,9 @@ const AdminProductDetail = () => {
       ]);
       setBrands(br.data);
       setCategories(ca.data);
+      if (mode === "add" && br.data.length > 0) {
+        setForm((prev) => ({ ...prev, brandId: br.data[0].id }));
+      }
     };
     fetchMeta();
   }, []);
@@ -78,7 +81,7 @@ const AdminProductDetail = () => {
       try {
         const res = await axios.get(`${BASE}/products/filter?productId=${id}&page=0`, { headers: authHeader() });
         const products = res.data.products || res.data.content || [];
-        const product  = products.find((p) => String(p.id) === String(id));
+        const product = products.find((p) => String(p.id) === String(id));
         if (!product) { alert("Không tìm thấy sản phẩm."); navigate("/admin/products"); return; }
 
         // Wait for brands to be loaded before resolving brandId
@@ -86,21 +89,21 @@ const AdminProductDetail = () => {
         const allBrands = brRes.data;
 
         const f = {
-          name:         product.name || "",
-          description:  product.description || "",
-          brandId:      allBrands.find((b) => b.name === product.brand)?.id || "",
-          slug:         product.slug || "",
-          status:       product.status || "DRAFT",
-          option1Name:  product.option1Name || "",
-          option2Name:  product.option2Name || "",
-          option3Name:  product.option3Name || "",
-          images:       product.images?.map((img) => ({ id: img.id, imageUrl: img.imageUrl, position: img.position })) || [],
-          variants:     product.variants?.map((v) => ({
+          name: product.name || "",
+          description: product.description || "",
+          brandId: allBrands.find((b) => b.name === product.brand)?.id || "",
+          slug: product.slug || "",
+          status: product.status || "DRAFT",
+          option1Name: product.option1Name || "",
+          option2Name: product.option2Name || "",
+          option3Name: product.option3Name || "",
+          images: product.images?.map((img) => ({ id: img.id, imageUrl: img.imageUrl, position: img.position })) || [],
+          variants: product.variants?.map((v) => ({
             id: v.id, option1Value: v.option1Value || "", option2Value: v.option2Value || "",
             option3Value: v.option3Value || "", price: v.price || "", stock: v.stock ?? "",
             sku: v.sku || "", isDeleted: v.isDeleted || false,
           })) || [{ option1Value: "", option2Value: "", option3Value: "", price: "", stock: "", sku: "" }],
-          categoryIds:  product.categories?.map((c) => c.id) || [],
+          categoryIds: product.categories?.map((c) => c.id) || [],
         };
         setForm(f);
         if (mode === "edit") setInitialForm(JSON.stringify(f));
@@ -126,7 +129,7 @@ const AdminProductDetail = () => {
   };
 
   // ── Variant / image helpers ───────────────────────────────────
-  const addVariant    = () => setForm({ ...form, variants: [...form.variants, { option1Value: "", option2Value: "", option3Value: "", price: "", stock: "", sku: "", isDeleted: false }] });
+  const addVariant = () => setForm({ ...form, variants: [...form.variants, { option1Value: "", option2Value: "", option3Value: "", price: "", stock: "", sku: "", isDeleted: false }] });
   const updateVariant = (idx, field, value) => { const u = [...form.variants]; u[idx] = { ...u[idx], [field]: value }; setForm({ ...form, variants: u }); };
   const removeVariant = async (idx) => {
     const v = form.variants[idx];
@@ -141,7 +144,7 @@ const AdminProductDetail = () => {
     }
   };
 
-  const addImage    = () => setForm({ ...form, images: [...form.images, { imageUrl: "", position: form.images.length + 1 }] });
+  const addImage = () => setForm({ ...form, images: [...form.images, { imageUrl: "", position: form.images.length + 1 }] });
   const removeImage = (idx) => setForm({ ...form, images: form.images.filter((_, i) => i !== idx) });
   const updateImage = (idx, value) => { const u = [...form.images]; u[idx] = { ...u[idx], imageUrl: value }; setForm({ ...form, images: u }); };
 
@@ -224,7 +227,7 @@ const AdminProductDetail = () => {
   };
 
   const filteredBrands = brands.filter((b) => b.name.toLowerCase().includes(brandSearch.toLowerCase()));
-  const filteredCats   = categories.filter((c) => c.name.toLowerCase().includes(catSearch.toLowerCase()));
+  const filteredCats = categories.filter((c) => c.name.toLowerCase().includes(catSearch.toLowerCase()));
 
   if (loading) {
     return (

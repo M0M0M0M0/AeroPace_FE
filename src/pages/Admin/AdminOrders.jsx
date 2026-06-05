@@ -107,7 +107,7 @@ const AdminOrders = () => {
       case "PENDING": return "PENDING";
       case "PAID": return "WAITING FOR DELIVERY";
       case "SHIPPING": return "SHIPPING";
-      case "DELIVERED": return "DELIVERED - WAITING FOR CONFIRMATION";
+      case "DELIVERED": return "DELIVERED";
       case "COMPLETED": return "COMPLETED";
       case "CANCELLED": return "CANCELLED";
       default: return order.status;
@@ -128,16 +128,28 @@ const AdminOrders = () => {
   };
 
   const statCards = [
-    { key: "ALL", label: "Tổng đơn", count: statOrders.length },
+    { key: "ALL", label: "All", count: statOrders.length },
     {
       key: "PENDING_ACTION",
       label: "PENDING ACTION",
       count: statOrders.filter(o => o.status === "PAID").length,
     },
     { key: "SHIPPING", label: "SHIPPING", count: statOrders.filter(o => o.status === "SHIPPING").length },
-    { key: "DELIVERED", label: "DELIVERED - WAITING FOR CONFIRMATION", count: statOrders.filter(o => o.status === "DELIVERED").length },
+    { key: "DELIVERED", label: "DELIVERED", count: statOrders.filter(o => o.status === "DELIVERED").length },
     { key: "COMPLETED", label: "COMPLETED", count: statOrders.filter(o => o.status === "COMPLETED").length },
-    { key: "CANCELLED", label: "CANCELLED - WAITING FOR REFUND", count: statOrders.filter(o => o.status === "CANCELLED" || o.paymentStatus === "REFUND_PENDING").length },
+    {
+      key: "CANCELLED",
+      label: (
+        <>
+          CANCELLED/
+          <br />
+          REFUND_PENDING
+        </>
+      ),
+      count: statOrders.filter(
+        o => o.status === "CANCELLED" || o.paymentStatus === "REFUND_PENDING"
+      ).length,
+    },
     { key: "REFUNDED", label: "REFUNDED", count: statOrders.filter(o => o.paymentStatus === "REFUNDED").length },
   ];
 
