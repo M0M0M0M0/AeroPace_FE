@@ -494,26 +494,103 @@
   transform: scale(1.1);
 }
 
-/* THANH SO SÁNH PHÍA DƯỚI (COMPARE BAR) */
+
 .compare-sticky-bar {
   position: fixed;
+  
   bottom: 0;
-  left: 0;
+  right: 0;
   width: 100%;
+  height: 80px; 
   background: #e5e4e4;
   box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
-  padding: 15px 5%;
+  padding: 0 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 100;
+  z-index: 1000; /* Đảm bảo luôn nằm trên các thành phần khác */
+  border-radius: 0;
+  border: 1px solid transparent;
+
+  
+  opacity: 0;
   transform: translateY(100%);
-  transition: transform 0.3s ease-in-out;
+
+  will-change: width, height, bottom, right, border-radius, padding, background, opacity, transform;
+  
+  transition: 
+    width 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    height 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    bottom 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    right 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    border-radius 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    padding 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    background 0.3s ease,
+    color 0.3s ease,
+    transform 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+    opacity 0.4s ease;
 }
 
+
 .compare-sticky-bar.visible {
+  opacity: 1;
   transform: translateY(0);
 }
+
+.compare-sticky-bar.minimized {
+  transform: translateY(0) !important; 
+  left: auto !important;
+  right: 30px !important;
+  bottom: 30px !important;
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  cursor: pointer;
+  
+  background: #ffffff !important;
+  color: #000000 !important;       
+  border: 1px solid #e5e7eb !important; 
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.compare-sticky-bar.minimized:hover {
+  background: #000000 !important;  
+  color: #ffffff !important;       
+  border-color: #000000 !important;
+  transform: scale(1.1) translateY(-2px) !important; /* Nhấc nhẹ bong bóng lên */
+}
+
+.compare-bubble-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+
+.compare-bubble-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: #ef4444;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+}
+
 
 .compare-items-container {
   display: flex;
@@ -572,6 +649,39 @@
   align-items: center;
 }
 
+/* Nút Thu nhỏ */
+.btn-minimize {
+  background: none;
+  border: none;
+  color: #4b5563;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.2s;
+  padding: 8px 12px;
+}
+
+.btn-minimize:hover {
+  color: #000000;
+}
+
+.btn-clear-all {
+  background: none !important;
+  color: #dc2626 !important;
+  padding: 8px 12px !important;
+  border: none !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.btn-clear-all:hover {
+  color: #991b1b !important;
+}
+
+/* Nút Compare Now chính */
 .btn-compare-now {
   background: #000;
   color: #e5e4e4;
@@ -580,18 +690,28 @@
   border: none;
   font-weight: bold;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
+.btn-compare-now:hover {
+  background: #222;
+}
 
+.compare-bubble-inner,
+.compare-items-container,
+.compare-actions {
+  animation: compareFadeInInside 0.4s ease-out forwards;
+}
 
-.btn-clear-all {
-  background: red;
-  color: #ffffff;
-  padding: 10px 20px;
-  border-radius: 6px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
+@keyframes compareFadeInInside {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 

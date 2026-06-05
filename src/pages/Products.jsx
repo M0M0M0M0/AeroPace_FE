@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ShoppingCart, Heart, ArrowLeftRight, X } from "lucide-react"; // Import thêm các icon
 import { useCart } from "../context/CartContext";
@@ -15,6 +15,37 @@ const Products = () => {
 
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const {  compareList,  toggleCompare, removeCompare, clearCompare } = usePreferences();
+  const [isMinimized, setIsMinimized] = useState(false);
+  const minimizeTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (compareList.length > 0) {
+      setIsMinimized(false);
+    }
+  }, [compareList.length]);
+
+  const handleMouseEnter = () => {
+    if (minimizeTimeoutRef.current) {
+      clearTimeout(minimizeTimeoutRef.current);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isCompareModalOpen) return;
+    if (compareList.length === 0) return;
+
+    if (minimizeTimeoutRef.current) clearTimeout(minimizeTimeoutRef.current);
+
+    minimizeTimeoutRef.current = setTimeout(() => {
+      setIsMinimized(true);
+    }, 1500); // 1.5 giây tự động thu nhỏ
+  };
+
+  useEffect(() => {
+    return () => {
+      if (minimizeTimeoutRef.current) clearTimeout(minimizeTimeoutRef.current);
+    };
+  }, []);
   
   const [activeId, setActiveId] = useState(null);
   const [products, setProducts] = useState([]);
@@ -375,34 +406,48 @@ const Products = () => {
         </div>
       </div>
 
-      {/* THANH SO SÁNH (COMPARE BAR) ĐƯỢC ĐẶT NGOÀI DIV LAYOUT CHÍNH (dưới dạng fixed bottom) */}
-      <div className={`compare-sticky-bar ${compareList.length > 0 ? "visible" : ""}`}>
-        <div className="compare-items-container">
-          {compareList.map((item) => (
-            <div key={item.id} className="compare-item-mini">
-              <img src={item.images?.[0]?.imageUrl} alt="" />
-              <p>{item.name}</p>
-              <button className="compare-remove-btn" onClick={() => removeCompare(item.id)}>
-                <X size={12} />
+      <div 
+        className={`compare-sticky-bar ${compareList.length > 0 ? "visible" : ""} ${isMinimized ? "minimized" : ""}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {isMinimized ? (
+          <div className="compare-bubble-inner" onClick={() => setIsMinimized(false)} title="Mở rộng so sánh">
+            <ArrowLeftRight size={22} />
+            <span className="compare-bubble-badge">{compareList.length}</span>
+          </div>
+        ) : (
+          /* Giao diện THANH NGANG đầy đủ */
+          <>
+            <div className="compare-items-container">
+              {compareList.map((item) => (
+                <div key={item.id} className="compare-item-mini">
+                  <img src={item.images?.[0]?.imageUrl} alt="" />
+                  <p>{item.name}</p>
+                  <button className="compare-remove-btn" onClick={() => removeCompare(item.id)}>
+                    <X size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="compare-actions">
+              <button className="btn-clear-all" onClick={clearCompare}>
+                Clear All
+              </button>
+              <button className="btn-compare-now" onClick={() => setIsCompareModalOpen(true)}>
+                Compare Now ({compareList.length})
               </button>
             </div>
-          ))}
-        </div>
-        <div className="compare-actions">
-          <button className="btn-clear-all" onClick={clearCompare}>
-            Clear All
-          </button>
-          
-          <button className="btn-compare-now" onClick={() => setIsCompareModalOpen(true)}>
-            Compare Now ({compareList.length})
-          </button>
-        </div>
-        <CompareModal 
+          </>
+        )}
+      </div>
+
+     
+      <CompareModal 
         isOpen={isCompareModalOpen} 
         onClose={() => setIsCompareModalOpen(false)} 
         compareItems={compareList}
       />
-      </div>
     </>
   );
 };
