@@ -54,14 +54,14 @@
 }
 
 .od-title {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     font-weight: 600;
     margin: 0;
 }
 
 .od-code {
-    font-size: 0.9rem;
-    color: #888;
+    font-size: 1.2rem;
+    color: #ffffff;
 }
 
 .od-status-pill {
@@ -89,7 +89,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    color: #666;
+    color: #ffffff;
     margin: 0 0 16px;
 }
 
@@ -108,14 +108,14 @@
 }
 
 .od-info-icon {
-    color: #555;
+    color: #ffffff;
     margin-top: 2px;
     flex-shrink: 0;
 }
 
 .od-info-label {
-    font-size: 0.88rem;
-    color: #888;
+    font-size: 0.9rem;
+    color: #ffffff;
     width: 120px;
     flex-shrink: 0;
 }
@@ -168,8 +168,8 @@
 /* Product image */
 
 .od-item-img-wrap {
-    width: 52px;
-    height: 52px;
+    width: 60px;
+    height: 60px;
     flex-shrink: 0;
     border-radius: 8px;
     overflow: hidden;
@@ -196,7 +196,7 @@
 
 .od-item-name {
     flex: 1;
-    font-size: 0.92rem;
+    font-size: 1rem;
     color: #ddd;
     transition: color 0.18s;
 }
@@ -210,7 +210,7 @@
 
 .od-item-qty {
     font-size: 0.85rem;
-    color: #888;
+    color: #ffffff;
     min-width: 30px;
     text-align: center;
 }
@@ -232,8 +232,8 @@
 }
 
 .od-cancel-reason {
-    font-size: 0.85rem;
-    color: #f87171;
+    font-size: 1rem;
+    color: #fe6060;
     margin: 0;
 }
 
@@ -280,7 +280,7 @@
 
 .od-total-label {
     font-size: 0.95rem;
-    color: #aaa;
+    color: #ffffff;
 }
 
 .od-total-value {

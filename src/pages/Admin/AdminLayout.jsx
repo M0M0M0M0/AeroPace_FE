@@ -9,6 +9,7 @@ import {
   LogOut,
   Menu,
   Tag,
+  Truck,
 } from "lucide-react";
 import "./AdminLayout.css";
 import { useAuth } from "../../context/AuthContext";
@@ -80,10 +81,10 @@ const AdminLayout = () => {
             to="/admin/shippings"
             className={`a-nav-item ${isActive("/admin/shippings") ? "active" : ""}`}
           >
-
+            <Truck size={20} />
             <span className="a-nav-label">Shipping Methods</span>
           </Link>
-
+    
         </nav>
       </aside>
       {/* --- KẾT THÚC SIDEBAR --- */}
