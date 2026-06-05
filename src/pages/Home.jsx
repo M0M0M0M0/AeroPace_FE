@@ -241,6 +241,9 @@ const Home = () => {
           ))}
         </div>
         <div className="compare-actions">
+          <button className="btn-clear-all" onClick={clearCompare}>
+            Clear All
+          </button>
           <button className="btn-compare-now" onClick={() => setIsCompareModalOpen(true)}>
             Compare Now ({compareList.length})
           </button>

@@ -582,6 +582,19 @@
   cursor: pointer;
 }
 
+
+
+.btn-clear-all {
+  background: red;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
 .compare-modal-overlay {
   position: fixed;
   top: 0;
