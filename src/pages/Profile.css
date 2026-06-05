@@ -32,8 +32,8 @@
 }
 
 .profile-avatar-circle {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   background-color: #222;
   border-radius: 50%;
   display: flex;
@@ -45,13 +45,13 @@
 
 .profile-avatar-section h3 {
   margin: 0 0 5px;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 .profile-avatar-section p {
   margin: 0;
-  color: #888;
-  font-size: 0.85rem;
+  color: #ffffff;
+  font-size: 0.9rem;
 }
 
 .profile-nav {
@@ -69,7 +69,7 @@
   background: transparent;
   border: none;
   border-radius: 10px;
-  color: #a3a3a3;
+  color: #ffffff;
   font-size: 0.95rem;
   font-weight: 500;
   text-align: left;
@@ -137,7 +137,7 @@
 
 .profile-form-group label {
   font-size: 0.9rem;
-  color: #a3a3a3;
+  color: #ffffff;
 }
 
 .profile-input-with-icon {
