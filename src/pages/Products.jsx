@@ -14,7 +14,7 @@ const Products = () => {
   // Lấy dữ liệu và hàm từ hook usePreferences
 
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
-  const {  compareList,  toggleCompare, removeCompare } = usePreferences();
+  const {  compareList,  toggleCompare, removeCompare, clearCompare } = usePreferences();
   
   const [activeId, setActiveId] = useState(null);
   const [products, setProducts] = useState([]);
@@ -389,6 +389,10 @@ const Products = () => {
           ))}
         </div>
         <div className="compare-actions">
+          <button className="btn-clear-all" onClick={clearCompare}>
+            Clear All
+          </button>
+          
           <button className="btn-compare-now" onClick={() => setIsCompareModalOpen(true)}>
             Compare Now ({compareList.length})
           </button>
