@@ -10,6 +10,10 @@ const AdminCustomers = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCustomer, setSelected] = useState(null);
   const [toastMsg, setToastMsg] = useState("");
+  const [toastType, setToastType] = useState("success");
+
+  // ── Confirm lock dialog state ─────────────────────────────────
+  const [confirmTarget, setConfirmTarget] = useState(null); // { userId, currentStatus }
 
   // ── Filter states ─────────────────────────────────────────────
   const [searchId, setSearchId] = useState("");
@@ -39,14 +43,22 @@ const AdminCustomers = () => {
   }, []);
 
   // ── Toast helper ─────────────────────────────────────────────
-  const showToast = (msg) => {
+  const showToast = (msg, type = "success") => {
     setToastMsg(msg);
+    setToastType(type);
     setTimeout(() => setToastMsg(""), 3000);
   };
 
-  // ── Khoá / Mở khoá ───────────────────────────────────────────
-  const handleToggleLock = async (userId, e) => {
+  // ── Mở confirm dialog ─────────────────────────────────────────
+  const handleLockClick = (userId, currentStatus, e) => {
     e.stopPropagation();
+    setConfirmTarget({ userId, currentStatus });
+  };
+
+  // ── Xác nhận khoá / Mở khoá ──────────────────────────────────
+  const handleConfirmLock = async () => {
+    const { userId } = confirmTarget;
+    setConfirmTarget(null);
     try {
       const res = await axios.patch(`${API_BASE}/${userId}/toggle-lock`, null, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -58,22 +70,12 @@ const AdminCustomers = () => {
         ),
       );
       showToast(
-        data.status === "ACTIVE" ? "Account unlocked" : "Account locked",
+        data.status === "ACTIVE" ? "Account unlocked successfully" : "Account locked successfully",
       );
     } catch (err) {
       console.error("Lỗi toggle lock:", err);
+      showToast("Action failed. Please try again.", "error");
     }
-  };
-
-  // ── Sau khi update từ modal ───────────────────────────────────
-  const handleUpdateSuccess = (updatedCustomer) => {
-    setCustomers((prev) =>
-      prev.map((c) =>
-        c.userId === updatedCustomer.userId ? updatedCustomer : c,
-      ),
-    );
-    setSelected(null);
-    showToast("Update information successfully");
   };
 
   // ── Reset filters ─────────────────────────────────────────────
@@ -92,8 +94,8 @@ const AdminCustomers = () => {
       : true;
     const matchName = searchName
       ? (c.fullName || c.username || "")
-        .toLowerCase()
-        .includes(searchName.toLowerCase())
+          .toLowerCase()
+          .includes(searchName.toLowerCase())
       : true;
     const matchEmail = searchEmail
       ? (c.email || "").toLowerCase().includes(searchEmail.toLowerCase())
@@ -117,7 +119,43 @@ const AdminCustomers = () => {
   return (
     <div className="ac-page">
       {/* Toast */}
-      {toastMsg && <div className="ac-toast">{toastMsg}</div>}
+      {toastMsg && (
+        <div className={`ac-toast ${toastType === "error" ? "ac-toast--error" : ""}`}>
+          {toastMsg}
+        </div>
+      )}
+
+      {/* Confirm Dialog */}
+      {confirmTarget && (
+        <div className="ac-overlay" onClick={() => setConfirmTarget(null)}>
+          <div className="ac-confirm-dialog" onClick={(e) => e.stopPropagation()}>
+            <h3 className="ac-confirm-title">
+              {confirmTarget.currentStatus === "ACTIVE"
+                ? "Lock this account?"
+                : "Unlock this account?"}
+            </h3>
+            <p className="ac-confirm-desc">
+              {confirmTarget.currentStatus === "ACTIVE"
+                ? "The customer will no longer be able to log in."
+                : "The customer will regain access to their account."}
+            </p>
+            <div className="ac-confirm-actions">
+              <button
+                className="ac-btn-cancel"
+                onClick={() => setConfirmTarget(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className={`ac-btn-confirm ${confirmTarget.currentStatus === "ACTIVE" ? "ac-btn-confirm--danger" : "ac-btn-confirm--success"}`}
+                onClick={handleConfirmLock}
+              >
+                {confirmTarget.currentStatus === "ACTIVE" ? "Lock Account" : "Unlock Account"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Header */}
       <div className="ac-header">
@@ -189,7 +227,7 @@ const AdminCustomers = () => {
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
         >
-          <option value="ALL">All Statuses</option>
+          <option value="ALL">All</option>
           <option value="ACTIVE">Active</option>
           <option value="LOCKED">Locked</option>
         </select>
@@ -264,15 +302,15 @@ const AdminCustomers = () => {
                       <div className="ac-actions">
                         <button
                           className={`ac-lock-btn ${c.status === "ACTIVE" ? "lock" : "unlock"}`}
-                          onClick={(e) => handleToggleLock(c.userId, e)}
+                          onClick={(e) => handleLockClick(c.userId, c.status, e)}
                         >
                           {c.status === "ACTIVE" ? "Lock" : "Unlock"}
                         </button>
                         <button
-                          className="ac-edit-btn"
+                          className="ac-view-btn"
                           onClick={() => setSelected(c)}
                         >
-                          Edit
+                          View
                         </button>
                       </div>
                     </td>
@@ -289,7 +327,6 @@ const AdminCustomers = () => {
         <AdminCustomerDetail
           customer={selectedCustomer}
           onClose={() => setSelected(null)}
-          onUpdateSuccess={handleUpdateSuccess}
         />
       )}
     </div>

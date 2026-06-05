@@ -1,57 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AdminCustomer.css";
 import axios from "axios";
 
 const API_BASE = "http://localhost:8080/api/v1/admin/customers";
 
-const AdminCustomerDetail = ({ customer, onClose, onUpdateSuccess }) => {
-  const [form, setForm] = useState({
-    email: customer.email || "",
-    fullName: customer.fullName || "",
-    phoneNumber: customer.phoneNumber || "",
-    address: customer.address || "",
-    gender: customer.gender || "",
-    dob: customer.dob || "",
-  });
-  const [saving, setSaving] = useState(false);
+const AdminCustomerDetail = ({ customer, onClose }) => {
+  const [detail, setDetail] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  //
-  const getAuthHeaders = () => ({
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-    "Content-Type": "application/json",
-  });
+  useEffect(() => {
+    const fetchDetail = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/${customer.userId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setDetail(res.data);
+      } catch (err) {
+        console.error("Fetch detail error:", err);
+        setError("Failed to load customer details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDetail();
+  }, [customer.userId]);
 
-  const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const formatDate = (val) => {
+    if (!val) return "—";
+    return new Date(val).toLocaleDateString("vi-VN");
   };
 
-  const handleSave = async () => {
-    if (!form.fullName.trim()) {
-      setError("Full name cannot be empty.");
-      return;
-    }
-    setError("");
-    setSaving(true);
-    try {
-      const res = await axios.put(`${API_BASE}/${customer.userId}`, form, {
-        headers: getAuthHeaders(),
-      });
-      onUpdateSuccess(res.data);
-    } catch (err) {
-      console.error("Update error:", err.response?.status, err.response?.data);
-      const msg =
-        err.response?.data?.message ||
-        `Update failed (${err.response?.status ?? "Network Error"})`;
-      setError(msg);
-    } finally {
-      setSaving(false);
-    }
+  const formatDateTime = (val) => {
+    if (!val) return "—";
+    return new Date(val).toLocaleString("vi-VN");
+  };
+
+  const getInitial = (name, username) =>
+    ((name || username || "?")[0]).toUpperCase();
+
+  const buildAddress = (d) => {
+    if (!d) return "—";
+    const parts = [d.address, d.ward, d.district, d.province].filter(Boolean);
+    return parts.length > 0 ? parts.join(", ") : "—";
   };
 
   return (
     <div className="ac-overlay" onClick={onClose}>
-      <div className="ac-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="ac-modal ac-modal--view" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
         <div className="ac-modal-header">
           <div>
@@ -65,89 +63,137 @@ const AdminCustomerDetail = ({ customer, onClose, onUpdateSuccess }) => {
           </button>
         </div>
 
-        {/* Avatar + Status */}
-        <div className="ac-modal-profile">
-          <div className="ac-avatar">
-            {(form.fullName || customer.username || "?")[0].toUpperCase()}
-          </div>
-          <div>
-            <p className="ac-modal-name">
-              {form.fullName || customer.username}
-            </p>
-            <span
-              className={`ac-badge ${customer.status === "ACTIVE" ? "active" : "locked"}`}
-            >
-              {customer.status === "ACTIVE" ? "Active" : "Locked"}
-            </span>
-          </div>
-        </div>
+        {loading ? (
+          <div className="ac-modal-loading">Loading...</div>
+        ) : error ? (
+          <div className="ac-modal-error">{error}</div>
+        ) : (
+          <>
+            {/* Avatar + Status */}
+            <div className="ac-modal-profile">
+              <div className="ac-avatar">
+                {getInitial(detail.fullName, detail.username)}
+              </div>
+              <div>
+                <p className="ac-modal-name">
+                  {detail.fullName || detail.username}
+                </p>
+                <span
+                  className={`ac-badge ${detail.status === "ACTIVE" ? "active" : "locked"}`}
+                >
+                  {detail.status === "ACTIVE" ? "Active" : "Locked"}
+                </span>
+              </div>
+            </div>
 
-        {/* Form */}
-        <div className="ac-modal-form">
-          <div className="ac-form-row">
-            <label>Email</label>
-            <input name="email" value={form.email} onChange={handleChange} />
-          </div>
-          <div className="ac-form-row">
-            <label>
-              Full Name <span className="ac-required">*</span>
-            </label>
-            <input
-              name="fullName"
-              value={form.fullName}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="ac-form-row">
-            <label>Phone Number</label>
-            <input
-              name="phoneNumber"
-              value={form.phoneNumber}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="ac-form-row">
-            <label>Address</label>
-            <input
-              name="address"
-              value={form.address}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="ac-form-row">
-            <label>Gender</label>
-            <select name="gender" value={form.gender} onChange={handleChange}>
-              <option value="">-- Select --</option>
-              <option value="Nam">Male</option>
-              <option value="Nữ">Female</option>
-              <option value="Khác">Other</option>
-            </select>
-          </div>
-          <div className="ac-form-row">
-            <label>Date of Birth</label>
-            <input
-              type="date"
-              name="dob"
-              value={form.dob || ""}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
+            {/* Info Sections */}
+            <div className="ac-detail-sections">
 
-        {/* Error */}
-        {error && <p className="ac-error">{error}</p>}
+              {/* Account Info */}
+              <div className="ac-detail-section">
+                <p className="ac-detail-section-title">Account</p>
+                <div className="ac-detail-grid">
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">Username</span>
+                    <span className="ac-detail-value">{detail.username || "—"}</span>
+                  </div>
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">Email</span>
+                    <span className="ac-detail-value">{detail.email || "—"}</span>
+                  </div>
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">Status</span>
+                    <span className="ac-detail-value">
+                      <span className={`ac-badge ${detail.status === "ACTIVE" ? "active" : "locked"}`}>
+                        {detail.status === "ACTIVE" ? "Active" : "Locked"}
+                      </span>
+                    </span>
+                  </div>
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">Registered</span>
+                    <span className="ac-detail-value">{formatDateTime(detail.createdAt)}</span>
+                  </div>
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">Last Updated</span>
+                    <span className="ac-detail-value">{formatDateTime(detail.updatedAt)}</span>
+                  </div>
+                </div>
+              </div>
 
-        {/* Actions */}
+              {/* Personal Info */}
+              <div className="ac-detail-section">
+                <p className="ac-detail-section-title">Personal Info</p>
+                <div className="ac-detail-grid">
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">Full Name</span>
+                    <span className="ac-detail-value">{detail.fullName || "—"}</span>
+                  </div>
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">Phone</span>
+                    <span className="ac-detail-value">{detail.phoneNumber || "—"}</span>
+                  </div>
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">Gender</span>
+                    <span className="ac-detail-value">{detail.gender || "—"}</span>
+                  </div>
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">Date of Birth</span>
+                    <span className="ac-detail-value">{formatDate(detail.dob)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Address */}
+              <div className="ac-detail-section">
+                <p className="ac-detail-section-title">Address</p>
+                <div className="ac-detail-grid">
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">Street</span>
+                    <span className="ac-detail-value">{detail.address || "—"}</span>
+                  </div>
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">Ward</span>
+                    <span className="ac-detail-value">{detail.ward || "—"}</span>
+                  </div>
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">District</span>
+                    <span className="ac-detail-value">{detail.district || "—"}</span>
+                  </div>
+                  <div className="ac-detail-row">
+                    <span className="ac-detail-label">Province</span>
+                    <span className="ac-detail-value">{detail.province || "—"}</span>
+                  </div>
+                  <div className="ac-detail-row ac-detail-row--full">
+                    <span className="ac-detail-label">Full Address</span>
+                    <span className="ac-detail-value">{buildAddress(detail)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Profile Timestamps */}
+              {(detail.profileCreatedAt || detail.profileUpdatedAt) && (
+                <div className="ac-detail-section">
+                  <p className="ac-detail-section-title">Profile Activity</p>
+                  <div className="ac-detail-grid">
+                    <div className="ac-detail-row">
+                      <span className="ac-detail-label">Profile Created</span>
+                      <span className="ac-detail-value">{formatDateTime(detail.profileCreatedAt)}</span>
+                    </div>
+                    <div className="ac-detail-row">
+                      <span className="ac-detail-label">Profile Updated</span>
+                      <span className="ac-detail-value">{formatDateTime(detail.profileUpdatedAt)}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* Footer */}
         <div className="ac-modal-actions">
           <button className="ac-btn-cancel" onClick={onClose}>
-            Cancel
-          </button>
-          <button
-            className="ac-btn-save"
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving ? "Saving..." : "Save Changes"}
+            Close
           </button>
         </div>
       </div>
