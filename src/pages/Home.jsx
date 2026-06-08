@@ -148,7 +148,7 @@ const Home = () => {
       <section className="home-hero-section">
         <video
           className="home-hero-video"
-          src="banner3.mp4"
+          src="banner1.mp4"
           autoPlay
           loop
           muted
