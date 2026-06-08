@@ -50,11 +50,12 @@ const CheckoutForm = () => {
     email: "",
     phone: "",
     specificAddress: "",
-    paymentMethod: "cod",
+    paymentMethod: "stripe",
   });
 
   // ─── Payment ────────────────────────────────────────────────────────────────
   const [pendingOrderId, setPendingOrderId] = useState(null);
+  const [isCardComplete, setIsCardComplete] = useState(false);
 
   // ─── Computed pricing ────────────────────────────────────────────────────────
   const shippingFee = selectedShipping ? Number(selectedShipping.fee) : 0;
@@ -275,6 +276,14 @@ const CheckoutForm = () => {
       buildOrderPayload(paymentMethod, paymentOrderId),
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
+
+  const handleCardChange = (event) => {
+  setIsCardComplete(event.complete);
+  
+  if (event.error) {
+    console.log(event.error.message);
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -589,6 +598,7 @@ const CheckoutForm = () => {
               <div className="stripe-card-container">
                 <label>Credit or debit card information</label>
                 <CardElement
+                onChange={handleCardChange}
                   options={{
                     style: {
                       base: {
@@ -639,7 +649,12 @@ const CheckoutForm = () => {
               <button
                 type="submit"
                 className="checkout-submit-btn"
-                disabled={isSubmitting}
+                disabled={isSubmitting || (form.paymentMethod === "stripe" && !isCardComplete)}
+                title={
+                form.paymentMethod === "stripe" && !isCardComplete 
+                ? "Please complete your Stripe card information." 
+                : ""
+                }
               >
                 {isSubmitting ? "Processing..." : "Confirm Order"}
               </button>
