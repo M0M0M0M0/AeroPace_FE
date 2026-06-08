@@ -538,3 +538,9 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+.apd-required {
+    color: #ef4444;
+    margin-left: 2px;
+    font-size: 0.78rem;
+}

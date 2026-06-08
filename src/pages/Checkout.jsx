@@ -237,7 +237,6 @@ const CheckoutForm = () => {
   };
 
   const executeOrderSuccess = (fullAddress, method) => {
-    console.log("executeOrderSuccess called", { fullAddress, method });
     clearCart();
     navigate("/order-success", {
       state: {

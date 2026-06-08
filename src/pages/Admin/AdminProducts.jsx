@@ -103,7 +103,6 @@ const AdminProducts = () => {
       if (filterStockMin) params.append("stockMin", filterStockMin);
       if (filterStockMax) params.append("stockMax", filterStockMax);
       if (filterStatus) params.append("statuses", filterStatus);
-      console.log("Fetching products with params:", params.toString());
 
       const res = await axios.get(`${BASE}/products/filter?${params}`, { headers: authHeader(), signal: abortRef.current.signal });
       setProducts(res.data.products || res.data.content || []);

@@ -290,7 +290,6 @@ const AdminOrderDetail = () => {
         try {
             const res = await axios.get(`${ADMIN}/orders/details/${orderCode}`, { headers: authHeader() });
             setOrder(res.data);
-            console.log("Fetched order:", res.data);
         } catch (err) {
             console.error(err);
         } finally {

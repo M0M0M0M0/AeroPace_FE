@@ -210,10 +210,7 @@ const OrderDetail = () => {
 
                                         {/* Name */}
                                         <span className="od-item-name">
-                                            {item.productName} <br /> Variant:{" "}
-                                            {[item.option1_value, item.option2_value, item.option3_value]
-                                                .filter(v => v && v.trim() !== "")
-                                                .join(" / ")}
+                                            {item.productName} <br /> Variant: {item.variantName}
                                         </span>
                                         {/* Qty + price */}
                                         <div className="od-item-right">

@@ -79,7 +79,9 @@ const AdminProductDetail = () => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`${BASE}/products/filter?productId=${id}&page=0`, { headers: authHeader() });
+        const params = new URLSearchParams({ productId: id, page: 0 });
+        if (mode === "view") params.append("statuses", "DELETED");
+        const res = await axios.get(`${BASE}/products/filter?${params}`, { headers: authHeader() });
         const products = res.data.products || res.data.content || [];
         const product = products.find((p) => String(p.id) === String(id));
         if (!product) { alert("Không tìm thấy sản phẩm."); navigate("/admin/products"); return; }
@@ -156,7 +158,13 @@ const AdminProductDetail = () => {
   // ── Save ──────────────────────────────────────────────────────
   const handleSave = async () => {
     if (!form.name || !form.brandId) { alert("Please fill in the product name and select a brand!"); return; }
-
+    const activeVariants = form.variants.filter((v) => !v.isDeleted);
+    const missingFields = activeVariants.some(
+      (v) => !v.price || v.stock === "" || v.stock === null || v.stock === undefined
+    ); if (missingFields) {
+      alert("Please fill in Price and Stock for all variants!");
+      return;
+    }
     const optionChecks = [
       { nameField: "option1Name", valueField: "option1Value", label: "Option 1" },
       { nameField: "option2Name", valueField: "option2Value", label: "Option 2" },
@@ -266,7 +274,7 @@ const AdminProductDetail = () => {
             <h2 className="apd-card-title">Basic Information</h2>
 
             <div className="apd-form-row">
-              <label className="apd-form-label">Product Name *</label>
+              <label className="apd-form-label">Product Name <span className="apd-required">*</span></label>
               <input className="apd-form-input" value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Product Name" disabled={isViewOnly} />
@@ -382,13 +390,13 @@ const AdminProductDetail = () => {
                   </div>
                   <div className="apd-form-grid-3">
                     <div className="apd-form-row">
-                      <label className="apd-form-label">Price *</label>
+                      <label className="apd-form-label">Price <span className="apd-required">*</span></label>
                       <input className="apd-form-input" type="number" value={v.price}
                         onChange={(e) => updateVariant(idx, "price", e.target.value)}
                         placeholder="e.g., 500000" disabled={isViewOnly} />
                     </div>
                     <div className="apd-form-row">
-                      <label className="apd-form-label">Stock</label>
+                      <label className="apd-form-label">Stock <span className="apd-required">*</span></label>
                       <input className="apd-form-input" type="number" value={v.stock}
                         onChange={(e) => updateVariant(idx, "stock", e.target.value)}
                         placeholder="e.g., 10" disabled={isViewOnly} />
