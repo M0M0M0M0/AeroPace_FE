@@ -1,39 +1,33 @@
-/* Contact.css */
-
-/* Định nghĩa một vài biến màu sắc giống trang About Us trước để đồng bộ */
+/* Contact.css — Sporty Light Override */
 :root {
-  --contact-bg: #2c2c2c;
-  --contact-text-dark: #e5e4e4;
-  --contact-text-muted: #e5e4e4;
-  --contact-accent: #cdcdcd;
-  /* Màu cam điểm nhấn */
-  --contact-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --contact-bg: var(--bg-main);
+  --contact-text-dark: var(--text-main);
+  --contact-text-muted: var(--text-muted);
+  --contact-accent: var(--accent-color);
+  --contact-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
 }
 
 .contact-page-wrapper {
   background-color: var(--contact-bg);
   padding: 80px 10%;
-  /* Spacing rộng rãi */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .contact-container {
   display: flex;
   gap: 50px;
-  /* Khoảng cách giữa 2 cột */
   align-items: flex-start;
 }
 
-/* --- Cột thông tin --- */
 .contact-info-col {
   flex: 1;
-  /* Chiếm 1 phần */
 }
 
 .contact-title {
   font-size: 2.5rem;
   color: var(--contact-text-dark);
   margin-bottom: 10px;
+  font-weight: bold;
 }
 
 .contact-subtitle {
@@ -54,7 +48,8 @@
   align-items: center;
   gap: 20px;
   padding: 20px;
-  background: rgb(56, 56, 56);
+  background: var(--bg-surface); /* Đổi khối nền xám sang xám dịu nhẹ */
+  border: 1px solid var(--border-main);
   border-radius: 10px;
   box-shadow: var(--contact-shadow);
   transition: transform 0.3s ease;
@@ -62,12 +57,12 @@
 
 .contact-item:hover {
   transform: translateY(-5px);
+  border-color: var(--contact-accent);
 }
 
 .contact-icon-box {
   color: var(--contact-accent);
-  background-color: rgba(243, 156, 18, 0.1);
-  /* Nền cam nhạt cho icon */
+  background-color: rgba(255, 85, 0, 0.08); /* Đổi dải màu nền icon theo màu nhấn Cam */
   padding: 15px;
   border-radius: 50%;
   display: flex;
@@ -79,6 +74,7 @@
   margin: 0 0 5px 0;
   font-size: 1.1rem;
   color: var(--contact-text-dark);
+  font-weight: 600;
 }
 
 .contact-text-box p {
@@ -87,34 +83,22 @@
   font-size: 1rem;
 }
 
-/* --- Cột bản đồ --- */
 .contact-map-col {
   flex: 1;
-  /* Chiếm 1 phần còn lại */
   height: 100%;
   min-height: 400px;
-  /* Chiều cao tối thiểu cho map trên Desktop */
 }
 
 .map-canvas {
   width: 100%;
   height: 500px;
-  /* Chiều cao cố định cho map */
   border-radius: 15px;
   overflow: hidden;
-  /* Để bo góc thẻ iframe */
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-main);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.03);
 }
 
-/* --- Responsive cho Mobile --- */
 @media (max-width: 992px) {
-  .contact-container {
-    flex-direction: column;
-    /* Chuyển thành 1 cột dọc */
-    gap: 40px;
-  }
-
-  .contact-page-wrapper {
-    padding: 50px 5%;
-  }
+  .contact-container { flex-direction: column; gap: 40px; }
+  .contact-page-wrapper { padding: 50px 5%; }
 }

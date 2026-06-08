@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
   Search,
@@ -8,34 +8,47 @@ import {
   Settings,
   UserCircle,
   Package,
-} from "lucide-react"; // Thêm UserCircle icon
+  Sun,  
+  Moon, 
+} from "lucide-react";
 import { useCart } from "../context/CartContext";
-import logo from "../../public/favicon_io/LogoAero.png"
+import logo from "../../public/favicon_io/LogoAero.png";
 import { useAuth } from "../context/AuthContext";
 
 import "./Navbar.css";
 
 function Navbar() {
   const { cart } = useCart();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const cartItems = cart?.items || [];
-
-  const totalItems = cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0,
-  );
+  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+  
   const [searchText, setSearchText] = useState("");
   const { pathname } = useLocation();
   const hideSearch = pathname.startsWith("/products");
+
+  // ─── LOGIC LIGHT/DARK MODE ───────────────────────────────────────
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+  };
+  // ─────────────────────────────────────────────────────────────────
 
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchText.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchText.trim())}`);
     }
   };
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -53,7 +66,7 @@ function Navbar() {
             <img 
               src={logo} 
               alt="AeroPace Logo" 
-              style={{ height: '40px', width: 'auto' }} // Điều chỉnh chiều cao này (30px-50px) cho vừa mắt
+              style={{ height: '40px', width: 'auto' }}
             />
             <span>AEROPACE</span>
           </Link>
@@ -102,6 +115,15 @@ function Navbar() {
               )}
             </NavLink>
 
+            <button 
+              type="button" 
+              className="theme-toggle-btn" 
+              onClick={toggleTheme}
+              title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+            >
+              {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+            </button>
+
             {user ? (
               <div className="user-logged-in">
                 <div className="user-info">
@@ -111,7 +133,6 @@ function Navbar() {
 
                 {/* MENU DROP DOWN */}
                 <div className="user-dropdown">
-                  {/* Trang thông tin cá nhân dành cho mọi tài khoản đăng nhập */}
                   <Link
                     to="/profile"
                     state={{ tab: "info" }}
@@ -127,7 +148,6 @@ function Navbar() {
                     <Package size={16} /> Order History
                   </Link>
 
-                  {/* Nút quay lại trang quản trị chỉ dành cho Admin */}
                   {user.role === "admin" && (
                     <Link to="/admin" className="dropdown-item">
                       <Settings size={16} /> Admin Dashboard
