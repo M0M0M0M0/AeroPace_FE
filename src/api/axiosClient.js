@@ -22,7 +22,7 @@ axiosClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
-      localStorage.removeItem("user"); // đổi key nếu khác
+      localStorage.removeItem("user");
 
       alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!");
 
