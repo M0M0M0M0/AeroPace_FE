@@ -23,7 +23,6 @@ const Cart = () => {
 
     document.addEventListener("visibilitychange", handleVisibility);
     return () => document.removeEventListener("visibilitychange", handleVisibility);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   // Detect thay đổi giá
@@ -51,7 +50,7 @@ const Cart = () => {
   const hasInvalidItems = useMemo(() => {
     if (!cart?.items) return false;
     return cart.items.some(
-      (item) => item.stockAvailable === 0 || item.quantity > item.stockAvailable
+      (item) => item.stockAvailable === 0 || item.quantity > item.stockAvailable || !item.isAvailable
     );
   }, [cart]);
 
@@ -74,6 +73,7 @@ const Cart = () => {
           {cart.items.map((item) => {
             const outOfStock = item.stockAvailable === 0;
             const exceedsStock = item.quantity > item.stockAvailable;
+            const isUnavailable = !item.isAvailable;
 
             return (
               <div
@@ -124,6 +124,12 @@ const Cart = () => {
                       Only {item.stockAvailable} items left in stock
                     </p>
                   )}
+                  {isUnavailable && (
+                    <p className="cart-stock-warning">
+                      <AlertTriangle size={13} />
+                      Product is no longer available
+                    </p>
+                  )}
                 </div>
 
                 {/* Quantity */}
@@ -134,7 +140,7 @@ const Cart = () => {
                         ? removeFromCart(item.cartItemId)
                         : updateQuantity(item.cartItemId, item.quantity - 1)
                     }
-                    disabled={outOfStock}
+                    disabled={outOfStock || isUnavailable}
                   >
                     <Minus size={16} />
                   </button>
@@ -143,9 +149,9 @@ const Cart = () => {
 
                   <button
                     onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
-                    disabled={item.quantity >= item.stockAvailable}
+                    disabled={item.quantity >= item.stockAvailable || isUnavailable}
                     style={
-                      item.quantity >= item.stockAvailable
+                      item.quantity >= item.stockAvailable || isUnavailable
                         ? { opacity: 0.4, cursor: "not-allowed" }
                         : {}
                     }
@@ -175,15 +181,11 @@ const Cart = () => {
           {hasInvalidItems && (
             <p className="cart-global-warning">
               <AlertTriangle size={14} />
-              Some products exceed stock or are out of stock. Please adjust before checkout.
-            </p>
+              Some products exceed available stock, are out of stock, or may no longer be available. Please adjust your cart before checkout.            </p>
           )}
 
           {/* Actions */}
           <div className="cart-page-actions">
-            <button className="cart-page-btn" onClick={() => setShowConfirm(true)}>
-              Delete All
-            </button>
 
             <button
               className={`cart-page-btn ${hasInvalidItems ? "cart-page-btn-disabled" : ""}`}
