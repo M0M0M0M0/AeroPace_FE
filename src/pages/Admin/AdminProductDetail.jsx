@@ -131,14 +131,12 @@ const AdminProductDetail = () => {
   // ── Variant / image helpers ───────────────────────────────────
   const addVariant = () => setForm({ ...form, variants: [...form.variants, { option1Value: "", option2Value: "", option3Value: "", price: "", stock: "", sku: "", isDeleted: false }] });
   const updateVariant = (idx, field, value) => { const u = [...form.variants]; u[idx] = { ...u[idx], [field]: value }; setForm({ ...form, variants: u }); };
-  const removeVariant = async (idx) => {
+  const removeVariant = (idx) => {
     const v = form.variants[idx];
     if (v.id) {
-      if (!window.confirm("Xóa variant này?")) return;
-      try {
-        await axios.delete(`${BASE}/products/variants/${v.id}`, { headers: authHeader() });
-        setForm({ ...form, variants: form.variants.filter((_, i) => i !== idx) });
-      } catch { alert("Failed to delete variant!"); }
+      const updated = [...form.variants];
+      updated[idx] = { ...updated[idx], isDeleted: true };
+      setForm({ ...form, variants: updated });
     } else {
       setForm({ ...form, variants: form.variants.filter((_, i) => i !== idx) });
     }

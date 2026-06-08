@@ -10,10 +10,10 @@
   animation: slideDown 0.6s ease-out forwards;
 }
 
-@keyframes slideDown {
+/* @keyframes slideDown {
   0% { transform: translateY(-60px); opacity: 0; }
   100% { transform: translateY(0); opacity: 1; }
-}
+} */
 
 /* CẬP NHẬT BỐ CỤC CHÍNH */
 .navbar-container {
@@ -105,7 +105,7 @@
 
 .navlink:hover {
   color: white;
-  transform: translateY(-2px);
+  /* transform: translateY(-2px); */
 }
 
 .navlink::after {
