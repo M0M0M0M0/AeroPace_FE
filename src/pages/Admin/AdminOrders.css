@@ -1,7 +1,7 @@
-/* ── Page ────────────────────────────────────────────────────── */
+/* ── Page Admin Orders ── */
 .ao-page {
   position: relative;
-  color: #e5e4e4;
+  color: var(--text-main);
 }
 
 /* ── Header ──────────────────────────────────────────────────── */
@@ -22,10 +22,11 @@
 
 .ao-subtitle {
   font-size: 0.875rem;
+  color: var(--text-muted);
   margin: 0;
 }
 
-/* ── Stats ───────────────────────────────────────────────────── */
+/* ── Stats Thống kê ────────────────────────────────────────────── */
 .ao-stats {
   display: flex;
   gap: 16px;
@@ -34,8 +35,8 @@
 }
 
 .ao-stat-card {
-  background: #0f0f0f;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-main);
   border-radius: 12px;
   padding: 20px 20px;
   display: flex;
@@ -43,16 +44,17 @@
   gap: 4px;
   min-width: 150px;
   transition: border-color 0.2s, background 0.2s;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
 
 .ao-stat-card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: #1a1a1a;
+  border-color: var(--accent-color);
+  background: var(--bg-surface);
 }
 
 .ao-stat-card--active {
-  border-color: rgba(255, 255, 255, 0.4) !important;
-  background: #1a1a1a !important;
+  border-color: var(--accent-color) !important;
+  background: var(--bg-surface) !important;
 }
 
 .ao-stat-num {
@@ -63,9 +65,10 @@
 
 .ao-stat-label {
   font-size: 0.8rem;
+  color: var(--text-muted);
 }
 
-/* ── Filter bar ──────────────────────────────────────────────── */
+/* ── Thanh bộ lọc dữ liệu ─────────────────────────────────────────── */
 .ao-filter-bar {
   display: flex;
   gap: 10px;
@@ -80,10 +83,10 @@
 }
 
 .ao-filter-input {
-  background: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
   border-radius: 8px;
-  color: #e5e4e4;
+  color: var(--text-main);
   padding: 9px 14px;
   font-size: 0.875rem;
   outline: none;
@@ -100,15 +103,15 @@
 .ao-filter-input.ao-filter-date {
   flex: 0 0 40px;
   min-width: unset;
-  color-scheme: dark;
+  color-scheme: light; /* Đổi trình chọn lịch sang giao diện sáng */
 }
 
 .ao-filter-input:focus {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--accent-color);
 }
 
 .ao-filter-input::placeholder {
-  color: #555;
+  color: var(--text-muted);
 }
 
 .ao-filter-input:disabled {
@@ -117,10 +120,10 @@
 }
 
 .ao-filter-select {
-  background: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
   border-radius: 8px;
-  color: #e5e4e4;
+  color: var(--text-main);
   padding: 9px 14px;
   font-size: 0.875rem;
   outline: none;
@@ -130,14 +133,13 @@
 }
 
 .ao-filter-select:focus {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--accent-color);
 }
 
 .ao-filter-select option {
-  background: #1a1a1a;
+  background: var(--bg-main);
 }
 
-/* Date group */
 .ao-filter-date-group {
   display: flex;
   flex-direction: column;
@@ -147,10 +149,11 @@
 .ao-filter-date-label {
   font-size: 0.75rem;
   font-weight: 500;
+  color: var(--text-muted);
 }
 
 .ao-filter-date-sep {
-  color: #555;
+  color: var(--border-main);
   font-size: 1rem;
   padding: 0 4px;
   margin-bottom: 2px;
@@ -158,11 +161,10 @@
   font-weight: 700;
 }
 
-/* Reset */
 .ao-filter-reset {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #dc2626;
   padding: 9px 14px;
   border-radius: 8px;
   cursor: pointer;
@@ -174,24 +176,23 @@
 }
 
 .ao-filter-reset:hover {
-  background: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.15);
 }
 
-/* Result count */
 .ao-filter-result {
   font-size: 0.82rem;
-  color: #666;
+  color: var(--text-muted);
   margin: 0 0 14px;
 }
 
 .ao-filter-result strong {
-  color: #e5e4e4;
+  color: var(--text-main);
 }
 
-/* ── Table ───────────────────────────────────────────────────── */
+/* ── Bảng dữ liệu Orders ─────────────────────────────────────────── */
 .ao-table-wrap {
-  background: #0f0f0f;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-main);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -203,8 +204,8 @@
 }
 
 .ao-table thead tr {
-  background: #1a1a1a;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-main);
 }
 
 .ao-table th {
@@ -214,11 +215,12 @@
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
 .ao-row {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-main);
   transition: background 0.15s;
 }
 
@@ -227,28 +229,28 @@
 }
 
 .ao-row:hover {
-  background: #1a1a1a;
+  background: var(--bg-surface);
 }
 
 .ao-table td {
   padding: 14px 16px;
-  color: #e5e5e5;
+  color: var(--text-main);
   vertical-align: middle;
 }
 
 .ao-id {
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.82rem;
   font-weight: 600;
 }
 
 .ao-name {
   font-weight: 600;
-  color: #e5e4e4;
+  color: var(--text-main);
 }
 
 .ao-address {
-  color: #a3a3a3;
+  color: var(--text-muted);
   max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -256,23 +258,23 @@
 }
 
 .ao-price {
-  color: #4ade80;
+  color: #16a34a; /* Tăng tương phản xanh lá trên nền sáng */
   font-weight: 700;
 }
 
 .ao-date {
-  color: #a3a3a3;
+  color: var(--text-muted);
   font-size: 0.82rem;
   white-space: nowrap;
 }
 
 .ao-empty-row {
   text-align: center;
-  color: #555;
+  color: var(--text-muted);
   padding: 48px 0 !important;
 }
 
-/* ── Status badge ────────────────────────────────────────────── */
+/* ── Nhãn Trạng thái Đơn hàng ──────────────────────────────────────── */
 .ao-status-cell {
   display: flex;
   align-items: center;
@@ -289,34 +291,49 @@
 }
 
 .ao-badge.paid {
-  background: rgba(96, 165, 250, 0.15);
-  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
 }
 
 .ao-badge.ship-cod {
-  background: rgba(250, 204, 21, 0.15);
-  color: #facc15;
+  background: rgba(234, 179, 8, 0.1);
+  color: #ca8a04;
 }
 
 .ao-badge.shipping {
-  background: rgba(251, 146, 60, 0.15);
-  color: #fb923c;
+  background: rgba(249, 115, 22, 0.1);
+  color: #ea580c;
 }
 
 .ao-badge.delivered {
-  background: rgba(74, 222, 128, 0.15);
-  color: #4ade80;
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
 }
 
 .ao-badge.cancelled {
-  background: rgba(248, 113, 113, 0.15);
-  color: #f87171;
+  background: rgba(239, 68, 68, 0.08);
+  color: #dc2626;
+}
+
+.ao-badge.pending {
+  background: var(--bg-surface);
+  color: #ca8a04;
+}
+
+.ao-badge.refund-pending {
+  background: #fdf2ff;
+  color: #9333ea;
+}
+
+.ao-badge.completed {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
 }
 
 .ao-edit-status-btn {
   background: transparent;
   border: none;
-  color: #666;
+  color: var(--text-muted);
   cursor: pointer;
   padding: 2px;
   display: flex;
@@ -325,19 +342,18 @@
 }
 
 .ao-edit-status-btn:hover {
-  color: #e5e4e4;
+  color: var(--accent-color);
 }
 
-/* ── View button ─────────────────────────────────────────────── */
 .ao-view-btn {
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--border-main);
   background: transparent;
-  color: #e5e4e4;
+  color: var(--text-main);
   cursor: pointer;
   font-size: 0.8rem;
   font-weight: 600;
@@ -346,25 +362,24 @@
 }
 
 .ao-view-btn:hover {
-  border-color: rgba(255, 255, 255, 0.35);
-  color: #e5e4e4;
-  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: var(--bg-surface);
 }
 
-/* ── Loading ─────────────────────────────────────────────────── */
 .ao-loading {
   text-align: center;
   padding: 60px 0;
-  color: #555;
+  color: var(--text-muted);
 }
 
 /* ================================================================
-   MODAL
+   MODAL WINDOWS CONFIG
    ================================================================ */
 .ao-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -373,8 +388,8 @@
 }
 
 .ao-modal {
-  background: #0f0f0f;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-main);
+  border: 1px solid var(--border-main);
   border-radius: 16px;
   width: 100%;
   max-width: 420px;
@@ -382,6 +397,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
 }
 
 .ao-modal-detail {
@@ -399,19 +415,20 @@
 .ao-modal-title {
   font-size: 1.15rem;
   font-weight: 700;
+  color: var(--text-main);
   margin: 0 0 4px;
 }
 
 .ao-modal-sub {
   font-size: 0.8rem;
-  color: #666;
+  color: var(--text-muted);
   margin: 0;
 }
 
 .ao-modal-close {
   background: transparent;
   border: none;
-  color: #666;
+  color: var(--text-muted);
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
@@ -420,10 +437,9 @@
 }
 
 .ao-modal-close:hover {
-  color: #e5e4e4;
+  color: var(--text-main);
 }
 
-/* Form rows inside modal */
 .ao-form-row {
   display: flex;
   flex-direction: column;
@@ -432,15 +448,14 @@
 
 .ao-form-row label {
   font-size: 0.8rem;
-  color: #a3a3a3;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
 .ao-form-row select {
-  background: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  color: #e5e4e4;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  color: var(--text-main);
   padding: 10px 14px;
   font-size: 0.9rem;
   outline: none;
@@ -449,11 +464,11 @@
 }
 
 .ao-form-row select:focus {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--accent-color);
 }
 
 .ao-form-row select option {
-  background: #1a1a1a;
+  background: var(--bg-main);
 }
 
 .ao-modal-actions {
@@ -464,8 +479,8 @@
 
 .ao-btn-cancel {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #a3a3a3;
+  border: 1px solid var(--border-main);
+  color: var(--text-muted);
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
@@ -474,13 +489,13 @@
 }
 
 .ao-btn-cancel:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  color: #e5e4e4;
+  border-color: var(--text-main);
+  color: var(--text-main);
 }
 
 .ao-btn-save {
-  background: #e5e4e4;
-  color: #000;
+  background: var(--accent-gradient);
+  color: #ffffff;
   border: none;
   padding: 10px 24px;
   border-radius: 8px;
@@ -496,7 +511,8 @@
 
 /* Detail modal sections */
 .ao-detail-section {
-  background: #1a1a1a;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
   border-radius: 10px;
   padding: 16px;
   display: flex;
@@ -506,7 +522,7 @@
 
 .ao-detail-section-label {
   font-size: 0.75rem;
-  color: #666;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0 0 8px;
@@ -515,12 +531,12 @@
 
 .ao-detail-value {
   font-weight: 600;
-  color: #e5e4e4;
+  color: var(--text-main);
   margin: 0;
 }
 
 .ao-detail-sub {
-  color: #a3a3a3;
+  color: var(--text-muted);
   font-size: 0.875rem;
   margin: 0;
 }
@@ -530,7 +546,7 @@
   align-items: center;
   gap: 12px;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-main);
 }
 
 .ao-detail-item:last-child {
@@ -539,19 +555,19 @@
 
 .ao-detail-item-name {
   flex: 1;
-  color: #e5e5e5;
+  color: var(--text-main);
   font-size: 0.875rem;
 }
 
 .ao-detail-item-qty {
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.85rem;
   white-space: nowrap;
 }
 
 .ao-detail-item-price {
   font-weight: 700;
-  color: #e5e4e4;
+  color: var(--text-main);
   white-space: nowrap;
 }
 
@@ -559,36 +575,22 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #1a1a1a;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
   border-radius: 10px;
   padding: 16px;
-  color: #a3a3a3;
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
 .ao-detail-total-price {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #4ade80;
+  color: #16a34a;
 }
 
 .ao-detail-item-variant {
   font-size: 0.8rem;
-  color: #888;
+  color: var(--text-muted);
   font-weight: 400;
-}
-
-.ao-badge.pending {
-  background: #e5e4e4;
-  color: #856404;
-}
-
-.ao-badge.refund-pending {
-  background: #fde8ff;
-  color: #7b2d8b;
-}
-
-.ao-badge.completed {
-  background: #d1f5e0;
-  color: #1a7a42;
 }

@@ -1,13 +1,13 @@
-/* ── Page ────────────────────────────────────────────────────── */
+/* ── Page Admin Product Detail ── */
 .apd-page {
     position: relative;
-    color: #e5e4e4;
+    color: var(--text-main);
 }
 
 .apd-loading {
     text-align: center;
     padding: 80px 0;
-    color: #555;
+    color: var(--text-muted);
     font-size: 0.875rem;
 }
 
@@ -25,8 +25,8 @@
     align-items: center;
     gap: 7px;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #a3a3a3;
+    border: 1px solid var(--border-main);
+    color: var(--text-muted);
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
@@ -38,9 +38,9 @@
 }
 
 .apd-back-btn:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    color: #e5e4e4;
-    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--text-main);
+    color: var(--text-main);
+    background: var(--bg-surface);
 }
 
 .apd-topbar-info {
@@ -61,8 +61,8 @@
     display: flex;
     align-items: center;
     gap: 7px;
-    background: #3b82f6;
-    color: #e5e4e4;
+    background: #3b82f6; /* Màu nút hệ thống admin */
+    color: #ffffff;
     border: none;
     padding: 10px 22px;
     border-radius: 8px;
@@ -92,15 +92,13 @@
 }
 
 @media (max-width: 900px) {
-    .apd-grid {
-        grid-template-columns: 1fr;
-    }
+    .apd-grid { grid-template-columns: 1fr; }
 }
 
-/* ── Card ────────────────────────────────────────────────────── */
+/* ── Card Khối hiển thị ────────────────────────────────────────── */
 .apd-card {
-    background: #111;
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-main);
     border-radius: 12px;
     padding: 20px 22px;
     margin-bottom: 16px;
@@ -126,7 +124,7 @@
 .apd-card-title {
     font-size: 0.82rem;
     font-weight: 700;
-    color: #666;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.6px;
     margin: 0 0 16px;
@@ -136,7 +134,7 @@
     margin-bottom: 0;
 }
 
-/* ── Form elements ───────────────────────────────────────────── */
+/* ── Form elements Ô nhập liệu ─────────────────────────────────── */
 .apd-form-row {
     margin-bottom: 14px;
 }
@@ -148,7 +146,7 @@
 .apd-form-label {
     display: block;
     font-size: 0.78rem;
-    color: #888;
+    color: var(--text-muted);
     font-weight: 500;
     margin-bottom: 6px;
 }
@@ -156,9 +154,9 @@
 .apd-form-input {
     width: 100%;
     padding: 9px 12px;
-    background: #1a1a1a;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #e5e4e4;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-main);
+    color: var(--text-main);
     border-radius: 8px;
     box-sizing: border-box;
     font-size: 0.875rem;
@@ -168,15 +166,16 @@
 }
 
 .apd-form-input:focus {
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: var(--accent-color);
+    background: var(--bg-main);
 }
 
 .apd-form-input::placeholder {
-    color: #444;
+    color: #94a3b8;
 }
 
 .apd-form-input option {
-    background: #1a1a1a;
+    background: var(--bg-main);
 }
 
 .apd-form-input:disabled {
@@ -196,12 +195,10 @@
 }
 
 @media (max-width: 600px) {
-    .apd-form-grid-3 {
-        grid-template-columns: 1fr;
-    }
+    .apd-form-grid-3 { grid-template-columns: 1fr; }
 }
 
-/* ── Brand / Category search ─────────────────────────────────── */
+/* ── Tìm kiếm Brand / Category ─────────────────────────────────── */
 .apd-search-wrap {
     position: relative;
     display: flex;
@@ -212,17 +209,17 @@
 .apd-search-icon {
     position: absolute;
     left: 9px;
-    color: #555;
+    color: var(--text-muted);
     pointer-events: none;
 }
 
 .apd-search-input {
     width: 100%;
     padding: 7px 10px 7px 28px;
-    background: #1a1a1a;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-main);
     border-radius: 7px;
-    color: #e5e4e4;
+    color: var(--text-main);
     font-size: 0.82rem;
     outline: none;
     box-sizing: border-box;
@@ -230,14 +227,13 @@
 }
 
 .apd-search-input:focus {
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: var(--accent-color);
 }
 
 .apd-search-input::placeholder {
-    color: #444;
+    color: #94a3b8;
 }
 
-/* Brand select list */
 .apd-select-list {
     height: 150px;
     overflow-y: auto;
@@ -245,7 +241,7 @@
     padding: 4px 0;
     cursor: pointer;
     scrollbar-width: thin;
-    scrollbar-color: #333 #1a1a1a;
+    scrollbar-color: var(--border-main) var(--bg-surface);
 }
 
 .apd-select-list option {
@@ -254,23 +250,23 @@
 }
 
 .apd-select-list option:checked {
-    background: #3b82f6;
-    color: #e5e4e4;
+    background: #2563eb;
+    color: #ffffff;
 }
 
 .apd-selected-hint {
     font-size: 0.75rem;
-    color: #555;
+    color: var(--text-muted);
     margin: 6px 0 0;
 }
 
 .apd-selected-hint strong {
-    color: #4ade80;
+    color: #16a34a;
 }
 
-/* Category picker */
+/* Bộ chọn danh mục */
 .apd-cat-count {
-    color: #3b82f6;
+    color: #2563eb;
     font-size: 0.75rem;
     font-weight: 400;
 }
@@ -280,13 +276,13 @@
     flex-wrap: wrap;
     gap: 6px;
     padding: 8px;
-    background: #1a1a1a;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-main);
     border-radius: 8px;
     max-height: 180px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #333 #1a1a1a;
+    scrollbar-color: var(--border-main) var(--bg-surface);
 }
 
 .apd-cat-chip {
@@ -294,39 +290,39 @@
     border-radius: 20px;
     font-size: 0.75rem;
     cursor: pointer;
-    background: #2a2a2a;
-    color: #aaa;
-    border: 1px solid #333;
+    background: var(--bg-main);
+    color: var(--text-main);
+    border: 1px solid var(--border-main);
     transition: all 0.15s;
     white-space: nowrap;
     user-select: none;
 }
 
 .apd-cat-chip:hover {
-    background: #333;
-    color: #e5e4e4;
+    background: var(--bg-surface);
+    color: var(--accent-color);
 }
 
 .apd-cat-chip--active {
-    background: #3b82f6;
-    color: #e5e4e4;
-    border-color: #3b82f6;
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
 }
 
 .apd-cat-chip--active:hover {
-    background: #2563eb;
+    background: #1d4ed8;
 }
 
 .apd-cat-empty {
     font-size: 0.8rem;
-    color: #555;
+    color: var(--text-muted);
     padding: 4px 6px;
 }
 
-/* ── Images ──────────────────────────────────────────────────── */
+/* ── Hình ảnh sản phẩm ────────────────────────────────────────────── */
 .apd-empty-hint {
     font-size: 0.82rem;
-    color: #555;
+    color: var(--text-muted);
     margin: 0;
 }
 
@@ -342,7 +338,7 @@
 }
 
 .apd-image-pos {
-    color: #555;
+    color: var(--text-muted);
     font-size: 0.78rem;
     white-space: nowrap;
     flex-shrink: 0;
@@ -353,13 +349,13 @@
     height: 40px;
     object-fit: cover;
     border-radius: 6px;
-    border: 1px solid #333;
+    border: 1px solid var(--border-main);
     flex-shrink: 0;
 }
 
 .apd-btn-remove {
     background: transparent;
-    color: #ef4444;
+    color: #dc2626;
     border: none;
     cursor: pointer;
     display: flex;
@@ -371,34 +367,34 @@
 }
 
 .apd-btn-remove:hover {
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(220, 38, 38, 0.08);
 }
 
-/* ── Variants ────────────────────────────────────────────────── */
+/* ── Các biến thể (Variants) ────────────────────────────────────────── */
 .apd-variant-card {
-    background: #1a1a1a;
+    background: var(--bg-surface);
     padding: 14px;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-main);
     margin-bottom: 10px;
 }
 
 .apd-variant-id {
     font-size: 11px;
-    color: #555;
+    color: var(--text-muted);
     font-weight: 600;
     margin-bottom: 10px;
 }
 
 .apd-variant-id span {
-    color: #3b82f6;
+    color: #2563eb;
 }
 
 .apd-btn-remove-variant {
     margin-top: 10px;
     background: transparent;
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #dc2626;
+    border: 1px solid rgba(220, 38, 38, 0.2);
     padding: 5px 14px;
     border-radius: 6px;
     cursor: pointer;
@@ -407,17 +403,17 @@
 }
 
 .apd-btn-remove-variant:hover {
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(220, 38, 38, 0.08);
 }
 
-/* ── Buttons ─────────────────────────────────────────────────── */
+/* ── Nút điều hướng phụ ─────────────────────────────────────────────────── */
 .apd-btn-add-sm {
     display: flex;
     align-items: center;
     gap: 5px;
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
-    border: 1px solid rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.08);
+    color: #16a34a;
+    border: 1px solid rgba(34, 197, 94, 0.2);
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
@@ -428,7 +424,7 @@
 }
 
 .apd-btn-add-sm:hover {
-    background: rgba(34, 197, 94, 0.25);
+    background: rgba(34, 197, 94, 0.15);
 }
 
 .apd-btn-add-variant-bottom {
@@ -445,8 +441,8 @@
     width: 100%;
     padding: 10px;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #888;
+    border: 1px solid var(--border-main);
+    color: var(--text-muted);
     border-radius: 8px;
     cursor: pointer;
     font-size: 0.875rem;
@@ -454,15 +450,15 @@
 }
 
 .apd-cancel-btn:hover {
-    border-color: rgba(255, 255, 255, 0.25);
-    color: #e5e4e4;
+    border-color: var(--text-main);
+    color: var(--text-main);
 }
 
-/* ── Leave confirm dialog ────────────────────────────────────── */
+/* ── Hộp hội thoại xác nhận thoát chưa lưu ────────────────────────────── */
 .apd-confirm-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -471,8 +467,8 @@
 }
 
 .apd-confirm-dialog {
-    background: #111;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-main);
+    border: 1px solid var(--border-main);
     border-radius: 14px;
     padding: 28px 24px;
     width: 90%;
@@ -481,18 +477,19 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08);
 }
 
 .apd-confirm-title {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #e5e4e4;
+    color: var(--text-main);
     margin: 0;
 }
 
 .apd-confirm-desc {
     font-size: 0.875rem;
-    color: #888;
+    color: var(--text-muted);
     margin: 0 0 8px;
 }
 
@@ -506,24 +503,24 @@
 .apd-confirm-btn-discard {
     padding: 8px 18px;
     border-radius: 999px;
-    border: 1px solid #444;
+    border: 1px solid var(--border-main);
     background: transparent;
-    color: #aaa;
+    color: var(--text-muted);
     cursor: pointer;
     font-size: 0.875rem;
     transition: background 0.2s;
 }
 
 .apd-confirm-btn-discard:hover {
-    background: #1a1a1a;
+    background: var(--bg-surface);
 }
 
 .apd-confirm-btn-save {
     padding: 8px 20px;
     border-radius: 999px;
     border: none;
-    background: #3b82f6;
-    color: #e5e4e4;
+    background: #2563eb;
+    color: #ffffff;
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 600;

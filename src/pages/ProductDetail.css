@@ -12,8 +12,8 @@ input[type="number"] {
 
 /* ── WRAPPER ─────────────────────────────────────────────────── */
 .pd-wrapper {
-  background: #000;
-  color: #e5e4e4;
+  background: var(--bg-main);
+  color: var(--text-main);
   min-height: 100vh;
   padding: 5rem 6%;
 }
@@ -31,9 +31,9 @@ input[type="number"] {
 .pd-main-image-box {
   width: 100%;
   height: 350px;
-  background: #111;
+  background: var(--bg-surface);
   border-radius: 1.5rem;
-  border: 1px solid #222;
+  border: 1px solid var(--border-main);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,9 +57,9 @@ input[type="number"] {
 .pd-thumb {
   width: 70px;
   height: 70px;
-  background: #111;
+  background: var(--bg-surface);
   border-radius: 10px;
-  border: 1px solid #333;
+  border: 1px solid var(--border-main);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -75,7 +75,7 @@ input[type="number"] {
 }
 
 .pd-thumb.active {
-  border: 2px solid #e5e4e4;
+  border: 2px solid var(--accent-color);
   opacity: 1;
 }
 
@@ -90,15 +90,17 @@ input[type="number"] {
   font-size: 2rem;
   font-weight: 800;
   line-height: 1.2;
+  color: var(--text-main);
 }
 
 .pd-price {
   font-size: 1.8rem;
   font-weight: 600;
+  color: var(--accent-color);
 }
 
 .pd-category {
-  color: #aaa;
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
@@ -110,12 +112,12 @@ input[type="number"] {
 .pd-variant-title {
   font-weight: 600;
   margin-bottom: 0.6rem;
-  color: #ccc;
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
 .pd-variant-selected {
-  color: #e5e4e4;
+  color: var(--text-main);
   font-weight: 700;
 }
 
@@ -128,42 +130,44 @@ input[type="number"] {
 .pd-variant-item {
   padding: 8px 16px;
   border-radius: 999px;
-  border: 1px solid #333;
-  background: #111;
-  color: #e5e4e4;
+  border: 1px solid var(--border-main);
+  background: var(--bg-surface);
+  color: var(--text-main);
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.2s ease;
 }
 
 .pd-variant-item:hover:not(.disabled) {
-  border-color: #e5e4e4;
+  border-color: var(--accent-color);
+  color: var(--accent-color);
   transform: translateY(-2px);
 }
 
 .pd-variant-item.active {
-  background: #e5e4e4;
-  color: #000;
-  border-color: #e5e4e4;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  background: var(--accent-gradient);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 5px 15px rgba(255, 85, 0, 0.2);
 }
 
-/* Option không có variant tương ứng */
 .pd-variant-item.disabled {
   opacity: 0.3;
   cursor: not-allowed;
   text-decoration: line-through;
+  background: var(--bg-surface);
+  border-color: var(--border-main);
 }
 
 /* ── STOCK ───────────────────────────────────────────────────── */
 .pd-stock {
   font-size: 0.85rem;
-  color: #4ade80;
+  color: #16a34a; /* Xanh đậm hơn trên nền sáng */
   margin: 0;
 }
 
 .pd-out-of-stock {
-  color: #ef4444;
+  color: #dc2626;
 }
 
 /* ── QTY ─────────────────────────────────────────────────────── */
@@ -176,32 +180,33 @@ input[type="number"] {
 .pd-qty-box {
   display: flex;
   align-items: center;
-  background: #111;
-  border: 1px solid #333;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .pd-qty-box button {
-  padding: 0.3rem 0.8rem;
-  background: #111;
-  color: #e5e4e4;
+  padding: 0.5rem 1rem;
+  background: var(--bg-surface);
+  color: var(--text-main);
   cursor: pointer;
   border: none;
+  transition: background 0.2s;
+}
+
+.pd-qty-box button:hover {
+  background: var(--border-main);
 }
 
 .pd-qty-input {
   width: 50px;
   text-align: center;
-  background: #111;
-  color: #e5e4e4;
+  background: var(--bg-main);
+  color: var(--text-main);
   border: none;
   outline: none;
-  -moz-appearance: textfield;
-}
-
-.pd-qty-input::-webkit-outer-spin-button,
-.pd-qty-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+  font-weight: 600;
 }
 
 /* ── ACTION BUTTONS ──────────────────────────────────────────── */
@@ -210,44 +215,53 @@ input[type="number"] {
   gap: 1rem;
 }
 
+/* Biến Add To Cart thành nút viền trong suốt thanh lịch */
 .pd-add-btn {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #e5e4e4;
-  color: #000;
+  background: transparent;
+  color: var(--accent-color);
+  border: 2px solid var(--accent-color);
   padding: 0.8rem 1.6rem;
   border-radius: 50px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.25s;
-  border: none;
+  transition: all 0.25s;
 }
 
 .pd-add-btn:hover:not(:disabled) {
-  transform: scale(1.05);
+  background: rgba(255, 85, 0, 0.05);
+  transform: scale(1.03);
 }
 
+/* Nút Buy Now tràn đầy dải màu năng lượng Gradient */
 .pd-buy-btn {
   flex: 1;
-  background: #e5e4e4;
-  color: #000;
+  background: var(--accent-gradient);
+  color: #ffffff;
   border: none;
   padding: 0.9rem;
   border-radius: 50px;
   font-weight: 700;
   cursor: pointer;
-  transition: 0.25s;
+  transition: all 0.25s;
 }
 
 .pd-buy-btn:hover:not(:disabled) {
-  transform: scale(1.05);
+  background: var(--accent-gradient-hover);
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(255, 85, 0, 0.2);
 }
 
 .pd-add-btn:disabled,
 .pd-buy-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+  background: #cbd5e1 !important;
+  color: #64748b !important;
+  border-color: transparent !important;
+  transform: none !important;
 }
 
 /* ── ADVANTAGES ──────────────────────────────────────────────── */
@@ -261,14 +275,15 @@ input[type="number"] {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #111;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
   padding: 0.5rem 1rem;
   border-radius: 1rem;
-  transition: 0.3s;
 }
 
 .pd-adv-item span {
-  color: #ddd;
+  color: var(--text-main);
+  font-size: 0.85rem;
 }
 
 /* ── DESCRIPTION ─────────────────────────────────────────────── */
@@ -285,13 +300,34 @@ input[type="number"] {
 }
 
 .pd-desc-content {
-  background: #111;
+  background: var(--bg-surface-elevated);
   padding: 2rem;
   border-radius: 1rem;
-  border: 1px solid #222;
+  border: 1px solid var(--border-main);
   line-height: 1.6;
   overflow: hidden;
   word-break: break-word;
+  color: var(--text-main);
+  transition: background 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển theme mượt mà */
+}
+
+/* 🌟 ĐOẠN SỬA LỖI: Ép màu chữ hệ thống lên toàn bộ các thẻ do Editor sinh ra */
+.pd-desc-content * {
+  color: var(--text-main) !important;
+  background-color: transparent !important; /* Xóa bỏ background trắng inline nếu có */
+}
+
+/* Giữ font-weight đậm cho các tiêu đề trong phần mô tả */
+.pd-desc-content h1,
+.pd-desc-content h2,
+.pd-desc-content h3,
+.pd-desc-content h4,
+.pd-desc-content h5,
+.pd-desc-content h6 {
+  color: var(--text-main) !important;
+  font-weight: 700 !important;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .pd-desc-content img {
@@ -305,8 +341,8 @@ input[type="number"] {
   position: absolute;
   top: -6px;
   right: -6px;
-  background: #e53e3e;
-  color: #e5e4e4;
+  background: #dc2626;
+  color: #ffffff;
   font-size: 11px;
   font-weight: 600;
   border-radius: 50%;
@@ -330,10 +366,10 @@ input[type="number"] {
   align-items: center;
   gap: 5px;
   font-size: 13px;
-  color: #718096;
+  color: var(--text-muted);
 }
 
 .pd-maxed-label {
-  color: #e53e3e;
+  color: #dc2626;
   font-weight: 500;
 }

@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ShoppingCart, Heart, ArrowLeftRight, X } from "lucide-react"; // Import thêm các icon
+import { ShoppingCart, Heart, ArrowLeftRight, X } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { usePreferences } from "../components/UsePreferences"; // Import hook quản lý yêu thích/so sánh
+import { usePreferences } from "../components/UsePreferences"; 
 import "./Products.css";
-import CompareModal from "../components/CompareModal"; // Modal hiển thị khi nhấn so sánh
+import CompareModal from "../components/CompareModal"; 
 
 
 const Products = () => {
   const navigate = useNavigate();
   const { isOutOfStock, isMaxedOut, getCartQuantity, addItemToCart } = useCart();
-  
-  // Lấy dữ liệu và hàm từ hook usePreferences
-
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const {  compareList,  toggleCompare, removeCompare, clearCompare } = usePreferences();
   const [isMinimized, setIsMinimized] = useState(false);
@@ -38,7 +35,7 @@ const Products = () => {
 
     minimizeTimeoutRef.current = setTimeout(() => {
       setIsMinimized(true);
-    }, 1500); // 1.5 giây tự động thu nhỏ
+    }, 4000); 
   };
 
   useEffect(() => {
@@ -407,12 +404,12 @@ const Products = () => {
       </div>
 
       <div 
-        className={`compare-sticky-bar ${compareList.length > 0 ? "visible" : ""} ${isMinimized ? "minimized" : ""}`}
+        className={`product-compare-sticky-bar ${compareList.length > 0 ? "visible" : ""} ${isMinimized ? "minimized" : ""}`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         {isMinimized ? (
-          <div className="compare-bubble-inner" onClick={() => setIsMinimized(false)} title="Mở rộng so sánh">
+          <div className="product-compare-bubble-inner" onClick={() => setIsMinimized(false)} title="Mở rộng so sánh">
             <ArrowLeftRight size={22} />
             <span className="compare-bubble-badge">{compareList.length}</span>
           </div>

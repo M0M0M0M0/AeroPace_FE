@@ -1,12 +1,13 @@
+/* AdminOrderDetail.css — Sporty Light Override */
 .aod-page {
     position: relative;
-    color: #e5e4e4;
+    color: var(--text-main);
 }
 
 .aod-loading {
     text-align: center;
     padding: 80px 0;
-    color: #555;
+    color: var(--text-muted);
     font-size: 0.875rem;
 }
 
@@ -30,7 +31,7 @@
     font-size: 1.35rem;
     font-weight: 700;
     margin: 0;
-    color: #e5e4e4;
+    color: var(--text-main);
 }
 
 .aod-header-meta {
@@ -42,25 +43,25 @@
 
 .aod-order-code {
     font-size: 0.78rem;
-    color: #666;
+    color: var(--text-muted);
     font-family: monospace;
     letter-spacing: 0.3px;
 }
 
 .aod-created {
     font-size: 0.78rem;
-    color: #555;
+    color: var(--text-muted);
     margin: 0;
 }
 
-/* ── Back button ──────────────────────────────────────────────── */
+/* ── Quay lại Button ────────────────────────────────────────────── */
 .aod-back-btn {
     display: flex;
     align-items: center;
     gap: 7px;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #a3a3a3;
+    border: 1px solid var(--border-main);
+    color: var(--text-muted);
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
@@ -72,12 +73,12 @@
 }
 
 .aod-back-btn:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    color: #e5e4e4;
-    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--text-main);
+    color: var(--text-main);
+    background: var(--bg-surface);
 }
 
-/* ── Status / payment badges ──────────────────────────────────── */
+/* ── Nhãn trạng thái / huy hiệu đơn hàng ──────────────────────────── */
 .aod-badge {
     display: inline-flex;
     align-items: center;
@@ -90,62 +91,61 @@
 }
 
 .aod-badge--paid {
-    background: rgba(96, 165, 250, 0.15);
-    color: #60a5fa;
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
 }
 
 .aod-badge--ship-cod {
-    background: rgba(250, 204, 21, 0.15);
-    color: #facc15;
+    background: rgba(234, 179, 8, 0.1);
+    color: #ca8a04;
 }
 
 .aod-badge--shipping {
-    background: rgba(251, 146, 60, 0.15);
-    color: #fb923c;
+    background: rgba(249, 115, 22, 0.1);
+    color: #ea580c;
 }
 
 .aod-badge--delivered {
-    background: rgba(74, 222, 128, 0.15);
-    color: #4ade80;
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
 }
 
 .aod-badge--cancelled {
-    background: rgba(248, 113, 113, 0.15);
-    color: #f87171;
+    background: rgba(239, 68, 68, 0.08);
+    color: #dc2626;
 }
 
-/* Payment method badges */
 .aod-badge--payment {
-    background: rgba(255, 255, 255, 0.06);
-    color: #a3a3a3;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-surface);
+    color: var(--text-muted);
+    border: 1px solid var(--border-main);
 }
 
 .aod-badge--stripe {
-    background: rgba(99, 102, 241, 0.15);
-    color: #818cf8;
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    background: rgba(99, 102, 241, 0.1);
+    color: #4f46e5;
+    border: 1px solid rgba(99, 102, 241, 0.15);
 }
 
 .aod-badge--cod {
-    background: rgba(250, 204, 21, 0.12);
-    color: #fbbf24;
-    border: 1px solid rgba(250, 204, 21, 0.2);
+    background: rgba(234, 179, 8, 0.08);
+    color: #b45309;
+    border: 1px solid rgba(234, 179, 8, 0.15);
 }
 
 .aod-badge--vnpay {
-    background: rgba(16, 185, 129, 0.12);
-    color: #34d399;
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    background: rgba(16, 185, 129, 0.08);
+    color: #047857;
+    border: 1px solid rgba(16, 185, 129, 0.15);
 }
 
 .aod-badge--momo {
-    background: rgba(236, 72, 153, 0.12);
-    color: #f472b6;
-    border: 1px solid rgba(236, 72, 153, 0.2);
+    background: rgba(236, 72, 153, 0.08);
+    color: #be185d;
+    border: 1px solid rgba(236, 72, 153, 0.15);
 }
 
-/* ── Grid layout ──────────────────────────────────────────────── */
+/* ── Layout Grid chính ─────────────────────────────────────────── */
 .aod-grid {
     display: grid;
     grid-template-columns: 1fr 300px;
@@ -154,35 +154,26 @@
 }
 
 @media (max-width: 900px) {
-    .aod-grid {
-        grid-template-columns: 1fr;
-    }
+    .aod-grid { grid-template-columns: 1fr; }
 }
 
-/* ── Card ─────────────────────────────────────────────────────── */
+/* ── Thẻ Card Admin ────────────────────────────────────────────── */
 .aod-card {
-    background: #111;
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-main);
     border-radius: 10px;
     padding: 18px 20px;
     margin-bottom: 14px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.01);
 }
 
 .aod-card:last-child {
     margin-bottom: 0;
 }
 
-.aod-card--note {
-    border-color: rgba(250, 204, 21, 0.12);
-}
-
-.aod-card--actions {
-    border-color: rgba(255, 255, 255, 0.09);
-}
-
-.aod-card--cancel-info {
-    border-color: rgba(248, 113, 113, 0.15);
-}
+.aod-card--note { border-color: #fde047; background: #fffdf5; }
+.aod-card--actions { border-color: var(--border-main); }
+.aod-card--cancel-info { border-color: #fca5a5; background: #fff5f5; }
 
 .aod-card-title {
     display: flex;
@@ -190,17 +181,15 @@
     gap: 7px;
     font-size: 0.72rem;
     font-weight: 700;
-    color: #555;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.8px;
     margin: 0 0 14px;
 }
 
-.aod-card-title--warn {
-    color: #f59e0b;
-}
+.aod-card-title--warn { color: #ca8a04; }
 
-/* ── Items list ───────────────────────────────────────────────── */
+/* ── Danh sách sản phẩm trong đơn ─────────────────────────────── */
 .aod-items {
     display: flex;
     flex-direction: column;
@@ -211,7 +200,8 @@
     align-items: center;
     gap: 12px;
     padding: 11px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--border-main);
+    color: var(--text-main);
 }
 
 .aod-item:last-child {
@@ -227,37 +217,35 @@
 }
 
 .aod-item--clickable:hover {
-    background: #1a1a1a;
+    background: var(--bg-surface);
 }
 
 .aod-item--clickable:hover .aod-item-arrow {
     opacity: 1;
-    color: #e5e4e4;
+    color: var(--text-main);
 }
 
-.aod-item-img-wrap {
-    flex-shrink: 0;
-}
+.aod-item-img-wrap { flex-shrink: 0; }
 
 .aod-item-img {
     width: 48px;
     height: 48px;
     border-radius: 7px;
     object-fit: cover;
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--border-main);
     display: block;
 }
 
 .aod-item-img--empty {
     width: 48px;
     height: 48px;
-    background: #1a1a1a;
+    background: var(--bg-surface);
     border-radius: 7px;
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--border-main);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #333;
+    color: var(--text-muted);
 }
 
 .aod-item-info {
@@ -270,53 +258,24 @@
 
 .aod-item-name {
     font-weight: 600;
-    color: #e5e5e5;
+    color: var(--text-main);
     font-size: 0.875rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.aod-item-variant {
-    font-size: 0.75rem;
-    color: #777;
-}
+.aod-item-variant { color: var(--text-muted); font-size: 0.75rem; }
+.aod-item-sku { font-size: 0.7rem; color: var(--text-muted); font-family: monospace; }
+.aod-item-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.aod-item-qty { font-size: 0.82rem; color: var(--text-muted); }
+.aod-item-price { font-weight: 700; color: var(--text-main); font-size: 0.875rem; white-space: nowrap; }
+.aod-item-arrow { color: var(--text-muted); opacity: 0; transition: opacity 0.15s; }
 
-.aod-item-sku {
-    font-size: 0.7rem;
-    color: #444;
-    font-family: monospace;
-}
-
-.aod-item-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-}
-
-.aod-item-qty {
-    font-size: 0.82rem;
-    color: #555;
-}
-
-.aod-item-price {
-    font-weight: 700;
-    color: #e5e5e5;
-    font-size: 0.875rem;
-    white-space: nowrap;
-}
-
-.aod-item-arrow {
-    color: #333;
-    opacity: 0;
-    transition: opacity 0.15s;
-}
-
-/* ── Pricing summary ──────────────────────────────────────────── */
+/* ── Tính toán tổng chi phí đơn ──────────────────────────── */
 .aod-pricing {
     margin-top: 14px;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid var(--border-main);
     padding-top: 4px;
 }
 
@@ -326,8 +285,8 @@
     align-items: center;
     padding: 7px 0;
     font-size: 0.85rem;
-    color: #888;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-main);
 }
 
 .aod-pricing-row:last-child {
@@ -337,9 +296,9 @@
 .aod-pricing-row--total {
     margin-top: 4px;
     padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--border-main);
     border-bottom: none;
-    color: #a3a3a3;
+    color: var(--text-main);
     font-weight: 600;
     font-size: 0.9rem;
 }
@@ -347,30 +306,23 @@
 .aod-total-price {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #e5e4e4;
+    color: var(--accent-color);
 }
 
-/* ── Note ─────────────────────────────────────────────────────── */
 .aod-note-text {
-    color: #a3a3a3;
+    color: var(--text-main);
     font-size: 0.875rem;
     line-height: 1.65;
     margin: 0;
 }
 
-/* ── Cancel info section ──────────────────────────────────────── */
-.aod-cancel-block {
-    margin-bottom: 14px;
-}
-
-.aod-cancel-block:last-child {
-    margin-bottom: 0;
-}
-
+/* ── Thông tin hủy đơn ──────────────────────────────────────── */
+.aod-cancel-block { margin-bottom: 14px; }
+.aod-cancel-block:last-child { margin-bottom: 0; }
 .aod-cancel-block-label {
     font-size: 0.68rem;
     font-weight: 700;
-    color: #555;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.6px;
     margin: 0 0 6px;
@@ -386,73 +338,26 @@
     line-height: 1.5;
 }
 
-.aod-cancel-tag--red {
-    background: rgba(248, 113, 113, 0.1);
-    border: 1px solid rgba(248, 113, 113, 0.2);
-    color: #fca5a5;
-}
+.aod-cancel-tag--red { background: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c; }
+.aod-cancel-tag--red-soft { background: var(--bg-surface); border: 1px solid var(--border-main); color: var(--text-main); }
+.aod-cancel-tag--yellow { background: #fef9c3; border: 1px solid #fef08a; color: #a16207; }
 
-.aod-cancel-tag--red-soft {
-    background: rgba(248, 113, 113, 0.07);
-    border: 1px solid rgba(248, 113, 113, 0.15);
-    color: #d1d5db;
-}
-
-.aod-cancel-tag--yellow {
-    background: rgba(250, 204, 21, 0.08);
-    border: 1px solid rgba(250, 204, 21, 0.18);
-    color: #fde68a;
-}
-
-/* ── Info list (người nhận) ───────────────────────────────────── */
-.aod-info-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    margin-bottom: 14px;
-}
-
+/* ── Thông tin khách hàng người nhận ───────────────────────────── */
+.aod-info-list { display: flex; flex-direction: column; gap: 0; margin-bottom: 14px; }
 .aod-info-row {
     display: flex;
     align-items: flex-start;
     gap: 10px;
     padding: 9px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--border-main);
 }
 
-.aod-info-row:last-child {
-    border-bottom: none;
-}
+.aod-info-row:last-child { border-bottom: none; }
+.aod-info-icon { color: var(--text-muted); margin-top: 1px; flex-shrink: 0; }
+.aod-info-content { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.aod-info-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+.aod-info-value { font-size: 0.875rem; color: var(--text-main); word-break: break-word; }
 
-.aod-info-icon {
-    color: #444;
-    margin-top: 1px;
-    flex-shrink: 0;
-}
-
-.aod-info-content {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    flex: 1;
-    min-width: 0;
-}
-
-.aod-info-label {
-    font-size: 0.68rem;
-    color: #555;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-}
-
-.aod-info-value {
-    font-size: 0.875rem;
-    color: #e5e5e5;
-    word-break: break-word;
-}
-
-/* Xem tài khoản button */
 .aod-btn-view-account {
     display: flex;
     align-items: center;
@@ -461,9 +366,9 @@
     width: 100%;
     padding: 9px 16px;
     border-radius: 7px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.04);
-    color: #a3a3a3;
+    border: 1px solid var(--border-main);
+    background: var(--bg-surface);
+    color: var(--text-main);
     cursor: pointer;
     font-size: 0.82rem;
     font-weight: 500;
@@ -471,17 +376,12 @@
 }
 
 .aod-btn-view-account:hover {
-    border-color: rgba(255, 255, 255, 0.22);
-    color: #e5e4e4;
-    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--text-muted);
+    background: var(--border-main);
 }
 
-/* ── Action buttons ───────────────────────────────────────────── */
-.aod-action-btns {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
+/* ── Nút Xử lý trạng thái Đơn hàng ─────────────────────────────── */
+.aod-action-btns { display: flex; flex-direction: column; gap: 8px; }
 
 .aod-btn-next-status {
     display: flex;
@@ -492,8 +392,8 @@
     padding: 10px 18px;
     border-radius: 7px;
     border: none;
-    background: #e5e4e4;
-    color: #000;
+    background: var(--accent-gradient);
+    color: #ffffff;
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 700;
@@ -501,11 +401,13 @@
 }
 
 .aod-btn-next-status:hover:not(:disabled) {
-    opacity: 0.85;
+    background: var(--accent-gradient-hover);
+    box-shadow: 0 4px 12px rgba(255, 85, 0, 0.15);
 }
 
 .aod-btn-next-status:disabled {
-    opacity: 0.45;
+    background: #cbd5e1 !important;
+    color: #64748b !important;
     cursor: not-allowed;
 }
 
@@ -517,9 +419,9 @@
     width: 100%;
     padding: 10px 18px;
     border-radius: 7px;
-    border: 1px solid rgba(248, 113, 113, 0.25);
-    background: rgba(248, 113, 113, 0.07);
-    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.08);
+    color: #dc2626;
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 600;
@@ -527,20 +429,14 @@
 }
 
 .aod-btn-cancel-order:hover:not(:disabled) {
-    background: rgba(248, 113, 113, 0.13);
-    border-color: rgba(248, 113, 113, 0.4);
+    background: rgba(239, 68, 68, 0.15);
 }
 
-.aod-btn-cancel-order:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-}
-
-/* ── MODALS ────────────────────────────────────────────────────── */
+/* ── MODAL WINDOWS SYSTEM ────────────────────────────────────────── */
 .aod-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -549,8 +445,8 @@
 }
 
 .aod-modal {
-    background: #111;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-main);
+    border: 1px solid var(--border-main);
     border-radius: 14px;
     width: 100%;
     max-width: 460px;
@@ -560,38 +456,16 @@
     gap: 18px;
     max-height: 85vh;
     overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
 }
 
-.aod-modal--sm {
-    max-width: 420px;
-}
-
-.aod-modal--product {
-    max-width: 480px;
-}
-
-.aod-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.aod-modal-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    margin: 0 0 4px;
-}
-
-.aod-modal-sub {
-    font-size: 0.78rem;
-    color: #555;
-    margin: 0;
-}
+.aod-modal-title { font-size: 1.05rem; font-weight: 700; color: var(--text-main); }
+.aod-modal-sub { font-size: 0.78rem; color: var(--text-muted); margin: 0; }
 
 .aod-modal-close {
     background: transparent;
     border: none;
-    color: #555;
+    color: var(--text-muted);
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
@@ -599,202 +473,39 @@
     transition: color 0.2s;
 }
 
-.aod-modal-close:hover {
-    color: #e5e4e4;
-}
-
-.aod-modal-loading {
-    text-align: center;
-    padding: 20px;
-    color: #555;
-    font-size: 0.875rem;
-}
-
-.aod-modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-/* Product image */
-.aod-product-image-wrap {
-    display: flex;
-    justify-content: center;
-}
-
-.aod-product-image {
-    width: 160px;
-    height: 160px;
-    object-fit: cover;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Fields */
-.aod-product-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-}
-
-.aod-field-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 9px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    gap: 14px;
-}
-
-.aod-field-row:last-child {
-    border-bottom: none;
-}
-
-.aod-field-row--total {
-    padding-top: 12px;
-    margin-top: 4px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    border-bottom: none;
-}
-
-.aod-field-label {
-    font-size: 0.75rem;
-    color: #555;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.aod-field-value {
-    font-size: 0.875rem;
-    color: #e5e5e5;
-    text-align: right;
-    word-break: break-word;
-    max-width: 260px;
-}
-
-.aod-field-value--mono {
-    font-family: monospace;
-    color: #888;
-}
-
-.aod-field-value--price {
-    color: #4ade80;
-    font-weight: 700;
-}
-
-/* Cancel modal */
-.aod-cancel-desc {
-    font-size: 0.875rem;
-    color: #888;
-    margin: 0;
-    line-height: 1.6;
-}
-
-.aod-form-row {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-}
-
-.aod-form-row label {
-    font-size: 0.78rem;
-    color: #888;
-    font-weight: 500;
-}
+.aod-modal-close:hover { color: var(--text-main); }
+.aod-product-image { border: 1px solid var(--border-main); }
+.aod-field-row { border-bottom: 1px solid var(--border-main); }
+.aod-field-row--total { border-top: 1px solid var(--border-main); }
+.aod-field-label { color: var(--text-muted); }
+.aod-field-value { color: var(--text-main); }
+.aod-field-value--price { color: #16a34a; font-weight: 700; }
 
 .aod-form-row textarea {
-    background: #1a1a1a;
-    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-main);
     border-radius: 7px;
-    color: #e5e4e4;
+    color: var(--text-main);
     padding: 10px 12px;
-    font-size: 0.875rem;
     outline: none;
-    transition: border-color 0.2s;
-    resize: vertical;
-    font-family: inherit;
 }
+.aod-form-row textarea:focus { border-color: var(--accent-color); }
 
-.aod-form-row textarea:focus {
-    border-color: rgba(255, 255, 255, 0.25);
-}
-
-.aod-form-row textarea::placeholder {
-    color: #444;
-}
-
-.aod-form-error {
-    font-size: 0.8rem;
-    color: #f87171;
-    margin: 0;
-    padding: 7px 10px;
-    background: rgba(248, 113, 113, 0.08);
-    border: 1px solid rgba(248, 113, 113, 0.18);
-    border-radius: 6px;
-}
-
-/* Buttons */
 .aod-btn-ghost {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #888;
-    padding: 9px 18px;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: all 0.2s;
+    border: 1px solid var(--border-main);
+    color: var(--text-muted);
 }
+.aod-btn-ghost:hover { border-color: var(--text-main); color: var(--text-main); background: var(--bg-surface); }
 
-.aod-btn-ghost:hover {
-    border-color: rgba(255, 255, 255, 0.25);
-    color: #e5e4e4;
-}
-
-.aod-btn-danger {
-    background: #ef4444;
-    color: #e5e4e4;
-    border: none;
-    padding: 9px 20px;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    font-weight: 700;
-    transition: opacity 0.2s;
-}
-
-.aod-btn-danger:hover {
-    opacity: 0.85;
-}
-
-.aod-confirm-desc {
-    font-size: 0.875rem;
-    color: #888;
-    line-height: 1.6;
-    margin: 0;
-}
-
-.aod-confirm-desc strong {
-    color: #e5e4e4;
-    font-weight: 600;
-}
+.aod-btn-danger { background: #dc2626; color: white; border-radius: 7px; font-weight: 700; border: none;}
+.aod-btn-danger:hover { opacity: 0.9; }
 
 .aod-btn-confirm-status {
-    background: #e5e4e4;
-    color: #000;
+    background: var(--text-main);
+    color: var(--bg-main);
     border: none;
-    padding: 9px 20px;
     border-radius: 7px;
-    cursor: pointer;
-    font-size: 0.875rem;
     font-weight: 700;
-    transition: opacity 0.2s;
-}
-
-.aod-btn-confirm-status:hover:not(:disabled) {
-    opacity: 0.85;
-}
-
-.aod-btn-confirm-status:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
+    cursor: pointer;
 }

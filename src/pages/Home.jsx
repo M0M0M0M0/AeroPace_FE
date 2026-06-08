@@ -49,37 +49,32 @@ const Home = () => {
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const { compareList, toggleCompare, removeCompare, clearCompare } = usePreferences();
   const [isMinimized, setIsMinimized] = useState(false);
-  const minimizeTimeoutRef = useRef(null); // Dùng ref để lưu trữ ID của bộ đếm thời gian
+  const minimizeTimeoutRef = useRef(null); 
 
-  // Tự động mở rộng khi thêm sản phẩm mới
+
   useEffect(() => {
     if (compareList.length > 0) {
       setIsMinimized(false);
     }
   }, [compareList.length]);
 
-  // Khi người dùng di chuột VÀO thanh so sánh -> Hủy đếm ngược (giữ nguyên trạng thái mở)
   const handleMouseEnter = () => {
     if (minimizeTimeoutRef.current) {
       clearTimeout(minimizeTimeoutRef.current);
     }
   };
 
-  // Khi người dùng di chuột RA KHỎI thanh so sánh -> Chờ 1.5 giây rồi tự thu nhỏ
-  const handleMouseLeave = () => {
-    if (isCompareModalOpen) return; // Nếu đang mở bảng so sánh chi tiết thì không thu nhỏ
-    if (compareList.length === 0) return;
 
-    // Xóa bộ đếm cũ nếu có trước khi thiết lập bộ đếm mới
+  const handleMouseLeave = () => {
+    if (isCompareModalOpen) return;
+    if (compareList.length === 0) return;
     if (minimizeTimeoutRef.current) clearTimeout(minimizeTimeoutRef.current);
 
-    // Bắt đầu đếm ngược 1500ms (1.5 giây). Bạn có thể sửa thành 2000 nếu muốn tròn 2 giây.
+    
     minimizeTimeoutRef.current = setTimeout(() => {
       setIsMinimized(true);
-    }, 1500);
+    }, 4000);
   };
-
-  // Dọn dẹp bộ đếm khi người dùng chuyển trang để tránh rò rỉ bộ nhớ
   useEffect(() => {
     return () => {
       if (minimizeTimeoutRef.current) clearTimeout(minimizeTimeoutRef.current);
@@ -113,9 +108,8 @@ const Home = () => {
             ) : null;
           })()}
           
-          {/* 2. THAY THẾ PHẦN div.home-card-top CŨ BẰNG ĐOẠN NÀY */}
+         
           <div className="home-card-top">
-            {/* THÊM KHỐI NÚT ACTION VÀO ĐÂY */}
             <div className="card-actions-overlay">
               <button className="action-icon-btn" onClick={(e) => toggleCompare(item, e)}>
                 <ArrowLeftRight size={18} color={isCompared ? "#2563eb" : "#333"} />
@@ -261,14 +255,14 @@ const Home = () => {
       </section>
       
       <div 
-        className={`compare-sticky-bar ${compareList.length > 0 ? "visible" : ""} ${isMinimized ? "minimized" : ""}`}
+        className={`home-compare-sticky-bar ${compareList.length > 0 ? "visible" : ""} ${isMinimized ? "minimized" : ""}`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         {isMinimized ? (
-          <div className="compare-bubble-inner" onClick={() => setIsMinimized(false)} title="Mở rộng so sánh">
+          <div className="home-compare-bubble-inner" onClick={() => setIsMinimized(false)} title="Mở rộng so sánh">
             <ArrowLeftRight size={22}/>
-            <span className="compare-bubble-badge">{compareList.length}</span>
+            <span className="home-compare-bubble-badge">{compareList.length}</span>
           </div>
         ) : (
           /* Giao diện THANH NGANG đầy đủ */
