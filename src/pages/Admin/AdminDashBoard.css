@@ -172,7 +172,7 @@
 }
 
 /* ── Doughnut ────────────────────────────────────────────────── */
-.ad-donut-card {}
+
 .ad-doughnut-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
 .ad-doughnut-legend { width: 100%; display: flex; flex-direction: column; gap: 8px; }
 .ad-legend-row {

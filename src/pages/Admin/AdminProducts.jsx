@@ -71,7 +71,7 @@ const AdminProducts = () => {
   const [filterPriceMax, setFilterPriceMax] = useState("");
   const [filterStockMin, setFilterStockMin] = useState("");
   const [filterStockMax, setFilterStockMax] = useState("");
-  const [filterStatus, setFilterStatus] = useState([]);
+  const [filterStatus, setFilterStatus] = useState("");
 
   // ── Best sellers mode ─────────────────────────────────────────
   const [bsMode, setBsMode] = useState(false);
@@ -102,7 +102,7 @@ const AdminProducts = () => {
       if (filterPriceMax) params.append("maxPrice", filterPriceMax);
       if (filterStockMin) params.append("stockMin", filterStockMin);
       if (filterStockMax) params.append("stockMax", filterStockMax);
-      filterStatus.forEach((s) => params.append("statuses", s));
+      if (filterStatus) params.append("statuses", filterStatus);
       console.log("Fetching products with params:", params.toString());
 
       const res = await axios.get(`${BASE}/products/filter?${params}`, { headers: authHeader(), signal: abortRef.current.signal });
@@ -175,13 +175,13 @@ const AdminProducts = () => {
     setFilterName(""); setFilterProductId(""); setFilterVariantId("");
     setFilterSku(""); setFilterBrand([]); setFilterCategory([]);
     setFilterPriceMin(""); setFilterPriceMax("");
-    setFilterStockMin(""); setFilterStockMax(""); setFilterStatus([]);
+    setFilterStockMin(""); setFilterStockMax(""); setFilterStatus("");
     setPage(0);
   };
 
   const hasActiveFilter = filterName || filterProductId || filterVariantId || filterSku ||
     filterBrand.length > 0 || filterCategory.length > 0 || filterPriceMin || filterPriceMax ||
-    filterStockMin || filterStockMax || filterStatus.length > 0;
+    filterStockMin || filterStockMax || !!filterStatus;
 
   const toggleFilter = (value, list, setList) => {
     setList(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
@@ -278,18 +278,12 @@ const AdminProducts = () => {
           </div>
           <div className="adp-filter-field adp-filter-field--sm">
             <label className="adp-filter-label">Status</label>
-            <select className="adp-filter-input" value=""
-              onChange={(e) => { if (e.target.value) toggleFilter(e.target.value, filterStatus, setFilterStatus); }}>
+            <select className="adp-filter-input" value={filterStatus}
+              onChange={(e) => { setFilterStatus(e.target.value); setPage(0); }}>
               <option value="">Status</option>
-              {["ACTIVE", "DRAFT", "ARCHIVED", "DELETED"].filter((s) => !filterStatus.includes(s))
+              {["ACTIVE", "DRAFT", "ARCHIVED", "DELETED"]
                 .map((s) => <option key={s} value={s}>{STATUS_CONFIG[s]?.label}</option>)}
             </select>
-            <div className="adp-filter-tags">
-              {filterStatus.map((s) => (
-                <span key={s} className="adp-filter-tag">{STATUS_CONFIG[s]?.label}
-                  <button onClick={() => toggleFilter(s, filterStatus, setFilterStatus)}>✕</button>
-                </span>))}
-            </div>
           </div>
           <div className="adp-filter-field adp-filter-field--range">
             <label className="adp-filter-label">Price Range (₫)</label>
