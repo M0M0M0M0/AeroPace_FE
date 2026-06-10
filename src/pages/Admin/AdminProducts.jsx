@@ -47,15 +47,6 @@ const AdminProducts = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ── Delay api call ───────────────────────────────────────
-  const debounceRef = useRef(null);
-
-  const setFilterDebounced = (setter) => (e) => {
-    const val = e.target.value;
-    setter(val);
-    setPage(0);
-  };
-
   // ── Pagination ────────────────────────────────────────────────
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -79,8 +70,6 @@ const AdminProducts = () => {
   const [bsDateFrom, setBsDateFrom] = useState("");
   const [bsDateTo, setBsDateTo] = useState("");
   const [bsLimit, setBsLimit] = useState(10);
-  const [bsLoading, setBsLoading] = useState(false);
-  const [bestSellers, setBestSellers] = useState([]);
 
   // ── Fetch products ────────────────────────────────────────────
   const abortRef = useRef(null);
@@ -104,69 +93,76 @@ const AdminProducts = () => {
       if (filterStockMax) params.append("stockMax", filterStockMax);
       if (filterStatus) params.append("statuses", filterStatus);
 
-      const res = await axios.get(`${BASE}/products/filter?${params}`, { headers: authHeader(), signal: abortRef.current.signal });
+      // Best-seller params — chỉ append khi bsMode
+      if (bsMode && bsDateFrom && bsDateTo) {
+        params.append("sortByBestSeller", "true");
+        params.append("dateFrom", bsDateFrom);
+        params.append("dateTo", bsDateTo);
+        params.append("limit", bsLimit);
+      }
+
+      const res = await axios.get(`${BASE}/products/filter?${params}`, {
+        headers: authHeader(),
+        signal: abortRef.current.signal,
+      });
+
       setProducts(res.data.products || res.data.content || []);
       setTotalPages(res.data.totalPages || 1);
-      console.log(res.data);
     } catch (err) {
       if (axios.isCancel(err)) return;
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [page, filterName, filterProductId, filterVariantId, filterSku, filterBrand, filterCategory,
-    filterPriceMin, filterPriceMax, filterStockMin, filterStockMax, filterStatus]);
-
+  }, [
+    page, filterName, filterProductId, filterVariantId, filterSku,
+    filterBrand, filterCategory, filterPriceMin, filterPriceMax,
+    filterStockMin, filterStockMax, filterStatus,
+    bsMode, bsDateFrom, bsDateTo, bsLimit,
+  ]);
   const fetchBrands = async () => { const r = await axios.get(`http://localhost:8080/api/v1/brands`); setBrands(r.data); };
   const fetchCategories = async () => { const r = await axios.get(`http://localhost:8080/api/v1/categories`); setCategories(r.data); };
 
   useEffect(() => { fetchBrands(); fetchCategories(); }, []);
   useEffect(() => {
-    if (bsMode) return;
-
-    const timer = setTimeout(() => {
-      fetchProducts(page);
-    }, 500); // chờ 500ms
-
+    const timer = setTimeout(() => fetchProducts(page), 500);
     return () => clearTimeout(timer);
-  }, [page, filterName, filterProductId, filterVariantId, filterSku, filterBrand, filterCategory,
-    filterPriceMin, filterPriceMax, filterStockMin, filterStockMax, filterStatus, bsMode]);
+  }, [
+    page, filterName, filterProductId, filterVariantId, filterSku,
+    filterBrand, filterCategory, filterPriceMin, filterPriceMax,
+    filterStockMin, filterStockMax, filterStatus,
+    bsMode, bsDateFrom, bsDateTo, bsLimit,
+  ]);
 
-  // ── Best sellers ──────────────────────────────────────────────
-  const fetchBestSellers = useCallback(async (dateFrom, dateTo, limit) => {
-    if (!dateFrom || !dateTo) return;
-    setBsLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.append("dateFrom", dateFrom);
-      params.append("dateTo", dateTo);
-      params.append("limit", limit);
-      const res = await axios.get(`${BASE}/products/best-sellers?${params}`, { headers: authHeader() });
-      setBestSellers(res.data || []);
-    } catch (err) { console.error(err); }
-    finally { setBsLoading(false); }
-  }, []);
 
   const handlePresetClick = (preset) => {
     const { dateFrom, dateTo } = preset.getValue();
-    setBsPreset(preset.label); setBsDateFrom(dateFrom); setBsDateTo(dateTo);
+    setBsPreset(preset.label);
+    setBsDateFrom(dateFrom);
+    setBsDateTo(dateTo);
     setBsMode(true);
-    fetchBestSellers(dateFrom, dateTo, bsLimit);
+    setPage(0);
   };
 
   const handleBsCustomApply = () => {
     if (!bsDateFrom || !bsDateTo) return;
-    setBsPreset(null); setBsMode(true);
-    fetchBestSellers(bsDateFrom, bsDateTo, bsLimit);
+    setBsPreset(null);
+    setBsMode(true);
+    setPage(0);
   };
 
   const handleBsLimitChange = (newLimit) => {
     setBsLimit(newLimit);
-    if (bsMode && bsDateFrom && bsDateTo) fetchBestSellers(bsDateFrom, bsDateTo, newLimit);
+    setPage(0);
   };
 
   const clearBsMode = () => {
-    setBsMode(false); setBsPreset(null); setBsDateFrom(""); setBsDateTo(""); setBsLimit(10); setBestSellers([]);
+    setBsMode(false);
+    setBsPreset(null);
+    setBsDateFrom("");
+    setBsDateTo("");
+    setBsLimit(10);
+    setPage(0);
   };
 
   // ── Filters ───────────────────────────────────────────────────
@@ -201,8 +197,8 @@ const AdminProducts = () => {
   const getTotalStock = (variants) =>
     variants?.filter((v) => !v.isDeleted).reduce((sum, v) => sum + (Number(v.stock) || 0), 0) || 0;
 
-  const displayProducts = bsMode ? bestSellers : products;
-  const displayLoading = bsMode ? bsLoading : loading;
+  const displayProducts = products;
+  const displayLoading = loading;
 
   return (
     <div className="adp-page">
@@ -355,7 +351,7 @@ const AdminProducts = () => {
               {bsMode ? (
                 <span className="adp-filter-result">
                   <Trophy size={13} style={{ marginRight: 4 }} />
-                  Top <strong>{bestSellers.length}</strong> Best Sellers
+                  Top <strong>{products.length}</strong> Best Sellers
                   {bsDateFrom && bsDateTo && ` (${bsDateFrom} → ${bsDateTo})`}
                 </span>
               ) : (
@@ -397,7 +393,6 @@ const AdminProducts = () => {
                     : <div className="adp-thumb adp-thumb--empty">No img</div>}
                 </td>
                 <td className="adp-id">
-                  {bsMode && idx < 3 && <span className="adp-rank-badge">#{idx + 1}</span>}
                   #{product.id}
                 </td>
                 <td className="adp-name">{product.name}</td>

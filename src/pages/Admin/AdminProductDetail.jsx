@@ -86,7 +86,6 @@ const AdminProductDetail = () => {
         const product = products.find((p) => String(p.id) === String(id));
         if (!product) { alert("Không tìm thấy sản phẩm."); navigate("/admin/products"); return; }
 
-        // Wait for brands to be loaded before resolving brandId
         const brRes = await axios.get(`http://localhost:8080/api/v1/brands`);
         const allBrands = brRes.data;
 
