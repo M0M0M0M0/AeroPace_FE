@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.5rem;
   color: var(--text-muted);
 }
 
@@ -13,6 +13,7 @@
   color: var(--text-main);
   min-height: 100vh;
   padding: 4rem 6%;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .cart-container {
@@ -113,7 +114,7 @@
 }
 
 .cart-remove {
-  background: #dc2626; /* Đỏ đục cảnh báo nguy hiểm */
+  background: #dc2626;
   border-radius: 50%;
   padding: 0.5rem;
   margin-left: 0.5rem;
@@ -143,7 +144,7 @@
 }
 
 .cart-total .total-price {
-  color: var(--accent-color); /* Đồng bộ tổng tiền sang màu cam nhấn */
+  color: var(--accent-color); 
   font-size: 1.5rem;
 }
 
@@ -155,7 +156,6 @@
   margin-top: 1rem;
 }
 
-/* Nút Checkout bùng nổ Gradient */
 .cart-page-btn {
   padding: 0.75rem 1.8rem;
   border-radius: 999px;
@@ -167,12 +167,16 @@
   transition: background 0.3s ease;
 }
 
+.cart-page-btn {
+  text-decoration: none; 
+}
+
 .cart-page-btn:hover:not(.cart-page-btn-disabled) {
   background: var(--accent-gradient-hover);
   box-shadow: 0 6px 15px rgba(255, 85, 0, 0.2);
 }
 
-/* Nút xóa sạch giỏ hàng kiểu Ghost cảnh báo */
+
 .cart-page-btn-red {
   background: rgba(220, 38, 38, 0.08);
   border: 1px solid rgba(220, 38, 38, 0.2);

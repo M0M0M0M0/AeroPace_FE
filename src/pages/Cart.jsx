@@ -54,15 +54,20 @@ const Cart = () => {
     );
   }, [cart]);
 
+  // ─── SỬA LỖI HIỂN THỊ KHI GIỎ HÀNG TRỐNG TẠI ĐÂY ──────────────────
   if (!cart || !cart.items || cart.items.length === 0)
     return (
-      <div className="cart-empty">
-        <p>Cart is empty.</p>
-        <button className="btn" onClick={() => navigate("/products")}>
-          Back to Store
-        </button>
+      <div className="cart-page"> {/* Bổ sung lớp bọc để ăn màu giao diện */}
+        <div className="cart-empty">
+          <p>Cart is empty.</p>
+          {/* Đổi từ class "btn" sang "cart-page-btn" để lấy màu Gradient */}
+          <button className="cart-page-btn" onClick={() => navigate("/products")}>
+            Back to Store
+          </button>
+        </div>
       </div>
     );
+  // ─────────────────────────────────────────────────────────────────
 
   return (
     <div className="cart-page">
@@ -186,7 +191,6 @@ const Cart = () => {
 
           {/* Actions */}
           <div className="cart-page-actions">
-
             <button
               className={`cart-page-btn ${hasInvalidItems ? "cart-page-btn-disabled" : ""}`}
               disabled={hasInvalidItems}
