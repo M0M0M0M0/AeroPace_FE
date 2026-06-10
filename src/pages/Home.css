@@ -121,20 +121,86 @@
 }
 
 .home-container {
-  max-width: 1200px;
+  max-width: 1450px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 24px;
 }
 
-.home-scroll-row {
+.home-carousel-wrapper {
   display: flex;
-  gap: 20px;
-  width: max-content;
-  animation: home-scrollIcons 25s linear infinite;
+  align-items: center;
+  gap: 12px;
 }
+
+.home-carousel-viewport {
+  flex: 1;
+  overflow: hidden;
+}
+
+.home-carousel-track {
+  display: flex;
+  width: 100%;
+  gap: 16px;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.home-carousel-track .home-scroll-item {
+  flex: 0 0 200px;
+  width: 200px;
+}
+
+.home-carousel-btn {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffa322, #ff6b00);
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(255, 163, 34, 0.4);
+}
+
+.home-carousel-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5);
+}
+
+.home-carousel-btn:active {
+  transform: scale(0.95);
+}
+
+.home-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.home-carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #444;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.home-carousel-dot--active {
+  background: linear-gradient(135deg, #ffa322, #ff6b00);
+  transform: scale(1.3);
+}
+
 
 .home-scroll-item {
-  flex: 0 0 auto;
+  flex: 0 0 200px;
   width: 200px;
   border-radius: 15px;
   overflow: hidden;
@@ -257,6 +323,7 @@
 }
 
 .home-card-details {
+  background: var(--bg-surface);
   padding-left: 15px;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -279,12 +346,14 @@
 }
 
 .home-card-buy {
+  color: #efefef;
   width: 30%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   background: var(--bg-surface);
+  color: var(--text-muted);
   transition: background 0.2s;
 }
 
@@ -296,6 +365,7 @@
 
 .home-card-buy:hover {
   background: var(--accent-gradient);
+  color: #ffffff;
 }
 
 .home-card-right {
@@ -717,11 +787,6 @@
 @keyframes home-fadeUp {
   from { opacity: 0; transform: translateY(40px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes home-scrollIcons {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
 }
 
 @media (max-width: 768px) {

@@ -25,7 +25,9 @@
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
-  transition: background-color 0.3s ease, color 0.3s ease; 
+  min-height: 100vh;
+  line-height: 1.5;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 * {
@@ -33,13 +35,6 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Inter", sans-serif;
-}
-
-body {
-  background-color: rgb(0, 0, 0, 0.9);
-  color: #e5e4e4;
-  min-height: 100vh;
-  line-height: 1.5;
 }
 
 a {
