@@ -105,7 +105,7 @@ const AdminOrders = () => {
     if (order.paymentStatus === "REFUNDED") return "REFUNDED";
     switch (order.status) {
       case "PENDING": return "PENDING";
-      case "PAID": return "WAITING FOR DELIVERY";
+      case "PAID": return "PROCESSING";
       case "SHIPPING": return "SHIPPING";
       case "DELIVERED": return "DELIVERED";
       case "COMPLETED": return "COMPLETED";

@@ -14,7 +14,7 @@ import {
 import { useCart } from "../context/CartContext";
 import logo from "../../public/favicon_io/LogoAero.png";
 import { useAuth } from "../context/AuthContext";
-
+import { useTheme } from "../context/ThemeContext";
 import "./Navbar.css";
 
 function Navbar() {
@@ -31,16 +31,7 @@ function Navbar() {
   const hideSearch = pathname.startsWith("/products");
 
   // ─── LOGIC LIGHT/DARK MODE ───────────────────────────────────────
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-  };
+  const { theme, toggleTheme } = useTheme();
   // ─────────────────────────────────────────────────────────────────
 
   const handleSearch = (e) => {

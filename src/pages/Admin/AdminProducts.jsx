@@ -143,8 +143,17 @@ const AdminProducts = () => {
     bsMode, bsDateFrom, bsDateTo, bsLimit,
   ]);
 
-  const fetchBrands = async () => { const r = await axios.get(`http://localhost:8080/api/v1/brands`); setBrands(r.data); };
-  const fetchCategories = async () => { const r = await axios.get(`http://localhost:8080/api/v1/categories`); setCategories(r.data); };
+  const fetchBrands = async () => { 
+    const r = await axios.get(`http://localhost:8080/api/v1/brands`); 
+    const sortedBrands = r.data.sort((a, b) => a.name.localeCompare(b.name));
+    setBrands(sortedBrands); 
+  };
+
+  const fetchCategories = async () => { 
+    const r = await axios.get(`http://localhost:8080/api/v1/categories`); 
+    const sortedCategories = r.data.sort((a, b) => a.name.localeCompare(b.name));
+    setCategories(sortedCategories); 
+  };
 
   useEffect(() => { fetchBrands(); fetchCategories(); }, []);
   useEffect(() => {

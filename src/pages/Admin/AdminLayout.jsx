@@ -10,15 +10,19 @@ import {
   Menu,
   Tag,
   Truck,
+  Sun,
+  Moon,
 } from "lucide-react";
 import "./AdminLayout.css";
 import { useAuth } from "../../context/AuthContext";
+import{ useTheme } from "../../context/ThemeContext";
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = () => {
     logout();
@@ -101,6 +105,16 @@ const AdminLayout = () => {
             </button>
           </div>
           <div className="header-right">
+
+          <button 
+              type="button" 
+              className="theme-toggle-btn" 
+              onClick={toggleTheme}
+              title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+            >
+              {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+            </button>
+
             <div className="admin-profile">
               <img
                 src="https://ui-avatars.com/api/?name=Admin&background=e5e4e4&color=000"

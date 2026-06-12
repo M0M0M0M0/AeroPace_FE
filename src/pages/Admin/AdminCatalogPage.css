@@ -86,7 +86,7 @@
 }
 
 .cp-tab.active {
-  background: var(--text-main);
+  background: var(--accent-color);
   color: var(--bg-main);
 }
 
@@ -257,6 +257,12 @@
   box-shadow: 0 15px 35px rgba(0,0,0,0.06);
 }
 
+.cp-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
 .cp-modal-title { font-size: 1.15rem; font-weight: 700; color: var(--text-main); }
 .cp-modal-sub { font-size: 0.8rem; color: var(--text-muted); margin: 0; min-height: 16px; }
 
@@ -274,7 +280,8 @@
 .cp-form-row label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
 
 .cp-form-row input,
-.cp-form-row textarea {
+.cp-form-row textarea,
+.cp-form-row select {
   background: var(--bg-surface);
   border: 1px solid var(--border-main);
   border-radius: 8px;
@@ -286,10 +293,12 @@
   width: 100%;
   font-family: inherit;
   resize: vertical;
+  cursor: pointer;
 }
 
 .cp-form-row input:focus,
-.cp-form-row textarea:focus {
+.cp-form-row textarea:focus,
+.cp-form-row select:focus {
   border-color: var(--accent-color);
   background: var(--bg-main);
 }
