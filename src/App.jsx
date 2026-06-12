@@ -2,6 +2,7 @@ import React from "react";
 import { HashRouter as Router, Routes, Route, Outlet, useLocation } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import AdminRoute from "./routes/AdminRoute";
 import ScrollToTop from "./components/ScrollToTop";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -58,6 +59,7 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
+        <ThemeProvider>
         <Router>
           <ScrollToTop />
           <ErrorBoundaryWithReset>
@@ -96,6 +98,7 @@ function App() {
             </Routes>
           </ErrorBoundaryWithReset>
         </Router>
+        </ThemeProvider>
       </CartProvider>
     </AuthProvider>
   );

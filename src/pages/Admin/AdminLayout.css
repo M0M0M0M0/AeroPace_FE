@@ -121,6 +121,32 @@
   padding: 0 20px;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Tạo khoảng cách giữa nút Theme và Profile */
+}
+
+/* ── STYLE CHO NÚT LIGHT/DARK MODE Ở ADMIN ── */
+.theme-toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.25s ease;
+}
+
+.theme-toggle-btn:hover {
+  color: var(--accent-color);
+  background-color: var(--bg-surface);
+  transform: scale(1.1) rotate(15deg);
+}
+
 .menu-toggle-btn,
 .icon-btn {
   background: transparent;
