@@ -219,14 +219,14 @@ const Home = () => {
       <section className="home-sport-section">
         <h2 className="home-section-title">Sports Glasses</h2>
         <div className="home-sport-grid">
-          {featured.slice(11, 16).map(renderCard)}
+          {featured.slice(11 , 16).map(renderCard)}
         </div>
       </section>
 
       <section className="home-sport-section">
         <h2 className="home-section-title">Sports Watches</h2>
         <div className="home-sport-grid">
-          {featured.slice(16, 22).map(renderCard)}
+          {featured.slice(16, 21).map(renderCard)}
         </div>
       </section>
 

@@ -180,7 +180,7 @@ input[type="number"] {
 .pd-qty-box {
   display: flex;
   align-items: center;
-  background: var(--bg-surface);
+  background: var(--bg-main);
   border: 1px solid var(--border-main);
   border-radius: 8px;
   overflow: hidden;
@@ -188,7 +188,7 @@ input[type="number"] {
 
 .pd-qty-box button {
   padding: 0.5rem 1rem;
-  background: var(--bg-surface);
+  background: var(--bg-main);
   color: var(--text-main);
   cursor: pointer;
   border: none;
