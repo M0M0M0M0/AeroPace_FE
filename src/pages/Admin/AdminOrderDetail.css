@@ -459,6 +459,12 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.06);
 }
 
+.aod-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
 .aod-modal-title { font-size: 1.05rem; font-weight: 700; color: var(--text-main); }
 .aod-modal-sub { font-size: 0.78rem; color: var(--text-muted); margin: 0; }
 
@@ -491,21 +497,65 @@
 }
 .aod-form-row textarea:focus { border-color: var(--accent-color); }
 
+/* ── THỐNG NHẤT CHUNG KIỂU DÁNG CÁC NÚT TRONG MODAL ── */
+.aod-btn-ghost,
+.aod-btn-danger,
+.aod-btn-confirm-status {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+/* Nút Ghost (Close / Hủy) */
 .aod-btn-ghost {
     background: transparent;
     border: 1px solid var(--border-main);
     color: var(--text-muted);
 }
-.aod-btn-ghost:hover { border-color: var(--text-main); color: var(--text-main); background: var(--bg-surface); }
+.aod-btn-ghost:hover:not(:disabled) {
+    border-color: var(--text-main);
+    color: var(--text-main);
+    background: var(--bg-surface);
+}
 
-.aod-btn-danger { background: #dc2626; color: white; border-radius: 7px; font-weight: 700; border: none;}
-.aod-btn-danger:hover { opacity: 0.9; }
-
-.aod-btn-confirm-status {
-    background: var(--text-main);
-    color: var(--bg-main);
+/* Nút Nguy hiểm (Xác nhận hủy đơn) */
+.aod-btn-danger {
+    background: #dc2626;
+    color: white;
     border: none;
-    border-radius: 7px;
-    font-weight: 700;
-    cursor: pointer;
+}
+.aod-btn-danger:hover:not(:disabled) {
+    background: #b91c1c;
+}
+
+/* Nút Xác nhận trạng thái đơn */
+.aod-btn-confirm-status {
+    background: var(--accent-gradient);
+    color: #ffffff;
+    border: none;
+}
+
+.aod-btn-confirm-status:hover:not(:disabled) {
+    background: var(--accent-gradient-hover);
+    box-shadow: 0 4px 12px rgba(255, 85, 0, 0.2);
+    opacity: 1; 
+}
+
+/* Trạng thái khi đang Loading (disabled) để chặn click đúp */
+.aod-btn-ghost:disabled,
+.aod-btn-danger:disabled,
+.aod-btn-confirm-status:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #cbd5e1 !important;
+    color: #64748b !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
 }

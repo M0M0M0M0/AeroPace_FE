@@ -86,7 +86,7 @@
 }
 
 .cp-tab.active {
-  background: var(--text-main);
+  background: var(--accent-color);
   color: var(--bg-main);
 }
 
