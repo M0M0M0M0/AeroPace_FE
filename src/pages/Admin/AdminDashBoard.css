@@ -231,9 +231,7 @@
 .ad-td-rank  { color: var(--text-muted); font-weight: 600; font-size: 0.82rem; }
 
 .ad-medal { font-weight: 700; font-size: 0.82rem; }
-.ad-medal[data-rank="1"] { color: #ca8a04; }
-.ad-medal[data-rank="2"] { color: #475569; }
-.ad-medal[data-rank="3"] { color: #ea580c; }
+
 
 .ad-detail-btn {
   padding: 6px 8px; border-radius: 6px; background: var(--bg-surface);

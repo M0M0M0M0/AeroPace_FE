@@ -7,19 +7,19 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./AdminDashboard.css";
 
-const BASE       = "http://localhost:8080/api/v1";
+const BASE = "http://localhost:8080/api/v1";
 const ADMIN_BASE = `${BASE}/admin`;
 const authHeader = () => ({ Authorization: `Bearer ${localStorage.getItem("token")}` });
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 const toDateStr = (d) => d.toISOString().slice(0, 10);
 
-const today     = () => toDateStr(new Date());
+const today = () => toDateStr(new Date());
 const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return toDateStr(d); };
-const daysAgo   = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return toDateStr(d); };
+const daysAgo = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return toDateStr(d); };
 
-const fmtVND  = (n) => `${(n || 0).toLocaleString("vi-VN")} ₫`;
-const fmtM    = (n) => n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1)}M` : n >= 1_000 ? `${(n / 1_000).toFixed(0)}K` : String(n || 0);
+const fmtVND = (n) => `${(n || 0).toLocaleString("vi-VN")} ₫`;
+const fmtM = (n) => n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1)}M` : n >= 1_000 ? `${(n / 1_000).toFixed(0)}K` : String(n || 0);
 
 const pctChange = (curr, prev) => {
   if (!prev) return curr > 0 ? 100 : 0;
@@ -27,18 +27,20 @@ const pctChange = (curr, prev) => {
 };
 
 const STATUS_CFG = {
-  PENDING:   { label: "Pending",   color: "#facc15", bg: "rgba(250,204,21,0.12)"  },
-  PAID:      { label: "Paid",      color: "#60a5fa", bg: "rgba(96,165,250,0.12)"  },
-  SHIPPING:  { label: "Shipping",  color: "#fb923c", bg: "rgba(251,146,60,0.12)"  },
-  COMPLETED: { label: "Completed", color: "#4ade80", bg: "rgba(74,222,128,0.12)"  },
+  PENDING: { label: "Pending", color: "#facc15", bg: "rgba(250,204,21,0.12)" },
+  PAID: { label: "Paid", color: "#60a5fa", bg: "rgba(96,165,250,0.12)" },
+  SHIPPING: { label: "Shipping", color: "#fb923c", bg: "rgba(251,146,60,0.12)" },
+  COMPLETED: { label: "Completed", color: "#4ade80", bg: "rgba(74,222,128,0.12)" },
   CANCELLED: { label: "Cancelled", color: "#f87171", bg: "rgba(248,113,113,0.12)" },
 };
 
 const StatusBadge = ({ status }) => {
   const cfg = STATUS_CFG[status] || { label: status, color: "#a3a3a3", bg: "rgba(163,163,163,0.12)" };
   return (
-    <span style={{ display:"inline-block", padding:"2px 10px", borderRadius:99,
-      fontSize:12, fontWeight:600, color:cfg.color, background:cfg.bg }}>
+    <span style={{
+      display: "inline-block", padding: "2px 10px", borderRadius: 99,
+      fontSize: 12, fontWeight: 600, color: cfg.color, background: cfg.bg
+    }}>
       {cfg.label}
     </span>
   );
@@ -47,14 +49,14 @@ const StatusBadge = ({ status }) => {
 // ── Doughnut ─────────────────────────────────────────────────────────────────
 const Doughnut = ({ data }) => {
   const total = data.reduce((s, d) => s + d.count, 0) || 1;
-  const colors = { PENDING:"#facc15", PAID:"#60a5fa", SHIPPING:"#fb923c", COMPLETED:"#4ade80", CANCELLED:"#f87171" };
+  const colors = { PENDING: "#facc15", PAID: "#60a5fa", SHIPPING: "#fb923c", COMPLETED: "#4ade80", CANCELLED: "#f87171" };
   let offset = 0;
   const R = 70, CX = 90, CY = 90, stroke = 28;
   const circ = 2 * Math.PI * R;
   const slices = data.map((d) => {
     const pct = d.count / total;
     const dash = pct * circ;
-    const gap  = circ - dash;
+    const gap = circ - dash;
     const slice = { ...d, dash, gap, offset, color: colors[d.status] || "#666" };
     offset += dash;
     return slice;
@@ -69,7 +71,7 @@ const Doughnut = ({ data }) => {
             stroke={s.color} strokeWidth={stroke}
             strokeDasharray={`${s.dash} ${s.gap}`}
             strokeDashoffset={-s.offset}
-            style={{ transform:"rotate(-90deg)", transformOrigin:"50% 50%", transition:"stroke-dasharray .4s" }}
+            style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%", transition: "stroke-dasharray .4s" }}
           />
         ))}
         <text x={CX} y={CY - 8} textAnchor="middle" fill="#e5e5e5" fontSize={22} fontWeight={700}>{total}</text>
@@ -92,12 +94,12 @@ const Doughnut = ({ data }) => {
 // ── Line Chart ────────────────────────────────────────────────────────────────
 const LineChart = ({ points }) => {
   if (!points.length) return <p className="ad-empty">No data</p>;
-  const W = 560, H = 160, PAD = { t:16, r:8, b:32, l:56 };
+  const W = 560, H = 160, PAD = { t: 16, r: 8, b: 32, l: 56 };
   const maxV = Math.max(...points.map((p) => p.value), 1);
   const xs = points.map((_, i) => PAD.l + (i / Math.max(points.length - 1, 1)) * (W - PAD.l - PAD.r));
   const ys = points.map((p) => PAD.t + (1 - p.value / maxV) * (H - PAD.t - PAD.b));
   const path = points.map((_, i) => `${i === 0 ? "M" : "L"}${xs[i]},${ys[i]}`).join(" ");
-  const area = `${path} L${xs[xs.length-1]},${H - PAD.b} L${xs[0]},${H - PAD.b} Z`;
+  const area = `${path} L${xs[xs.length - 1]},${H - PAD.b} L${xs[0]},${H - PAD.b} Z`;
   const yTicks = [0, 0.25, 0.5, 0.75, 1].map((f) => ({ v: maxV * f, y: PAD.t + (1 - f) * (H - PAD.t - PAD.b) }));
 
   return (
@@ -149,20 +151,20 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   // data
-  const [orders7d,    setOrders7d]    = useState([]);
-  const [orders30d,   setOrders30d]   = useState([]);  // for best-sellers range 30/90
+  const [orders7d, setOrders7d] = useState([]);
+  const [orders30d, setOrders30d] = useState([]);
   const [ordersToday, setOrdersToday] = useState([]);
-  const [ordersYest,  setOrdersYest]  = useState([]);
-  const [lowStock,    setLowStock]    = useState([]);
+  const [ordersYest, setOrdersYest] = useState([]);
+  const [lowStock, setLowStock] = useState([]);
   const [newCustToday, setNewCustToday] = useState([]);
-  const [newCustYest,  setNewCustYest]  = useState([]);
-  const [bestSellers,  setBestSellers]  = useState([]);
+  const [newCustYest, setNewCustYest] = useState([]);
+  const [bestSellers, setBestSellers] = useState([]);
 
   // ui
   const [revenueRange, setRevenueRange] = useState("7d");
-  const [bsRange,      setBsRange]      = useState("30d");
-  const [loading,      setLoading]      = useState(true);
-  const [refreshing,   setRefreshing]   = useState(false);
+  const [bsRange, setBsRange] = useState("30d");
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   // ── fetch ───────────────────────────────────────────────────────────────────
   const fetchAll = useCallback(async () => {
@@ -171,11 +173,11 @@ const AdminDashboard = () => {
 
       const [r7d, rToday, rYest, rLow, rCustToday, rCustYest] = await Promise.all([
         axios.get(`${ADMIN_BASE}/orders?dateFrom=${daysAgo(30)}&dateTo=${td}`, { headers: authHeader() }),
-        axios.get(`${ADMIN_BASE}/orders?dateFrom=${td}&dateTo=${td}`,          { headers: authHeader() }),
-        axios.get(`${ADMIN_BASE}/orders?dateFrom=${yd}&dateTo=${yd}`,          { headers: authHeader() }),
-        axios.get(`${ADMIN_BASE}/dashboard/low-stock?threshold=5&limit=10`,   { headers: authHeader() }),
-        axios.get(`${BASE}/admin/dashboard/new-customers?dateFrom=${td}&dateTo=${td}`,   { headers: authHeader() }),
-        axios.get(`${BASE}/admin/dashboard/new-customers?dateFrom=${yd}&dateTo=${yd}`,   { headers: authHeader() }),
+        axios.get(`${ADMIN_BASE}/orders?dateFrom=${td}&dateTo=${td}`, { headers: authHeader() }),
+        axios.get(`${ADMIN_BASE}/orders?dateFrom=${yd}&dateTo=${yd}`, { headers: authHeader() }),
+        axios.get(`${ADMIN_BASE}/dashboard/low-stock?threshold=5&limit=10`, { headers: authHeader() }),
+        axios.get(`${BASE}/admin/dashboard/new-customers?dateFrom=${td}&dateTo=${td}`, { headers: authHeader() }),
+        axios.get(`${BASE}/admin/dashboard/new-customers?dateFrom=${yd}&dateTo=${yd}`, { headers: authHeader() }),
       ]);
 
       setOrders7d(r7d.data.filter((o) => new Date(o.createdAt) >= new Date(daysAgo(7))));
@@ -199,8 +201,10 @@ const AdminDashboard = () => {
   useEffect(() => {
     const days = bsRange === "7d" ? 7 : bsRange === "30d" ? 30 : 90;
     const df = daysAgo(days), dt = today();
-    axios.get(`${ADMIN_BASE}/products/best-sellers?dateFrom=${df}&dateTo=${dt}&limit=5`, { headers: authHeader() })
-      .then((r) => setBestSellers(r.data || []))
+    axios.get(`${ADMIN_BASE}/products/filter?sortByBestSeller=true&dateFrom=${df}&dateTo=${dt}&limit=5`, { headers: authHeader() })
+      .then((r) => {
+        setBestSellers(r.data?.products || []);
+      })
       .catch(console.error);
   }, [bsRange]);
 
@@ -214,13 +218,13 @@ const AdminDashboard = () => {
   const COMPLETED = "COMPLETED";
 
   const revToday = ordersToday.filter((o) => o.status === COMPLETED).reduce((s, o) => s + (o.totalPrice || 0), 0);
-  const revYest  = ordersYest .filter((o) => o.status === COMPLETED).reduce((s, o) => s + (o.totalPrice || 0), 0);
+  const revYest = ordersYest.filter((o) => o.status === COMPLETED).reduce((s, o) => s + (o.totalPrice || 0), 0);
 
   const ordCountToday = ordersToday.length;
-  const ordCountYest  = ordersYest.length;
+  const ordCountYest = ordersYest.length;
 
-  const needActionToday = ordersToday.filter((o) => ["PENDING","PAID","SHIPPING"].includes(o.status)).length;
-  const needActionYest  = ordersYest .filter((o) => ["PENDING","PAID","SHIPPING"].includes(o.status)).length;
+  const needActionToday = ordersToday.filter((o) => ["PENDING", "PAID", "SHIPPING"].includes(o.status)).length;
+  const needActionYest = ordersYest.filter((o) => ["PENDING", "PAID", "SHIPPING"].includes(o.status)).length;
 
   // status summary from 30d for doughnut
   const statusSummary = Object.entries(
@@ -228,8 +232,8 @@ const AdminDashboard = () => {
   ).map(([status, count]) => ({ status, count }));
 
   // action cards
-  const pendingCount  = orders30d.filter((o) => o.status === "PENDING").length;
-  const paidCount     = orders30d.filter((o) => o.status === "PAID").length;
+  const pendingCount = orders30d.filter((o) => o.status === "PENDING").length;
+  const paidCount = orders30d.filter((o) => o.status === "PAID").length;
   const shippingCount = orders30d.filter((o) => o.status === "SHIPPING").length;
 
   // recent 10
@@ -244,7 +248,7 @@ const AdminDashboard = () => {
         return h;
       });
       return hours.map((h) => {
-        const label = `${String(h.getHours()).padStart(2,"0")}:00`;
+        const label = `${String(h.getHours()).padStart(2, "0")}:00`;
         const value = sourceOrders
           .filter((o) => o.status === COMPLETED)
           .filter((o) => { const d = new Date(o.createdAt); return d.getHours() === h.getHours() && d.toDateString() === h.toDateString(); })
@@ -256,17 +260,17 @@ const AdminDashboard = () => {
     return Array.from({ length: days }, (_, i) => {
       const d = new Date(); d.setDate(d.getDate() - (days - 1 - i));
       const ds = toDateStr(d);
-      const label = `${d.getDate()}/${d.getMonth()+1}`;
+      const label = `${d.getDate()}/${d.getMonth() + 1}`;
       const value = sourceOrders
-        .filter((o) => o.status === COMPLETED && o.createdAt?.slice(0,10) === ds)
+        .filter((o) => o.status === COMPLETED && o.createdAt?.slice(0, 10) === ds)
         .reduce((s, o) => s + (o.totalPrice || 0), 0);
       return { label, value };
     });
   };
 
   // perf growth
-  const revGrowth  = pctChange(revToday, revYest);
-  const ordGrowth  = pctChange(ordCountToday, ordCountYest);
+  const revGrowth = pctChange(revToday, revYest);
+  const ordGrowth = pctChange(ordCountToday, ordCountYest);
   const custGrowth = pctChange(newCustToday.length, newCustYest.length);
 
   if (loading) return (
@@ -285,7 +289,7 @@ const AdminDashboard = () => {
       <div className="ad-header">
         <div>
           <h1 className="ad-title">Dashboard</h1>
-          <p className="ad-subtitle">Overview · {new Date().toLocaleDateString("vi-VN", { weekday:"long", year:"numeric", month:"long", day:"numeric" })}</p>
+          <p className="ad-subtitle">Overview · {new Date().toLocaleDateString("vi-VN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
         </div>
         <button className="ad-refresh-btn" onClick={handleRefresh} disabled={refreshing}>
           <RefreshCw size={16} className={refreshing ? "ad-spin" : ""} /> Refresh
@@ -294,10 +298,10 @@ const AdminDashboard = () => {
 
       {/*KPI */}
       <div className="ad-stats">
-        <KpiCard icon={DollarSign} label="Revenue Today"      value={fmtVND(revToday)}          pct={revGrowth}  iconClass="green" />
-        <KpiCard icon={ShoppingBag} label="Orders Today"      value={`${ordCountToday} orders`}  pct={ordGrowth}  iconClass="blue"  />
-        <KpiCard icon={Clock}       label="Need Action"       value={`${needActionToday} orders`} pct={pctChange(needActionToday, needActionYest)} iconClass="yellow" />
-        <KpiCard icon={Users}       label="New Customers"     value={`${newCustToday.length} users`} pct={custGrowth} iconClass="purple" />
+        <KpiCard icon={DollarSign} label="Revenue Today" value={fmtVND(revToday)} pct={revGrowth} iconClass="green" />
+        <KpiCard icon={ShoppingBag} label="Orders Today" value={`${ordCountToday} orders`} pct={ordGrowth} iconClass="blue" />
+        <KpiCard icon={Clock} label="Need Action" value={`${needActionToday} orders`} pct={pctChange(needActionToday, needActionYest)} iconClass="yellow" />
+        <KpiCard icon={Users} label="New Customers" value={`${newCustToday.length} users`} pct={custGrowth} iconClass="purple" />
       </div>
 
       {/*Charts */}
@@ -307,7 +311,7 @@ const AdminDashboard = () => {
           <div className="ad-card-header">
             <h3 className="ad-card-title">Revenue</h3>
             <div className="ad-range-tabs">
-              {[["24h","24h"],["3d","3 days"],["7d","7 days"],["30d","30 days"]].map(([v, l]) => (
+              {[["24h", "24h"], ["3d", "3 days"], ["7d", "7 days"], ["30d", "30 days"]].map(([v, l]) => (
                 <button key={v} className={`ad-range-tab ${revenueRange === v ? "active" : ""}`}
                   onClick={() => setRevenueRange(v)}>{l}</button>
               ))}
@@ -326,9 +330,9 @@ const AdminDashboard = () => {
       {/* Action cards */}
       <div className="ad-action-row">
         {[
-          { status:"PENDING",  count: pendingCount,  icon: Clock,     color:"yellow", label:"Pending Orders"  },
-          { status:"PAID",     count: paidCount,     icon: DollarSign,color:"blue",   label:"Paid Orders"     },
-          { status:"SHIPPING", count: shippingCount, icon: Package,   color:"orange", label:"Shipping Orders" },
+          { status: "PENDING", count: pendingCount, icon: Clock, color: "yellow", label: "Pending Orders" },
+          { status: "PAID", count: paidCount, icon: DollarSign, color: "blue", label: "Paid Orders" },
+          { status: "SHIPPING", count: shippingCount, icon: Package, color: "orange", label: "Shipping Orders" },
         ].map(({ status, count, icon: Icon, color, label }) => (
           <div key={status} className={`ad-action-card ad-action-card--${color}`}>
             <div className="ad-action-icon"><Icon size={22} /></div>
@@ -381,9 +385,9 @@ const AdminDashboard = () => {
       {/* Best sellers */}
       <div className="ad-card">
         <div className="ad-card-header">
-          <h3 className="ad-card-title"><BarChart2 size={16} style={{marginRight:6}} />Top Products</h3>
+          <h3 className="ad-card-title"><BarChart2 size={16} style={{ marginRight: 6 }} />Top Products</h3>
           <div className="ad-range-tabs">
-            {[["7d","7 days"],["30d","30 days"],["90d","90 days"]].map(([v, l]) => (
+            {[["7d", "7 days"], ["30d", "30 days"], ["90d", "90 days"]].map(([v, l]) => (
               <button key={v} className={`ad-range-tab ${bsRange === v ? "active" : ""}`}
                 onClick={() => setBsRange(v)}>{l}</button>
             ))}
@@ -399,7 +403,7 @@ const AdminDashboard = () => {
               : bestSellers.map((p, i) => (
                 <tr key={p.id} className="ad-row">
                   <td className="ad-td-rank">
-                    {i < 3 ? <span className="ad-medal" data-rank={i+1}>#{i+1}</span> : `#${i+1}`}
+                    <span className="ad-medal" data-rank={i + 1}>{i + 1}</span>
                   </td>
                   <td>{p.name}</td>
                   <td><strong>{p.totalSold?.toLocaleString("vi-VN") || "—"}</strong></td>
@@ -413,7 +417,7 @@ const AdminDashboard = () => {
       {/* Low stock */}
       <div className="ad-card">
         <div className="ad-card-header">
-          <h3 className="ad-card-title"><AlertTriangle size={16} style={{marginRight:6, color:"#f87171"}} />Low Stock Alert</h3>
+          <h3 className="ad-card-title"><AlertTriangle size={16} style={{ marginRight: 6, color: "#f87171" }} />Low Stock Alert</h3>
           <span className="ad-badge-count">{lowStock.length} items</span>
         </div>
         <table className="ad-table">
@@ -441,9 +445,9 @@ const AdminDashboard = () => {
       {/*Performance growth */}
       <div className="ad-perf-row">
         {[
-          { label:"Revenue Growth",     curr: fmtVND(revToday),             pct: revGrowth,  icon: DollarSign, color:"green"  },
-          { label:"Order Growth",       curr: `${ordCountToday} orders`,     pct: ordGrowth,  icon: ShoppingBag,color:"blue"   },
-          { label:"New Customer Growth",curr: `${newCustToday.length} users`, pct: custGrowth, icon: Users,      color:"purple" },
+          { label: "Revenue Growth", curr: fmtVND(revToday), pct: revGrowth, icon: DollarSign, color: "green" },
+          { label: "Order Growth", curr: `${ordCountToday} orders`, pct: ordGrowth, icon: ShoppingBag, color: "blue" },
+          { label: "New Customer Growth", curr: `${newCustToday.length} users`, pct: custGrowth, icon: Users, color: "purple" },
         ].map(({ label, curr, pct, icon: Icon, color }) => {
           const up = pct >= 0;
           return (
@@ -464,13 +468,13 @@ const AdminDashboard = () => {
 
       {/* QUICK ACTIONS */}
       <div className="ad-card">
-        <h3 className="ad-card-title"><Zap size={16} style={{marginRight:6}} />Quick Actions</h3>
+        <h3 className="ad-card-title"><Zap size={16} style={{ marginRight: 6 }} />Quick Actions</h3>
         <div className="ad-quick-actions">
           {[
-            { label:"Create Product",    path:"/admin/products/new" },
-            { label:"Manage Orders",     path:"/admin/orders"       },
-            { label:"Manage Customers",  path:"/admin/customers"    },
-            { label:"Manage Categories", path:"/admin/categories"   },
+            { label: "Create Product", path: "/admin/products/new" },
+            { label: "Manage Orders", path: "/admin/orders" },
+            { label: "Manage Customers", path: "/admin/customers" },
+            { label: "Manage Categories", path: "/admin/categories" },
           ].map(({ label, path }) => (
             <button key={label} className="ad-quick-btn" onClick={() => navigate(path)}>{label}</button>
           ))}

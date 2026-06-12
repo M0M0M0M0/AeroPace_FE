@@ -2,33 +2,32 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "../api/axiosClient";
 import { ArrowLeft, MapPin, Phone, User, Package, X } from "lucide-react";
+import QuickReviewModal from "../components/QuickReviewModal";
+
 import "./OrderDetail.css";
 
 const getStatusLabel = (order) => {
-    if (order.paymentStatus === "REFUND_PENDING") return "REFUND_PENDING";
-    const status = order.status;
-    switch (status) {
+    if (order.paymentStatus === "REFUND_PENDING") return "Waiting for refund";
+    switch (order.status) {
         case "PENDING": return "Pending";
-        case "PAID": return "PAID";
-        case "SHIPPING": return "SHIPPING";
-        case "DELIVERED": return "DELIVERED";
-        case "COMPLETED": return "COMPLETED";
-        case "CANCELLED": return "CANCELLED";
-        case "REFUND_PENDING": return "REFUND_PENDING";
-        default: return status;
+        case "PAID": return "Paid";
+        case "SHIPPING": return "In transit";
+        case "DELIVERED": return "Delivered";
+        case "COMPLETED": return "Completed";
+        case "CANCELLED": return "Cancelled";
+        default: return order.status;
     }
 };
 
 const getStatusStyle = (order) => {
-    if (order.paymentStatus === "REFUND_PENDING") return { bg: "rgba(251,146,60,0.15)", color: "#fb923c" };
-    const status = order.status;
-    switch (status) {
+    if (order.paymentStatus === "REFUND_PENDING")
+        return { bg: "rgba(251,146,60,0.15)", color: "#fb923c" };
+    switch (order.status) {
         case "PAID": return { bg: "rgba(96,165,250,0.15)", color: "#60a5fa" };
         case "SHIPPING": return { bg: "rgba(251,146,60,0.15)", color: "#fb923c" };
         case "DELIVERED": return { bg: "rgba(74,222,128,0.15)", color: "#4ade80" };
         case "COMPLETED": return { bg: "rgba(74,222,128,0.15)", color: "#4ade80" };
         case "CANCELLED": return { bg: "rgba(248,113,113,0.15)", color: "#f87171" };
-        case "REFUND_PENDING": return { bg: "rgba(251,146,60,0.15)", color: "#fb923c" };
         case "PENDING": return { bg: "rgba(156,163,175,0.15)", color: "#9ca3af" };
         default: return { bg: "#333", color: "#e5e4e4" };
     }
@@ -39,7 +38,6 @@ const getCancelReason = (order) => {
         return "User Cancelled" + (order.cancelNote ? `: ${order.cancelNote}` : "");
     if (order.cancelType === "ADMIN_CANCELLED")
         return "Admin Cancelled" + (order.cancelNote ? `: ${order.cancelNote}` : "");
-
     return "—";
 };
 
@@ -55,6 +53,9 @@ const OrderDetail = () => {
     const [cancelling, setCancelling] = useState(false);
     const [confirming, setConfirming] = useState(false);
 
+    // ── Review modal ──────────────────────────────────────────────
+    const [reviewOrder, setReviewOrder] = useState(null);
+
     const handleBack = () => {
         if (fromTab) {
             navigate("/profile", { state: { tab: fromTab } });
@@ -62,6 +63,7 @@ const OrderDetail = () => {
             navigate(-1);
         }
     };
+
     if (!order) {
         return (
             <div className="od-page">
@@ -85,13 +87,16 @@ const OrderDetail = () => {
         .filter(Boolean)
         .join(", ");
 
+    // ── Confirm received → update status → open review modal ─────
     const handleConfirmReceived = async () => {
         setConfirming(true);
         try {
             await axios.patch(
                 `http://localhost:8080/api/v1/orders/${order.orderCode}/confirm`
             );
-            setOrder((prev) => ({ ...prev, status: "COMPLETED" }));
+            const completed = { ...order, status: "COMPLETED" };
+            setOrder(completed);
+            setReviewOrder(completed);
         } catch (err) {
             console.log("CONFIRM RECEIVED ERROR:", err.response || err);
             alert("Failed to confirm receipt, please try again.");
@@ -175,7 +180,7 @@ const OrderDetail = () => {
 
                     <div className="od-divider" />
 
-                    {/* Items — clickable, with image */}
+                    {/* Items */}
                     <div className="od-section">
                         <h3 className="od-section-title">Product List</h3>
                         {order.items && order.items.length > 0 ? (
@@ -191,9 +196,8 @@ const OrderDetail = () => {
                                                     ? navigate(`/products/detail/${item.productSlug}`)
                                                     : null
                                         }
-                                        title="Xem sản phẩm"
+                                        title="View product"
                                     >
-                                        {/* Product image */}
                                         <div className="od-item-img-wrap">
                                             {item.productImgUrl ? (
                                                 <img
@@ -207,12 +211,12 @@ const OrderDetail = () => {
                                                 </div>
                                             )}
                                         </div>
-
-                                        {/* Name */}
                                         <span className="od-item-name">
-                                            {item.productName} <br /> Variant: {item.variantName}
+                                            {item.productName} <br />
+                                            <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
+                                                Variant: {item.variantName}
+                                            </span>
                                         </span>
-                                        {/* Qty + price */}
                                         <div className="od-item-right">
                                             <span className="od-item-qty">x{item.quantity}</span>
                                             <span className="od-item-price">
@@ -231,12 +235,10 @@ const OrderDetail = () => {
 
                     <div className="od-divider" />
 
-                    {/* Footer: total + cancel reason + cancel button */}
+                    {/* Footer */}
                     <div className="od-footer">
                         {order.status === "CANCELLED" && (
-                            <p className="od-cancel-reason">
-                                {getCancelReason(order)}
-                            </p>
+                            <p className="od-cancel-reason">{getCancelReason(order)}</p>
                         )}
 
                         <div className="od-footer-row">
@@ -312,6 +314,15 @@ const OrderDetail = () => {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* ── Quick Review Modal ── */}
+            {reviewOrder && (
+                <QuickReviewModal
+                    order={reviewOrder}
+                    onClose={() => setReviewOrder(null)}
+                    onSubmitted={() => setReviewOrder(null)}
+                />
             )}
         </div>
     );

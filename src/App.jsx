@@ -25,6 +25,8 @@ import Register from "./components/Register";
 import Profile from "./pages/Profile";
 import OrderDetail from "./pages/OrderDetail";
 
+import DetailedReview from "./pages/DetailedReview";
+
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminProducts from "./pages/Admin/AdminProducts";
@@ -78,6 +80,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/order-detail/:orderCode" element={<OrderDetail />} />
+                <Route path="/review/detail" element={<DetailedReview />} />
               </Route>
 
               <Route element={<AdminRoute />}>

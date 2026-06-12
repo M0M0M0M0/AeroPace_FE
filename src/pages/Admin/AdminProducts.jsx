@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Edit2, Plus, X, Search, Eye, Trophy } from "lucide-react";
+import { Edit2, Plus, X, Search, Eye, Trophy, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./AdminProducts.css";
@@ -30,13 +30,22 @@ const StatusBadge = ({ status }) => {
   );
 };
 
-
 // ── Best seller presets ───────────────────────────────────────
 const PRESETS = [
   { label: "This Week", getValue: () => { const now = new Date(); const day = now.getDay() || 7; const mon = new Date(now); mon.setDate(now.getDate() - day + 1); return { dateFrom: mon.toISOString().slice(0, 10), dateTo: now.toISOString().slice(0, 10) }; } },
   { label: "This Month", getValue: () => { const now = new Date(); return { dateFrom: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`, dateTo: now.toISOString().slice(0, 10) }; } },
   { label: "30 Days", getValue: () => { const now = new Date(); const from = new Date(now); from.setDate(now.getDate() - 30); return { dateFrom: from.toISOString().slice(0, 10), dateTo: now.toISOString().slice(0, 10) }; } },
   { label: "90 Days", getValue: () => { const now = new Date(); const from = new Date(now); from.setDate(now.getDate() - 90); return { dateFrom: from.toISOString().slice(0, 10), dateTo: now.toISOString().slice(0, 10) }; } },
+];
+
+// ── Star rating options ───────────────────────────────────────
+const RATING_OPTIONS = [
+  { value: "", label: "Any" },
+  { value: "1", label: "★ 1+" },
+  { value: "2", label: "★★ 2+" },
+  { value: "3", label: "★★★ 3+" },
+  { value: "4", label: "★★★★ 4+" },
+  { value: "5", label: "★★★★★ 5" },
 ];
 
 const AdminProducts = () => {
@@ -63,6 +72,12 @@ const AdminProducts = () => {
   const [filterStockMin, setFilterStockMin] = useState("");
   const [filterStockMax, setFilterStockMax] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
+
+  // ── Rating & Review filters ───────────────────────────────────
+  const [filterRatingMin, setFilterRatingMin] = useState("");
+  const [filterRatingMax, setFilterRatingMax] = useState("");
+  const [filterReviewCountMin, setFilterReviewCountMin] = useState("");
+  const [filterReviewCountMax, setFilterReviewCountMax] = useState("");
 
   // ── Best sellers mode ─────────────────────────────────────────
   const [bsMode, setBsMode] = useState(false);
@@ -93,7 +108,13 @@ const AdminProducts = () => {
       if (filterStockMax) params.append("stockMax", filterStockMax);
       if (filterStatus) params.append("statuses", filterStatus);
 
-      // Best-seller params — chỉ append khi bsMode
+      // Rating & Review filters
+      if (filterRatingMin) params.append("ratingMin", filterRatingMin);
+      if (filterRatingMax) params.append("ratingMax", filterRatingMax);
+      if (filterReviewCountMin) params.append("reviewCountMin", filterReviewCountMin);
+      if (filterReviewCountMax) params.append("reviewCountMax", filterReviewCountMax);
+
+      // Best-seller params
       if (bsMode && bsDateFrom && bsDateTo) {
         params.append("sortByBestSeller", "true");
         params.append("dateFrom", bsDateFrom);
@@ -118,8 +139,10 @@ const AdminProducts = () => {
     page, filterName, filterProductId, filterVariantId, filterSku,
     filterBrand, filterCategory, filterPriceMin, filterPriceMax,
     filterStockMin, filterStockMax, filterStatus,
+    filterRatingMin, filterRatingMax, filterReviewCountMin, filterReviewCountMax,
     bsMode, bsDateFrom, bsDateTo, bsLimit,
   ]);
+
   const fetchBrands = async () => { const r = await axios.get(`http://localhost:8080/api/v1/brands`); setBrands(r.data); };
   const fetchCategories = async () => { const r = await axios.get(`http://localhost:8080/api/v1/categories`); setCategories(r.data); };
 
@@ -131,9 +154,9 @@ const AdminProducts = () => {
     page, filterName, filterProductId, filterVariantId, filterSku,
     filterBrand, filterCategory, filterPriceMin, filterPriceMax,
     filterStockMin, filterStockMax, filterStatus,
+    filterRatingMin, filterRatingMax, filterReviewCountMin, filterReviewCountMax,
     bsMode, bsDateFrom, bsDateTo, bsLimit,
   ]);
-
 
   const handlePresetClick = (preset) => {
     const { dateFrom, dateTo } = preset.getValue();
@@ -171,12 +194,15 @@ const AdminProducts = () => {
     setFilterSku(""); setFilterBrand([]); setFilterCategory([]);
     setFilterPriceMin(""); setFilterPriceMax("");
     setFilterStockMin(""); setFilterStockMax(""); setFilterStatus("");
+    setFilterRatingMin(""); setFilterRatingMax("");
+    setFilterReviewCountMin(""); setFilterReviewCountMax("");
     setPage(0);
   };
 
   const hasActiveFilter = filterName || filterProductId || filterVariantId || filterSku ||
     filterBrand.length > 0 || filterCategory.length > 0 || filterPriceMin || filterPriceMax ||
-    filterStockMin || filterStockMax || !!filterStatus;
+    filterStockMin || filterStockMax || !!filterStatus ||
+    filterRatingMin || filterRatingMax || filterReviewCountMin || filterReviewCountMax;
 
   const toggleFilter = (value, list, setList) => {
     setList(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
@@ -300,6 +326,79 @@ const AdminProducts = () => {
                 onChange={(e) => { setFilterStockMax(e.target.value); setPage(0); }} />
             </div>
           </div>
+
+          {/* ── Rating filter ─────────────────────────────────── */}
+          <div className="adp-filter-field adp-filter-field--range">
+            <label className="adp-filter-label">
+              <Star size={11} style={{ display: "inline", marginRight: 3, verticalAlign: "middle" }} />
+              Rating
+            </label>
+            <div className="adp-filter-range">
+              <select
+                className="adp-filter-input adp-filter-input--star"
+                value={filterRatingMin}
+                onChange={(e) => { setFilterRatingMin(e.target.value); setPage(0); }}
+              >
+                <option value="">Min</option>
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option key={n} value={n} disabled={filterRatingMax && n > Number(filterRatingMax)}>
+                    {"★".repeat(n)} {n}
+                  </option>
+                ))}
+              </select>
+              <span className="adp-filter-range-sep">—</span>
+              <select
+                className="adp-filter-input adp-filter-input--star"
+                value={filterRatingMax}
+                onChange={(e) => { setFilterRatingMax(e.target.value); setPage(0); }}
+              >
+                <option value="">Max</option>
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option key={n} value={n} disabled={filterRatingMin && n < Number(filterRatingMin)}>
+                    {"★".repeat(n)} {n}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {/* Active badge */}
+            {(filterRatingMin || filterRatingMax) && (
+              <div className="adp-filter-active-badge">
+                <span>
+                  {filterRatingMin ? `${filterRatingMin}★` : "Any"}
+                  {" — "}
+                  {filterRatingMax ? `${filterRatingMax}★` : "Any"}
+                </span>
+                <button
+                  className="adp-filter-active-badge__clear"
+                  onClick={() => { setFilterRatingMin(""); setFilterRatingMax(""); setPage(0); }}
+                >✕</button>
+              </div>
+            )}
+          </div>
+
+          {/* ── Review count filter ───────────────────────────── */}
+          <div className="adp-filter-field adp-filter-field--range">
+            <label className="adp-filter-label">Reviews</label>
+            <div className="adp-filter-range">
+              <input
+                className="adp-filter-input"
+                type="number"
+                min={0}
+                placeholder="Min"
+                value={filterReviewCountMin}
+                onChange={(e) => { setFilterReviewCountMin(e.target.value); setPage(0); }}
+              />
+              <span className="adp-filter-range-sep">—</span>
+              <input
+                className="adp-filter-input"
+                type="number"
+                min={0}
+                placeholder="Max"
+                value={filterReviewCountMax}
+                onChange={(e) => { setFilterReviewCountMax(e.target.value); setPage(0); }}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Best Sellers */}
@@ -393,6 +492,7 @@ const AdminProducts = () => {
                     : <div className="adp-thumb adp-thumb--empty">No img</div>}
                 </td>
                 <td className="adp-id">
+                  {bsMode && idx < 3 && <span className="adp-rank-badge">#{idx + 1}</span>}
                   #{product.id}
                 </td>
                 <td className="adp-name">{product.name}</td>

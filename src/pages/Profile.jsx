@@ -3,7 +3,7 @@ import axios from "../api/axiosClient";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import axiosRaw from "axios";
-
+import QuickReviewModal from "../components/QuickReviewModal";
 import {
   User,
   Package,
@@ -21,6 +21,7 @@ const Profile = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
@@ -46,10 +47,10 @@ const Profile = () => {
 
   const [profileId, setProfileId] = useState(null);
   const [orders, setOrders] = useState([]);
-
-  const [cancelModal, setCancelModal] = useState({ open: false, orderCode: null, note: "" });
-  const [cancelling, setCancelling] = useState(false);
   const [confirmingOrder, setConfirmingOrder] = useState(null);
+
+  // ── Review modal ──────────────────────────────────────────────
+  const [reviewOrder, setReviewOrder] = useState(null);
 
   useEffect(() => {
     if (location.state?.tab) {
@@ -94,7 +95,6 @@ const Profile = () => {
           `http://localhost:8080/api/v1/orders/user/${user.id}`
         );
         setOrders(res.data);
-        console.log("USER ORDERS:", res.data);
       } catch (err) {
         console.log("LOAD ORDERS ERROR:", err);
       }
@@ -181,42 +181,7 @@ const Profile = () => {
     navigate("/login");
   };
 
-  const canCancel = (status) => status === "PENDING" || status === "PAID";
-
-  const openCancelModal = (orderCode) => {
-    setCancelModal({ open: true, orderCode, note: "" });
-  };
-
-  const closeCancelModal = () => {
-    if (cancelling) return;
-    setCancelModal({ open: false, orderCode: null, note: "" });
-  };
-
-  const handleConfirmCancel = async () => {
-    if (!cancelModal.orderCode) return;
-    setCancelling(true);
-    try {
-      await axios.put(
-        `http://localhost:8080/api/v1/orders/${cancelModal.orderCode}/cancel`,
-        null,
-        { params: { cancelNote: cancelModal.note || undefined } }
-      );
-      setOrders((prev) =>
-        prev.map((o) =>
-          o.orderCode === cancelModal.orderCode
-            ? { ...o, status: "CANCELLED" }
-            : o
-        )
-      );
-      setCancelModal({ open: false, orderCode: null, note: "" });
-    } catch (err) {
-      console.log("CANCEL ORDER ERROR:", err.response || err);
-      alert("Failed to cancel the order!");
-    } finally {
-      setCancelling(false);
-    }
-  };
-
+  // ── Confirm received → update local state → open review modal ─
   const handleConfirmReceived = async (orderCode) => {
     setConfirmingOrder(orderCode);
     try {
@@ -228,6 +193,9 @@ const Profile = () => {
           o.orderCode === orderCode ? { ...o, status: "COMPLETED" } : o
         )
       );
+      // Open quick review modal for the completed order
+      const completedOrder = orders.find((o) => o.orderCode === orderCode);
+      if (completedOrder) setReviewOrder({ ...completedOrder, status: "COMPLETED" });
     } catch (err) {
       console.log("CONFIRM RECEIVED ERROR:", err.response || err);
       alert("Failed to confirm receipt, please try again.");
@@ -238,32 +206,27 @@ const Profile = () => {
 
   const handleViewDetail = (order) => {
     navigate(`/order-detail/${order.orderCode}`, {
-      state: {
-        order,
-        fromTab: "orders"
-      }
+      state: { order, fromTab: "orders" },
     });
   };
 
   const getStatusLabel = (order) => {
     if (order.paymentStatus === "REFUND_PENDING") return "Waiting for refund";
-    const status = order.status;
-    switch (status) {
+    switch (order.status) {
       case "PENDING": return "Waiting for confirmation";
       case "PAID": return "Paid";
       case "SHIPPING": return "In transit";
       case "DELIVERED": return "Delivered";
       case "COMPLETED": return "Completed";
       case "CANCELLED": return "Cancelled";
-
-      default: return status;
+      default: return order.status;
     }
   };
 
   const getStatusColor = (order) => {
-    if (order.paymentStatus === "REFUND_PENDING") return { bg: "rgba(251,146,60,0.2)", color: "#fb923c" };
-    const status = order.status;
-    switch (status) {
+    if (order.paymentStatus === "REFUND_PENDING")
+      return { bg: "rgba(251,146,60,0.2)", color: "#fb923c" };
+    switch (order.status) {
       case "PAID": return { bg: "rgba(96,165,250,0.2)", color: "#60a5fa" };
       case "SHIPPING": return { bg: "rgba(251,146,60,0.2)", color: "#fb923c" };
       case "DELIVERED": return { bg: "rgba(74,222,128,0.2)", color: "#4ade80" };
@@ -274,7 +237,6 @@ const Profile = () => {
     }
   };
 
-  /* Compact order card — shows max 3 items then "..." */
   const PREVIEW_LIMIT = 3;
 
   const renderOrderCard = (order) => {
@@ -285,7 +247,7 @@ const Profile = () => {
 
     return (
       <div key={order.orderCode} className="profile-order-card">
-        {/* Header row */}
+        {/* Header */}
         <div className="profile-order-card-header">
           <div className="profile-order-header-left">
             <span className="profile-order-id">#{order.orderCode}</span>
@@ -319,12 +281,8 @@ const Profile = () => {
                     </div>
                   )}
                 </div>
-                <span className="profile-order-preview-name">
-                  {item.productName}
-                </span>
-                <span className="profile-order-preview-qty">
-                  x{item.quantity}
-                </span>
+                <span className="profile-order-preview-name">{item.productName}</span>
+                <span className="profile-order-preview-qty">x{item.quantity}</span>
                 <span className="profile-order-preview-price">
                   {item.price?.toLocaleString()} ₫
                 </span>
@@ -378,9 +336,7 @@ const Profile = () => {
               <User size={40} color="#888" />
             </div>
             <h3>{formData.name || "User"}</h3>
-            <p>
-              {user?.role === "admin" ? "Administrator" : "Standard User"}
-            </p>
+            <p>{user?.role === "admin" ? "Administrator" : "Standard User"}</p>
           </div>
 
           <div className="profile-nav">
@@ -569,6 +525,14 @@ const Profile = () => {
         </div>
       </div>
 
+      {/* ── Quick Review Modal ── */}
+      {reviewOrder && (
+        <QuickReviewModal
+          order={reviewOrder}
+          onClose={() => setReviewOrder(null)}
+          onSubmitted={() => setReviewOrder(null)}
+        />
+      )}
     </div>
   );
 };
