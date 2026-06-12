@@ -22,6 +22,19 @@ const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
 
+  const [isDarkMode, setIsDarkMode] = React.useState(
+    document.documentElement.getAttribute("data-theme") === "dark"
+  );
+
+  React.useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDarkMode(document.documentElement.getAttribute("data-theme") === "dark");
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    
+    return () => observer.disconnect();
+  }, []);
+
   const cartItems = cart?.items || [];
   const totalPrice = cart?.totalAmount || 0;
 
@@ -601,13 +614,13 @@ const CheckoutForm = () => {
                   options={{
                     style: {
                       base: {
-                        color: "#000000",
-                        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                        fontSize: "18px",
+                        color: isDarkMode ? "#e5e4e4" : "#111111", 
+                        fontFamily: '"Inter", "Helvetica Neue", Helvetica, sans-serif', 
+                        fontSize: "16px",
                         lineHeight: "32px",
                         letterSpacing: "0.025em",
                         "::placeholder": {
-                          color: "#888888"
+                          color: isDarkMode ? "#888888" : "#64748b"
                         },
                       },
                       invalid: {
