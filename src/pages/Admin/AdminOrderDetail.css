@@ -479,6 +479,14 @@
     transition: color 0.2s;
 }
 
+.aod-modal-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    gap: 12px;
+    margin-top: 10px; 
+}
+
 .aod-modal-close:hover { color: var(--text-main); }
 .aod-product-image { border: 1px solid var(--border-main); }
 .aod-field-row { border-bottom: 1px solid var(--border-main); }
