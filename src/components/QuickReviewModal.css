@@ -98,10 +98,23 @@
   overflow: hidden;
 }
 
-.qrm-star-half--left  { left: 0;   justify-content: flex-start; }
-.qrm-star-half--right { right: 0;  justify-content: flex-end; }
+.qrm-star-half--left {
+  left: 0;
+  justify-content: flex-start;
+  clip-path: inset(0 50% 0 0);
+  width: 100%;
+}
 
-.qrm-star-half--right .qrm-star-svg { transform: translateX(-50%); }
+.qrm-star-half--right {
+  right: 0;
+  justify-content: flex-start;
+  clip-path: inset(0 0 0 50%);
+  width: 100%;
+}
+
+.qrm-star-half--right .qrm-star-svg {
+  transform: none; /* ← bỏ transform cũ */
+}
 
 .qrm-star-svg {
   width: 32px;
