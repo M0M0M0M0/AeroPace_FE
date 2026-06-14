@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./AdminProducts.css";
 
-const BASE = "http://localhost:8080/api/v1/admin";
+const BASE = `${import.meta.env.VITE_API_BASE_URL}/api/v1/admin`;
 const authHeader = () => ({
   Authorization: `Bearer ${localStorage.getItem("token")}`,
 });
@@ -144,13 +144,13 @@ const AdminProducts = () => {
   ]);
 
   const fetchBrands = async () => { 
-    const r = await axios.get(`http://localhost:8080/api/v1/brands`); 
+    const r = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/brands`);
     const sortedBrands = r.data.sort((a, b) => a.name.localeCompare(b.name));
     setBrands(sortedBrands); 
   };
 
   const fetchCategories = async () => { 
-    const r = await axios.get(`http://localhost:8080/api/v1/categories`); 
+    const r = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/categories`);
     const sortedCategories = r.data.sort((a, b) => a.name.localeCompare(b.name));
     setCategories(sortedCategories); 
   };

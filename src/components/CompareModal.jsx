@@ -12,7 +12,7 @@ const CompareModal = ({ isOpen, onClose, compareItems }) => {
         setLoading(true);
         try {
           const query = compareItems.map((item) => `ids=${item.id}`).join("&");
-          const res = await fetch(`http://localhost:8080/api/v1/products/by-ids?${query}`);
+          const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/products/by-ids?${query}`);
           const data = await res.json();
           setDetailedProducts(data);
         } catch (err) {

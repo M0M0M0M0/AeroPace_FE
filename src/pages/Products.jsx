@@ -68,8 +68,8 @@ const Products = () => {
     const fetchFilters = async () => {
       try {
         const [brandRes, categoryRes] = await Promise.all([
-          fetch("http://localhost:8080/api/v1/brands"),
-          fetch("http://localhost:8080/api/v1/categories"),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/brands`),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/categories`),
         ]);
         setBrands((await brandRes.json()) || []);
         setCategories((await categoryRes.json()) || []);
@@ -96,7 +96,7 @@ const Products = () => {
         let url = "";
 
         if (!hasFilter) {
-          url = `http://localhost:8080/api/v1/products/detail?page=${page - 1}`;
+          url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/products/detail?page=${page - 1}`;
         } else {
           const params = new URLSearchParams();
           if (search) params.append("name", search);
@@ -113,7 +113,7 @@ const Products = () => {
             else if (sortBy === "bestseller") params.append("sort", "sold,desc"); 
         }
 
-          url = `http://localhost:8080/api/v1/products/filter?${params.toString()}`;
+          url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/products/filter?${params.toString()}`;
         }
 
         const res = await fetch(url);

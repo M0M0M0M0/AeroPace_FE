@@ -53,7 +53,7 @@ const ProductDetail = () => {
 
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/v1/products/detail/${id}`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/products/detail/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);

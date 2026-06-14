@@ -25,7 +25,7 @@ const Home = () => {
       try {
         const query = productIds.map((id) => `ids=${id}`).join("&");
         const res = await fetch(
-          `http://localhost:8080/api/v1/products/by-ids?${query}`,
+          `${import.meta.env.VITE_API_BASE_URL}/api/v1/products/by-ids?${query}`,
         );
         const data = await res.json();
         if (Array.isArray(data)) {

@@ -31,7 +31,7 @@ const Profile = () => {
 
   const [activeTab, setActiveTab] = useState(location.state?.tab || "info");
 
-  const API_URL = "http://localhost:8080/api/v1/customer-profiles";
+  const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/customer-profiles`;
 
   const [formData, setFormData] = useState({
     name: "",
@@ -92,7 +92,7 @@ const Profile = () => {
       try {
         if (!user?.id) return;
         const res = await axios.get(
-          `http://localhost:8080/api/v1/orders/user/${user.id}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/v1/orders/user/${user.id}`
         );
         setOrders(res.data);
       } catch (err) {
@@ -186,7 +186,7 @@ const Profile = () => {
     setConfirmingOrder(orderCode);
     try {
       await axios.patch(
-        `http://localhost:8080/api/v1/orders/${orderCode}/confirm`
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/orders/${orderCode}/confirm`
       );
       setOrders((prev) =>
         prev.map((o) =>

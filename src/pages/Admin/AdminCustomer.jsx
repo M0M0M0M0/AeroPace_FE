@@ -3,7 +3,7 @@ import AdminCustomerDetail from "./AdminCustomerDetail";
 import "./AdminCustomer.css";
 import axios from "axios";
 
-const API_BASE = "http://localhost:8080/api/v1/admin/customers";
+const API_BASE = `${import.meta.env.VITE_API_BASE_URL}/api/v1/admin/customers`;
 
 const AdminCustomers = () => {
   const [customers, setCustomers] = useState([]);

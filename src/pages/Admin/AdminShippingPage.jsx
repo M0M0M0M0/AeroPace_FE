@@ -4,7 +4,7 @@ import { Plus, Pencil, Trash2, X } from "lucide-react";
 import axios from "axios";
 import "./AdminCatalogPage.css";
 
-const BASE = "http://localhost:8080/api/v1";
+const BASE = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
 const authHeader = () => ({
     Authorization: `Bearer ${localStorage.getItem("token")}`,
 });

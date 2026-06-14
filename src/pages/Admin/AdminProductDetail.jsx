@@ -4,7 +4,7 @@ import { Plus, X, Search, ArrowLeft } from "lucide-react";
 import axios from "axios";
 import "./AdminProductDetail.css";
 
-const BASE = "http://localhost:8080/api/v1/admin";
+const BASE = `${import.meta.env.VITE_API_BASE_URL}/api/v1/admin`;
 const authHeader = () => ({
   Authorization: `Bearer ${localStorage.getItem("token")}`,
 });
@@ -61,8 +61,8 @@ const AdminProductDetail = () => {
   useEffect(() => {
     const fetchMeta = async () => {
       const [br, ca] = await Promise.all([
-        axios.get(`http://localhost:8080/api/v1/brands`),
-        axios.get(`http://localhost:8080/api/v1/categories`),
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/brands`),
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/categories`),
       ]);
       setBrands(br.data);
       setCategories(ca.data);
@@ -86,7 +86,7 @@ const AdminProductDetail = () => {
         const product = products.find((p) => String(p.id) === String(id));
         if (!product) { alert("Không tìm thấy sản phẩm."); navigate("/admin/products"); return; }
 
-        const brRes = await axios.get(`http://localhost:8080/api/v1/brands`);
+        const brRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/brands`);
         const allBrands = brRes.data;
 
         const f = {

@@ -9,7 +9,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
-const API = "http://localhost:8080/api/v1";
+const API = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
 const GEO = "https://esgoo.net/api-tinhthanh";
 const VAT_RATE = 0.1;
 const stripePromise = loadStripe("pk_test_51TZrIzCOSfqKuHsnETgOAQYMnaJrRIOOxiwiuQ8GzZWXrCxZI7wnySO0jmwxkCqxSLEmJqClgWYqgD3CjwMsXRRN00mUzZnt6j");

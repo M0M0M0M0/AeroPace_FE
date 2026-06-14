@@ -35,7 +35,7 @@ export const CartProvider = ({ children }) => {
     const token = getToken();
     if (!token) return;
     try {
-      const res = await fetch("http://localhost:8080/api/v1/cart", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/cart`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -52,7 +52,7 @@ export const CartProvider = ({ children }) => {
     const query = productIds.map((id) => `ids=${id}`).join("&");
     try {
       const res = await fetch(
-        `http://localhost:8080/api/v1/products/by-ids?${query}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/products/by-ids?${query}`,
       );
       const products = await res.json();
 
@@ -93,7 +93,7 @@ export const CartProvider = ({ children }) => {
           quantity: i.quantity,
         }));
 
-        const res = await fetch("http://localhost:8080/api/v1/cart/merge", {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/cart/merge`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -141,7 +141,7 @@ export const CartProvider = ({ children }) => {
     const token = getToken();
 
     if (token) {
-      const res = await fetch("http://localhost:8080/api/v1/cart/items", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/cart/items`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -192,7 +192,7 @@ export const CartProvider = ({ children }) => {
 
     if (token) {
       const res = await fetch(
-        `http://localhost:8080/api/v1/cart/items/${cartItemId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/cart/items/${cartItemId}`,
         {
           method: "PUT",
           headers: {
@@ -227,7 +227,7 @@ export const CartProvider = ({ children }) => {
 
     if (token) {
       const res = await fetch(
-        `http://localhost:8080/api/v1/cart/items/${cartItemId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/cart/items/${cartItemId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -252,7 +252,7 @@ export const CartProvider = ({ children }) => {
     const token = getToken();
 
     if (token) {
-      await fetch("http://localhost:8080/api/v1/cart/clear", {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/cart/clear`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

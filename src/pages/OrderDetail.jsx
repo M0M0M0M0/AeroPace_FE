@@ -92,7 +92,7 @@ const OrderDetail = () => {
         setConfirming(true);
         try {
             await axios.patch(
-                `http://localhost:8080/api/v1/orders/${order.orderCode}/confirm`
+                `${import.meta.env.VITE_API_BASE_URL}/api/v1/orders/${order.orderCode}/confirm`
             );
             const completed = { ...order, status: "COMPLETED" };
             setOrder(completed);
@@ -109,7 +109,7 @@ const OrderDetail = () => {
         setCancelling(true);
         try {
             await axios.put(
-                `http://localhost:8080/api/v1/orders/${order.orderCode}/cancel`,
+                `${import.meta.env.VITE_API_BASE_URL}/api/v1/orders/${order.orderCode}/cancel`,
                 null,
                 { params: { cancelNote: cancelModal.note || undefined } }
             );
