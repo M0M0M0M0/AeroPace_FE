@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, Star, Upload, X, CheckCircle } from "lucide-react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { useLocation, useNavigate, useBlocker } from "react-router-dom";
+import { ArrowLeft, Star, Upload, X, CheckCircle, Trash2 } from "lucide-react";
 import axios from "../api/axiosClient";
 import "./DetailedReview.css";
 
@@ -66,7 +66,6 @@ const StarRating = ({ value, onChange, disabled }) => {
     );
 };
 
-//product review card
 const ProductReviewCard = ({ item, reviewState, onChange, submitted }) => {
     const fileRef = useRef(null);
     const { rating, comment, tags, previewUrls } = reviewState;
@@ -100,7 +99,6 @@ const ProductReviewCard = ({ item, reviewState, onChange, submitted }) => {
 
     return (
         <div className={`dr-card ${submitted ? "dr-card--done" : ""}`}>
-            {/* Product identity */}
             <div className="dr-card-header">
                 <div className="dr-card-img-wrap">
                     {item.productImgUrl ? (
@@ -125,13 +123,11 @@ const ProductReviewCard = ({ item, reviewState, onChange, submitted }) => {
 
             {submitted ? null : (
                 <>
-                    {/* Stars */}
                     <div className="dr-field">
                         <p className="dr-field-label">Your rating</p>
                         <StarRating value={rating} onChange={(v) => onChange({ rating: v })} />
                     </div>
 
-                    {/* Quick tags */}
                     <div className="dr-field">
                         <p className="dr-field-label">Quick feedback</p>
                         <div className="dr-tags">
@@ -147,7 +143,6 @@ const ProductReviewCard = ({ item, reviewState, onChange, submitted }) => {
                         </div>
                     </div>
 
-                    {/* Comment */}
                     <div className="dr-field">
                         <p className="dr-field-label">Comment</p>
                         <textarea
@@ -159,7 +154,6 @@ const ProductReviewCard = ({ item, reviewState, onChange, submitted }) => {
                         />
                     </div>
 
-                    {/* Image upload */}
                     <div className="dr-field">
                         <p className="dr-field-label">Photos <span className="dr-field-hint">(up to 3)</span></p>
                         <div className="dr-images">
@@ -196,32 +190,93 @@ const ProductReviewCard = ({ item, reviewState, onChange, submitted }) => {
     );
 };
 
-// Main
 const DetailedReview = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
     const order = state?.order;
+    const editMode = state?.editMode || false;
+    const existingReviews = state?.existingReviews || [];
 
+    // Build items list
     const seen = new Set();
-    const items = (order?.items ?? []).filter((item) => {
+    const submitItems = (order?.items ?? []).filter((item) => {
         if (seen.has(item.productId)) return false;
         seen.add(item.productId);
         return true;
     });
 
-    const initState = () =>
+    const editItems = existingReviews.map((rv) => {
+        const orderItem = (order?.items ?? []).find((i) => i.productId === rv.productId);
+        return {
+            productId: rv.productId,
+            productName: orderItem?.productName || `Product #${rv.productId}`,
+            productImgUrl: orderItem?.productImgUrl,
+            variantName: rv.variantName,
+            reviewId: rv.id,
+        };
+    });
+
+    const items = editMode ? editItems : submitItems;
+
+    const buildInitState = () =>
         Object.fromEntries(
-            items.map((item) => [
-                item.productId,
-                { rating: 0, comment: "", tags: [], previewUrls: [], imageFiles: [] },
-            ])
+            items.map((item) => {
+                if (editMode) {
+                    const rv = existingReviews.find((r) => r.productId === item.productId);
+                    return [
+                        item.productId,
+                        {
+                            rating: parseFloat(rv?.rating ?? 0),
+                            comment: rv?.comment ?? "",
+                            tags: [],
+                            previewUrls: rv?.imageUrls ?? [],
+                            imageFiles: [],
+                        },
+                    ];
+                }
+                return [
+                    item.productId,
+                    { rating: 0, comment: "", tags: [], previewUrls: [], imageFiles: [] },
+                ];
+            })
         );
 
-    const [reviews, setReviews] = useState(initState);
+    const [reviews, setReviews] = useState(buildInitState);
+    const [initialSnapshot] = useState(buildInitState);
     const [submitted, setSubmitted] = useState({});
     const [submitting, setSubmitting] = useState({});
     const [errors, setErrors] = useState({});
     const [allDone, setAllDone] = useState(false);
+    const [deleteConfirm, setDeleteConfirm] = useState(null);
+    const [deleting, setDeleting] = useState(false);
+    const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+
+    const isDirty = useMemo(() => {
+        if (!editMode) return false;
+        return items.some((item) => {
+            const curr = reviews[item.productId];
+            const init = initialSnapshot[item.productId];
+            return curr?.rating !== init?.rating || curr?.comment !== init?.comment;
+        });
+    }, [editMode, reviews, initialSnapshot, items]);
+
+    const blocker = useBlocker(editMode && isDirty && !allDone);
+
+    useEffect(() => {
+        if (blocker.state === "blocked") {
+            setShowLeaveConfirm(true);
+        }
+    }, [blocker.state]);
+
+    useEffect(() => {
+        if (!editMode || !isDirty) return;
+        const handler = (e) => {
+            e.preventDefault();
+            e.returnValue = "";
+        };
+        window.addEventListener("beforeunload", handler);
+        return () => window.removeEventListener("beforeunload", handler);
+    }, [editMode, isDirty]);
 
     const updateReview = (productId, patch) => {
         setReviews((prev) => ({
@@ -238,13 +293,21 @@ const DetailedReview = () => {
         }
         setErrors((e) => ({ ...e, [item.productId]: "" }));
         setSubmitting((s) => ({ ...s, [item.productId]: true }));
-
         try {
-            await axios.post(
-                `/reviews/submit-order`,
-                { rating: rv.rating, comment: rv.comment, imageUrls: [] },
-                { params: { orderCode: order.orderCode, productId: item.productId } }
-            );
+            if (editMode) {
+                const existingRv = existingReviews.find((r) => r.productId === item.productId);
+                await axios.put(`/reviews/${item.reviewId}`, {
+                    rating: rv.rating,
+                    comment: rv.comment,
+                    imageUrls: existingRv?.imageUrls || [],
+                });
+            } else {
+                await axios.post(
+                    `/reviews/submit-order`,
+                    { rating: rv.rating, comment: rv.comment, imageUrls: [] },
+                    { params: { orderCode: order.orderCode, productId: item.productId } }
+                );
+            }
             setSubmitted((s) => {
                 const next = { ...s, [item.productId]: true };
                 if (items.every((i) => next[i.productId])) setAllDone(true);
@@ -258,7 +321,45 @@ const DetailedReview = () => {
         }
     };
 
-    const handleBack = () => navigate("/profile", { state: { tab: "orders" } });
+    const handleDeleteConfirm = async () => {
+        const item = items.find((i) => i.productId === deleteConfirm);
+        if (!item) return;
+        setDeleting(true);
+        try {
+            await axios.delete(`/reviews/${item.reviewId}`);
+            setDeleteConfirm(null);
+            navigate("/profile", { state: { tab: "orders" } });
+        } catch (err) {
+            setErrors((e) => ({
+                ...e,
+                [deleteConfirm]: err.response?.data?.message || "Delete failed.",
+            }));
+            setDeleteConfirm(null);
+        } finally {
+            setDeleting(false);
+        }
+    };
+
+    const handleLeave = (shouldLeave) => {
+        setShowLeaveConfirm(false);
+        if (shouldLeave) {
+            if (blocker.state === "blocked") {
+                blocker.proceed();
+            } else {
+                navigate("/profile", { state: { tab: "orders" } });
+            }
+        } else if (blocker.state === "blocked") {
+            blocker.reset();
+        }
+    };
+
+    const handleBack = () => {
+        if (editMode && isDirty && !allDone) {
+            setShowLeaveConfirm(true);
+        } else {
+            navigate("/profile", { state: { tab: "orders" } });
+        }
+    };
 
     if (!order) {
         return (
@@ -276,14 +377,17 @@ const DetailedReview = () => {
     return (
         <div className="dr-page">
             <div className="dr-container">
-                {/* Back */}
                 <button className="dr-back-btn" onClick={handleBack}>
                     <ArrowLeft size={16} /> Back to orders
                 </button>
 
-                {/* Page header */}
                 <div className="dr-page-header">
-                    <h2 className="dr-page-title">Detailed Review</h2>
+                    <div className="dr-page-title-row">
+                        <h2 className="dr-page-title">
+                            {editMode ? "Edit Review" : "Detailed Review"}
+                        </h2>
+                        {editMode && <span className="dr-edit-badge">Editing</span>}
+                    </div>
                     <p className="dr-page-sub">
                         Order <strong>#{order.orderCode}</strong> · Rate each product individually
                     </p>
@@ -292,8 +396,12 @@ const DetailedReview = () => {
                 {allDone ? (
                     <div className="dr-all-done">
                         <div className="dr-all-done-icon"></div>
-                        <h3>All reviews submitted!</h3>
-                        <p>Thank you — your feedback means a lot.</p>
+                        <h3>{editMode ? "Review updated!" : "All reviews submitted!"}</h3>
+                        <p>
+                            {editMode
+                                ? "Your changes have been saved."
+                                : "Thank you — your feedback means a lot."}
+                        </p>
                         <button className="dr-btn dr-btn--primary" onClick={handleBack}>
                             Back to orders
                         </button>
@@ -313,13 +421,26 @@ const DetailedReview = () => {
                                         {errors[item.productId] && (
                                             <p className="dr-error">{errors[item.productId]}</p>
                                         )}
-                                        <button
-                                            className="dr-btn dr-btn--primary"
-                                            disabled={submitting[item.productId]}
-                                            onClick={() => submitOne(item)}
-                                        >
-                                            {submitting[item.productId] ? "Submitting..." : "Submit review"}
-                                        </button>
+                                        <div className="dr-card-footer-actions">
+                                            {editMode && (
+                                                <button
+                                                    className="dr-btn dr-btn--danger"
+                                                    onClick={() => setDeleteConfirm(item.productId)}
+                                                >
+                                                    <Trash2 size={14} />
+                                                    Delete review
+                                                </button>
+                                            )}
+                                            <button
+                                                className="dr-btn dr-btn--primary"
+                                                disabled={submitting[item.productId]}
+                                                onClick={() => submitOne(item)}
+                                            >
+                                                {submitting[item.productId]
+                                                    ? editMode ? "Saving..." : "Submitting..."
+                                                    : editMode ? "Save changes" : "Submit review"}
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -327,6 +448,50 @@ const DetailedReview = () => {
                     </div>
                 )}
             </div>
+
+            {/* Delete confirm modal */}
+            {deleteConfirm !== null && (
+                <div className="dr-modal-overlay" onClick={() => !deleting && setDeleteConfirm(null)}>
+                    <div className="dr-modal" onClick={(e) => e.stopPropagation()}>
+                        <h3>Delete Review</h3>
+                        <p>Are you sure you want to delete this review? This action cannot be undone.</p>
+                        <div className="dr-modal-actions">
+                            <button
+                                className="dr-modal-back"
+                                onClick={() => setDeleteConfirm(null)}
+                                disabled={deleting}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="dr-modal-delete"
+                                onClick={handleDeleteConfirm}
+                                disabled={deleting}
+                            >
+                                {deleting ? "Deleting..." : "Delete"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Leave confirm modal */}
+            {showLeaveConfirm && (
+                <div className="dr-modal-overlay">
+                    <div className="dr-modal" onClick={(e) => e.stopPropagation()}>
+                        <h3>Unsaved Changes</h3>
+                        <p>You have unsaved changes. Are you sure you want to leave without saving?</p>
+                        <div className="dr-modal-actions">
+                            <button className="dr-modal-back" onClick={() => handleLeave(false)}>
+                                Stay
+                            </button>
+                            <button className="dr-modal-delete" onClick={() => handleLeave(true)}>
+                                Leave
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

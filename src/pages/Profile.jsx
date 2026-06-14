@@ -48,6 +48,7 @@ const Profile = () => {
   const [profileId, setProfileId] = useState(null);
   const [orders, setOrders] = useState([]);
   const [confirmingOrder, setConfirmingOrder] = useState(null);
+  const [orderReviews, setOrderReviews] = useState({});
 
   // ── Review modal ──────────────────────────────────────────────
   const [reviewOrder, setReviewOrder] = useState(null);
@@ -95,6 +96,20 @@ const Profile = () => {
           `${import.meta.env.VITE_API_BASE_URL}/api/v1/orders/user/${user.id}`
         );
         setOrders(res.data);
+
+        const completed = res.data.filter((o) => o.status === "COMPLETED");
+        if (completed.length > 0) {
+          const map = {};
+          await Promise.all(
+            completed.map(async (o) => {
+              try {
+                const rv = await axios.get(`/reviews/my-order/${o.orderCode}`);
+                if (rv.data.length > 0) map[o.orderCode] = rv.data;
+              } catch {}
+            })
+          );
+          setOrderReviews(map);
+        }
       } catch (err) {
         console.log("LOAD ORDERS ERROR:", err);
       }
@@ -239,6 +254,28 @@ const Profile = () => {
 
   const PREVIEW_LIMIT = 3;
 
+  const truncateWords = (text, maxWords) => {
+    if (!text) return "";
+    const words = text.split(" ");
+    return words.length <= maxWords ? text : words.slice(0, maxWords).join(" ") + "...";
+  };
+
+  const MiniStars = ({ rating }) => {
+    const val = parseFloat(rating) || 0;
+    return (
+      <span className="profile-review-mini-stars">
+        {[1, 2, 3, 4, 5].map((i) => {
+          let cls = "profile-review-mini-star";
+          if (val >= i) cls += " profile-review-mini-star--full";
+          else if (val >= i - 0.5) cls += " profile-review-mini-star--half";
+          else cls += " profile-review-mini-star--empty";
+          return <span key={i} className={cls}>★</span>;
+        })}
+        <span className="profile-review-mini-rating">{val.toFixed(1)}</span>
+      </span>
+    );
+  };
+
   const renderOrderCard = (order) => {
     const statusStyle = getStatusColor(order);
     const items = order.items || [];
@@ -290,6 +327,27 @@ const Profile = () => {
             ))}
             {extraCount > 0 && (
               <p className="profile-order-more">+{extraCount} other products...</p>
+            )}
+          </div>
+        )}
+
+        {/* Review snippet for COMPLETED orders */}
+        {order.status === "COMPLETED" && orderReviews[order.orderCode]?.length > 0 && (
+          <div className="profile-review-snippet">
+            {orderReviews[order.orderCode].slice(0, 1).map((rv) => (
+              <div key={rv.id} className="profile-review-snippet-row">
+                <MiniStars rating={rv.rating} />
+                {rv.comment && (
+                  <span className="profile-review-snippet-text">
+                    {truncateWords(rv.comment, 10)}
+                  </span>
+                )}
+              </div>
+            ))}
+            {orderReviews[order.orderCode].length > 1 && (
+              <p className="profile-review-snippet-more">
+                +{orderReviews[order.orderCode].length - 1} more product reviews
+              </p>
             )}
           </div>
         )}

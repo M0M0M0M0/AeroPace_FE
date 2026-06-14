@@ -481,6 +481,55 @@
   background-position: right 12px center;
 }
 
+.profile-review-snippet {
+  padding: 10px 16px;
+  background: rgba(245, 158, 11, 0.05);
+  border-top: 1px solid var(--border-main);
+  border-bottom: 1px solid var(--border-main);
+}
+
+.profile-review-snippet-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.profile-review-mini-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.profile-review-mini-star {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.profile-review-mini-star--full { color: #f59e0b; }
+.profile-review-mini-star--half { color: #f59e0b; opacity: 0.5; }
+.profile-review-mini-star--empty { color: var(--border-main); }
+
+.profile-review-mini-rating {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #f59e0b;
+  margin-left: 3px;
+}
+
+.profile-review-snippet-text {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.profile-review-snippet-more {
+  margin: 5px 0 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
 @media (max-width: 768px) {
   .profile-container, .profile-form-row, .profile-address-dropdowns, .profile-order-card-header, .profile-order-card-footer {
     flex-direction: column;

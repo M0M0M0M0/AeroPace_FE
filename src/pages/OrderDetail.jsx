@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "../api/axiosClient";
-import { ArrowLeft, MapPin, Phone, User, Package, X } from "lucide-react";
+import { ArrowLeft, MapPin, Phone, User, Package, X, Pencil } from "lucide-react";
 import QuickReviewModal from "../components/QuickReviewModal";
 
 import "./OrderDetail.css";
@@ -43,6 +43,22 @@ const getCancelReason = (order) => {
 
 const canCancel = (order) => order.status === "PENDING" || order.status === "PAID";
 
+const OdMiniStars = ({ rating }) => {
+    const val = parseFloat(rating) || 0;
+    return (
+        <span className="od-review-stars">
+            {[1, 2, 3, 4, 5].map((i) => {
+                let cls = "od-review-star";
+                if (val >= i) cls += " od-review-star--full";
+                else if (val >= i - 0.5) cls += " od-review-star--half";
+                else cls += " od-review-star--empty";
+                return <span key={i} className={cls}>★</span>;
+            })}
+            <span className="od-review-star-num">{val.toFixed(1)}</span>
+        </span>
+    );
+};
+
 const OrderDetail = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
@@ -55,6 +71,27 @@ const OrderDetail = () => {
 
     // ── Review modal ──────────────────────────────────────────────
     const [reviewOrder, setReviewOrder] = useState(null);
+
+    // ── Existing reviews for COMPLETED orders ─────────────────────
+    const [reviews, setReviews] = useState([]);
+
+    useEffect(() => {
+        if (order?.status !== "COMPLETED") return;
+        axios.get(`/reviews/my-order/${order.orderCode}`)
+            .then((res) => setReviews(res.data))
+            .catch(() => {});
+    }, [order?.orderCode, order?.status]);
+
+    const reviewByProductId = reviews.reduce((acc, rv) => {
+        acc[rv.productId] = rv;
+        return acc;
+    }, {});
+
+    const handleEditReview = () => {
+        navigate("/review/detail", {
+            state: { order, editMode: true, existingReviews: reviews },
+        });
+    };
 
     const handleBack = () => {
         if (fromTab) {
@@ -185,46 +222,72 @@ const OrderDetail = () => {
                         <h3 className="od-section-title">Product List</h3>
                         {order.items && order.items.length > 0 ? (
                             <div className="od-items">
-                                {order.items.map((item, idx) => (
-                                    <div
-                                        key={idx}
-                                        className="od-item-row od-item-clickable"
-                                        onClick={() =>
-                                            item.productId
-                                                ? navigate(`/products/detail/${item.productId}`)
-                                                : item.productSlug
-                                                    ? navigate(`/products/detail/${item.productSlug}`)
-                                                    : null
-                                        }
-                                        title="View product"
-                                    >
-                                        <div className="od-item-img-wrap">
-                                            {item.productImgUrl ? (
-                                                <img
-                                                    src={item.productImgUrl}
-                                                    alt={item.productName}
-                                                    className="od-item-img"
-                                                />
-                                            ) : (
-                                                <div className="od-item-img-placeholder">
-                                                    <Package size={18} color="#555" />
+                                {(() => {
+                                    const shownReviews = new Set();
+                                    return order.items.map((item, idx) => {
+                                        const review = reviewByProductId[item.productId];
+                                        const showReview = !!review && !shownReviews.has(item.productId);
+                                        if (showReview) shownReviews.add(item.productId);
+                                        return (
+                                            <div key={idx} className="od-item-wrapper">
+                                                <div
+                                                    className="od-item-row od-item-clickable"
+                                                    onClick={() =>
+                                                        item.productId
+                                                            ? navigate(`/products/detail/${item.productId}`)
+                                                            : item.productSlug
+                                                                ? navigate(`/products/detail/${item.productSlug}`)
+                                                                : null
+                                                    }
+                                                    title="View product"
+                                                >
+                                                    <div className="od-item-img-wrap">
+                                                        {item.productImgUrl ? (
+                                                            <img
+                                                                src={item.productImgUrl}
+                                                                alt={item.productName}
+                                                                className="od-item-img"
+                                                            />
+                                                        ) : (
+                                                            <div className="od-item-img-placeholder">
+                                                                <Package size={18} color="#555" />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <span className="od-item-name">
+                                                        {item.productName} <br />
+                                                        <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
+                                                            Variant: {item.variantName}
+                                                        </span>
+                                                    </span>
+                                                    <div className="od-item-right">
+                                                        <span className="od-item-qty">x{item.quantity}</span>
+                                                        <span className="od-item-price">
+                                                            {item.price?.toLocaleString()} ₫
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            )}
-                                        </div>
-                                        <span className="od-item-name">
-                                            {item.productName} <br />
-                                            <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
-                                                Variant: {item.variantName}
-                                            </span>
-                                        </span>
-                                        <div className="od-item-right">
-                                            <span className="od-item-qty">x{item.quantity}</span>
-                                            <span className="od-item-price">
-                                                {item.price?.toLocaleString()} ₫
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
+                                                {showReview && (
+                                                    <div className="od-review-block">
+                                                        <OdMiniStars rating={review.rating} />
+                                                        {review.comment && (
+                                                            <p className="od-review-comment">{review.comment}</p>
+                                                        )}
+                                                        {review.canEdit && (
+                                                            <button
+                                                                className="od-review-edit-btn"
+                                                                onClick={handleEditReview}
+                                                            >
+                                                                <Pencil size={13} />
+                                                                Edit review
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    });
+                                })()}
                             </div>
                         ) : (
                             <p style={{ color: "#666", fontSize: "0.9rem" }}>
