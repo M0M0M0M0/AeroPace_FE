@@ -512,7 +512,7 @@ const AdminOrderDetail = () => {
                             )}
                             <div className="aod-pricing-row aod-pricing-row--total">
                                 <span>Total</span>
-                                <span className="aod-total-price">{fmt(total)}</span>
+                                <span className="aod-total-price">{fmt(total + shipFee + vat)}</span>
                             </div>
                         </div>
                     </div>
@@ -597,7 +597,7 @@ const AdminOrderDetail = () => {
                                 <div className="aod-cancel-block">
                                     <p className="aod-cancel-block-label">CANCEL REASON</p>
                                     <div className="aod-cancel-tag aod-cancel-tag--red">
-                                        <XCircle size={13} /> {order.cancelReason}
+                                        {order.cancelReason}
                                     </div>
                                 </div>
                             )}
@@ -615,7 +615,7 @@ const AdminOrderDetail = () => {
                                 <div className="aod-cancel-block">
                                     <p className="aod-cancel-block-label">REFUND REASON</p>
                                     <div className="aod-cancel-tag aod-cancel-tag--yellow">
-                                        <RefreshCw size={13} /> {order.refundReason}
+                                        {order.refundReason}
                                     </div>
                                 </div>
                             )}

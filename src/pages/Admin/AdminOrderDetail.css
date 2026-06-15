@@ -171,9 +171,9 @@
     margin-bottom: 0;
 }
 
-.aod-card--note { border-color: #fde047; background: #fffdf5; }
+/* .aod-card--note { border-color: #fde047; background: #fffdf5; } */
 .aod-card--actions { border-color: var(--border-main); }
-.aod-card--cancel-info { border-color: #fca5a5; background: #fff5f5; }
+/* .aod-card--cancel-info { border-color: #fca5a5; background: #fff5f5; } */
 
 .aod-card-title {
     display: flex;
@@ -187,7 +187,7 @@
     margin: 0 0 14px;
 }
 
-.aod-card-title--warn { color: #ca8a04; }
+/* .aod-card-title--warn { color: #ca8a04; } */
 
 /* ── Danh sách sản phẩm trong đơn ─────────────────────────────── */
 .aod-items {
@@ -338,9 +338,9 @@
     line-height: 1.5;
 }
 
-.aod-cancel-tag--red { background: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c; }
+.aod-cancel-tag--red { border: 1px solid #000000; color: #000000; }
 .aod-cancel-tag--red-soft { background: var(--bg-surface); border: 1px solid var(--border-main); color: var(--text-main); }
-.aod-cancel-tag--yellow { background: #fef9c3; border: 1px solid #fef08a; color: #a16207; }
+.aod-cancel-tag--yellow { border: 1px solid #000000; color: #000000; }
 
 /* ── Thông tin khách hàng người nhận ───────────────────────────── */
 .aod-info-list { display: flex; flex-direction: column; gap: 0; margin-bottom: 14px; }
