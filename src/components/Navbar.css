@@ -3,15 +3,14 @@
   position: fixed;
   top: 0;
   width: 100%;
-  background: var(--bg-main);
-  color: var(--text-main);
+  background: #052C4A;
+  color: #ffffff;
   z-index: 1000;
-  border-bottom: 1px solid var(--border-main);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   animation: slideDown 0.6s ease-out forwards;
   transition: background 0.3s ease, border-color 0.3s ease;
 }
 
-/* CẬP NHẬT BỐ CỤC CHÍNH */
 .navbar-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -27,7 +26,7 @@
   font-weight: bold;
   letter-spacing: 2px;
   text-decoration: none;
-  color: var(--text-main);
+  color: #ffffff;
   transition: opacity 0.3s ease;
   white-space: nowrap;
 }
@@ -49,10 +48,10 @@
 .navbar-search input {
   width: 100%;
   padding: 10px 15px 10px 45px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-main);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
-  color: var(--text-main);
+  color: #ffffff;
   font-size: 0.9rem;
   outline: none;
   transition: all 0.3s ease;
@@ -60,12 +59,12 @@
 
 .navbar-search input:focus {
   border-color: var(--accent-color);
-  background: var(--bg-main);
-  box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.1);
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.2);
 }
 
 .navbar-search input::placeholder {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .search-icon {
@@ -73,7 +72,7 @@
   left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.45);
   pointer-events: none;
 }
 
@@ -91,7 +90,7 @@
 }
 
 .navlink {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
   font-size: 0.95rem;
   position: relative;
@@ -127,7 +126,7 @@
   top: 100%; left: 0;
   background-color: var(--bg-surface-elevated);
   min-width: 180px;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.06);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.12);
   padding: 10px 0;
   border-radius: 8px;
   border: 1px solid var(--border-main);
@@ -164,13 +163,13 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  border-left: 1px solid var(--border-main);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
   padding-left: 15px;
 }
 
 .action-icon-link {
-  position: relative; 
-  color: var(--text-muted);
+  position: relative;
+  color: rgba(255, 255, 255, 0.75);
   display: flex;
   align-items: center;
   transition: all 0.3s ease;
@@ -183,10 +182,10 @@
 }
 
 /* ── STYLE CHO NÚT LIGHT/DARK MODE TOGGLE-*/
-.theme-toggle-btn {
+.navbar-wrapper .theme-toggle-btn {
   background: transparent;
   border: none;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -196,12 +195,11 @@
   transition: all 0.25s ease;
 }
 
-.theme-toggle-btn:hover {
+.navbar-wrapper .theme-toggle-btn:hover {
   color: var(--accent-color);
-  background-color: var(--bg-surface);
+  background-color: rgba(255, 255, 255, 0.1);
   transform: scale(1.1) rotate(15deg);
 }
-/* ───────────────────────────────────────────────────────────────── */
 
 /* Nút Đăng nhập kiểu Bordered */
 .login-button {
@@ -209,10 +207,10 @@
   align-items: center;
   gap: 8px;
   background: transparent;
-  border: 1px solid var(--border-main);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   padding: 8px 18px;
   border-radius: 20px;
-  color: var(--text-main);
+  color: #ffffff;
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
@@ -241,9 +239,9 @@
   justify-content: center;
   align-items: center;
   padding: 0 4px;
-  border: 2px solid var(--bg-main);
+  border: 2px solid #052C4A;
   pointer-events: none;
-}   
+}
 
 /* Container bọc User và Dropdown */
 .user-logged-in {
@@ -258,7 +256,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.75);
   transition: color 0.3s ease;
 }
 
@@ -280,7 +278,7 @@
   min-width: 160px;
   border: 1px solid var(--border-main);
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   padding: 8px 0;
   margin-top: 10px;
   opacity: 0;
@@ -330,9 +328,37 @@
 }
 
 .user-logged-in:hover .user-info {
-  color: var(--text-main);
+  color: #ffffff;
 }
 
 .navbar-actions .lucide-shopping-cart {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.75);
 }
+
+/* ── DARK MODE: revert navbar to original ── */
+[data-theme="dark"] .navbar-wrapper {
+  background: var(--bg-main);
+  border-bottom: 1px solid var(--border-main);
+}
+[data-theme="dark"] .navbar-logo { color: var(--text-main); }
+[data-theme="dark"] .navlink { color: var(--text-muted); }
+[data-theme="dark"] .navbar-search input {
+  background: var(--bg-surface);
+  border-color: var(--border-main);
+  color: var(--text-main);
+}
+[data-theme="dark"] .navbar-search input:focus {
+  background: var(--bg-main);
+  box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.1);
+}
+[data-theme="dark"] .navbar-search input::placeholder { color: var(--text-muted); }
+[data-theme="dark"] .search-icon { color: var(--text-muted); }
+[data-theme="dark"] .navbar-actions { border-left-color: var(--border-main); }
+[data-theme="dark"] .action-icon-link { color: var(--text-muted); }
+[data-theme="dark"] .navbar-wrapper .theme-toggle-btn { color: var(--text-muted); }
+[data-theme="dark"] .navbar-wrapper .theme-toggle-btn:hover { background-color: var(--bg-surface); }
+[data-theme="dark"] .login-button { border-color: var(--border-main); color: var(--text-main); }
+[data-theme="dark"] .cart-badge { border-color: var(--bg-main); }
+[data-theme="dark"] .user-info { color: var(--text-muted); }
+[data-theme="dark"] .user-logged-in:hover .user-info { color: var(--text-main); }
+[data-theme="dark"] .navbar-actions .lucide-shopping-cart { color: var(--text-muted); }

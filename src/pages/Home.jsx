@@ -202,29 +202,50 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="home-sport-section">
-        <h2 className="home-section-title">Running Shoes</h2>
+      <section className="home-sport-section home-sport-section--compact">
+        <div className="home-sport-header">
+          <h2 className="home-section-title">Running Shoes</h2>
+          <Link to="/products" className="home-view-all-btn">View All →</Link>
+        </div>
         <div className="home-sport-grid">
           {featured.slice(0, 5).map(renderCard)}
         </div>
       </section>
 
+      <section className="home-promo-banner">
+        <div className="home-promo-inner">
+          <p className="home-promo-tag">AeroPace Collection</p>
+          <h2 className="home-promo-heading">Move Without Limits</h2>
+          <p className="home-promo-sub">Premium gear engineered for every stride and sprint.</p>
+          <Link to="/products" className="home-promo-cta">Explore All Products</Link>
+        </div>
+      </section>
+
       <section className="home-sport-section">
-        <h2 className="home-section-title">Running Sandals</h2>
+        <div className="home-sport-header">
+          <h2 className="home-section-title">Running Sandals</h2>
+          <Link to="/products" className="home-view-all-btn">View All →</Link>
+        </div>
         <div className="home-sport-grid">
           {featured.slice(6, 11).map(renderCard)}
         </div>
       </section>
 
       <section className="home-sport-section">
-        <h2 className="home-section-title">Sports Glasses</h2>
+        <div className="home-sport-header">
+          <h2 className="home-section-title">Sports Glasses</h2>
+          <Link to="/products" className="home-view-all-btn">View All →</Link>
+        </div>
         <div className="home-sport-grid">
           {featured.slice(11 , 16).map(renderCard)}
         </div>
       </section>
 
       <section className="home-sport-section">
-        <h2 className="home-section-title">Sports Watches</h2>
+        <div className="home-sport-header">
+          <h2 className="home-section-title">Sports Watches</h2>
+          <Link to="/products" className="home-view-all-btn">View All →</Link>
+        </div>
         <div className="home-sport-grid">
           {featured.slice(16, 21).map(renderCard)}
         </div>

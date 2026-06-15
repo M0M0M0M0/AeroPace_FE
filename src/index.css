@@ -1,15 +1,16 @@
 
 :root {
-  --bg-main: #ffffff;
-  --bg-surface: #f5f5f7;
+  --bg-main: #f9f9f9;
+  --bg-surface: #ffffff;
   --bg-surface-elevated: #ffffff;
-  --text-main: #000000;
-  --text-muted: #000000;
+  --text-main: #111111;
+  --text-muted: #6b7280;
   --border-main: #e2e8f0;
   --accent-color: #ff5500;
   --accent-hover: #e04b00;
   --accent-gradient: linear-gradient(135deg, #ff5500 0%, #ff007f 100%);
   --accent-gradient-hover: linear-gradient(135deg, #e04b00 0%, #d8006c 100%);
+  --section-alt-bg: #f0f4f8;
 }
 
 [data-theme="dark"] {
@@ -17,9 +18,9 @@
   --bg-surface: #111111;
   --bg-surface-elevated: #1a1a1a;
   --text-main: #ffffff;
-  --text-muted: #ffffff;  
+  --text-muted: #ffffff;
   --border-main: #222222;
-
+  --section-alt-bg: #111111;
 }
 
 body {

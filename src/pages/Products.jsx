@@ -281,7 +281,7 @@ const Products = () => {
           <div className="prd-tags-row">
             {searchParams.get("search") && (
               <span className="prd-tag prd-tag--search">
-                🔍 "{searchParams.get("search")}"
+                "{searchParams.get("search")}"
                 <button onClick={clearSearch}>✕</button>
               </span>
             )}
