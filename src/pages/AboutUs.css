@@ -18,7 +18,7 @@
 /* Hero Section — Giữ overlay tối để text trắng nổi bật trên ảnh nền */
 .about-hero {
   height: 400px;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+  background: var(--accent-gradient),
     url('https://via.placeholder.com/1200x600') center/cover;
   display: flex;
   align-items: center;
@@ -29,6 +29,12 @@
 .hero-content h1 {
   font-size: 3rem;
   letter-spacing: 2px;
+  color: #ffffff; /* Ép chữ trắng cố định trên overlay đen */
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-top: 10px;
   color: #ffffff; /* Ép chữ trắng cố định trên overlay đen */
 }
 

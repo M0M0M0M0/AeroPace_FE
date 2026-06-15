@@ -58,7 +58,7 @@ const AboutUs = () => {
       <section className="about-section alternate">
         <div className="about-grid">
           <div className="about-image">
-            <img src="https://img.cand.com.vn/resize/800x800/NewFiles/Images/2023/11/16/1-1700110703839.jpg" alt="Tầm nhìn" />
+            <img src="https://media-cdn-v2.laodong.vn/Storage/NewsPortal/2022/4/18/1035166/Tay-Ho-Hm-2021-Vdv-1.JPG" alt="Tầm nhìn" />
           </div>
           <div className="about-text">
             <h2>Vision & Mission</h2>
