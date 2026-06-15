@@ -646,3 +646,23 @@
     width: 100%;
     resize: vertical;
 }
+
+/* ── Dark mode: cancel/refund reason section ── */
+[data-theme="dark"] .aod-card--note {
+    background: #1e1c0f;
+    border-color: #78680a;
+}
+[data-theme="dark"] .aod-card--cancel-info {
+    background: #1e0f0f;
+    border-color: #7f2a2a;
+}
+[data-theme="dark"] .aod-cancel-tag--red {
+    background: rgba(185, 28, 28, 0.18);
+    border-color: rgba(185, 28, 28, 0.35);
+    color: #fca5a5;
+}
+[data-theme="dark"] .aod-cancel-tag--yellow {
+    background: rgba(161, 98, 7, 0.18);
+    border-color: rgba(161, 98, 7, 0.35);
+    color: #fde68a;
+}
