@@ -308,7 +308,6 @@ input[type="number"] {
   overflow: hidden;
   word-break: break-word;
   color: var(--text-main);
-  transition: background 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển theme mượt mà */
 }
 
 /* 🌟 ĐOẠN SỬA LỖI: Ép màu chữ hệ thống lên toàn bộ các thẻ do Editor sinh ra */
