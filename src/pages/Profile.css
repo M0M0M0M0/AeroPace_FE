@@ -335,6 +335,12 @@
   flex-wrap: wrap;
 }
 
+.profile-order-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .profile-order-total {
   font-size: 1rem;
   font-weight: 700;
