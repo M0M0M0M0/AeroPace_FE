@@ -224,6 +224,7 @@
 }
 
 .od-review-block {
+    margin-top: 6px;
     padding: 10px 14px 10px 20px;
     background: rgba(245, 158, 11, 0.05);
     border-left: 3px solid #f59e0b;
