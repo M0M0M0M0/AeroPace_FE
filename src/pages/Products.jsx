@@ -48,7 +48,13 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
 
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [selectedCategories, setSelectedCategories] = useState(() => {
+    const catParam = searchParams.get("category");
+    const catId = catParam ? parseInt(catParam, 10) : NaN;
+    return isNaN(catId) ? [] : [catId];
+  });
   const [selectedBrands, setSelectedBrands] = useState([]);
 
   const [minPrice, setMinPrice] = useState("");
@@ -62,7 +68,6 @@ const Products = () => {
   const [brandSearch, setBrandSearch] = useState("");
 
   const [searchText, setSearchText] = useState("");
-  const [searchParams, setSearchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState(1);
   const [sortBy, setSortBy] = useState("");
 
