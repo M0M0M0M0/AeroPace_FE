@@ -14,13 +14,13 @@
 }
 
 [data-theme="dark"] {
-  --bg-main: #000000;
-  --bg-surface: #111111;
-  --bg-surface-elevated: #1a1a1a;
+  --bg-main: #11141a;
+  --bg-surface: #181c24;
+  --bg-surface-elevated: #1f2333;
   --text-main: #ffffff;
   --text-muted: #ffffff;
-  --border-main: #222222;
-  --section-alt-bg: #111111;
+  --border-main: #2d3548;
+  --section-alt-bg: #181c24;
 }
 
 body {

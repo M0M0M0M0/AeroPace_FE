@@ -897,10 +897,25 @@
   to { opacity: 1; transform: scale(1); }
 }
 
-/* ── DARK MODE: revert home card colors ── */
-[data-theme="dark"] .home-card-details h1 { color: var(--text-main); }
-[data-theme="dark"] .home-card-details p { color: var(--text-muted); font-weight: 600; }
-[data-theme="dark"] .home-card-buy { color: var(--text-muted); }
+/* ── DARK MODE: home card và section ── */
+[data-theme="dark"] .home-card-wrapper {
+  transform: none;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+[data-theme="dark"] .home-card-wrapper:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
+}
+[data-theme="dark"] .home-card-details h1 {
+  color: #dde3f0;
+}
+[data-theme="dark"] .home-card-details p {
+  color: #7eb8f7;
+  font-weight: 700;
+}
+[data-theme="dark"] .home-card-buy { color: #7eb8f7; }
 [data-theme="dark"] .home-page > .home-sport-section:nth-child(even) { background: var(--bg-surface); }
 
 /* ANIMATIONS */
