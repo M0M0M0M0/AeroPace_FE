@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { useLocation, useNavigate, useBlocker } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, Upload, X, CheckCircle, Trash2 } from "lucide-react";
 import axios from "../api/axiosClient";
 import "./DetailedReview.css";
@@ -260,14 +260,6 @@ const DetailedReview = () => {
         });
     }, [editMode, reviews, initialSnapshot, items]);
 
-    const blocker = useBlocker(editMode && isDirty && !allDone);
-
-    useEffect(() => {
-        if (blocker.state === "blocked") {
-            setShowLeaveConfirm(true);
-        }
-    }, [blocker.state]);
-
     useEffect(() => {
         if (!editMode || !isDirty) return;
         const handler = (e) => {
@@ -343,13 +335,7 @@ const DetailedReview = () => {
     const handleLeave = (shouldLeave) => {
         setShowLeaveConfirm(false);
         if (shouldLeave) {
-            if (blocker.state === "blocked") {
-                blocker.proceed();
-            } else {
-                navigate("/profile", { state: { tab: "orders" } });
-            }
-        } else if (blocker.state === "blocked") {
-            blocker.reset();
+            navigate("/profile", { state: { tab: "orders" } });
         }
     };
 
