@@ -58,6 +58,8 @@ const Products = () => {
 
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [categorySearch, setCategorySearch] = useState("");
+  const [brandSearch, setBrandSearch] = useState("");
 
   const [searchText, setSearchText] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
@@ -181,8 +183,6 @@ const Products = () => {
               onKeyDown={handleSearch}
             />
           </div>
-          <h3 className="prd-filter-title">Filter</h3>
-
           <div className="prd-filter-group">
             <div className="prd-filter-header">
               <p>Category</p>
@@ -190,8 +190,18 @@ const Products = () => {
                 Uncheck all
               </button>
             </div>
+            <div className="prd-filter-search">
+              <input
+                type="text"
+                placeholder="Search category..."
+                value={categorySearch}
+                onChange={(e) => setCategorySearch(e.target.value)}
+              />
+            </div>
             <div className="prd-filter-list">
-              {categories.map((cat) => (
+              {categories
+                .filter((cat) => cat.name.toLowerCase().includes(categorySearch.toLowerCase()))
+                .map((cat) => (
                 <label key={cat.id} className="prd-filter-item">
                   <input
                     type="checkbox"
@@ -211,8 +221,18 @@ const Products = () => {
                 Uncheck all
               </button>
             </div>
+            <div className="prd-filter-search">
+              <input
+                type="text"
+                placeholder="Search brand..."
+                value={brandSearch}
+                onChange={(e) => setBrandSearch(e.target.value)}
+              />
+            </div>
             <div className="prd-filter-list">
-              {brands.map((brand) => (
+              {brands
+                .filter((brand) => brand.name.toLowerCase().includes(brandSearch.toLowerCase()))
+                .map((brand) => (
                 <label key={brand.id} className="prd-filter-item">
                   <input
                     type="checkbox"
