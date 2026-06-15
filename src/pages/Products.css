@@ -493,7 +493,7 @@
 }
 
 .action-icon-btn:hover {
-  background: var(--bg-surface);
+  /* background: var(--bg-surface); */
   color: var(--accent-color);
   transform: scale(1.1);
 }
@@ -692,14 +692,13 @@
 
 /* ── DARK MODE ── */
 [data-theme="dark"] .prd-card-wrapper {
-  transform: none;
   border-color: rgba(255, 255, 255, 0.12);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 [data-theme="dark"] .prd-card-wrapper:hover {
-  transform: translateY(-5px);
+  transform: scale(1);
   border-color: rgba(255, 255, 255, 0.22);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 32px rgba(255, 255, 255, 0.08);
 }
 [data-theme="dark"] .prd-card-details h1 { color: #dde3f0; }
 [data-theme="dark"] .prd-card-details p { color: #7eb8f7; }

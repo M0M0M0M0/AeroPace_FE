@@ -3,7 +3,6 @@
   background: var(--bg-main) !important;
   color: var(--text-main) !important;
   min-height: 100vh;
-  transition: background 0.3s ease, color 0.3s ease; 
 }
 
 /* HERO */
@@ -11,6 +10,7 @@
   position: relative;
   height: 90vh;
   overflow: hidden;
+  margin-top: 60px;
 }
 
 .home-hero-video {
@@ -439,7 +439,7 @@
 }
 
 .home-card-details h1 {
-  font-size: 15px;
+  font-size: 16px;
   font-family: "Inter", sans-serif;
   color: #505050;
   font-weight: 400;
@@ -448,7 +448,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  transform: scaleY(1.15);
+  /* transform: scaleY(1.15); */
   transform-origin: left center;
 }
 
@@ -899,14 +899,13 @@
 
 /* ── DARK MODE: home card và section ── */
 [data-theme="dark"] .home-card-wrapper {
-  transform: none;
   border-color: rgba(255, 255, 255, 0.12);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 [data-theme="dark"] .home-card-wrapper:hover {
-  transform: translateY(-5px);
+  transform: scale(1);
   border-color: rgba(255, 255, 255, 0.22);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 32px rgba(255, 255, 255, 0.08);
 }
 [data-theme="dark"] .home-card-details h1 {
   color: #dde3f0;

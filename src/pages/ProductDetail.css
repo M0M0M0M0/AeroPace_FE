@@ -140,7 +140,7 @@ input[type="number"] {
 
 .pd-variant-item:hover:not(.disabled) {
   border-color: var(--accent-color);
-  color: var(--accent-color);
+  /* color: var(--accent-color); */
   transform: translateY(-2px);
 }
 
@@ -308,7 +308,6 @@ input[type="number"] {
   overflow: hidden;
   word-break: break-word;
   color: var(--text-main);
-  transition: background 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển theme mượt mà */
 }
 
 /* 🌟 ĐOẠN SỬA LỖI: Ép màu chữ hệ thống lên toàn bộ các thẻ do Editor sinh ra */
@@ -372,4 +371,195 @@ input[type="number"] {
 .pd-maxed-label {
   color: #dc2626;
   font-weight: 500;
+}
+
+/* ── DESCRIPTION COLLAPSE ────────────────────────────────────── */
+.pd-desc-collapsed {
+  max-height: 400px;
+  overflow: hidden;
+  position: relative;
+}
+
+.pd-desc-collapsed::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(transparent, var(--bg-surface-elevated));
+  pointer-events: none;
+}
+
+.pd-desc-expanded {
+  max-height: none;
+  overflow: visible;
+}
+
+.pd-desc-toggle {
+  display: block;
+  margin: 0.75rem auto 0;
+  background: transparent;
+  border: 1.5px solid var(--accent-color);
+  color: var(--accent-color);
+  padding: 0.45rem 1.4rem;
+  border-radius: 50px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.pd-desc-toggle:hover {
+  background: var(--accent-color);
+  color: #fff;
+}
+
+/* ── RELATED PRODUCTS ────────────────────────────────────────── */
+.pd-related {
+  margin-top: 4rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+
+.pd-related-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.pd-related-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.pd-related-title::after {
+  content: "";
+  display: block;
+  margin-top: 8px;
+  width: 48px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent-gradient);
+}
+
+.pd-related-view-all {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+  white-space: nowrap;
+  padding-bottom: 2px;
+}
+
+.pd-related-view-all:hover {
+  border-bottom-color: var(--accent-color);
+}
+
+.pd-related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.pd-related-item {
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid var(--border-main);
+  background: var(--bg-surface);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.pd-related-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.pd-related-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.pd-related-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  background: rgba(0, 0, 0, 0.42);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  border-radius: 14px 14px 0 0;
+}
+
+.pd-related-item:hover .pd-related-overlay {
+  opacity: 1;
+}
+
+.pd-related-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.3;
+  align-self: flex-start;
+}
+
+
+.pd-related-info {
+  padding: 10px 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pd-related-item-name {
+  font-size: 0.83rem;
+  color: var(--text-main);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pd-related-item-price {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+.pd-related-arrow-btn {
+  align-self: flex-end;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+
+.pd-related-arrow-btn:hover {
+  transform: scale(1.12);
+  box-shadow: 0 4px 14px rgba(255, 107, 0, 0.45);
 }

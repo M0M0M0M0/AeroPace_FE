@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   ShoppingCart,
   Package,
@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   Minus,
   Plus,
+  ArrowRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "../context/CartContext";
@@ -46,6 +47,8 @@ const ProductDetail = () => {
   const [selected, setSelected] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [descExpanded, setDescExpanded] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
   const images = product?.images
     ? [...product.images].sort((a, b) => a.position - b.position)
@@ -53,6 +56,8 @@ const ProductDetail = () => {
 
 
   useEffect(() => {
+    setDescExpanded(false);
+    setRelatedProducts([]);
     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/products/detail/${id}`)
       .then((res) => res.json())
       .then((data) => {
@@ -64,6 +69,20 @@ const ProductDetail = () => {
           if (data.option2Name) init.option2Value = first.option2Value;
           if (data.option3Name) init.option3Value = first.option3Value;
           setSelected(init);
+        }
+        const catId = data.categories?.[0]?.id;
+        if (catId) {
+          fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/products/filter?categories=${catId}&page=0`
+          )
+            .then((r) => r.json())
+            .then((res) => {
+              const items = (res.products || res.content || []).filter(
+                (p) => p.id !== data.id
+              );
+              setRelatedProducts(items.slice(0, 6));
+            })
+            .catch(console.error);
         }
       })
       .catch(console.error);
@@ -351,9 +370,68 @@ const ProductDetail = () => {
         <h2>Product Description</h2>
         <div
           dangerouslySetInnerHTML={{ __html: product.description }}
-          className="pd-desc-content"
+          className={`pd-desc-content ${descExpanded ? "pd-desc-expanded" : "pd-desc-collapsed"}`}
         />
+        <button
+          className="pd-desc-toggle"
+          onClick={() => setDescExpanded((v) => !v)}
+        >
+          {descExpanded ? "Thu gọn ▲" : "Xem thêm ▼"}
+        </button>
       </div>
+
+      {relatedProducts.length > 0 && (
+        <div className="pd-related">
+          <div className="pd-related-header">
+            <h2 className="pd-related-title">Related Products</h2>
+            <Link
+              to={`/products?category=${product.categories?.[0]?.id}`}
+              className="pd-related-view-all"
+            >
+              View All →
+            </Link>
+          </div>
+          <div className="pd-related-grid">
+            {relatedProducts.map((item) => {
+              const relatedImg = item.images?.[0]?.imageUrl;
+              const relatedPrice = item.variants?.[0]?.price ?? 0;
+              return (
+                <div
+                  key={item.id}
+                  className="pd-related-item"
+                  onClick={() => navigate(`/products/detail/${item.id}`)}
+                >
+                  {relatedImg && (
+                    <img
+                      src={relatedImg}
+                      alt={item.name}
+                      className="pd-related-img"
+                    />
+                  )}
+                  <div className="pd-related-overlay">
+                    <p className="pd-related-name">{item.name}</p>
+                    <button
+                      className="pd-related-arrow-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/products/detail/${item.id}`);
+                      }}
+                    >
+                      <ArrowRight size={18} />
+                    </button>
+                  </div>
+                  <div className="pd-related-info">
+                    <span className="pd-related-item-name">{item.name}</span>
+                    <span className="pd-related-item-price">
+                      {relatedPrice.toLocaleString()} ₫
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
