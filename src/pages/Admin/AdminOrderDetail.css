@@ -567,3 +567,82 @@
     box-shadow: none !important;
     border-color: transparent !important;
 }
+
+/* ── Refund button in ACTIONS card ── */
+.aod-btn-refund {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    padding: 10px 18px;
+    border-radius: 7px;
+    border: 1px solid rgba(14, 165, 233, 0.25);
+    background: rgba(14, 165, 233, 0.08);
+    color: #0284c7;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.aod-btn-refund:hover:not(:disabled) {
+    background: rgba(14, 165, 233, 0.16);
+}
+.aod-btn-refund:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Refund confirm button in modal ── */
+.aod-btn-refund-confirm {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+    background: #0284c7;
+    color: white;
+    border: none;
+}
+.aod-btn-refund-confirm:hover:not(:disabled) {
+    background: #0369a1;
+}
+.aod-btn-refund-confirm:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Shared modal helpers ── */
+.aod-cancel-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.aod-form-error {
+    color: #dc2626;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.aod-form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.aod-form-row label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.aod-form-row textarea {
+    width: 100%;
+    resize: vertical;
+}

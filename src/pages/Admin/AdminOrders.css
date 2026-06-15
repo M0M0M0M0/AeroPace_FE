@@ -594,3 +594,81 @@
   color: var(--text-muted);
   font-weight: 400;
 }
+
+.ao-badge.refunded {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+/* ── Action cell wrapper ── */
+.ao-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Quick Refund button in table row ── */
+.ao-refund-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  background: rgba(14, 165, 233, 0.08);
+  color: #0284c7;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.ao-refund-btn:hover {
+  background: rgba(14, 165, 233, 0.16);
+}
+
+/* ── Refund modal helpers ── */
+.ao-form-row textarea {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: 7px;
+  color: var(--text-main);
+  padding: 10px 12px;
+  outline: none;
+  width: 100%;
+  resize: vertical;
+  font-size: 0.875rem;
+}
+.ao-form-row textarea:focus {
+  border-color: var(--accent-color);
+}
+
+.ao-modal-error {
+  color: #dc2626;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.ao-refund-confirm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: #0284c7;
+  color: white;
+  border: none;
+  transition: background 0.2s;
+}
+.ao-refund-confirm-btn:hover:not(:disabled) {
+  background: #0369a1;
+}
+.ao-refund-confirm-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Eye } from "lucide-react";
+import { Eye, RefreshCw, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./AdminOrders.css";
@@ -18,6 +18,41 @@ const AdminOrders = () => {
   const [filterDateFrom, setFilterDateFrom] = useState("");
   const [filterDateTo, setFilterDateTo] = useState("");
   const [statOrders, setStatOrders] = useState([]);
+
+  const [refundTarget, setRefundTarget] = useState(null);
+  const [refundReason, setRefundReason] = useState("");
+  const [refundLoading, setRefundLoading] = useState(false);
+  const [refundError, setRefundError] = useState("");
+
+  const closeRefundModal = () => {
+    setRefundTarget(null);
+    setRefundReason("");
+    setRefundError("");
+  };
+
+  const handleRefund = async () => {
+    if (!refundReason.trim()) { setRefundError("Please enter the refund reason."); return; }
+    setRefundLoading(true);
+    try {
+      const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/admin/orders/${refundTarget}/refund`,
+        { refundReason: refundReason.trim() },
+        { headers }
+      );
+      if (res.data.success) {
+        closeRefundModal();
+        await Promise.all([fetchOrders(), fetchStatOrders()]);
+      } else {
+        setRefundError(res.data.message || "Refund failed!");
+      }
+    } catch (err) {
+      console.error(err);
+      setRefundError("An error occurred. Please try again.");
+    } finally {
+      setRefundLoading(false);
+    }
+  };
 
   const fetchStatOrders = async () => {
     try {
@@ -89,7 +124,9 @@ const AdminOrders = () => {
       if (filterStatus === "PENDING_ACTION") {
         matchStatus = o.status === "PAID";
       } else if (filterStatus === "CANCELLED") {
-        matchStatus = o.status === "CANCELLED" || o.paymentStatus === "REFUND_PENDING";
+        matchStatus = (o.status === "CANCELLED" || o.paymentStatus === "REFUND_PENDING") && o.paymentStatus !== "REFUNDED";
+      } else if (filterStatus === "REFUNDED") {
+        matchStatus = o.paymentStatus === "REFUNDED";
       } else if (filterStatus !== "ALL") {
         matchStatus = o.status === filterStatus;
       }
@@ -103,6 +140,7 @@ const AdminOrders = () => {
 
   const getStatusLabel = (order) => {
     if (order.paymentStatus === "REFUNDED") return "REFUNDED";
+    if (order.status === "CANCELLED" && order.paymentStatus === "REFUND_PENDING") return "REFUND PENDING";
     switch (order.status) {
       case "PENDING": return "PENDING";
       case "PAID": return "PROCESSING";
@@ -116,6 +154,7 @@ const AdminOrders = () => {
 
   const getStatusClass = (order) => {
     if (order.paymentStatus === "REFUNDED") return "ao-badge refunded";
+    if (order.status === "CANCELLED" && order.paymentStatus === "REFUND_PENDING") return "ao-badge refund-pending";
     switch (order.status) {
       case "PENDING": return "ao-badge pending";
       case "PAID": return "ao-badge paid";
@@ -147,7 +186,7 @@ const AdminOrders = () => {
         </>
       ),
       count: statOrders.filter(
-        o => o.status === "CANCELLED" || o.paymentStatus === "REFUND_PENDING"
+        o => (o.status === "CANCELLED" || o.paymentStatus === "REFUND_PENDING") && o.paymentStatus !== "REFUNDED"
       ).length,
     },
     { key: "REFUNDED", label: "REFUNDED", count: statOrders.filter(o => o.paymentStatus === "REFUNDED").length },
@@ -274,18 +313,63 @@ const AdminOrders = () => {
                       {new Date(order.createdAt).toLocaleString("vi-VN")}
                     </td>
                     <td>
-                      <button
-                        className="ao-view-btn"
-                        onClick={() => navigate(`/admin/orders/details/${order.orderCode}`)}
-                      >
-                        <Eye size={16} /> View Details
-                      </button>
+                      <div className="ao-actions">
+                        <button
+                          className="ao-view-btn"
+                          onClick={() => navigate(`/admin/orders/details/${order.orderCode}`)}
+                        >
+                          <Eye size={16} /> View Details
+                        </button>
+                        {order.paymentStatus === "REFUND_PENDING" && (
+                          <button
+                            className="ao-refund-btn"
+                            onClick={() => { setRefundTarget(order.orderCode); setRefundReason(""); setRefundError(""); }}
+                          >
+                            <RefreshCw size={14} /> Refund
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {refundTarget && (
+        <div className="ao-overlay" onClick={() => !refundLoading && closeRefundModal()}>
+          <div className="ao-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="ao-modal-header">
+              <div>
+                <h3 className="ao-modal-title">Process Refund</h3>
+                <p className="ao-modal-sub">Order #{refundTarget}</p>
+              </div>
+              <button className="ao-modal-close" onClick={closeRefundModal} disabled={refundLoading}>
+                <X size={18} />
+              </button>
+            </div>
+            <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", lineHeight: 1.6 }}>
+              This will initiate a refund to the customer's original payment method. This action cannot be undone.
+            </p>
+            <div className="ao-form-row">
+              <label>Refund Reason *</label>
+              <textarea
+                placeholder="E.g.: Order cancelled, customer requested refund..."
+                value={refundReason}
+                rows={3}
+                onChange={(e) => { setRefundReason(e.target.value); setRefundError(""); }}
+              />
+            </div>
+            {refundError && <p className="ao-modal-error">{refundError}</p>}
+            <div className="ao-modal-actions">
+              <button className="ao-btn-cancel" onClick={closeRefundModal} disabled={refundLoading}>Cancel</button>
+              <button className="ao-refund-confirm-btn" onClick={handleRefund} disabled={refundLoading}>
+                {refundLoading ? "Processing..." : <><RefreshCw size={14} /> Confirm Refund</>}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

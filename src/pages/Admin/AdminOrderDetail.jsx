@@ -45,6 +45,7 @@ const getNextStatus = (status) => {
 };
 
 const canCancel = (status) => ["PAID", "PENDING"].includes(status);
+const canRefund = (order) => order.status === "CANCELLED" && order.paymentStatus === "REFUND_PENDING";
 
 const fmt = (n) => n?.toLocaleString("vi-VN") + " ₫";
 const fmtDate = (d) => d ? new Date(d).toLocaleString("vi-VN") : "—";
@@ -267,6 +268,48 @@ const ConfirmStatusModal = ({
     );
 };
 
+// ── Refund Modal ─────────────────────────────────────────────────────────────
+const RefundModal = ({ orderCode, onClose, onConfirm, loading }) => {
+    const [reason, setReason] = useState("");
+    const [error, setError] = useState("");
+
+    const handleConfirm = () => {
+        if (!reason.trim()) { setError("Please enter the refund reason."); return; }
+        onConfirm(reason.trim());
+    };
+
+    return (
+        <div className="aod-overlay" onClick={() => !loading && onClose()}>
+            <div className="aod-modal aod-modal--sm" onClick={(e) => e.stopPropagation()}>
+                <div className="aod-modal-header">
+                    <div>
+                        <h3 className="aod-modal-title">Process Refund</h3>
+                        <p className="aod-modal-sub">Order #{orderCode}</p>
+                    </div>
+                    <button className="aod-modal-close" onClick={onClose} disabled={loading}><X size={18} /></button>
+                </div>
+                <p className="aod-cancel-desc">This will initiate a refund to the customer's original payment method. This action cannot be undone.</p>
+                <div className="aod-form-row">
+                    <label>Refund Reason *</label>
+                    <textarea
+                        placeholder="E.g.: Order cancelled, customer requested refund..."
+                        value={reason}
+                        rows={3}
+                        onChange={(e) => { setReason(e.target.value); setError(""); }}
+                    />
+                </div>
+                {error && <p className="aod-form-error">{error}</p>}
+                <div className="aod-modal-actions">
+                    <button className="aod-btn-ghost" onClick={onClose} disabled={loading}>Cancel</button>
+                    <button className="aod-btn-refund-confirm" onClick={handleConfirm} disabled={loading}>
+                        {loading ? "Processing..." : <><RefreshCw size={14} /> Confirm Refund</>}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // ════════════════════════════════════════════════════════════════════════════════
 // MAIN PAGE
 // ════════════════════════════════════════════════════════════════════════════════
@@ -282,6 +325,7 @@ const AdminOrderDetail = () => {
     const [cancelModal, setCancelModal] = useState(false);
     const [updating, setUpdating] = useState(false);
     const [confirmStatusModal, setConfirmStatusModal] = useState(false);
+    const [refundModal, setRefundModal] = useState(false);
 
 
     // ── Fetch ────────────────────────────────────────────────────────────────
@@ -337,6 +381,29 @@ const AdminOrderDetail = () => {
         } catch (err) {
             console.error(err);
             alert("Failed to cancel order!");
+        } finally {
+            setUpdating(false);
+        }
+    };
+
+    // ── Refund ──────────────────────────────────────────────────────────────
+    const handleRefund = async (reason) => {
+        setUpdating(true);
+        try {
+            const res = await axios.post(
+                `${ADMIN}/orders/${orderCode}/refund`,
+                { refundReason: reason },
+                { headers: authHeader() }
+            );
+            if (res.data.success) {
+                setRefundModal(false);
+                await fetchOrder();
+            } else {
+                alert(res.data.message || "Refund failed!");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Refund failed!");
         } finally {
             setUpdating(false);
         }
@@ -601,7 +668,7 @@ const AdminOrderDetail = () => {
 
 
                     {/* Thao tác */}
-                    {(nextStatus || canCancel(order.status)) && (
+                    {(nextStatus || canCancel(order.status) || canRefund(order)) && (
                         <div className="aod-card aod-card--actions">
                             <h2 className="aod-card-title">ACTIONS</h2>
                             <div className="aod-action-btns">
@@ -623,6 +690,15 @@ const AdminOrderDetail = () => {
                                         disabled={updating}
                                     >
                                         <XCircle size={14} /> Cancel Order
+                                    </button>
+                                )}
+                                {canRefund(order) && (
+                                    <button
+                                        className="aod-btn-refund"
+                                        onClick={() => setRefundModal(true)}
+                                        disabled={updating}
+                                    >
+                                        <RefreshCw size={14} /> Process Refund
                                     </button>
                                 )}
                             </div>
@@ -657,6 +733,14 @@ const AdminOrderDetail = () => {
                     loading={updating}
                     onClose={() => setConfirmStatusModal(false)}
                     onConfirm={handleNextStatus}
+                />
+            )}
+            {refundModal && (
+                <RefundModal
+                    orderCode={order.orderCode}
+                    onClose={() => setRefundModal(false)}
+                    onConfirm={handleRefund}
+                    loading={updating}
                 />
             )}
         </div>
