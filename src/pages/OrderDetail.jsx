@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "../api/axiosClient";
 import { ArrowLeft, MapPin, Phone, User, Package, X, Pencil } from "lucide-react";
+import { toast } from "sonner";
 import QuickReviewModal from "../components/QuickReviewModal";
 
 import "./OrderDetail.css";
@@ -91,6 +92,17 @@ const OrderDetail = () => {
         navigate("/review/detail", {
             state: { order, editMode: true, existingReviews: reviews },
         });
+    };
+
+    const handleProductClick = async (item) => {
+        const id = item.productId;
+        if (!id) return;
+        try {
+            await axios.get(`/products/detail/${id}`);
+            navigate(`/products/detail/${id}`);
+        } catch {
+            toast.error("This product is no longer available.");
+        }
     };
 
     const handleBack = () => {
@@ -232,13 +244,7 @@ const OrderDetail = () => {
                                             <div key={idx} className="od-item-wrapper">
                                                 <div
                                                     className="od-item-row od-item-clickable"
-                                                    onClick={() =>
-                                                        item.productId
-                                                            ? navigate(`/products/detail/${item.productId}`)
-                                                            : item.productSlug
-                                                                ? navigate(`/products/detail/${item.productSlug}`)
-                                                                : null
-                                                    }
+                                                    onClick={() => handleProductClick(item)}
                                                     title="View product"
                                                 >
                                                     <div className="od-item-img-wrap">
