@@ -167,9 +167,9 @@
 
 .dr-star-wrap {
   position: relative;
-  display: inline-flex;
-  width: 32px;
-  height: 32px;
+  display: inline-block;
+  width: 28px;
+  height: 28px;
 }
 
 .dr-star-half {
@@ -178,22 +178,23 @@
   width: 50%;
   height: 100%;
   cursor: pointer;
-  display: flex;
-  align-items: center;
   overflow: hidden;
 }
 
-.dr-star-half--left  { left: 0;  justify-content: flex-start; }
-.dr-star-half--right { right: 0; justify-content: flex-end; }
-.dr-star-half--right .dr-star-svg { transform: translateX(-50%); }
+.dr-star-half--left  { left: 0; }
+.dr-star-half--right { right: 0; }
 
 .dr-star-svg {
+  position: absolute;
+  top: 0;
   width: 28px;
   height: 28px;
-  flex-shrink: 0;
   pointer-events: none;
   transition: fill 0.1s, color 0.1s;
 }
+
+.dr-star-half--left  .dr-star-svg { left: 0; }
+.dr-star-half--right .dr-star-svg { right: 0; }
 
 .dr-star-label {
   font-size: 0.8rem;
