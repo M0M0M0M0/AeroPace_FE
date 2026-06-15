@@ -355,7 +355,11 @@ const Profile = () => {
         {/* Footer */}
         <div className="profile-order-card-footer">
           <span className="profile-order-total">
-            Total: {order.totalPrice?.toLocaleString()} ₫
+            Total: {(
+              (Number(order.totalPrice) || 0) +
+              (Number(order.shippingFee) || 0) +
+              (Number(order.vat) || 0)
+            ).toLocaleString()} ₫
           </span>
 
           <div className="profile-order-actions">

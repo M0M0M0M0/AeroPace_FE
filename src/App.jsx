@@ -27,6 +27,7 @@ import Profile from "./pages/Profile";
 import OrderDetail from "./pages/OrderDetail";
 
 import DetailedReview from "./pages/DetailedReview";
+import HistoricalProductDetail from "./pages/HistoricalProductDetail";
 
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
@@ -83,6 +84,7 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/order-detail/:orderCode" element={<OrderDetail />} />
                 <Route path="/review/detail" element={<DetailedReview />} />
+                <Route path="/order-detail/:orderCode/product/:productId/historical" element={<HistoricalProductDetail />} />
               </Route>
 
               <Route element={<AdminRoute />}>

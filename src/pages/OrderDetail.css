@@ -200,6 +200,31 @@
     font-weight: 500;
 }
 
+.od-price-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border-main);
+}
+
+.od-breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+.od-footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-top: 1px solid var(--border-main);
+    padding-top: 14px;
+}
+
 .od-total-row {
     display: flex;
     align-items: baseline;
@@ -395,9 +420,205 @@
     cursor: pointer;
 }
 
+/* ── View as ordered button ── */
+.od-hist-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.15s;
+}
+
+.od-hist-btn:hover {
+    color: var(--accent-color);
+}
+
+/* ── Historical product modal ── */
+.od-hist-modal {
+    position: relative;
+    background: var(--bg-main);
+    border: 1px solid var(--border-main);
+    border-radius: 16px;
+    padding: 28px 28px 24px;
+    width: 620px;
+    max-width: calc(100vw - 40px);
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+}
+
+.od-hist-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: 1px solid var(--border-main);
+    border-radius: 6px;
+    padding: 4px 6px;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.od-hist-modal-close:hover {
+    color: var(--text-main);
+    border-color: var(--text-muted);
+}
+
+.od-hist-loading {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 24px 0;
+    font-size: 0.9rem;
+}
+
+.od-hist-header {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-right: 28px;
+}
+
+.od-hist-header-text {
+    flex: 1;
+}
+
+.od-hist-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 6px;
+}
+
+.od-hist-brand {
+    display: inline-block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    border: 1px solid var(--border-main);
+    border-radius: 4px;
+    padding: 2px 8px;
+}
+
+.od-hist-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border-main);
+    flex-shrink: 0;
+}
+
+.od-hist-images {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin-bottom: 16px;
+}
+
+.od-hist-img {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--border-main);
+    flex-shrink: 0;
+}
+
+.od-hist-desc-wrap {
+    margin-bottom: 16px;
+}
+
+.od-hist-desc {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-height: 120px;
+    overflow: hidden;
+    position: relative;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+
+.od-hist-desc--expanded {
+    max-height: none;
+    mask-image: none;
+    -webkit-mask-image: none;
+}
+
+.od-hist-desc-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    cursor: pointer;
+}
+
+.od-hist-variants {
+    border-top: 1px solid var(--border-main);
+    padding-top: 14px;
+}
+
+.od-hist-variants-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+}
+
+.od-hist-variants-head,
+.od-hist-variants-row {
+    display: flex;
+    gap: 8px;
+    font-size: 0.82rem;
+    padding: 5px 0;
+}
+
+.od-hist-variants-head {
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-main);
+    padding-bottom: 6px;
+    margin-bottom: 2px;
+}
+
+.od-hist-variants-row {
+    color: var(--text-main);
+    border-bottom: 1px solid var(--border-main);
+}
+
+.od-hist-variants-row:last-child {
+    border-bottom: none;
+}
+
+.od-hist-variants-head span,
+.od-hist-variants-row span {
+    flex: 1;
+    min-width: 60px;
+}
+
 @media (max-width: 600px) {
     .od-card { padding: 20px 16px; }
     .od-info-label { width: 90px; }
     .od-footer-row { flex-direction: column; align-items: flex-start; }
     .od-item-price { min-width: unset; }
+    .od-hist-modal { padding: 20px 16px; }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "../api/axiosClient";
-import { ArrowLeft, MapPin, Phone, User, Package, X, Pencil } from "lucide-react";
+import { ArrowLeft, MapPin, Phone, User, Package, X, Pencil, Clock } from "lucide-react";
 import { toast } from "sonner";
 import QuickReviewModal from "../components/QuickReviewModal";
 
@@ -103,6 +103,11 @@ const OrderDetail = () => {
         } catch {
             toast.error("This product is no longer available.");
         }
+    };
+
+    const handleViewHistorical = (item) => {
+        if (!item.productId) return;
+        navigate(`/order-detail/${order.orderCode}/product/${item.productId}/historical`);
     };
 
     const handleBack = () => {
@@ -265,6 +270,13 @@ const OrderDetail = () => {
                                                         <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
                                                             Variant: {item.variantName}
                                                         </span>
+                                                        <button
+                                                            className="od-hist-btn"
+                                                            onClick={(e) => { e.stopPropagation(); handleViewHistorical(item); }}
+                                                        >
+                                                            <Clock size={11} />
+                                                            View as ordered
+                                                        </button>
                                                     </span>
                                                     <div className="od-item-right">
                                                         <span className="od-item-qty">x{item.quantity}</span>
@@ -310,6 +322,28 @@ const OrderDetail = () => {
                             <p className="od-cancel-reason">{getCancelReason(order)}</p>
                         )}
 
+                        {/* Price breakdown */}
+                        <div className="od-price-breakdown">
+                            <div className="od-breakdown-row">
+                                <span>Subtotal</span>
+                                <span>
+                                    {order.items?.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0).toLocaleString()} ₫
+                                </span>
+                            </div>
+                            {order.shippingFee != null && (
+                                <div className="od-breakdown-row">
+                                    <span>Shipping fee</span>
+                                    <span>{Number(order.shippingFee).toLocaleString()} ₫</span>
+                                </div>
+                            )}
+                            {order.vat != null && (
+                                <div className="od-breakdown-row">
+                                    <span>VAT (10%)</span>
+                                    <span>{Number(order.vat).toLocaleString()} ₫</span>
+                                </div>
+                            )}
+                        </div>
+
                         <div className="od-footer-row">
                             <div className="od-footer-actions">
                                 {canCancel(order) && (
@@ -334,7 +368,11 @@ const OrderDetail = () => {
                             <div className="od-total-row">
                                 <span className="od-total-label">Total</span>
                                 <span className="od-total-value">
-                                    {order.totalPrice?.toLocaleString()} ₫
+                                    {(
+                                        (Number(order.totalPrice) || 0) +
+                                        (Number(order.shippingFee) || 0) +
+                                        (Number(order.vat) || 0)
+                                    ).toLocaleString()} ₫
                                 </span>
                             </div>
                         </div>
@@ -393,6 +431,7 @@ const OrderDetail = () => {
                     onSubmitted={() => setReviewOrder(null)}
                 />
             )}
+
         </div>
     );
 };
