@@ -61,7 +61,7 @@
     display: flex;
     align-items: center;
     gap: 7px;
-    background: #3b82f6; /* Màu nút hệ thống admin */
+    background: var(--accent-gradient); /* Màu nút hệ thống admin */
     color: #ffffff;
     border: none;
     padding: 10px 22px;
@@ -250,7 +250,7 @@
 }
 
 .apd-select-list option:checked {
-    background: #2563eb;
+    background: var(--accent-gradient);
     color: #ffffff;
 }
 
@@ -519,7 +519,7 @@
     padding: 8px 20px;
     border-radius: 999px;
     border: none;
-    background: #2563eb;
+    background: var(--accent-gradient);
     color: #ffffff;
     cursor: pointer;
     font-size: 0.875rem;
