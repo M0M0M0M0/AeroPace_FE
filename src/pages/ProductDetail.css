@@ -140,7 +140,7 @@ input[type="number"] {
 
 .pd-variant-item:hover:not(.disabled) {
   border-color: var(--accent-color);
-  color: var(--accent-color);
+  /* color: var(--accent-color); */
   transform: translateY(-2px);
 }
 
