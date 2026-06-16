@@ -225,10 +225,6 @@ const ConfirmStatusModal = ({
                         <h3 className="aod-modal-title">
                             Xác nhận chuyển trạng thái
                         </h3>
-
-                        <p className="aod-modal-sub">
-                            {currentStatus} → {nextStatus}
-                        </p>
                     </div>
 
                     <button
@@ -240,7 +236,7 @@ const ConfirmStatusModal = ({
                 </div>
 
                 <p className="aod-confirm-desc">
-                    Bạn có chắc chắn muốn chuyển đơn hàng sang trạng thái
+                    Do you want to change order status from <strong>{currentStatus}</strong> to
                     <strong> {nextLabel}</strong>?
                 </p>
 
@@ -250,7 +246,7 @@ const ConfirmStatusModal = ({
                         onClick={onClose}
                         disabled={loading}
                     >
-                        Hủy
+                        Cancel
                     </button>
 
                     <button
@@ -259,8 +255,8 @@ const ConfirmStatusModal = ({
                         disabled={loading}
                     >
                         {loading
-                            ? "Đang cập nhật..."
-                            : "Xác nhận"}
+                            ? "Processing..."
+                            : "Confirm"}
                     </button>
                 </div>
             </div>
@@ -615,7 +611,7 @@ const AdminOrderDetail = () => {
                         </h2>
 
                         <p className="aod-note-text">
-                            {order.note?.trim() || "Không có ghi chú"}
+                            {order.note?.trim() || "No additional notes."}
                         </p>
                     </div>
 

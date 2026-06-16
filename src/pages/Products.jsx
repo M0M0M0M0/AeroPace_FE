@@ -130,7 +130,6 @@ const Products = () => {
         const data = await res.json();
         setProducts(data.products || data.content || []);
         setTotalPages(data.totalPages || 1);
-        console.log("fetchproducts", data);
       } catch (err) {
         console.error(err);
       }
