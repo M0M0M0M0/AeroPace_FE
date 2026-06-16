@@ -98,12 +98,21 @@ const Products = () => {
           appliedMin ||
           appliedMax ||
           search;
-          sortBy !== "";
+
+        let sortParam = "";
+        if (sortBy === "asc") sortParam = "price,asc";
+        else if (sortBy === "desc") sortParam = "price,desc";
+        else if (sortBy === "newest") sortParam = "createdAt,desc";
+        else if (sortBy === "bestseller") sortParam = "sold,desc";
 
         let url = "";
 
         if (!hasFilter) {
-          url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/products/detail?page=${page - 1}`;
+          const params = new URLSearchParams();
+          params.append("page", page - 1);
+          if (sortParam) params.append("sort", sortParam);
+
+          url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/products/detail?${params.toString()}`;
         } else {
           const params = new URLSearchParams();
           if (search) params.append("name", search);
@@ -112,13 +121,7 @@ const Products = () => {
           if (appliedMin) params.append("minPrice", appliedMin);
           if (appliedMax) params.append("maxPrice", appliedMax);
           params.append("page", page - 1);
-
-          if (sortBy) {
-            if (sortBy === "asc") params.append("sort", "price,asc"); 
-            else if (sortBy === "desc") params.append("sort", "price,desc"); 
-            else if (sortBy === "newest") params.append("sort", "createdAt,desc"); 
-            else if (sortBy === "bestseller") params.append("sort", "sold,desc"); 
-        }
+          if (sortParam) params.append("sort", sortParam);
 
           url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/products/filter?${params.toString()}`;
         }
