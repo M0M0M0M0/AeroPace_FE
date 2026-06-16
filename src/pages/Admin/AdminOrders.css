@@ -645,6 +645,40 @@
   border-color: var(--accent-color);
 }
 
+.ao-quick-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ao-quick-tag {
+  padding: 5px 13px;
+  border-radius: 99px;
+  border: 1px solid var(--border-main);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ao-quick-tag:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.ao-quick-tag--active {
+  background: rgba(255, 85, 0, 0.12);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.ao-quick-tag:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .ao-modal-error {
   color: #dc2626;
   font-size: 0.8rem;

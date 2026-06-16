@@ -4,6 +4,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./AdminOrders.css";
 
+const REFUND_QUICK_REASONS = [
+  "Order cancelled",
+  "Customer requested refund",
+  "Product out of stock",
+  "Duplicate order",
+  "Payment error",
+];
+
 const AdminOrders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
@@ -21,12 +29,23 @@ const AdminOrders = () => {
 
   const [refundTarget, setRefundTarget] = useState(null);
   const [refundReason, setRefundReason] = useState("");
+  const [refundActiveTags, setRefundActiveTags] = useState([]);
   const [refundLoading, setRefundLoading] = useState(false);
   const [refundError, setRefundError] = useState("");
 
   const closeRefundModal = () => {
     setRefundTarget(null);
     setRefundReason("");
+    setRefundActiveTags([]);
+    setRefundError("");
+  };
+
+  const toggleRefundTag = (tag) => {
+    setRefundActiveTags((prev) => {
+      const next = prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag];
+      setRefundReason(next.join(", "));
+      return next;
+    });
     setRefundError("");
   };
 
@@ -353,6 +372,22 @@ const AdminOrders = () => {
             <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", lineHeight: 1.6 }}>
               This will initiate a refund to the customer's original payment method. This action cannot be undone.
             </p>
+            <div className="ao-form-row">
+              <label>Quick fill</label>
+              <div className="ao-quick-tags">
+                {REFUND_QUICK_REASONS.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    className={`ao-quick-tag ${refundActiveTags.includes(tag) ? "ao-quick-tag--active" : ""}`}
+                    onClick={() => toggleRefundTag(tag)}
+                    disabled={refundLoading}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="ao-form-row">
               <label>Refund Reason *</label>
               <textarea

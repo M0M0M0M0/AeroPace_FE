@@ -269,9 +269,26 @@ const ConfirmStatusModal = ({
 };
 
 // ── Refund Modal ─────────────────────────────────────────────────────────────
+const REFUND_QUICK_REASONS = [
+    "Order cancelled",
+    "Customer requested refund",
+    "Product out of stock",
+    "Duplicate order",
+    "Payment error",
+];
+
 const RefundModal = ({ orderCode, onClose, onConfirm, loading }) => {
     const [reason, setReason] = useState("");
+    const [activeTags, setActiveTags] = useState([]);
     const [error, setError] = useState("");
+
+    const toggleTag = (tag) => {
+        setActiveTags((prev) => {
+            const next = prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag];
+            setReason(next.join(", "));
+            return next;
+        });
+    };
 
     const handleConfirm = () => {
         if (!reason.trim()) { setError("Please enter the refund reason."); return; }
@@ -289,6 +306,22 @@ const RefundModal = ({ orderCode, onClose, onConfirm, loading }) => {
                     <button className="aod-modal-close" onClick={onClose} disabled={loading}><X size={18} /></button>
                 </div>
                 <p className="aod-cancel-desc">This will initiate a refund to the customer's original payment method. This action cannot be undone.</p>
+                <div className="aod-form-row">
+                    <label>Quick fill</label>
+                    <div className="aod-quick-tags">
+                        {REFUND_QUICK_REASONS.map((tag) => (
+                            <button
+                                key={tag}
+                                type="button"
+                                className={`aod-quick-tag ${activeTags.includes(tag) ? "aod-quick-tag--active" : ""}`}
+                                onClick={() => toggleTag(tag)}
+                                disabled={loading}
+                            >
+                                {tag}
+                            </button>
+                        ))}
+                    </div>
+                </div>
                 <div className="aod-form-row">
                     <label>Refund Reason *</label>
                     <textarea

@@ -505,6 +505,40 @@
 }
 .aod-form-row textarea:focus { border-color: var(--accent-color); }
 
+.aod-quick-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.aod-quick-tag {
+    padding: 5px 13px;
+    border-radius: 99px;
+    border: 1px solid var(--border-main);
+    background: var(--bg-surface);
+    color: var(--text-main);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.aod-quick-tag:hover:not(:disabled) {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.aod-quick-tag--active {
+    background: rgba(255, 85, 0, 0.12);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.aod-quick-tag:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* ── THỐNG NHẤT CHUNG KIỂU DÁNG CÁC NÚT TRONG MODAL ── */
 .aod-btn-ghost,
 .aod-btn-danger,
