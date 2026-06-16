@@ -402,8 +402,8 @@ const Products = () => {
                       <div className="prd-card-top" style={{ backgroundImage: `url(${image})` }}>
                         {item.reviewCount > 0 && (
                           <div className="prd-rating-badge">
-                            <Star size={11} className="prd-rating-star" />
                             <span>{Number(item.averageRating).toFixed(1)}</span>
+                            <Star size={11} className="prd-rating-star" />
                           </div>
                         )}
                       </div>

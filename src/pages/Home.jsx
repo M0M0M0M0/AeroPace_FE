@@ -154,8 +154,8 @@ const Home = () => {
 
             {item.reviewCount > 0 && (
               <div className="home-rating-badge">
-                <Star size={11} className="home-rating-star" />
                 <span>{Number(item.averageRating).toFixed(1)}</span>
+                <Star size={11} className="home-rating-star" />
               </div>
             )}
 
