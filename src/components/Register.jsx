@@ -103,11 +103,13 @@ const Register = () => {
               className="register-avatar-circle"
               onClick={() => avatarInputRef.current?.click()}
             >
-              {avatarPreview ? (
-                <img src={avatarPreview} alt="Avatar preview" />
-              ) : (
-                <User size={32} color="#888" />
-              )}
+              <div className="register-avatar-img-wrap">
+                {avatarPreview ? (
+                  <img src={avatarPreview} alt="Avatar preview" />
+                ) : (
+                  <User size={32} color="#888" />
+                )}
+              </div>
               <span className="register-avatar-camera">
                 <Camera size={14} />
               </span>

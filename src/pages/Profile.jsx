@@ -433,11 +433,13 @@ const Profile = () => {
               className="profile-avatar-circle"
               onClick={() => !avatarUploading && avatarInputRef.current?.click()}
             >
-              {formData.avatarUrl ? (
-                <img src={formData.avatarUrl} alt="Avatar" className="profile-avatar-img" />
-              ) : (
-                <User size={40} color="#888" />
-              )}
+              <div className="profile-avatar-img-wrap">
+                {formData.avatarUrl ? (
+                  <img src={formData.avatarUrl} alt="Avatar" className="profile-avatar-img" />
+                ) : (
+                  <User size={40} color="#888" />
+                )}
+              </div>
               <span className="profile-avatar-camera">
                 <Camera size={14} />
               </span>
