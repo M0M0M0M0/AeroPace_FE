@@ -10,9 +10,9 @@ export async function uploadImage(file, type = "review-image") {
   const formData = new FormData();
   formData.append("file", file);
 
-  const { data } = await axiosClient.post(`/uploads/${type}`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  // Không set Content-Type thủ công — để browser/axios tự thêm boundary cho multipart,
+  // nếu không server sẽ không parse được phần file.
+  const { data } = await axiosClient.post(`/uploads/${type}`, formData);
 
   return data.url;
 }
