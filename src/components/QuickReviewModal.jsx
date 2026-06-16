@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { X, Star, ChevronRight } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { X, Star, ChevronRight, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "../api/axiosClient";
+import { uploadImage } from "../api/uploadImage";
 import "./QuickReviewModal.css";
 
 
@@ -73,9 +74,11 @@ const QuickReviewModal = ({ order, onClose, onSubmitted }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [activeTags, setActiveTags] = useState([]);
+  const [images, setImages] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
+  const fileRef = useRef(null);
 
   const toggleTag = (tag) => {
     setActiveTags((prev) => {
@@ -85,9 +88,20 @@ const QuickReviewModal = ({ order, onClose, onSubmitted }) => {
     });
   };
 
+  const handleFiles = (files) => {
+    const arr = Array.from(files).slice(0, 3 - images.length);
+    setImages((prev) => [
+      ...prev,
+      ...arr.map((file) => ({ url: URL.createObjectURL(file), file })),
+    ]);
+  };
+
+  const removeImage = (idx) => {
+    setImages((prev) => prev.filter((_, i) => i !== idx));
+  };
+
   const handleSubmit = async () => {
     if (!rating) { setError("Please select a rating."); return; }
-    console.log("token khi submit:", localStorage.getItem("token"));
     setError("");
     setSubmitting(true);
 
@@ -100,12 +114,16 @@ const QuickReviewModal = ({ order, onClose, onSubmitted }) => {
     });
 
     try {
+      const imageUrls = await Promise.all(
+        images.map((img) => uploadImage(img.file, "review-image"))
+      );
+
       await Promise.all(
         uniqueItems.map((item) =>
           axios.post(`/reviews/submit-order`, {
             rating,
             comment,
-            imageUrls: [],
+            imageUrls,
           }, {
             params: { orderCode: order.orderCode, productId: item.productId },
           })
@@ -182,6 +200,35 @@ const QuickReviewModal = ({ order, onClose, onSubmitted }) => {
                 onChange={(e) => setComment(e.target.value)}
                 rows={3}
               />
+            </div>
+
+            {/* Photos */}
+            <div className="qrm-section">
+              <p className="qrm-section-label">Photos <span className="qrm-hint">(up to 3)</span></p>
+              <div className="qrm-images">
+                {images.map((img, idx) => (
+                  <div key={idx} className="qrm-img-preview">
+                    <img src={img.url} alt={`preview-${idx}`} />
+                    <button className="qrm-img-remove" onClick={() => removeImage(idx)}>
+                      <X size={12} />
+                    </button>
+                  </div>
+                ))}
+                {images.length < 3 && (
+                  <button className="qrm-img-add" onClick={() => fileRef.current?.click()}>
+                    <Upload size={18} />
+                    <span>Add photo</span>
+                    <input
+                      ref={fileRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      style={{ display: "none" }}
+                      onChange={(e) => handleFiles(e.target.files)}
+                    />
+                  </button>
+                )}
+              </div>
             </div>
 
             {error && <p className="qrm-error">{error}</p>}

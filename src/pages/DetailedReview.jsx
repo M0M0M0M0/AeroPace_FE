@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, Upload, X, CheckCircle, Trash2 } from "lucide-react";
 import axios from "../api/axiosClient";
+import { uploadImage } from "../api/uploadImage";
 import "./DetailedReview.css";
 
 const QUICK_TAGS = [
@@ -68,7 +69,7 @@ const StarRating = ({ value, onChange, disabled }) => {
 
 const ProductReviewCard = ({ item, reviewState, onChange, submitted }) => {
     const fileRef = useRef(null);
-    const { rating, comment, tags, previewUrls } = reviewState;
+    const { rating, comment, tags, images } = reviewState;
 
     const toggleTag = (tag) => {
         const nextTags = tags.includes(tag) ? tags.filter((t) => t !== tag) : [...tags, tag];
@@ -77,24 +78,13 @@ const ProductReviewCard = ({ item, reviewState, onChange, submitted }) => {
     };
 
     const handleFiles = (files) => {
-        const arr = Array.from(files).slice(0, 3 - (previewUrls?.length ?? 0));
-        arr.forEach((file) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                onChange({
-                    previewUrls: [...(reviewState.previewUrls ?? []), e.target.result],
-                    imageFiles: [...(reviewState.imageFiles ?? []), file],
-                });
-            };
-            reader.readAsDataURL(file);
-        });
+        const arr = Array.from(files).slice(0, 3 - (images?.length ?? 0));
+        const newImages = arr.map((file) => ({ url: URL.createObjectURL(file), file }));
+        onChange({ images: [...(images ?? []), ...newImages] });
     };
 
     const removeImage = (idx) => {
-        onChange({
-            previewUrls: previewUrls.filter((_, i) => i !== idx),
-            imageFiles: (reviewState.imageFiles ?? []).filter((_, i) => i !== idx),
-        });
+        onChange({ images: images.filter((_, i) => i !== idx) });
     };
 
     return (
@@ -157,15 +147,15 @@ const ProductReviewCard = ({ item, reviewState, onChange, submitted }) => {
                     <div className="dr-field">
                         <p className="dr-field-label">Photos <span className="dr-field-hint">(up to 3)</span></p>
                         <div className="dr-images">
-                            {(previewUrls ?? []).map((url, idx) => (
+                            {(images ?? []).map((img, idx) => (
                                 <div key={idx} className="dr-img-preview">
-                                    <img src={url} alt={`preview-${idx}`} />
+                                    <img src={img.url} alt={`preview-${idx}`} />
                                     <button className="dr-img-remove" onClick={() => removeImage(idx)}>
                                         <X size={12} />
                                     </button>
                                 </div>
                             ))}
-                            {(previewUrls ?? []).length < 3 && (
+                            {(images ?? []).length < 3 && (
                                 <button
                                     className="dr-img-add"
                                     onClick={() => fileRef.current?.click()}
@@ -229,14 +219,13 @@ const DetailedReview = () => {
                             rating: parseFloat(rv?.rating ?? 0),
                             comment: rv?.comment ?? "",
                             tags: [],
-                            previewUrls: rv?.imageUrls ?? [],
-                            imageFiles: [],
+                            images: (rv?.imageUrls ?? []).map((url) => ({ url, file: null })),
                         },
                     ];
                 }
                 return [
                     item.productId,
-                    { rating: 0, comment: "", tags: [], previewUrls: [], imageFiles: [] },
+                    { rating: 0, comment: "", tags: [], images: [] },
                 ];
             })
         );
@@ -286,17 +275,22 @@ const DetailedReview = () => {
         setErrors((e) => ({ ...e, [item.productId]: "" }));
         setSubmitting((s) => ({ ...s, [item.productId]: true }));
         try {
+            const imageUrls = await Promise.all(
+                (rv.images ?? []).map((img) =>
+                    img.file ? uploadImage(img.file, "review-image") : img.url
+                )
+            );
+
             if (editMode) {
-                const existingRv = existingReviews.find((r) => r.productId === item.productId);
                 await axios.put(`/reviews/${item.reviewId}`, {
                     rating: rv.rating,
                     comment: rv.comment,
-                    imageUrls: existingRv?.imageUrls || [],
+                    imageUrls,
                 });
             } else {
                 await axios.post(
                     `/reviews/submit-order`,
-                    { rating: rv.rating, comment: rv.comment, imageUrls: [] },
+                    { rating: rv.rating, comment: rv.comment, imageUrls },
                     { params: { orderCode: order.orderCode, productId: item.productId } }
                 );
             }

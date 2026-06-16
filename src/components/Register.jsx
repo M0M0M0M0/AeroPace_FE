@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   Mail,
@@ -7,8 +7,10 @@ import {
   UserPlus,
   CheckCircle,
   AlertCircle,
+  Camera,
 } from "lucide-react";
 import axios from "axios";
+import { uploadImage } from "../api/uploadImage";
 import "./Login.css";
 
 const Register = () => {
@@ -17,9 +19,20 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const avatarInputRef = useRef(null);
+
   const [message, setMessage] = useState({ type: "", text: "" });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,10 +47,16 @@ const Register = () => {
     setIsLoading(true);
 
     try {
+      let avatarUrl = "";
+      if (avatarFile) {
+        avatarUrl = await uploadImage(avatarFile, "avatar");
+      }
+
       await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/register`, {
         username: fullName,
         email,
         password,
+        avatarUrl,
       });
 
       setMessage({
@@ -79,6 +98,30 @@ const Register = () => {
         )}
 
         <form onSubmit={handleSubmit} className="login-form">
+          <div className="register-avatar-picker">
+            <div
+              className="register-avatar-circle"
+              onClick={() => avatarInputRef.current?.click()}
+            >
+              {avatarPreview ? (
+                <img src={avatarPreview} alt="Avatar preview" />
+              ) : (
+                <User size={32} color="#888" />
+              )}
+              <span className="register-avatar-camera">
+                <Camera size={14} />
+              </span>
+            </div>
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleAvatarChange}
+            />
+            <p className="register-avatar-hint">Add a profile photo (optional)</p>
+          </div>
+
           <div className="input-group">
             <User className="input-icon" size={20} />
             <input

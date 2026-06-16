@@ -32,6 +32,7 @@
 }
 
 .profile-avatar-circle {
+  position: relative;
   width: 100px;
   height: 100px;
   background-color: var(--bg-surface);
@@ -42,6 +43,40 @@
   margin: 0 auto 15px;
   border: 2px solid var(--border-main);
   color: var(--text-main);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.profile-avatar-circle:hover {
+  border-color: var(--accent-color);
+}
+
+.profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-avatar-camera {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-surface-elevated);
+}
+
+.profile-avatar-uploading {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: -8px 0 8px;
 }
 
 .profile-avatar-section h3 {

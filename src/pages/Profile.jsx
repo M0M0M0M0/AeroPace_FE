@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "../api/axiosClient";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import axiosRaw from "axios";
 import QuickReviewModal from "../components/QuickReviewModal";
+import { uploadImage } from "../api/uploadImage";
 import {
   User,
   Package,
@@ -13,6 +14,7 @@ import {
   MapPin,
   Save,
   ArrowRight,
+  Camera,
 } from "lucide-react";
 
 import "./Profile.css";
@@ -43,9 +45,12 @@ const Profile = () => {
     ward: "",
     district: "",
     province: "",
+    avatarUrl: "",
   });
 
   const [profileId, setProfileId] = useState(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const avatarInputRef = useRef(null);
   const [orders, setOrders] = useState([]);
   const [confirmingOrder, setConfirmingOrder] = useState(null);
   const [orderReviews, setOrderReviews] = useState({});
@@ -136,6 +141,7 @@ const Profile = () => {
           ward: data.ward || "",
           district: data.district || "",
           province: data.province || "",
+          avatarUrl: data.avatarUrl || "",
         });
       } catch (err) {
         console.log("LOAD PROFILE ERROR:", err);
@@ -182,12 +188,41 @@ const Profile = () => {
         province:
           provinces.find((p) => p.id === selectedProvince)?.full_name ||
           formData.province,
+        avatarUrl: formData.avatarUrl,
         userId: user.id,
       });
       alert("Update successful!");
     } catch (err) {
       console.log("UPDATE ERROR:", err.response?.data || err);
       alert("Update failed!");
+    }
+  };
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !profileId) return;
+
+    setAvatarUploading(true);
+    try {
+      const avatarUrl = await uploadImage(file, "avatar");
+      await axios.put(`${API_URL}/${profileId}`, {
+        fullName: formData.name,
+        phoneNumber: formData.phone_number,
+        dob: formData.dob,
+        gender: formData.gender,
+        address: formData.address,
+        ward: formData.ward,
+        district: formData.district,
+        province: formData.province,
+        avatarUrl,
+        userId: user.id,
+      });
+      setFormData((prev) => ({ ...prev, avatarUrl }));
+    } catch (err) {
+      console.log("AVATAR UPLOAD ERROR:", err.response?.data || err);
+      alert("Failed to update avatar!");
+    } finally {
+      setAvatarUploading(false);
     }
   };
 
@@ -394,9 +429,27 @@ const Profile = () => {
         {/* SIDEBAR */}
         <div className="profile-sidebar">
           <div className="profile-avatar-section">
-            <div className="profile-avatar-circle">
-              <User size={40} color="#888" />
+            <div
+              className="profile-avatar-circle"
+              onClick={() => !avatarUploading && avatarInputRef.current?.click()}
+            >
+              {formData.avatarUrl ? (
+                <img src={formData.avatarUrl} alt="Avatar" className="profile-avatar-img" />
+              ) : (
+                <User size={40} color="#888" />
+              )}
+              <span className="profile-avatar-camera">
+                <Camera size={14} />
+              </span>
             </div>
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleAvatarChange}
+            />
+            {avatarUploading && <p className="profile-avatar-uploading">Uploading...</p>}
             <h3>{formData.name || "User"}</h3>
             <p>{user?.role === "admin" ? "Administrator" : "Standard User"}</p>
           </div>
