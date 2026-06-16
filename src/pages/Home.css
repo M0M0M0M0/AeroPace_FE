@@ -396,6 +396,11 @@
   position: relative;
 }
 
+/* Nền ảnh cố định màu trắng cho một số sản phẩm cụ thể, không đổi theo light/dark mode */
+.home-card-top--white-bg {
+  background-color: #ffffff;
+}
+
 .home-img-default,
 .home-img-hover {
   position: absolute;

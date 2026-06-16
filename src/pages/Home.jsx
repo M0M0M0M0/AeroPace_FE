@@ -20,6 +20,10 @@ const Home = () => {
 
   const productIds = [50, 51, 52, 64, 72, 180,448,449,450,451,1482,10,210,211,212,213,184,185,186,187,188,17,18,19,20,21,22,23,24,25];
 
+  // Running Shoes (5), Sports Glasses (5) và 2 sản phẩm cuối Sports Watches —
+  // nền ảnh luôn trắng cố định, không đổi theo light/dark mode.
+  const WHITE_BG_IDS = new Set([50, 51, 52, 64, 72, 10, 210, 211, 212, 213, 187, 188]);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -145,7 +149,7 @@ const Home = () => {
           })()}
           
          
-          <div className="home-card-top">
+          <div className={`home-card-top ${WHITE_BG_IDS.has(item.id) ? "home-card-top--white-bg" : ""}`}>
             <div className="card-actions-overlay">
               <button className="action-icon-btn" onClick={(e) => toggleCompare(item, e)}>
                 <ArrowLeftRight size={18} color={isCompared ? "#2563eb" : "#333"} />
