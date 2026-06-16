@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef,useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, Heart, ArrowLeftRight, X, ChevronLeft, ChevronRight } from "lucide-react"; 
+import { ShoppingCart, Heart, ArrowLeftRight, X, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { usePreferences } from "../components/UsePreferences";
 import { toast } from "sonner";
 import { useCart } from "../context/CartContext";
@@ -151,6 +151,13 @@ const Home = () => {
                 <ArrowLeftRight size={18} color={isCompared ? "#2563eb" : "#333"} />
               </button>
             </div>
+
+            {item.reviewCount > 0 && (
+              <div className="home-rating-badge">
+                <Star size={11} className="home-rating-star" />
+                <span>{Number(item.averageRating).toFixed(1)}</span>
+              </div>
+            )}
 
             <div className="home-img-default" style={{ backgroundImage: `url(${defaultImage})` }} />
             <div className="home-img-hover" style={{ backgroundImage: `url(${hoverImage})` }} />

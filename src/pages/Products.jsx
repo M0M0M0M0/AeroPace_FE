@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ShoppingCart, Heart, ArrowLeftRight, X } from "lucide-react";
+import { ShoppingCart, Heart, ArrowLeftRight, X, Star } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { usePreferences } from "../components/UsePreferences"; 
 import "./Products.css";
@@ -130,6 +130,7 @@ const Products = () => {
         const data = await res.json();
         setProducts(data.products || data.content || []);
         setTotalPages(data.totalPages || 1);
+        console.log("fetchproducts", data);
       } catch (err) {
         console.error(err);
       }
@@ -397,8 +398,15 @@ const Products = () => {
                       
                       {!outOfStock && maxed && <div className="prd-out-of-stock-badge">Maxed Out</div>}
                       {cartQty > 0 && <div className="prd-in-cart-badge">In Cart: {cartQty}</div>}
-                      
-                      <div className="prd-card-top" style={{ backgroundImage: `url(${image})` }} />
+
+                      <div className="prd-card-top" style={{ backgroundImage: `url(${image})` }}>
+                        {item.reviewCount > 0 && (
+                          <div className="prd-rating-badge">
+                            <Star size={11} className="prd-rating-star" />
+                            <span>{Number(item.averageRating).toFixed(1)}</span>
+                          </div>
+                        )}
+                      </div>
                       <div className={`prd-card-bottom ${activeId === item.id ? "prd-clicked" : ""}`}>
                         <div className="prd-card-left">
                           <div className="prd-card-details">

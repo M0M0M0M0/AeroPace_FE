@@ -548,6 +548,32 @@
   transform: translateY(25px);
 }
 
+.home-rating-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 15;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.home-rating-star {
+  fill: #facc15;
+  color: #facc15;
+}
+
 .home-card-buy--disabled {
   opacity: 0.4;
   cursor: not-allowed;

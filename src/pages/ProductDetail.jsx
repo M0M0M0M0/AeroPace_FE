@@ -8,6 +8,7 @@ import {
   Minus,
   Plus,
   ArrowRight,
+  Star,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "../context/CartContext";
@@ -38,6 +39,21 @@ const findMatchingVariant = (variants, selected, optionKeys) => {
   );
 };
 
+const StarRow = ({ rating, size = 14 }) => {
+  const rounded = Math.round(Number(rating) || 0);
+  return (
+    <span className="pd-star-row">
+      {[1, 2, 3, 4, 5].map((n) => (
+        <Star
+          key={n}
+          size={size}
+          className={n <= rounded ? "pd-star pd-star--filled" : "pd-star"}
+        />
+      ))}
+    </span>
+  );
+};
+
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -49,6 +65,11 @@ const ProductDetail = () => {
   const [activeImage, setActiveImage] = useState(0);
   const [descExpanded, setDescExpanded] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [ratingSummary, setRatingSummary] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsPage, setReviewsPage] = useState(0);
+  const [reviewsTotalPages, setReviewsTotalPages] = useState(1);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
 
   const images = product?.images
     ? [...product.images].sort((a, b) => a.position - b.position)
@@ -58,6 +79,14 @@ const ProductDetail = () => {
   useEffect(() => {
     setDescExpanded(false);
     setRelatedProducts([]);
+    setRatingSummary(null);
+    setReviewsPage(0);
+
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/products/${id}/rating-summary`)
+      .then((res) => res.json())
+      .then(setRatingSummary)
+      .catch(console.error);
+
     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/products/detail/${id}`)
       .then((res) => res.json())
       .then((data) => {
@@ -92,6 +121,20 @@ const ProductDetail = () => {
   useEffect(() => {
     setQuantity(1);
   }, [selected]);
+
+  useEffect(() => {
+    setReviewsLoading(true);
+    fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/api/v1/products/${id}/reviews?page=${reviewsPage}&size=5`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setReviews(data.content || []);
+        setReviewsTotalPages(data.totalPages || 1);
+      })
+      .catch(console.error)
+      .finally(() => setReviewsLoading(false));
+  }, [id, reviewsPage]);
 
   if (!product)
     return (
@@ -247,6 +290,19 @@ const ProductDetail = () => {
         <div className="pd-info">
           <h1 className="pd-title">{product.name}</h1>
           <p className="pd-price">{price.toLocaleString()} ₫</p>
+
+          {ratingSummary?.reviewCount > 0 && (
+            <div className="pd-rating-summary-row">
+              <StarRow rating={ratingSummary.averageRating} />
+              <span className="pd-rating-summary-value">
+                {Number(ratingSummary.averageRating).toFixed(1)}
+              </span>
+              <span className="pd-rating-summary-count">
+                ({ratingSummary.reviewCount} đánh giá)
+              </span>
+            </div>
+          )}
+
           <p className="pd-category">{category}</p>
 
           {optionDefs.map(({ name, key }) => {
@@ -378,6 +434,71 @@ const ProductDetail = () => {
         >
           {descExpanded ? "Thu gọn ▲" : "Xem thêm ▼"}
         </button>
+      </div>
+
+      <div className="pd-reviews">
+        <h2>Đánh giá sản phẩm</h2>
+
+        {ratingSummary?.reviewCount > 0 ? (
+          <div className="pd-reviews-summary">
+            <span className="pd-reviews-summary-value">
+              {Number(ratingSummary.averageRating).toFixed(1)}
+            </span>
+            <div className="pd-reviews-summary-info">
+              <StarRow rating={ratingSummary.averageRating} size={16} />
+              <span className="pd-reviews-summary-count">
+                {ratingSummary.reviewCount} đánh giá
+              </span>
+            </div>
+          </div>
+        ) : (
+          <p className="pd-reviews-empty">Sản phẩm chưa có đánh giá nào.</p>
+        )}
+
+        {reviews.length > 0 && (
+          <div className="pd-reviews-list">
+            {reviews.map((rv) => (
+              <div key={rv.id} className="pd-review-item">
+                <div className="pd-review-header">
+                  <span className="pd-review-user">{rv.userName}</span>
+                  <StarRow rating={rv.rating} size={13} />
+                </div>
+                {rv.variantName && (
+                  <p className="pd-review-variant">Phân loại: {rv.variantName}</p>
+                )}
+                {rv.comment && <p className="pd-review-comment">{rv.comment}</p>}
+                {rv.imageUrls?.length > 0 && (
+                  <div className="pd-review-images">
+                    {rv.imageUrls.map((url, idx) => (
+                      <img key={idx} src={url} alt="" className="pd-review-img" />
+                    ))}
+                  </div>
+                )}
+                <p className="pd-review-date">
+                  {new Date(rv.createdAt).toLocaleDateString("vi-VN")}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {reviewsTotalPages > 1 && (
+          <div className="pd-reviews-pagination">
+            <button
+              disabled={reviewsPage === 0 || reviewsLoading}
+              onClick={() => setReviewsPage((p) => p - 1)}
+            >
+              Prev
+            </button>
+            <span>{reviewsPage + 1} / {reviewsTotalPages}</span>
+            <button
+              disabled={reviewsPage >= reviewsTotalPages - 1 || reviewsLoading}
+              onClick={() => setReviewsPage((p) => p + 1)}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
       {relatedProducts.length > 0 && (
