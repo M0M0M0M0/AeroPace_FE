@@ -1,3 +1,69 @@
+/* PROFILE INCOMPLETE MODAL */
+.checkout-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.checkout-modal {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-main);
+  border-radius: 12px;
+  padding: 28px 32px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+.checkout-modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+  color: var(--text-main);
+}
+.checkout-modal-body {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+.checkout-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+.checkout-modal-cancel {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border-main);
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+.checkout-modal-cancel:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+.checkout-modal-confirm {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent-gradient);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.checkout-modal-confirm:hover {
+  background: var(--accent-gradient-hover);
+  box-shadow: 0 4px 14px rgba(255, 85, 0, 0.25);
+}
+
 .checkout-page {
   background: var(--bg-main);
   color: var(--text-main);

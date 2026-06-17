@@ -114,16 +114,22 @@ const CheckoutForm = () => {
         const res = await axios.get(`${API}/customer-profiles/user/${user.id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
+        const receiverComplete = !!(res.data.fullName && res.data.phoneNumber);
+        const addressComplete = !!(res.data.address && res.data.province);
+
         setProfileInfo(res.data);
         setForm((prev) => ({
           ...prev,
-          name: res.data.fullName || "",
-          phone: res.data.phoneNumber || "",
           email: res.data.email || user.email || "",
-          specificAddress: res.data.address || "",
+          ...(receiverComplete && { name: res.data.fullName, phone: res.data.phoneNumber }),
+          ...(addressComplete && { specificAddress: res.data.address }),
         }));
+        if (!receiverComplete) setUseOtherReceiver(true);
+        if (!addressComplete) setUseOtherAddress(true);
       } catch {
-        // no profile → leave form empty
+        setUseOtherReceiver(true);
+        setUseOtherAddress(true);
+        setForm((prev) => ({ ...prev, email: user.email || "" }));
       } finally {
         setLoadingProfile(false);
       }
@@ -178,6 +184,12 @@ const CheckoutForm = () => {
     if (matched) setSelectedWard(matched.id);
   }, [profileInfo, wards, useOtherAddress]);
 
+  // ─── Incomplete profile modal ────────────────────────────────────────────────
+  const [profileModalType, setProfileModalType] = useState(null); // "receiver" | "address"
+
+  const isReceiverComplete = !!(profileInfo?.fullName && profileInfo?.phoneNumber);
+  const isAddressComplete = !!(profileInfo?.address && profileInfo?.province);
+
   // ─── Toggle: Receiver ────────────────────────────────────────────────────────
   const handleUseOtherReceiver = () => {
     setUseOtherReceiver(true);
@@ -185,6 +197,7 @@ const CheckoutForm = () => {
   };
 
   const handleRevertReceiver = () => {
+    if (!isReceiverComplete) { setProfileModalType("receiver"); return; }
     setUseOtherReceiver(false);
     if (profileInfo) {
       setForm((prev) => ({
@@ -206,6 +219,7 @@ const CheckoutForm = () => {
   };
 
   const handleRevertAddress = () => {
+    if (!isAddressComplete) { setProfileModalType("address"); return; }
     setUseOtherAddress(false);
     if (profileInfo) {
       setForm((prev) => ({ ...prev, specificAddress: profileInfo.address || "" }));
@@ -431,6 +445,27 @@ const CheckoutForm = () => {
   // ─── JSX ─────────────────────────────────────────────────────────────────────
   return (
     <div className="checkout-page">
+      {profileModalType && (
+        <div className="checkout-modal-overlay" onClick={() => setProfileModalType(null)}>
+          <div className="checkout-modal" onClick={(e) => e.stopPropagation()}>
+            <h3 className="checkout-modal-title">Profile Incomplete</h3>
+            <p className="checkout-modal-body">
+              {profileModalType === "receiver"
+                ? "Your profile is missing full name or phone number."
+                : "Your profile is missing address or province."}
+              {" "}Do you want to go to your profile page to complete it?
+            </p>
+            <div className="checkout-modal-actions">
+              <button className="checkout-modal-cancel" onClick={() => setProfileModalType(null)}>
+                Stay Here
+              </button>
+              <button className="checkout-modal-confirm" onClick={() => navigate("/profile")}>
+                Go to Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="container">
         <h1 className="checkout-section-title">Checkout</h1>
 
