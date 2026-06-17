@@ -50,7 +50,7 @@ const Cart = () => {
   const hasInvalidItems = useMemo(() => {
     if (!cart?.items) return false;
     return cart.items.some(
-      (item) => item.stockAvailable === 0 || item.quantity > item.stockAvailable || !item.isAvailable
+      (item) => item.stockAvailable === 0 || item.quantity > item.stockAvailable || item.isAvailable === false
     );
   }, [cart]);
 
@@ -78,7 +78,7 @@ const Cart = () => {
           {cart.items.map((item) => {
             const outOfStock = item.stockAvailable === 0;
             const exceedsStock = item.quantity > item.stockAvailable;
-            const isUnavailable = !item.isAvailable;
+            const isUnavailable = item.isAvailable === false;
 
             return (
               <div

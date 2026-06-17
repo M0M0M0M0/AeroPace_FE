@@ -396,8 +396,6 @@ const Products = () => {
                       {/* Các badge hiện tại */}
                       
                       {!outOfStock && maxed && <div className="prd-out-of-stock-badge">Maxed Out</div>}
-                      {cartQty > 0 && <div className="prd-in-cart-badge">In Cart: {cartQty}</div>}
-
                       <div className="prd-card-top" style={{ backgroundImage: `url(${image})` }}>
                         {item.reviewCount > 0 && (
                           <div className="prd-rating-badge">

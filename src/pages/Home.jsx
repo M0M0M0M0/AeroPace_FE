@@ -139,16 +139,6 @@ const Home = () => {
       >
         <div className="home-card-container">
           
-          {(() => {
-            const qty = item.variants
-              ?.filter((v) => v.stock && v.stock > 0)
-              .reduce((sum, v) => sum + getCartQuantity(item.id, v.id), 0);
-            return qty > 0 ? (
-              <div className="home-in-cart-badge">Trong giỏ: {qty}</div>
-            ) : null;
-          })()}
-          
-         
           <div className={`home-card-top ${WHITE_BG_IDS.has(item.id) ? "home-card-top--white-bg" : ""}`}>
             <div className="card-actions-overlay">
               <button className="action-icon-btn" onClick={(e) => toggleCompare(item, e)}>
