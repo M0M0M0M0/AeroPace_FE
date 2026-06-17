@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./AdminCustomer.css";
 import axios from "axios";
 
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL}/api/v1/admin/customers`;
 
 const AdminCustomerDetail = ({ customer, onClose }) => {
+  const navigate = useNavigate();
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -194,6 +196,15 @@ const AdminCustomerDetail = ({ customer, onClose }) => {
         <div className="ac-modal-actions">
           <button className="ac-btn-cancel" onClick={onClose}>
             Close
+          </button>
+          <button
+            className="ac-view-btn"
+            onClick={() => {
+              onClose();
+              navigate("/admin/orders", { state: { userId: customer.userId } });
+            }}
+          >
+            View Orders
           </button>
         </div>
       </div>
