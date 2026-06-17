@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Eye, RefreshCw, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "./AdminOrders.css";
 
@@ -14,15 +14,17 @@ const REFUND_QUICK_REASONS = [
 
 const AdminOrders = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [orders, setOrders] = useState([]);
   const [allOrders, setAllOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [searchOrderCode, setSearchOrderCode] = useState("");
   const [searchName, setSearchName] = useState("");
+  const [searchUserId, setSearchUserId] = useState(() => location.state?.userId ?? "");
   const [searchPhone, setSearchPhone] = useState("");
   const [searchAddress, setSearchAddress] = useState("");
-  const [filterStatus, setFilterStatus] = useState("PENDING_ACTION");
+  const [filterStatus, setFilterStatus] = useState(() => location.state?.userId ? "ALL" : "PENDING_ACTION");
   const [filterDateFrom, setFilterDateFrom] = useState("");
   const [filterDateTo, setFilterDateTo] = useState("");
   const [statOrders, setStatOrders] = useState([]);
@@ -95,6 +97,7 @@ const AdminOrders = () => {
       const params = new URLSearchParams();
       if (searchOrderCode) params.append("orderCode", searchOrderCode);
       if (searchName) params.append("receiverName", searchName);
+      if (searchUserId) params.append("userId", searchUserId);
       if (searchPhone) params.append("phoneNumber", searchPhone);
       if (searchAddress) params.append("shippingAddress", searchAddress);
       if (filterDateFrom) params.append("dateFrom", filterDateFrom);
@@ -121,7 +124,7 @@ const AdminOrders = () => {
   useEffect(() => {
     fetchOrders();
   }, [
-    searchOrderCode, searchName, searchPhone,
+    searchOrderCode, searchName, searchUserId, searchPhone,
     searchAddress, filterDateFrom, filterDateTo,
     filterStatus,
   ]);
@@ -129,6 +132,7 @@ const AdminOrders = () => {
   const handleResetFilters = () => {
     setSearchOrderCode("");
     setSearchName("");
+    setSearchUserId("");
     setSearchPhone("");
     setSearchAddress("");
     setFilterStatus("PENDING_ACTION");
@@ -154,7 +158,7 @@ const AdminOrders = () => {
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const hasActiveFilter =
-    searchOrderCode || searchName || searchPhone || searchAddress ||
+    searchOrderCode || searchName || searchUserId || searchPhone || searchAddress ||
     filterStatus !== "PENDING_ACTION" || filterDateFrom || filterDateTo;
 
   const getStatusLabel = (order) => {
@@ -239,6 +243,9 @@ const AdminOrders = () => {
       <div className="ao-filter-bar">
         <input className="ao-filter-input ao-filter-id" placeholder="Order ID"
           value={searchOrderCode} onChange={(e) => setSearchOrderCode(e.target.value)} />
+        <input className="ao-filter-input ao-filter-id" placeholder="User ID"
+          type="number" min="1"
+          value={searchUserId} onChange={(e) => setSearchUserId(e.target.value)} />
         <input className="ao-filter-input" placeholder="Receiver Name / Username"
           value={searchName} onChange={(e) => setSearchName(e.target.value)} />
         <input className="ao-filter-input" placeholder="Phone Number"
