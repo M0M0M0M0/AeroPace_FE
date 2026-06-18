@@ -145,7 +145,6 @@ const Cart = () => {
                         ? removeFromCart(item.cartItemId)
                         : updateQuantity(item.cartItemId, item.quantity - 1)
                     }
-                    disabled={outOfStock || isUnavailable}
                   >
                     <Minus size={16} />
                   </button>
