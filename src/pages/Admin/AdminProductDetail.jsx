@@ -56,6 +56,7 @@ const AdminProductDetail = () => {
   const [brandSearch, setBrandSearch] = useState("");
   const [catSearch, setCatSearch] = useState("");
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const [deleteVariantIdx, setDeleteVariantIdx] = useState(null);
 
   // ── Load brands & categories ──────────────────────────────────
   useEffect(() => {
@@ -135,12 +136,17 @@ const AdminProductDetail = () => {
   const removeVariant = (idx) => {
     const v = form.variants[idx];
     if (v.id) {
-      const updated = [...form.variants];
-      updated[idx] = { ...updated[idx], isDeleted: true };
-      setForm({ ...form, variants: updated });
+      setDeleteVariantIdx(idx);
     } else {
       setForm({ ...form, variants: form.variants.filter((_, i) => i !== idx) });
     }
+  };
+
+  const confirmDeleteVariant = () => {
+    const updated = [...form.variants];
+    updated[deleteVariantIdx] = { ...updated[deleteVariantIdx], isDeleted: true };
+    setForm({ ...form, variants: updated });
+    setDeleteVariantIdx(null);
   };
 
   const addImage = () => setForm({ ...form, images: [...form.images, { imageUrl: "", position: form.images.length + 1 }] });
@@ -494,6 +500,27 @@ const AdminProductDetail = () => {
 
         </div>
       </div>
+
+      {/* ── Delete variant confirm dialog ──────────────────────── */}
+      {deleteVariantIdx !== null && (
+        <div className="apd-confirm-overlay" onClick={() => setDeleteVariantIdx(null)}>
+          <div className="apd-confirm-dialog" onClick={(e) => e.stopPropagation()}>
+            <h3 className="apd-confirm-title">Remove this variant?</h3>
+            <p className="apd-confirm-desc">
+              Variant <strong>#{form.variants[deleteVariantIdx]?.id}</strong> will be removed and
+              will no longer be available for purchase.
+            </p>
+            <div className="apd-confirm-actions">
+              <button className="apd-confirm-btn-discard" onClick={() => setDeleteVariantIdx(null)}>
+                Cancel
+              </button>
+              <button className="apd-confirm-btn-save" onClick={confirmDeleteVariant}>
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Leave confirm dialog ────────────────────────────────── */}
       {showLeaveConfirm && (
