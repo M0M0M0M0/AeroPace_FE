@@ -256,9 +256,12 @@ const AdminProductDetail = () => {
           {mode !== "add" && <StatusBadge status={form.status} />}
         </div>
         {!isViewOnly && (
-          <button className="apd-save-btn" onClick={handleSave} disabled={saving}>
-            {saving ? "Saving..." : "Save Product"}
-          </button>
+          <div className="apd-topbar-actions">
+            <button className="apd-cancel-btn" onClick={handleBack}>Cancel</button>
+            <button className="apd-save-btn" onClick={handleSave} disabled={saving}>
+              {saving ? "Saving..." : "Save Product"}
+            </button>
+          </div>
         )}
       </div>
 
@@ -477,19 +480,18 @@ const AdminProductDetail = () => {
                   </span>
                 ))}
             </div>
+            {form.categoryIds.length > 0 && (
+              <p className="apd-selected-hint">
+                Selected: <strong>
+                  {form.categoryIds
+                    .map((cid) => categories.find((c) => c.id === cid)?.name)
+                    .filter(Boolean)
+                    .join(", ")}
+                </strong>
+              </p>
+            )}
           </div>
 
-          {/* Actions (mobile: sticky footer trên desktop: sidebar) */}
-          {!isViewOnly && (
-            <div className="apd-card apd-card--actions">
-              <button className="apd-save-btn apd-save-btn--full" onClick={handleSave} disabled={saving}>
-                {saving ? "Saving..." : "Save Product"}
-              </button>
-              <button className="apd-cancel-btn" onClick={handleBack}>
-                Cancel
-              </button>
-            </div>
-          )}
         </div>
       </div>
 
