@@ -233,3 +233,48 @@
 [data-theme="dark"] .admin-content {
   background-color: var(--bg-main);
 }
+
+/* ── RESPONSIVE — Tablet only (mobile skip per spec) ─────────── */
+
+/* Tablet landscape / small laptop */
+@media (max-width: 1200px) {
+  .admin-content {
+    padding: 24px;
+  }
+
+  .search-bar {
+    width: 220px;
+  }
+}
+
+/* Tablet portrait */
+@media (max-width: 1024px) {
+  /* Force sidebar to closed/icon-only state on tablet */
+  .admin-sidebar.open {
+    width: 70px;
+  }
+
+  .admin-sidebar.open .a-nav-label {
+    display: none;
+  }
+
+  .admin-sidebar.open .sidebar-logo h2 {
+    display: none;
+  }
+
+  .admin-sidebar.open + .admin-main {
+    margin-left: 70px;
+  }
+
+  .search-bar {
+    width: 180px;
+  }
+
+  .admin-content {
+    padding: 20px 16px;
+  }
+
+  .header-right {
+    gap: 12px;
+  }
+}

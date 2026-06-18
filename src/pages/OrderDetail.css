@@ -622,3 +622,56 @@
     .od-item-price { min-width: unset; }
     .od-hist-modal { padding: 20px 16px; }
 }
+
+/* ── RESPONSIVE EXTENDED ──────────────────────────────────────── */
+
+/* Tablet portrait */
+@media (max-width: 1024px) {
+    .od-page {
+        padding: 90px 16px 48px;
+    }
+
+    .od-container {
+        max-width: 100%;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .od-page {
+        padding: 80px 12px 40px;
+    }
+
+    .od-title {
+        font-size: 1.5rem;
+    }
+
+    .od-item-row {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .od-item-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .od-total-value {
+        font-size: 1.25rem;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+    .od-page {
+        padding: 76px 10px 32px;
+    }
+
+    .od-card {
+        padding: 16px 12px;
+    }
+
+    .od-title {
+        font-size: 1.3rem;
+    }
+}

@@ -113,6 +113,55 @@
   }
 }
 
+/* ── RESPONSIVE EXTENDED ──────────────────────────────────────── */
+
+/* Tablet portrait */
+@media (max-width: 1024px) {
+  .footer-wrapper {
+    padding-top: 48px;
+  }
+
+  .footer-container {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    padding: 0 24px 48px;
+    gap: 32px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .footer-wrapper {
+    padding-top: 40px;
+  }
+
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+    padding: 0 16px 32px;
+    gap: 24px;
+  }
+
+  .footer-logo {
+    font-size: 1.3rem;
+  }
+
+  .footer-text {
+    font-size: 0.85rem;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .footer-bottom {
+    padding: 18px 16px;
+    font-size: 0.78rem;
+  }
+}
+
 /* ── DARK MODE: revert footer to original ── */
 [data-theme="dark"] .footer-wrapper {
   background: var(--bg-surface);

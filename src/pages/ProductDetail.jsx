@@ -117,7 +117,6 @@ const ProductDetail = () => {
       .catch(console.error);
   }, [id]);
 
-  // Reset quantity về 1 khi đổi variant
   useEffect(() => {
     setQuantity(1);
   }, [selected]);
@@ -130,7 +129,7 @@ const ProductDetail = () => {
       .then((res) => res.json())
       .then((data) => {
         setReviews(data.content || []);
-        setReviewsTotalPages(data.totalPages || 1);
+        setReviewsTotalPages(data.totalPages ?? data.page?.totalPages ?? 1);
       })
       .catch(console.error)
       .finally(() => setReviewsLoading(false));
@@ -159,12 +158,10 @@ const ProductDetail = () => {
   const category = product.categories?.[0]?.name || "";
   const image = images?.[0]?.imageUrl;
 
-  // Số lượng variant này đang có trong giỏ
   const inCart = selectedVariant
     ? getCartQuantity(product.id, selectedVariant.id)
     : 0;
 
-  // Số lượng tối đa còn có thể thêm vào giỏ
   const effectiveMax = Math.max(0, maxStock - inCart);
 
   const handleSelectOption = (key, value) => {
@@ -204,7 +201,6 @@ const ProductDetail = () => {
     });
   };
 
-  // Lấy số trong giỏ cho một variant cụ thể (dùng cho badge trên button)
   const getVariantInCart = (key, value) => {
     const test = { ...selected, [key]: value };
     const variant = findMatchingVariant(variants, test, optionKeys);

@@ -1,4 +1,3 @@
-// AdminShippingPage.jsx
 import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 import axios from "axios";

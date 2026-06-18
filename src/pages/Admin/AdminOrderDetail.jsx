@@ -205,7 +205,6 @@ const CancelModal = ({ orderCode, onClose, onConfirm }) => {
         </div>
     );
 };
-// confirm modal khi chuyển trạng thái đơn hàng 
 const ConfirmStatusModal = ({
     currentStatus,
     nextStatus,
@@ -451,13 +450,11 @@ const AdminOrderDetail = () => {
     const nextStatus = getNextStatus(order.status);
     const nextMeta = nextStatus ? STATUS_META[nextStatus] : null;
 
-    // Tính phí ship và VAT từ order (hoặc fallback về 0)
     const subTotal = order.subTotal ?? order.items?.reduce((s, i) => s + i.price * i.quantity, 0) ?? 0;
     const shipFee = order.shippingFee ?? 0;
     const vat = order.vat ?? 0;
     const total = order.totalPrice ?? (subTotal + shipFee + vat);
 
-    // Lý do hủy / hoàn tiền
     const hasCancelSection = order.status === "CANCELLED" && (order.cancelReason || order.cancelNote || order.refundReason);
 
     return (

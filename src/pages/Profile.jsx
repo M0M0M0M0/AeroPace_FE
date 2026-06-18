@@ -243,7 +243,6 @@ const Profile = () => {
           o.orderCode === orderCode ? { ...o, status: "COMPLETED" } : o
         )
       );
-      // Open quick review modal for the completed order
       const completedOrder = orders.find((o) => o.orderCode === orderCode);
       if (completedOrder) setReviewOrder({ ...completedOrder, status: "COMPLETED" });
     } catch (err) {

@@ -21,7 +21,6 @@ const OrderSuccess = () => {
 
   return (
     <div className="order-success-page">
-      {/* Dấu tích mua hàng thành công */}
       <div
         className="order-success-icon"
       >
@@ -46,7 +45,6 @@ const OrderSuccess = () => {
         </div>
       </div>
 
-      {/* Chi tiết đơn hàng */}
       <div className="order-success-items-container">
         <h2>Order Details</h2>
         <div className="order-success-items">
@@ -92,7 +90,6 @@ const OrderSuccess = () => {
         </div>
       </div>
 
-      {/*  Quay lại cửa hàng */}
       <div className="text-center mt-6">
         <Link to="/products" className="btn">
           Return to Store

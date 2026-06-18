@@ -55,6 +55,7 @@ const Products = () => {
     const catId = catParam ? parseInt(catParam, 10) : NaN;
     return isNaN(catId) ? [] : [catId];
   });
+  const prevUrlCategoryRef = useRef(searchParams.get("category"));
   const [selectedBrands, setSelectedBrands] = useState([]);
 
   const [minPrice, setMinPrice] = useState("");
@@ -86,6 +87,15 @@ const Products = () => {
     };
     fetchFilters();
   }, []);
+
+  // Sync category filter when URL ?category= changes (e.g. from navbar mega menu)
+  useEffect(() => {
+    const urlCat = searchParams.get("category");
+    if (urlCat === prevUrlCategoryRef.current) return;
+    prevUrlCategoryRef.current = urlCat;
+    const catId = urlCat ? parseInt(urlCat, 10) : NaN;
+    setSelectedCategories(isNaN(catId) ? [] : [catId]);
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -368,8 +378,6 @@ const Products = () => {
                   ?.filter((v) => v.stock && v.stock > 0)
                   .reduce((sum, v) => sum + getCartQuantity(item.id, v.id), 0);
 
-                // KIỂM TRA TRẠNG THÁI YÊU THÍCH VÀ SO SÁNH
-                
                 const isCompared = compareList.some((c) => c.id === item.id);
 
                 return (
@@ -379,7 +387,6 @@ const Products = () => {
                     onClick={() => navigate(`/products/detail/${item.id}`)}
                   >
                     <div className="prd-card-container">
-                      {/* KHỐI NÚT YÊU THÍCH VÀ SO SÁNH */}
                       <div className="card-actions-overlay">
                         <button 
                           className="action-icon-btn" 
@@ -393,8 +400,6 @@ const Products = () => {
                         </button>
                       </div>
 
-                      {/* Các badge hiện tại */}
-                      
                       {!outOfStock && maxed && <div className="prd-out-of-stock-badge">Maxed Out</div>}
                       <div className="prd-card-top" style={{ backgroundImage: `url(${image})` }}>
                         {item.reviewCount > 0 && (
@@ -447,7 +452,6 @@ const Products = () => {
             <span className="compare-bubble-badge">{compareList.length}</span>
           </div>
         ) : (
-          /* Giao diện THANH NGANG đầy đủ */
           <>
             <div className="compare-items-container">
               {compareList.map((item) => (

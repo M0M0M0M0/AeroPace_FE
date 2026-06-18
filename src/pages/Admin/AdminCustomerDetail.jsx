@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./AdminCustomer.css";
 import axios from "axios";
+import "./AdminCustomer.css";
 
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL}/api/v1/admin/customers`;
 

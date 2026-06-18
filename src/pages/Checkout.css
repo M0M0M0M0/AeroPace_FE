@@ -491,3 +491,81 @@
     flex-direction: column;
   }
 }
+
+/* ── RESPONSIVE EXTENDED ──────────────────────────────────────── */
+
+/* Tablet landscape / small laptop */
+@media (max-width: 1200px) {
+  .checkout-page {
+    padding: 5rem 5%;
+  }
+}
+
+/* Tablet portrait */
+@media (max-width: 1024px) {
+  .checkout-page {
+    padding: 4.5rem 4%;
+  }
+
+  .checkout-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .checkout-address-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .checkout-section-title {
+    font-size: 2rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .checkout-page {
+    padding: 4rem 4%;
+  }
+
+  .checkout-section-title {
+    font-size: 1.7rem;
+    margin: 16px 0 28px;
+  }
+
+  .checkout-form {
+    padding: 1.25rem;
+  }
+
+  .checkout-summary {
+    padding: 1.25rem;
+  }
+
+  .checkout-address-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-payment-grid {
+    flex-direction: column;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .checkout-page {
+    padding: 4rem 3%;
+  }
+
+  .checkout-form {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+
+  .checkout-summary {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+
+  .checkout-submit-btn {
+    font-size: 1rem;
+  }
+}

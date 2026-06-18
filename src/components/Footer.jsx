@@ -16,7 +16,7 @@ function Footer() {
           }
         });
       },
-      { threshold: 0.2 } // chỉ cần 20% footer hiển thị là kích hoạt
+      { threshold: 0.2 }
     );
 
     if (footer) observer.observe(footer);
@@ -25,7 +25,6 @@ function Footer() {
 
   return (
     <footer className="footer-wrapper" ref={footerRef}>
-      {/* Nội dung chính */}
       <div className="footer-container">
         {/* Cột 1 - Giới thiệu */}
         <div className="footer-col">
@@ -51,9 +50,9 @@ function Footer() {
         <div className="footer-col" style={{ transitionDelay: "0.2s" }}>
           <h3 className="footer-title">Support</h3>
           <ul className="footer-links">
-            <li><Link to="/chinh-sach-doi-tra">Return Policy</Link></li>
-            <li><Link to="/chinh-sach-bao-hanh">Warranty Policy</Link></li>
-            <li><Link to="/chinh-sach-bao-mat">Privacy Policy</Link></li>
+            <li><Link to="/return-policy">Return Policy</Link></li>
+            <li><Link to="/warranty-policy">Warranty Policy</Link></li>
+            <li><Link to="/privacy-policy">Privacy Policy</Link></li>
           </ul>
         </div>
 

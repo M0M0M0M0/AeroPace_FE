@@ -66,7 +66,6 @@ const AboutUs = () => {
               To become the most trusted destination for the running community in Vietnam, 
               not only for our products but also for knowledge and experience.
             </p>
-            <button className="cta-button">Discover More</button>
           </div>
         </div>
       </section>

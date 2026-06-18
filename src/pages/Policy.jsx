@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import "./Policy.css";
 
 const POLICY_DATA = {
-  "/chinh-sach-doi-tra": {
+  "/return-policy": {
     title: "Return & Exchange Policy",
     update: "Last Updated: 01/2026",
     content: [
@@ -18,9 +18,8 @@ const POLICY_DATA = {
           "The return and exchange policy applies to products purchased directly from the AeroPace website."
         ] 
       },
-      { 
-        h3: "2. Return & Exchange Process", 
-        /* Cấu trúc lại mảng p để in đậm các bước dễ dàng hơn */
+      {
+        h3: "2. Return & Exchange Process",
         p: [
           "Step 1 - Contact Support:"," Call our hotline: 012345678 or send an email to cskh@aeropace.vn. Provide information about the product you want to return including: order code, images of the product's condition, and reason for return.",
           "Step 2 - Confirmation and Instructions:"," The customer service team will confirm your request within 1-2 business days. Specific instructions for returning the product to our warehouse will be provided via email or hotline.",
@@ -34,7 +33,7 @@ const POLICY_DATA = {
       }
     ]
   },
-  "/chinh-sach-bao-hanh": {
+  "/warranty-policy": {
     title: "Warranty Policy",
     update: "Last Updated: 01/2026",
     content: [
@@ -84,7 +83,7 @@ const POLICY_DATA = {
       }
     ]
   },
-  "/chinh-sach-bao-mat": {
+  "/privacy-policy": {
     title: "Privacy Policy",
     update: "Last Updated: 01/2026",
     content: [
@@ -155,19 +154,15 @@ function Policy() {
     return <div className="policy-container"><h1 style={{color: 'white'}}>Trang không tồn tại</h1></div>;
   }
 
-  // Hàm helper để render đoạn văn, in đậm nếu nó bắt đầu bằng "Bước X -"
   const renderParagraph = (paragraph, index) => {
-    // Kiểm tra nếu đoạn văn là chuỗi và bắt đầu bằng "Bước X -"
     const match = paragraph.match(/^(Bước \d+ - [^:]+:)(.*)$/);
     if (match) {
-      // In đậm phần bước và render phần còn lại thường
       return (
         <p key={index}>
           <strong>{match[1]}</strong>{match[2]}
         </p>
       );
     }
-    // Nếu không phải, render thường
     return <p key={index}>{paragraph}</p>;
   };
 
@@ -180,10 +175,7 @@ function Policy() {
         <div className="policy-content">
           {data.content.map((section, index) => (
             <div key={index} className="policy-section">
-              {/* Chỉ hiện h3 nếu nó tồn tại */}
               {section.h3 && <h3>{section.h3}</h3>}
-              
-              {/* Sử dụng hàm helper để render từng dòng thẻ <p> */}
               {section.p.map((paragraph, i) => renderParagraph(paragraph, i))}
             </div>
           ))}

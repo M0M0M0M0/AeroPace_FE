@@ -3,8 +3,7 @@ import { toast } from "sonner";
 import { useAuth } from '../context/AuthContext';
 
 export const usePreferences = () => {
-     const { user, token } = useAuth(); // Lấy token từ AuthContext của bạn
-  //const token = localStorage.getItem("token"); // Hoặc lấy trực tiếp nếu bạn đang lưu ở đây
+  const { user, token } = useAuth();
 
   const [compareList, setCompareList] = useState([]);
 

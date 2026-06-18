@@ -347,7 +347,6 @@ const CheckoutForm = () => {
 
         const { clientSecret, orderId } = intentRes.data;
 
-        // Xác nhận thẻ với Stripe
         const cardElement = elements.getElement(CardElement);
         const paymentResult = await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
@@ -370,7 +369,6 @@ const CheckoutForm = () => {
           return;
         }
 
-        // 
         await axios.patch(
           `${API}/orders/${orderId}/payment`,
           {

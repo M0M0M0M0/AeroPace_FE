@@ -13,7 +13,6 @@ const Cart = () => {
   const prevPricesRef = useRef({});
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // Fetch khi vào trang + visibilitychange
   useEffect(() => {
     if (user) fetchCart();
 
@@ -25,7 +24,6 @@ const Cart = () => {
     return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, [user]);
 
-  // Detect thay đổi giá
   useEffect(() => {
     if (!cart?.items) return;
 
@@ -40,13 +38,11 @@ const Cart = () => {
     });
   }, [cart]);
 
-  // Tổng tiền toàn bộ cart
   const totalAmount = useMemo(() => {
     if (!cart?.items) return 0;
     return cart.items.reduce((total, item) => total + item.price * item.quantity, 0);
   }, [cart]);
 
-  // Có item nào invalid không (để block nút thanh toán)
   const hasInvalidItems = useMemo(() => {
     if (!cart?.items) return false;
     return cart.items.some(
@@ -57,7 +53,7 @@ const Cart = () => {
   // ─── SỬA LỖI HIỂN THỊ KHI GIỎ HÀNG TRỐNG TẠI ĐÂY ──────────────────
   if (!cart || !cart.items || cart.items.length === 0)
     return (
-      <div className="cart-page"> {/* Bổ sung lớp bọc để ăn màu giao diện */}
+      <div className="cart-page">
         <div className="cart-empty">
           <p>Cart is empty.</p>
           {/* Đổi từ class "btn" sang "cart-page-btn" để lấy màu Gradient */}

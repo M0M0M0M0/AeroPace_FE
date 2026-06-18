@@ -5,7 +5,6 @@ const ThemeContext = createContext();
 
 
 export const ThemeProvider = ({ children }) => {
-  // Logic lấy theme từ localStorage
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
   useEffect(() => {

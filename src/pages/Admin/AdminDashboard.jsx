@@ -150,7 +150,6 @@ const KpiCard = ({ icon: Icon, label, value, pct, iconClass }) => {
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
-  // data
   const [orders7d, setOrders7d] = useState([]);
   const [orders30d, setOrders30d] = useState([]);
   const [ordersToday, setOrdersToday] = useState([]);
@@ -160,7 +159,6 @@ const AdminDashboard = () => {
   const [newCustYest, setNewCustYest] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
 
-  // ui
   const [revenueRange, setRevenueRange] = useState("7d");
   const [bsRange, setBsRange] = useState("30d");
   const [loading, setLoading] = useState(true);
@@ -226,7 +224,6 @@ const AdminDashboard = () => {
   const needActionToday = ordersToday.filter((o) => ["PENDING", "PAID", "SHIPPING"].includes(o.status)).length;
   const needActionYest = ordersYest.filter((o) => ["PENDING", "PAID", "SHIPPING"].includes(o.status)).length;
 
-  // status summary from 30d for doughnut
   const statusSummary = Object.entries(
     orders30d.reduce((acc, o) => { acc[o.status] = (acc[o.status] || 0) + 1; return acc; }, {})
   ).map(([status, count]) => ({ status, count }));

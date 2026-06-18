@@ -7,6 +7,7 @@
   --text-muted: #000000;
   --border-main: #e2e8f0;
   --accent-color: #ff5500;
+  --accent: #ff5500;
   --accent-hover: #e04b00;
   --accent-gradient: linear-gradient(135deg, #ff5500 0%, #ff007f 100%);
   --accent-gradient-hover: linear-gradient(135deg, #e04b00 0%, #d8006c 100%);
@@ -28,6 +29,12 @@ body {
   color: var(--text-main);
   min-height: 100vh;
   line-height: 1.5;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 .theme-transitioning,

@@ -57,6 +57,28 @@
     margin: 0;
 }
 
+.apd-reviews-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1.5px solid var(--text-muted);
+    color: var(--text-muted);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.apd-reviews-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg-surface);
+}
+
 .apd-topbar-actions {
     display: flex;
     align-items: center;

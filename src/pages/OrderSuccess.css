@@ -167,3 +167,67 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ── RESPONSIVE EXTENDED ──────────────────────────────────────── */
+
+/* Tablet portrait */
+@media (max-width: 1024px) {
+    .order-success-page {
+        padding: 4.5rem 5%;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .order-success-page {
+        padding: 4rem 4%;
+        gap: 1.5rem;
+    }
+
+    .order-success-message h1 {
+        font-size: 1.8rem;
+    }
+
+    .order-success-message p {
+        font-size: 1rem;
+    }
+
+    .order-success-info {
+        padding: 1.25rem;
+    }
+
+    .order-success-items-container {
+        padding: 1.25rem;
+    }
+
+    .order-success-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .order-success-info h2 {
+        font-size: 1.4rem;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+    .order-success-page {
+        padding: 4rem 3%;
+    }
+
+    .order-success-message {
+        padding: 1.25rem;
+    }
+
+    .order-success-message h1 {
+        font-size: 1.5rem;
+    }
+
+    .order-success-info,
+    .order-success-items-container {
+        padding: 1rem;
+        border-radius: 1rem;
+    }
+}

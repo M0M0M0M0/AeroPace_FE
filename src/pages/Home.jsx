@@ -7,8 +7,6 @@ import { useCart } from "../context/CartContext";
 import "./Home.css";
 import CompareModal from "../components/CompareModal";  
 
-const CAROUSEL_STEP = 6;
-
 const Home = () => {
   const [featured, setFeatured] = useState([]);
   const navigate = useNavigate();
@@ -49,7 +47,6 @@ const Home = () => {
   const iconsItems = featured.slice(0);
   const totalIcons = iconsItems.length;
   const CAROUSEL_STEP = 5;
-  const ITEM_WIDTH = 216;
   const maxIndex = Math.floor((Math.max(totalIcons - 1, 0)) / CAROUSEL_STEP) *CAROUSEL_STEP;
   const startAutoPlay = useCallback(() => {
     if (autoPlayRef.current) clearInterval(autoPlayRef.current);
@@ -265,10 +262,14 @@ const Home = () => {
                     <ChevronLeft size={22} />
                   </button>
       
-                  <div className="home-carousel-viewport">
+                  <div
+                    className="home-carousel-viewport"
+                    onMouseEnter={() => clearInterval(autoPlayRef.current)}
+                    onMouseLeave={startAutoPlay}
+                  >
                     <div
                       className="home-carousel-track"
-                      style={{transform: `translateX(-${carouselIndex * ITEM_WIDTH}px)`}}
+                      style={{ transform: `translateX(calc(-${carouselIndex} * var(--item-offset)))` }}
                     >
                       {iconsItems.map((item, index) => {
                         const image = item.images?.[0]?.imageUrl;
@@ -361,7 +362,6 @@ const Home = () => {
             <span className="home-compare-bubble-badge">{compareList.length}</span>
           </div>
         ) : (
-          /* Giao diện THANH NGANG đầy đủ */
           <>
             <div className="compare-items-container">
               {compareList.map((item) => (

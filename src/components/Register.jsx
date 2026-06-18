@@ -38,7 +38,6 @@ const Register = () => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
 
-    // validate password
     if (password !== confirmPassword) {
       setMessage({ type: "error", text: "Confirm password does not match!" });
       return;

@@ -5,6 +5,14 @@
   text-align: center;
 }
 
+/* ── RESPONSIVE: reduce root padding on small screens so page padding isn't doubled */
+@media (max-width: 1024px) {
+  #root {
+    padding: 0;
+    max-width: 100%;
+  }
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

@@ -52,13 +52,53 @@
 .policy-section p {
   font-size: 1.05rem;
   line-height: 1.8;
-  color: #334155; /* Ép độ tương phản chữ Slate sâu để đọc tài liệu cực kỳ nét */
+  color: #334155;
   font-weight: 400;
   margin-bottom: 20px;
+}
+
+[data-theme="dark"] .policy-section p {
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .policy-container {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 768px) {
   .policy-wrapper { padding-top: 90px; }
   .policy-container { margin: 0 15px; padding: 30px; }
   .policy-title { font-size: 1.8rem; }
+}
+
+/* ── RESPONSIVE EXTENDED ──────────────────────────────────────── */
+
+/* Tablet portrait */
+@media (max-width: 1024px) {
+  .policy-container {
+    padding: 40px;
+    margin: 0 20px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .policy-wrapper {
+    padding-top: 80px;
+    padding-bottom: 48px;
+  }
+
+  .policy-container {
+    margin: 0 10px;
+    padding: 20px 16px;
+    border-radius: 8px;
+  }
+
+  .policy-title {
+    font-size: 1.5rem;
+  }
+
+  .policy-section p {
+    font-size: 0.95rem;
+  }
 }

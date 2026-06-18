@@ -225,6 +225,11 @@
   padding: 0 6% 60px;
   overflow: hidden;
   position: relative;
+  background-color: #ffffff;
+}
+
+.home-icons-section .home-section-title {
+  color: #1a1a1a;
 }
 
 .home-container {
@@ -242,6 +247,10 @@
 .home-carousel-viewport {
   flex: 1;
   overflow: hidden;
+  --items-visible: 5;
+  --item-gap: 16px;
+  --item-width: calc((100% - (var(--items-visible) - 1) * var(--item-gap)) / var(--items-visible));
+  --item-offset: calc(var(--item-width) + var(--item-gap));
 }
 
 .home-carousel-track {
@@ -253,8 +262,8 @@
 }
 
 .home-carousel-track .home-scroll-item {
-  flex: 0 0 200px;
-  width: 200px;
+  flex: 0 0 var(--item-width);
+  width: var(--item-width);
 }
 
 .home-carousel-btn {
@@ -307,17 +316,24 @@
 
 
 .home-scroll-item {
-  flex: 0 0 200px;
-  width: 200px;
+  flex: 0 0 var(--item-width);
+  width: var(--item-width);
   border-radius: 15px;
   overflow: hidden;
   position: relative;
   cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.home-scroll-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
 }
 
 .home-icon-img {
   width: 100%;
-  height: 200px;
+  aspect-ratio: 1 / 1;
+  height: auto;
   object-fit: cover;
   border: 1px solid var(--border-main);
   border-radius: 12px;
@@ -945,6 +961,12 @@
 [data-theme="dark"] .home-card-buy { color: #7eb8f7; }
 [data-theme="dark"] .home-page > .home-sport-section:nth-child(even) { background: var(--bg-surface); }
 
+/* Icon carousel: card shadow visible in light mode (white-on-white) */
+:root:not([data-theme="dark"]) .home-scroll-item {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.10);
+  border: 1px solid #e9ecef;
+}
+
 /* ANIMATIONS */
 @keyframes home-fadeUp {
   from { opacity: 0; transform: translateY(40px); }
@@ -954,4 +976,147 @@
 @media (max-width: 768px) {
   .home-hero-title { font-size: 2rem; }
   .home-sport-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────────── */
+
+/* Tablet landscape / small laptop */
+@media (max-width: 1200px) {
+  .home-hero-title {
+    font-size: 2.5rem;
+  }
+
+  .home-sport-section {
+    padding: 56px 5%;
+  }
+
+  .home-featured-section {
+    padding: 0 5%;
+  }
+}
+
+/* Tablet portrait */
+@media (max-width: 1024px) {
+  .home-hero-section {
+    height: 75vh;
+  }
+
+  .home-hero-title {
+    font-size: 2.2rem;
+  }
+
+  .home-section-title {
+    font-size: 2rem;
+  }
+
+  .home-promo-heading {
+    font-size: 2.2rem;
+  }
+
+  .home-sport-section {
+    padding: 48px 4%;
+  }
+
+  .home-promo-banner {
+    padding: 64px 5%;
+  }
+
+  .home-carousel-viewport {
+    --items-visible: 4;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .home-hero-section {
+    height: 60vh;
+    margin-top: 56px;
+  }
+
+  .home-hero-title {
+    font-size: 1.8rem;
+    padding: 0 16px;
+  }
+
+  .home-hero-subtitle {
+    font-size: 0.9rem;
+    padding: 0 20px;
+  }
+
+  .home-section-title {
+    font-size: 1.7rem;
+    margin-bottom: 24px;
+  }
+
+  .home-sport-section {
+    padding: 40px 4%;
+  }
+
+  .home-sport-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .home-promo-heading {
+    font-size: 1.8rem;
+  }
+
+  .home-promo-banner {
+    padding: 56px 5%;
+  }
+
+  .home-icons-section {
+    margin-top: 40px;
+    padding: 0 4% 40px;
+  }
+
+  .home-carousel-viewport {
+    --items-visible: 3;
+  }
+
+  /* Compare sticky bar */
+  .home-compare-sticky-bar {
+    padding: 0 3%;
+  }
+
+  .compare-item-mini p {
+    max-width: 80px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .home-hero-section {
+    height: 55vh;
+  }
+
+  .home-hero-title {
+    font-size: 1.5rem;
+  }
+
+  .home-section-title {
+    font-size: 1.4rem;
+  }
+
+  .home-sport-section {
+    padding: 32px 3%;
+  }
+
+  .home-sport-section--compact {
+    padding: 24px 3% 36px;
+  }
+
+  .home-promo-heading {
+    font-size: 1.5rem;
+  }
+
+  .home-featured-section {
+    padding: 0 3%;
+  }
+
+  .home-carousel-viewport {
+    --items-visible: 2;
+  }
 }

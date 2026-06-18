@@ -13,9 +13,9 @@ import {
   Sun,
   Moon,
 } from "lucide-react";
-import "./AdminLayout.css";
 import { useAuth } from "../../context/AuthContext";
-import{ useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
+import "./AdminLayout.css";
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -91,7 +91,6 @@ const AdminLayout = () => {
     
         </nav>
       </aside>
-      {/* --- KẾT THÚC SIDEBAR --- */}
 
       <div className="admin-main">
         {/* --- HEADER --- */}
@@ -132,7 +131,6 @@ const AdminLayout = () => {
             </div>
           </div>
         </header>
-        {/* --- KẾT THÚC HEADER --- */}
 
         {/* --- MAIN CONTENT --- */}
         <main className="admin-content">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { Plus, X, Search, ArrowLeft } from "lucide-react";
+import { Plus, X, Search, ArrowLeft, MessageSquare, Edit2 } from "lucide-react";
+import { toast } from "sonner";
 import axios from "axios";
 import "./AdminProductDetail.css";
 
@@ -42,20 +43,21 @@ const AdminProductDetail = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  // mode: "add" | "edit" | "view"
-  const mode = id === "new" ? "add" : (searchParams.get("mode") || "edit");
-  const isViewOnly = mode === "view";
+  const urlMode = id === "new" ? "add" : (searchParams.get("mode") || "edit");
+  const [currentMode, setCurrentMode] = useState(urlMode);
+  const isViewOnly = currentMode === "view";
 
   const [form, setForm] = useState(emptyForm);
   const [initialForm, setInitialForm] = useState(null);
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
   const [saving, setSaving] = useState(false);
-  const [loading, setLoading] = useState(mode !== "add");
+  const [loading, setLoading] = useState(urlMode !== "add");
 
   const [brandSearch, setBrandSearch] = useState("");
   const [catSearch, setCatSearch] = useState("");
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const [leaveToView, setLeaveToView] = useState(false);
   const [deleteVariantIdx, setDeleteVariantIdx] = useState(null);
 
   // ── Load brands & categories ──────────────────────────────────
@@ -67,7 +69,7 @@ const AdminProductDetail = () => {
       ]);
       setBrands(br.data);
       setCategories(ca.data);
-      if (mode === "add" && br.data.length > 0) {
+      if (urlMode === "add" && br.data.length > 0) {
         setForm((prev) => ({ ...prev, brandId: br.data[0].id }));
       }
     };
@@ -76,12 +78,14 @@ const AdminProductDetail = () => {
 
   // ── Load product if edit/view ─────────────────────────────────
   useEffect(() => {
-    if (mode === "add") return;
+    if (urlMode === "add") return;
     const fetchProduct = async () => {
       setLoading(true);
       try {
         const params = new URLSearchParams({ productId: id, page: 0 });
-        if (mode === "view") params.append("statuses", "DELETED");
+        if (urlMode === "view") {
+          ["ACTIVE", "DRAFT", "ARCHIVED", "DELETED"].forEach((s) => params.append("statuses", s));
+        }
         const res = await axios.get(`${BASE}/products/filter?${params}`, { headers: authHeader() });
         const products = res.data.products || res.data.content || [];
         const product = products.find((p) => String(p.id) === String(id));
@@ -108,7 +112,7 @@ const AdminProductDetail = () => {
           categoryIds: product.categories?.map((c) => c.id) || [],
         };
         setForm(f);
-        if (mode === "edit") setInitialForm(JSON.stringify(f));
+        setInitialForm(JSON.stringify(f));
       } catch (err) {
         console.error(err);
         alert("Không thể tải sản phẩm.");
@@ -117,17 +121,34 @@ const AdminProductDetail = () => {
       }
     };
     fetchProduct();
-  }, [id, mode]); // eslint-disable-line
+  }, [id]); // eslint-disable-line
 
   // ── Unsaved changes check ─────────────────────────────────────
   const hasUnsavedChanges = () => {
-    if (mode !== "edit" || !initialForm) return false;
+    if (currentMode !== "edit" || !initialForm) return false;
     return JSON.stringify(form) !== initialForm;
   };
 
+  const handleEnterEdit = () => setCurrentMode("edit");
+
+  const handleCancelEdit = () => {
+    if (hasUnsavedChanges()) {
+      setLeaveToView(true);
+      setShowLeaveConfirm(true);
+    } else {
+      setForm(JSON.parse(initialForm));
+      setCurrentMode("view");
+    }
+  };
+
   const handleBack = () => {
-    if (hasUnsavedChanges()) { setShowLeaveConfirm(true); }
-    else { navigate("/admin/products"); }
+    if (currentMode === "edit" && urlMode === "view") {
+      handleCancelEdit();
+    } else if (hasUnsavedChanges()) {
+      setShowLeaveConfirm(true);
+    } else {
+      navigate("/admin/products");
+    }
   };
 
   // ── Variant / image helpers ───────────────────────────────────
@@ -186,7 +207,7 @@ const AdminProductDetail = () => {
 
     setSaving(true);
     try {
-      if (mode === "add") {
+      if (urlMode === "add") {
         const validVariants = form.variants.filter((v) => v.price);
         if (validVariants.length === 0) { alert("Please add at least 1 variant with a valid price!"); return; }
         if (validVariants.some((v) => Number(v.price) < 1500)) {
@@ -227,7 +248,9 @@ const AdminProductDetail = () => {
           categoryIds: form.categoryIds,
         }, { headers: authHeader() });
 
-        navigate("/admin/products");
+        toast.success("Product saved successfully.");
+        setInitialForm(JSON.stringify(form));
+        setCurrentMode("view");
       }
     } catch (err) {
       console.error(err);
@@ -248,7 +271,7 @@ const AdminProductDetail = () => {
     );
   }
 
-  const pageTitle = mode === "add" ? "Add New Product" : mode === "edit" ? "Edit Product" : "Product Details";
+  const pageTitle = urlMode === "add" ? "Add New Product" : currentMode === "edit" ? "Edit Product" : "Product Details";
 
   return (
     <div className="apd-page">
@@ -259,11 +282,23 @@ const AdminProductDetail = () => {
         </button>
         <div className="apd-topbar-info">
           <h1 className="apd-page-title">{pageTitle}</h1>
-          {mode !== "add" && <StatusBadge status={form.status} />}
+          {urlMode !== "add" && <StatusBadge status={form.status} />}
         </div>
-        {!isViewOnly && (
+        {urlMode !== "add" && (
+          <button
+            className="apd-reviews-btn"
+            onClick={() => navigate(`/admin/products/${id}/reviews`, { state: { fromMode: currentMode } })}
+          >
+            <MessageSquare size={15} /> Reviews
+          </button>
+        )}
+        {currentMode === "view" ? (
+          <button className="apd-cancel-btn" onClick={handleEnterEdit}>
+            <Edit2 size={15} style={{ marginRight: 5 }} /> Edit
+          </button>
+        ) : (
           <div className="apd-topbar-actions">
-            <button className="apd-cancel-btn" onClick={handleBack}>Cancel</button>
+            <button className="apd-cancel-btn" onClick={urlMode === "view" ? handleCancelEdit : handleBack}>Cancel</button>
             <button className="apd-save-btn" onClick={handleSave} disabled={saving}>
               {saving ? "Saving..." : "Save Product"}
             </button>
@@ -295,7 +330,7 @@ const AdminProductDetail = () => {
                 placeholder="Product Description" disabled={isViewOnly} />
             </div>
 
-            {mode === "add" && (
+            {urlMode === "add" && (
               <div className="apd-form-row">
                 <label className="apd-form-label">Slug</label>
                 <input className="apd-form-input" value={form.slug}
@@ -530,13 +565,22 @@ const AdminProductDetail = () => {
             <p className="apd-confirm-desc">Exiting will lose your unsaved changes.</p>
             <div className="apd-confirm-actions">
               <button className="apd-confirm-btn-discard"
-                onClick={() => { setShowLeaveConfirm(false); navigate("/admin/products"); }}>
+                onClick={() => {
+                  setShowLeaveConfirm(false);
+                  if (leaveToView) {
+                    setLeaveToView(false);
+                    setForm(JSON.parse(initialForm));
+                    setCurrentMode("view");
+                  } else {
+                    navigate("/admin/products");
+                  }
+                }}>
                 Discard Changes
               </button>
               <button className="apd-confirm-btn-save"
                 onClick={() => { setShowLeaveConfirm(false); handleSave(); }}
                 disabled={saving}>
-                {saving ? "Saving..." : "Save & Exit"}
+                {saving ? "Saving..." : leaveToView ? "Save" : "Save & Exit"}
               </button>
             </div>
           </div>

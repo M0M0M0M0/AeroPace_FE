@@ -108,13 +108,11 @@ const AdminProducts = () => {
       if (filterStockMax) params.append("stockMax", filterStockMax);
       if (filterStatus) params.append("statuses", filterStatus);
 
-      // Rating & Review filters
       if (filterRatingMin) params.append("ratingMin", filterRatingMin);
       if (filterRatingMax) params.append("ratingMax", filterRatingMax);
       if (filterReviewCountMin) params.append("reviewCountMin", filterReviewCountMin);
       if (filterReviewCountMax) params.append("reviewCountMax", filterReviewCountMax);
 
-      // Best-seller params
       if (bsMode && bsDateFrom && bsDateTo) {
         params.append("sortByBestSeller", "true");
         params.append("dateFrom", bsDateFrom);
@@ -528,15 +526,22 @@ const AdminProducts = () => {
                       {product.status === "DELETED" ? (
                         <button className="adp-btn-edit"
                           onClick={() => navigate(`/admin/products/${product.id}?mode=view`)}
-                          title="Xem chi tiết" style={{ opacity: 0.7 }}>
+                          title="View details" style={{ opacity: 0.7 }}>
                           <Eye size={16} />
                         </button>
                       ) : (
-                        <button className="adp-btn-edit"
-                          onClick={() => navigate(`/admin/products/${product.id}?mode=edit`)}
-                          title="Chỉnh sửa">
-                          <Edit2 size={16} />
-                        </button>
+                        <>
+                          <button className="adp-btn-edit"
+                            onClick={() => navigate(`/admin/products/${product.id}?mode=view`)}
+                            title="View details">
+                            <Eye size={16} />
+                          </button>
+                          <button className="adp-btn-edit"
+                            onClick={() => navigate(`/admin/products/${product.id}?mode=edit`)}
+                            title="Edit">
+                            <Edit2 size={16} />
+                          </button>
+                        </>
                       )}
                     </div>
                   </td>

@@ -39,6 +39,7 @@ import AdminCatalogPage from "./pages/Admin/AdminCatalogPage";
 import AdminShippingPage from "./pages/Admin/AdminShippingPage";
 import AdminOrderDetail from "./pages/Admin/AdminOrderDetail";
 import AdminProductDetail from "./pages/Admin/AdminProductDetail";
+import AdminProductReviews from "./pages/Admin/AdminProductReviews";
 
 const StoreLayout = () => (
   <>
@@ -76,9 +77,9 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
-                <Route path="/chinh-sach-doi-tra" element={<Policy />} />
-                <Route path="/chinh-sach-bao-hanh" element={<Policy />} />
-                <Route path="/chinh-sach-bao-mat" element={<Policy />} />
+                <Route path="/return-policy" element={<Policy />} />
+                <Route path="/warranty-policy" element={<Policy />} />
+                <Route path="/privacy-policy" element={<Policy />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/profile" element={<Profile />} />
@@ -97,6 +98,7 @@ function App() {
                   <Route path="orders" element={<AdminOrders />} />
                   <Route path="orders/details/:orderCode" element={<AdminOrderDetail />} />
                   <Route path="products/:id" element={<AdminProductDetail />} />
+                  <Route path="products/:id/reviews" element={<AdminProductReviews />} />
                   <Route path="shippings" element={<AdminShippingPage />} />
                 </Route>
               </Route>

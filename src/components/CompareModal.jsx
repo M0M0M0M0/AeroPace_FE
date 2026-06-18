@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { createPortal } from "react-dom"; // Thêm import này
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 const CompareModal = ({ isOpen, onClose, compareItems }) => {
@@ -27,7 +27,6 @@ const CompareModal = ({ isOpen, onClose, compareItems }) => {
 
   if (!isOpen) return null;
 
-  // Sử dụng createPortal để đưa Modal ra lớp ngoài cùng của trình duyệt
   return createPortal(
     <div className="compare-modal-overlay" onClick={onClose}>
       <div className="compare-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -79,7 +78,7 @@ const CompareModal = ({ isOpen, onClose, compareItems }) => {
         </div>
       </div>
     </div>,
-    document.body // Bắn code ra thẻ body
+    document.body
   );
 };
 

@@ -187,7 +187,6 @@ const DetailedReview = () => {
     const editMode = state?.editMode || false;
     const existingReviews = state?.existingReviews || [];
 
-    // Build items list
     const seen = new Set();
     const submitItems = (order?.items ?? []).filter((item) => {
         if (seen.has(item.productId)) return false;
