@@ -45,6 +45,19 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const refreshCart = async () => {
+    const token = getToken();
+    if (token) {
+      await fetchCart();
+    } else {
+      const localItems = getLocalCart();
+      if (localItems.length > 0) {
+        const enriched = await enrichLocalCart(localItems);
+        setCart(enriched);
+      }
+    }
+  };
+
   const enrichLocalCart = async (localItems) => {
     if (localItems.length === 0) return buildLocalCartResponse([]);
 
@@ -61,6 +74,7 @@ export const CartProvider = ({ children }) => {
         const variant = product?.variants?.find(
           (v) => v.id === item.productVariantId,
         );
+        const isAvailable = !!(product && product.status === "ACTIVE" && (item.productVariantId ? variant : true));
         return {
           ...item,
           productName: product?.name || "",
@@ -69,7 +83,8 @@ export const CartProvider = ({ children }) => {
           option1Value: variant?.option1Value || null,
           option2Value: variant?.option2Value || null,
           option3Value: variant?.option3Value || null,
-          stock: variant?.stock || 0,
+          stockAvailable: variant?.stock ?? 0,
+          isAvailable,
         };
       });
 
@@ -167,10 +182,14 @@ export const CartProvider = ({ children }) => {
           i.productVariantId === (product.variantId || null),
       );
 
+      const tentativeItems = localItems.map((i) => ({ ...i }));
       if (existingIndex >= 0) {
-        localItems[existingIndex].quantity += quantity;
+        tentativeItems[existingIndex] = {
+          ...tentativeItems[existingIndex],
+          quantity: tentativeItems[existingIndex].quantity + quantity,
+        };
       } else {
-        localItems.push({
+        tentativeItems.push({
           cartItemId: `local_${Date.now()}`,
           productId: product.id,
           productVariantId: product.variantId || null,
@@ -182,8 +201,23 @@ export const CartProvider = ({ children }) => {
         });
       }
 
-      saveLocalCart(localItems);
-      enrichLocalCart(localItems).then(setCart);
+      const enrichedCart = await enrichLocalCart(tentativeItems);
+      const targetItem = enrichedCart.items.find(
+        (i) =>
+          i.productId === product.id &&
+          (i.productVariantId ?? null) === (product.variantId ?? null),
+      );
+
+      if (!targetItem || !targetItem.isAvailable || targetItem.stockAvailable <= 0) {
+        throw new Error("Product is no longer available");
+      }
+
+      if (targetItem.quantity > targetItem.stockAvailable) {
+        throw new Error(`Only ${targetItem.stockAvailable} items available in stock`);
+      }
+
+      saveLocalCart(tentativeItems);
+      setCart(enrichedCart);
     }
   };
 
@@ -213,7 +247,7 @@ export const CartProvider = ({ children }) => {
         i.cartItemId === cartItemId ? { ...i, quantity } : i,
       );
       const cartItem = cart?.items?.find((i) => i.cartItemId === cartItemId);
-      if (cartItem && quantity > cartItem.stock) {
+      if (cartItem && quantity > cartItem.stockAvailable) {
         toast.warning("Quantity exceeds available stock!");
         return;
       }
@@ -243,7 +277,7 @@ export const CartProvider = ({ children }) => {
       if (localItems.length > 0) {
         enrichLocalCart(localItems).then(setCart);
       } else {
-        setCart(null);
+        setCart(buildLocalCartResponse([]));
       }
     }
   };
@@ -322,6 +356,7 @@ export const CartProvider = ({ children }) => {
       value={{
         cart,
         fetchCart,
+        refreshCart,
         addToCart,
         updateQuantity,
         removeFromCart,

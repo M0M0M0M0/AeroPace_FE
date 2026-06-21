@@ -9,20 +9,20 @@ import "./Cart.css";
 const Cart = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { cart, updateQuantity, removeFromCart, clearCart, fetchCart } = useCart();
+  const { cart, updateQuantity, removeFromCart, clearCart, refreshCart } = useCart();
   const prevPricesRef = useRef({});
   const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
-    if (user) fetchCart();
+    refreshCart();
 
     const handleVisibility = () => {
-      if (document.visibilityState === "visible" && user) fetchCart();
+      if (document.visibilityState === "visible") refreshCart();
     };
 
     document.addEventListener("visibilitychange", handleVisibility);
     return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (!cart?.items) return;

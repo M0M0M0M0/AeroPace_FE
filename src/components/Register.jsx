@@ -127,7 +127,7 @@ const Register = () => {
             <User className="input-icon" size={20} />
             <input
               type="text"
-              placeholder="Full Name"
+              placeholder="Username"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
