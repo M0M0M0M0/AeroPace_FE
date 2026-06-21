@@ -65,6 +65,7 @@ const ProductDetail = () => {
   const [activeImage, setActiveImage] = useState(0);
   const [descExpanded, setDescExpanded] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [similarProducts, setSimilarProducts] = useState([]);
   const [ratingSummary, setRatingSummary] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [reviewsPage, setReviewsPage] = useState(0);
@@ -79,6 +80,7 @@ const ProductDetail = () => {
   useEffect(() => {
     setDescExpanded(false);
     setRelatedProducts([]);
+    setSimilarProducts([]);
     setRatingSummary(null);
     setReviewsPage(0);
 
@@ -99,6 +101,14 @@ const ProductDetail = () => {
           if (data.option3Name) init.option3Value = first.option3Value;
           setSelected(init);
         }
+        fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/v1/products/${data.id}/similar?limit=6`
+        )
+          .then((r) => r.json())
+          .then((res) => setSimilarProducts(Array.isArray(res) ? res : []))
+          .catch(console.error);
+          console.log("Product data:", data);
+
         const catId = data.categories?.[0]?.id;
         if (catId) {
           fetch(
@@ -497,10 +507,53 @@ const ProductDetail = () => {
         )}
       </div>
 
+      {similarProducts.length > 0 && (
+        <div className="pd-related">
+          <div className="pd-related-header">
+            <h2 className="pd-related-title">You May Also Like</h2>
+          </div>
+          <div className="pd-related-grid">
+            {similarProducts.map((item) => {
+              const itemImg = item.images?.[0]?.imageUrl;
+              const itemPrice = item.variants?.[0]?.price ?? 0;
+              return (
+                <div
+                  key={item.id}
+                  className="pd-related-item"
+                  onClick={() => navigate(`/products/detail/${item.id}`)}
+                >
+                  {itemImg && (
+                    <img src={itemImg} alt={item.name} className="pd-related-img" />
+                  )}
+                  <div className="pd-related-overlay">
+                    <p className="pd-related-name">{item.name}</p>
+                    <button
+                      className="pd-related-arrow-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/products/detail/${item.id}`);
+                      }}
+                    >
+                      <ArrowRight size={18} />
+                    </button>
+                  </div>
+                  <div className="pd-related-info">
+                    <span className="pd-related-item-name">{item.name}</span>
+                    <span className="pd-related-item-price">
+                      {itemPrice.toLocaleString()} ₫
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {relatedProducts.length > 0 && (
         <div className="pd-related">
           <div className="pd-related-header">
-            <h2 className="pd-related-title">Related Products</h2>
+            <h2 className="pd-related-title">Products in Same Category</h2>
             <Link
               to={`/products?category=${product.categories?.[0]?.id}`}
               className="pd-related-view-all"
