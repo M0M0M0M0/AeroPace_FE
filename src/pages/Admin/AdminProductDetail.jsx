@@ -171,7 +171,10 @@ const AdminProductDetail = () => {
   };
 
   const addImage = () => setForm({ ...form, images: [...form.images, { imageUrl: "", position: form.images.length + 1 }] });
-  const removeImage = (idx) => setForm({ ...form, images: form.images.filter((_, i) => i !== idx) });
+  const removeImage = (idx) => {
+    const filtered = form.images.filter((_, i) => i !== idx);
+    setForm({ ...form, images: filtered.map((img, i) => ({ ...img, position: i + 1 })) });
+  };
   const updateImage = (idx, value) => { const u = [...form.images]; u[idx] = { ...u[idx], imageUrl: value }; setForm({ ...form, images: u }); };
 
   const toggleCategory = (catId) => setForm({
@@ -223,8 +226,8 @@ const AdminProductDetail = () => {
             id: null, option1Value: v.option1Value || "", option2Value: v.option2Value || "",
             option3Value: v.option3Value || "", price: Number(v.price), stock: Number(v.stock) || 0, sku: v.sku || "",
           })),
-          images: form.images.filter((img) => img.imageUrl).map((img) => ({
-            id: null, imageUrl: img.imageUrl, position: img.position || 1,
+          images: form.images.filter((img) => img.imageUrl).map((img, i) => ({
+            id: null, imageUrl: img.imageUrl, position: i + 1,
           })),
           categoryIds: form.categoryIds,
         }, { headers: authHeader() });
@@ -244,7 +247,7 @@ const AdminProductDetail = () => {
             option3Value: v.option3Value || "", price: Number(v.price), stock: Number(v.stock) || 0,
             sku: v.sku || "", isDeleted: v.isDeleted || false,
           })),
-          images: form.images.map((img) => ({ id: img.id || null, imageUrl: img.imageUrl, position: img.position || 1 })),
+          images: form.images.map((img, i) => ({ id: img.id || null, imageUrl: img.imageUrl, position: i + 1 })),
           categoryIds: form.categoryIds,
         }, { headers: authHeader() });
 
@@ -388,7 +391,7 @@ const AdminProductDetail = () => {
                 <input className="apd-form-input" value={img.imageUrl}
                   onChange={(e) => updateImage(idx, e.target.value)}
                   placeholder="Image URL" disabled={isViewOnly} />
-                <span className="apd-image-pos">#{img.position}</span>
+                <span className="apd-image-pos">#{idx + 1}</span>
                 {img.imageUrl && <img src={img.imageUrl} alt="" className="apd-image-preview" />}
                 {!isViewOnly && (
                   <button className="apd-btn-remove" onClick={() => removeImage(idx)}>
