@@ -98,7 +98,7 @@ const HistoricalProductDetail = () => {
       <div className="hpd-banner">
         <Clock size={14} />
         <span>
-          This is the product snapshot at the time you placed order{" "}
+          This is the product information at the time you placed order{" "}
           <strong>#{orderCode}</strong> — may differ from the current product.
         </span>
         <button className="hpd-banner-back" onClick={() => navigate(-1)}>

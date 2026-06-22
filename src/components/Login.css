@@ -104,6 +104,8 @@
   position: relative;
   display: flex;
   align-items: center;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .input-icon {
