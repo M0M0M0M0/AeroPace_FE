@@ -304,7 +304,7 @@ const ProductDetail = () => {
                 {Number(ratingSummary.averageRating).toFixed(1)}
               </span>
               <span className="pd-rating-summary-count">
-                ({ratingSummary.reviewCount} đánh giá)
+                ({ratingSummary.reviewCount} review{ratingSummary.reviewCount > 1 ? "s" : ""})
               </span>
             </div>
           )}
@@ -443,7 +443,7 @@ const ProductDetail = () => {
       </div>
 
       <div className="pd-reviews">
-        <h2>Đánh giá sản phẩm</h2>
+        <h2>Product Reviews</h2>
 
         {ratingSummary?.reviewCount > 0 ? (
           <div className="pd-reviews-summary">
@@ -453,7 +453,7 @@ const ProductDetail = () => {
             <div className="pd-reviews-summary-info">
               <StarRow rating={ratingSummary.averageRating} size={16} />
               <span className="pd-reviews-summary-count">
-                {ratingSummary.reviewCount} đánh giá
+                {ratingSummary.reviewCount} reviews
               </span>
             </div>
           </div>
@@ -470,7 +470,7 @@ const ProductDetail = () => {
                   <StarRow rating={rv.rating} size={13} />
                 </div>
                 {rv.variantName && (
-                  <p className="pd-review-variant">Phân loại: {rv.variantName}</p>
+                  <p className="pd-review-variant">Variant: {rv.variantName}</p>
                 )}
                 {rv.comment && <p className="pd-review-comment">{rv.comment}</p>}
                 {rv.imageUrls?.length > 0 && (

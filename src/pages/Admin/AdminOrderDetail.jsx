@@ -222,7 +222,7 @@ const ConfirmStatusModal = ({
                 <div className="aod-modal-header">
                     <div>
                         <h3 className="aod-modal-title">
-                            Xác nhận chuyển trạng thái
+                            Confirm Status Change
                         </h3>
                     </div>
 

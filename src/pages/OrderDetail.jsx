@@ -364,6 +364,14 @@ const OrderDetail = () => {
                                         {confirming ? "Confirming receipt..." : "Mark as Received"}
                                     </button>
                                 )}
+                                {order.status === "COMPLETED" && reviews.length === 0 && (
+                                    <button
+                                        className="od-confirm-received-btn"
+                                        onClick={() => setReviewOrder(order)}
+                                    >
+                                        Write a Review
+                                    </button>
+                                )}
                             </div>
                             <div className="od-total-row">
                                 <span className="od-total-label">Total</span>

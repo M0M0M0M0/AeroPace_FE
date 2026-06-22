@@ -11,6 +11,24 @@ import { Elements, CardElement, useStripe, useElements } from "@stripe/react-str
 
 const API = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
 const GEO = "https://esgoo.net/api-tinhthanh";
+
+const removeDiacritics = (str) =>
+  str.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+const VI_PREFIXES = [
+  ["Thành phố", "City"], ["Tỉnh", "Province"], ["Thị xã", "Town"],
+  ["Thị trấn", "Township"], ["Quận", "District"], ["Huyện", "District"],
+  ["Phường", "Ward"], ["Xã", "Commune"],
+];
+const toEnglishAdmin = (name) => {
+  if (!name) return name;
+  for (const [prefix, suffix] of VI_PREFIXES) {
+    if (name.startsWith(prefix + " ") || name === prefix) {
+      const rest = removeDiacritics(name.slice(prefix.length).trim());
+      return /^\d+$/.test(rest) ? `${suffix} ${rest}` : rest ? `${rest} ${suffix}` : suffix;
+    }
+  }
+  return removeDiacritics(name);
+};
 const VAT_RATE = 0.1;
 const stripePromise = loadStripe("pk_test_51TZrIzCOSfqKuHsnETgOAQYMnaJrRIOOxiwiuQ8GzZWXrCxZI7wnySO0jmwxkCqxSLEmJqClgWYqgD3CjwMsXRRN00mUzZnt6j");
 
@@ -142,7 +160,8 @@ const CheckoutForm = () => {
   useEffect(() => {
     if (!profileInfo?.province || !provinces.length || useOtherAddress) return;
     const matched = provinces.find(
-      (p) => p.full_name.toLowerCase() === profileInfo.province.toLowerCase()
+      (p) => toEnglishAdmin(p.full_name) === profileInfo.province ||
+             p.full_name.toLowerCase() === profileInfo.province.toLowerCase()
     );
     if (matched) setSelectedProvince(matched.id);
   }, [profileInfo, provinces, useOtherAddress]);
@@ -161,7 +180,8 @@ const CheckoutForm = () => {
   useEffect(() => {
     if (!profileInfo?.district || !districts.length || useOtherAddress) return;
     const matched = districts.find(
-      (d) => d.full_name.toLowerCase() === profileInfo.district.toLowerCase()
+      (d) => toEnglishAdmin(d.full_name) === profileInfo.district ||
+             d.full_name.toLowerCase() === profileInfo.district.toLowerCase()
     );
     if (matched) setSelectedDistrict(matched.id);
   }, [profileInfo, districts, useOtherAddress]);
@@ -179,7 +199,8 @@ const CheckoutForm = () => {
   useEffect(() => {
     if (!profileInfo?.ward || !wards.length || useOtherAddress) return;
     const matched = wards.find(
-      (w) => w.full_name.toLowerCase() === profileInfo.ward.toLowerCase()
+      (w) => toEnglishAdmin(w.full_name) === profileInfo.ward ||
+             w.full_name.toLowerCase() === profileInfo.ward.toLowerCase()
     );
     if (matched) setSelectedWard(matched.id);
   }, [profileInfo, wards, useOtherAddress]);
@@ -240,9 +261,9 @@ const CheckoutForm = () => {
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────
   const getFullAddress = useCallback(() => {
-    const provinceName = provinces.find((p) => p.id === selectedProvince)?.full_name || profileInfo?.province || "";
-    const districtName = districts.find((d) => d.id === selectedDistrict)?.full_name || profileInfo?.district || "";
-    const wardName = wards.find((w) => w.id === selectedWard)?.full_name || profileInfo?.ward || "";
+    const provinceName = toEnglishAdmin(provinces.find((p) => p.id === selectedProvince)?.full_name || profileInfo?.province || "");
+    const districtName = toEnglishAdmin(districts.find((d) => d.id === selectedDistrict)?.full_name || profileInfo?.district || "");
+    const wardName = toEnglishAdmin(wards.find((w) => w.id === selectedWard)?.full_name || profileInfo?.ward || "");
     return [form.specificAddress, wardName, districtName, provinceName].filter(Boolean).join(", ");
   }, [provinces, districts, wards, selectedProvince, selectedDistrict, selectedWard, form.specificAddress, profileInfo]);
 
@@ -288,9 +309,9 @@ const CheckoutForm = () => {
     phoneNumber: form.phone,
     paymentMethod,
     receiverName: form.name,
-    ward: selectedWard ? wards.find((w) => w.id === selectedWard)?.full_name : profileInfo?.ward,
-    district: selectedDistrict ? districts.find((d) => d.id === selectedDistrict)?.full_name : profileInfo?.district,
-    province: selectedProvince ? provinces.find((p) => p.id === selectedProvince)?.full_name : profileInfo?.province,
+    ward: toEnglishAdmin(selectedWard ? wards.find((w) => w.id === selectedWard)?.full_name : profileInfo?.ward || ""),
+    district: toEnglishAdmin(selectedDistrict ? districts.find((d) => d.id === selectedDistrict)?.full_name : profileInfo?.district || ""),
+    province: toEnglishAdmin(selectedProvince ? provinces.find((p) => p.id === selectedProvince)?.full_name : profileInfo?.province || ""),
     vat: vatAmount,
     shippingMethodId: selectedShipping?.id,
     ...(paymentOrderId && { paymentOrderId }),
@@ -335,9 +356,9 @@ const CheckoutForm = () => {
             phoneNumber: form.phone,
             paymentMethod: "stripe",
             receiverName: form.name,
-            ward: selectedWard ? wards.find(w => w.id === selectedWard)?.full_name : profileInfo?.ward,
-            district: selectedDistrict ? districts.find(d => d.id === selectedDistrict)?.full_name : profileInfo?.district,
-            province: selectedProvince ? provinces.find(p => p.id === selectedProvince)?.full_name : profileInfo?.province,
+            ward: toEnglishAdmin(selectedWard ? wards.find(w => w.id === selectedWard)?.full_name : profileInfo?.ward || ""),
+            district: toEnglishAdmin(selectedDistrict ? districts.find(d => d.id === selectedDistrict)?.full_name : profileInfo?.district || ""),
+            province: toEnglishAdmin(selectedProvince ? provinces.find(p => p.id === selectedProvince)?.full_name : profileInfo?.province || ""),
             vat: vatAmount,
             shippingMethodId: selectedShipping?.id,
             grandTotal: grandTotal,
@@ -534,23 +555,30 @@ const CheckoutForm = () => {
                   <select
                     className="checkout-select"
                     value={selectedProvince}
-                    onChange={(e) => setSelectedProvince(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedProvince(e.target.value);
+                      setSelectedDistrict("");
+                      setSelectedWard("");
+                    }}
                   >
                     <option value="">Province / City</option>
                     {provinces.map((p) => (
-                      <option key={p.id} value={p.id}>{p.full_name}</option>
+                      <option key={p.id} value={p.id}>{toEnglishAdmin(p.full_name)}</option>
                     ))}
                   </select>
 
                   <select
                     className="checkout-select"
                     value={selectedDistrict}
-                    onChange={(e) => setSelectedDistrict(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedDistrict(e.target.value);
+                      setSelectedWard("");
+                    }}
                     disabled={!selectedProvince}
                   >
                     <option value="">District / Town</option>
                     {districts.map((d) => (
-                      <option key={d.id} value={d.id}>{d.full_name}</option>
+                      <option key={d.id} value={d.id}>{toEnglishAdmin(d.full_name)}</option>
                     ))}
                   </select>
 
@@ -562,7 +590,7 @@ const CheckoutForm = () => {
                   >
                     <option value="">Ward / Commune</option>
                     {wards.map((w) => (
-                      <option key={w.id} value={w.id}>{w.full_name}</option>
+                      <option key={w.id} value={w.id}>{toEnglishAdmin(w.full_name)}</option>
                     ))}
                   </select>
                 </div>
@@ -579,7 +607,7 @@ const CheckoutForm = () => {
 
               {!useOtherAddress && profileInfo && (
                 <p className="checkout-address-preview">
-                  {[profileInfo.address, profileInfo.ward, profileInfo.district, profileInfo.province]
+                  {[profileInfo.address, toEnglishAdmin(profileInfo.ward || ""), toEnglishAdmin(profileInfo.district || ""), toEnglishAdmin(profileInfo.province || "")]
                     .filter(Boolean)
                     .join(", ")}
                 </p>

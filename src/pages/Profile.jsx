@@ -19,6 +19,33 @@ import {
 
 import "./Profile.css";
 
+// ── Vietnamese admin name → English ──────────────────────────────
+const removeDiacritics = (str) =>
+  str.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+
+const VI_PREFIXES = [
+  ["Thành phố", "City"],
+  ["Tỉnh", "Province"],
+  ["Thị xã", "Town"],
+  ["Thị trấn", "Township"],
+  ["Quận", "District"],
+  ["Huyện", "District"],
+  ["Phường", "Ward"],
+  ["Xã", "Commune"],
+];
+
+const toEnglishAdmin = (name) => {
+  if (!name) return name;
+  for (const [prefix, suffix] of VI_PREFIXES) {
+    if (name.startsWith(prefix + " ") || name === prefix) {
+      const rest = removeDiacritics(name.slice(prefix.length).trim());
+      // Số (Quận 1, Phường 5) → "District 1", "Ward 5"
+      return /^\d+$/.test(rest) ? `${suffix} ${rest}` : rest ? `${rest} ${suffix}` : suffix;
+    }
+  }
+  return removeDiacritics(name);
+};
+
 const Profile = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -93,6 +120,33 @@ const Profile = () => {
     }
   }, [selectedDistrict]);
 
+  // Auto-restore selectedProvince khi provinces load và đã có địa chỉ lưu
+  useEffect(() => {
+    if (!provinces.length || !formData.province || selectedProvince) return;
+    const match = provinces.find(
+      (p) => toEnglishAdmin(p.full_name) === formData.province
+    );
+    if (match) setSelectedProvince(match.id);
+  }, [provinces, formData.province]);
+
+  // Auto-restore selectedDistrict khi districts load
+  useEffect(() => {
+    if (!districts.length || !formData.district || selectedDistrict) return;
+    const match = districts.find(
+      (d) => toEnglishAdmin(d.full_name) === formData.district
+    );
+    if (match) setSelectedDistrict(match.id);
+  }, [districts, formData.district]);
+
+  // Auto-restore selectedWard khi wards load
+  useEffect(() => {
+    if (!wards.length || !formData.ward || selectedWard) return;
+    const match = wards.find(
+      (w) => toEnglishAdmin(w.full_name) === formData.ward
+    );
+    if (match) setSelectedWard(match.id);
+  }, [wards, formData.ward]);
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -138,9 +192,9 @@ const Profile = () => {
           dob: data.dob || "",
           gender: data.gender || "",
           address: data.address || "",
-          ward: data.ward || "",
-          district: data.district || "",
-          province: data.province || "",
+          ward: toEnglishAdmin(data.ward || ""),
+          district: toEnglishAdmin(data.district || ""),
+          province: toEnglishAdmin(data.province || ""),
           avatarUrl: data.avatarUrl || "",
         });
       } catch (err) {
@@ -181,12 +235,12 @@ const Profile = () => {
         gender: formData.gender,
         address: formData.address,
         ward:
-          wards.find((w) => w.id === selectedWard)?.full_name || formData.ward,
+          toEnglishAdmin(wards.find((w) => w.id === selectedWard)?.full_name) || formData.ward,
         district:
-          districts.find((d) => d.id === selectedDistrict)?.full_name ||
+          toEnglishAdmin(districts.find((d) => d.id === selectedDistrict)?.full_name) ||
           formData.district,
         province:
-          provinces.find((p) => p.id === selectedProvince)?.full_name ||
+          toEnglishAdmin(provinces.find((p) => p.id === selectedProvince)?.full_name) ||
           formData.province,
         avatarUrl: formData.avatarUrl,
         userId: user.id,
@@ -408,6 +462,14 @@ const Profile = () => {
                   : "Mark as received"}
               </button>
             )}
+            {order.status === "COMPLETED" && !orderReviews[order.orderCode]?.length && (
+              <button
+                className="profile-confirm-received-btn"
+                onClick={() => setReviewOrder(order)}
+              >
+                Write a Review
+              </button>
+            )}
 
             <button
               className="profile-view-detail-btn"
@@ -565,24 +627,30 @@ const Profile = () => {
                   <div className="profile-address-dropdowns">
                     <select
                       value={selectedProvince}
-                      onChange={(e) => setSelectedProvince(e.target.value)}
+                      onChange={(e) => {
+                        setSelectedProvince(e.target.value);
+                        setFormData((prev) => ({ ...prev, district: "", ward: "" }));
+                      }}
                       className="profile-address-select"
                     >
                       <option value="">{formData.province || "Province/City"}</option>
                       {provinces.map((p) => (
-                        <option key={p.id} value={p.id}>{p.full_name}</option>
+                        <option key={p.id} value={p.id}>{toEnglishAdmin(p.full_name)}</option>
                       ))}
                     </select>
 
                     <select
                       value={selectedDistrict}
-                      onChange={(e) => setSelectedDistrict(e.target.value)}
+                      onChange={(e) => {
+                        setSelectedDistrict(e.target.value);
+                        setFormData((prev) => ({ ...prev, ward: "" }));
+                      }}
                       disabled={!selectedProvince}
                       className="profile-address-select"
                     >
                       <option value="">{formData.district || "District/County"}</option>
                       {districts.map((d) => (
-                        <option key={d.id} value={d.id}>{d.full_name}</option>
+                        <option key={d.id} value={d.id}>{toEnglishAdmin(d.full_name)}</option>
                       ))}
                     </select>
 
@@ -594,7 +662,7 @@ const Profile = () => {
                     >
                       <option value="">{formData.ward || "Ward/Commune"}</option>
                       {wards.map((w) => (
-                        <option key={w.id} value={w.id}>{w.full_name}</option>
+                        <option key={w.id} value={w.id}>{toEnglishAdmin(w.full_name)}</option>
                       ))}
                     </select>
                   </div>
@@ -646,7 +714,16 @@ const Profile = () => {
         <QuickReviewModal
           order={reviewOrder}
           onClose={() => setReviewOrder(null)}
-          onSubmitted={() => setReviewOrder(null)}
+          onSubmitted={async () => {
+            const code = reviewOrder?.orderCode;
+            setReviewOrder(null);
+            if (code) {
+              try {
+                const rv = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/reviews/my-order/${code}`);
+                setOrderReviews((prev) => ({ ...prev, [code]: rv.data }));
+              } catch (_) {}
+            }
+          }}
         />
       )}
     </div>
