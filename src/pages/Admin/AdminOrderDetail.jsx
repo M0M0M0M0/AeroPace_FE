@@ -495,8 +495,7 @@ const AdminOrderDetail = () => {
                             {order.items?.map((item, idx) => (
                                 <div
                                     key={idx}
-                                    className="aod-item aod-item--clickable"
-                                    onClick={() => setProductModal(item)}
+                                    className="aod-item"
                                 >
                                     <div className="aod-item-img-wrap">
                                         {item.productImgUrl

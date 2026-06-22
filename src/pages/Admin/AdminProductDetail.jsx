@@ -69,9 +69,7 @@ const AdminProductDetail = () => {
       ]);
       setBrands(br.data);
       setCategories(ca.data);
-      if (urlMode === "add" && br.data.length > 0) {
-        setForm((prev) => ({ ...prev, brandId: br.data[0].id }));
-      }
+      // Không auto-select brand khi tạo mới — để user tự chọn
     };
     fetchMeta();
   }, []);
@@ -487,6 +485,7 @@ const AdminProductDetail = () => {
               value={form.brandId}
               onChange={(e) => setForm({ ...form, brandId: e.target.value })}
               disabled={isViewOnly}>
+              <option value="">-- Select brand --</option>
               {filteredBrands.length === 0
                 ? <option disabled>Brand not found</option>
                 : filteredBrands.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
