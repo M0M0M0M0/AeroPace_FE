@@ -67,7 +67,7 @@
 .home-section-title {
   color: var(--text-main);
   text-align: center;
-  margin: 0 0 40px;
+  margin: 20px 0 40px;
   font-size: 2.5rem;
   font-weight: bold;
   animation: home-fadeUp 0.8s ease-out forwards;
@@ -221,15 +221,10 @@
 
 /* ICONS */
 .home-icons-section {
-  margin-top: 60px;
   padding: 0 6% 60px;
   overflow: hidden;
   position: relative;
-  background-color: #ffffff;
-}
-
-.home-icons-section .home-section-title {
-  color: #1a1a1a;
+  background: var(--bg-main);
 }
 
 .home-container {
@@ -973,11 +968,6 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 768px) {
-  .home-hero-title { font-size: 2rem; }
-  .home-sport-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
-}
-
 /* ── RESPONSIVE ───────────────────────────────────────────────── */
 
 /* Tablet landscape / small laptop */
@@ -1050,6 +1040,10 @@
 
   .home-sport-section {
     padding: 40px 4%;
+  }
+
+  .home-sport-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   }
 
   .home-sport-header {
