@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axiosRaw from "axios";
 import QuickReviewModal from "../components/QuickReviewModal";
 import { uploadImage } from "../api/uploadImage";
+import { formatUSD } from "../utils/currency";
 import {
   User,
   Package,
@@ -409,7 +410,7 @@ const Profile = () => {
                 <span className="profile-order-preview-name">{item.productName}</span>
                 <span className="profile-order-preview-qty">x{item.quantity}</span>
                 <span className="profile-order-preview-price">
-                  {item.price?.toLocaleString()} ₫
+                  {formatUSD(item.price)}
                 </span>
               </div>
             ))}
@@ -443,11 +444,11 @@ const Profile = () => {
         {/* Footer */}
         <div className="profile-order-card-footer">
           <span className="profile-order-total">
-            Total: {(
+            Total: {formatUSD(
               (Number(order.totalPrice) || 0) +
               (Number(order.shippingFee) || 0) +
               (Number(order.vat) || 0)
-            ).toLocaleString()} ₫
+            )}
           </span>
 
           <div className="profile-order-actions">

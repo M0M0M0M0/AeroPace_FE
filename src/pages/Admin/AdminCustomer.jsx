@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import AdminCustomerDetail from "./AdminCustomerDetail";
 import "./AdminCustomer.css";
@@ -6,6 +7,7 @@ import "./AdminCustomer.css";
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL}/api/v1/admin/customers`;
 
 const AdminCustomers = () => {
+  const location = useLocation();
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCustomer, setSelected] = useState(null);
@@ -21,6 +23,8 @@ const AdminCustomers = () => {
   const [searchEmail, setSearchEmail] = useState("");
   const [searchPhone, setSearchPhone] = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
+  const [filterDateFrom, setFilterDateFrom] = useState("");
+  const [filterDateTo, setFilterDateTo] = useState("");
 
   // ── Fetch danh sách ──────────────────────────────────────────
   const fetchCustomers = async () => {
@@ -41,6 +45,15 @@ const AdminCustomers = () => {
   useEffect(() => {
     fetchCustomers();
   }, []);
+
+  // Áp filter ngày tạo từ query string khi điều hướng từ Dashboard (quick action)
+  useEffect(() => {
+    const q = new URLSearchParams(location.search);
+    const df = q.get("dateFrom");
+    const dt = q.get("dateTo");
+    if (df) setFilterDateFrom(df);
+    if (dt) setFilterDateTo(dt);
+  }, [location.search]);
 
   // ── Toast helper ─────────────────────────────────────────────
   const showToast = (msg, type = "success") => {
@@ -85,6 +98,8 @@ const AdminCustomers = () => {
     setSearchEmail("");
     setSearchPhone("");
     setFilterStatus("ALL");
+    setFilterDateFrom("");
+    setFilterDateTo("");
   };
 
   // ── Filter logic ──────────────────────────────────────────────
@@ -105,8 +120,16 @@ const AdminCustomers = () => {
       : true;
     const matchStatus =
       filterStatus === "ALL" ? true : c.status === filterStatus;
+    const matchDate = (() => {
+      if (!filterDateFrom && !filterDateTo) return true;
+      if (!c.createdAt) return false;
+      const d = c.createdAt.slice(0, 10);
+      if (filterDateFrom && d < filterDateFrom) return false;
+      if (filterDateTo && d > filterDateTo) return false;
+      return true;
+    })();
 
-    return matchId && matchName && matchEmail && matchPhone && matchStatus;
+    return matchId && matchName && matchEmail && matchPhone && matchStatus && matchDate;
   });
 
   const hasActiveFilter =
@@ -114,7 +137,9 @@ const AdminCustomers = () => {
     searchName ||
     searchEmail ||
     searchPhone ||
-    filterStatus !== "ALL";
+    filterStatus !== "ALL" ||
+    filterDateFrom ||
+    filterDateTo;
 
   return (
     <div className="ac-page">
@@ -231,6 +256,25 @@ const AdminCustomers = () => {
           <option value="ACTIVE">Active</option>
           <option value="LOCKED">Locked</option>
         </select>
+        <div className="ac-filter-date-group">
+          <label className="ac-filter-date-label">Created from</label>
+          <input
+            type="date"
+            className="ac-filter-input ac-filter-date"
+            value={filterDateFrom}
+            onChange={(e) => setFilterDateFrom(e.target.value)}
+          />
+        </div>
+        <div className="ac-filter-date-group">
+          <label className="ac-filter-date-label">to</label>
+          <input
+            type="date"
+            className="ac-filter-input ac-filter-date"
+            value={filterDateTo}
+            min={filterDateFrom}
+            onChange={(e) => setFilterDateTo(e.target.value)}
+          />
+        </div>
         {hasActiveFilter && (
           <button className="ac-filter-reset" onClick={handleResetFilters}>
             ✕ Clear Filters
@@ -300,12 +344,14 @@ const AdminCustomers = () => {
                     </td>
                     <td>
                       <div className="ac-actions">
+                        {/* Tạm ẩn nút Lock/Unlock — đang có vấn đề ở luồng lock account.
                         <button
                           className={`ac-lock-btn ${c.status === "ACTIVE" ? "lock" : "unlock"}`}
                           onClick={(e) => handleLockClick(c.userId, c.status, e)}
                         >
                           {c.status === "ACTIVE" ? "Lock" : "Unlock"}
                         </button>
+                        */}
                         <button
                           className="ac-view-btn"
                           onClick={() => setSelected(c)}

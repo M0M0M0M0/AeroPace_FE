@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Eye, RefreshCw, X } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import { formatUSD } from "../../utils/currency";
 import "./AdminOrders.css";
 
 const REFUND_QUICK_REASONS = [
@@ -92,6 +93,17 @@ const AdminOrders = () => {
     fetchStatOrders();
   }, []);
 
+  // Áp filter từ query string khi điều hướng từ Dashboard (quick action)
+  useEffect(() => {
+    const q = new URLSearchParams(location.search);
+    const s = q.get("status");
+    const df = q.get("dateFrom");
+    const dt = q.get("dateTo");
+    if (s) setFilterStatus(s);
+    if (df) setFilterDateFrom(df);
+    if (dt) setFilterDateTo(dt);
+  }, [location.search]);
+
   const fetchOrders = async () => {
     try {
       const params = new URLSearchParams();
@@ -166,7 +178,7 @@ const AdminOrders = () => {
     if (order.status === "CANCELLED" && order.paymentStatus === "REFUND_PENDING") return "REFUND PENDING";
     switch (order.status) {
       case "PENDING": return "PENDING";
-      case "PAID": return "PROCESSING";
+      case "PAID": return "PAID";
       case "SHIPPING": return "SHIPPING";
       case "DELIVERED": return "DELIVERED";
       case "COMPLETED": return "COMPLETED";
@@ -328,7 +340,7 @@ const AdminOrders = () => {
                     <td>{order.phoneNumber}</td>
                     <td className="ao-address">{order.shippingAddress}</td>
                     <td className="ao-price">
-                      {order.totalPrice?.toLocaleString("vi-VN")} ₫
+                      {formatUSD(order.totalPrice)}
                     </td>
                     <td>
                       <span className={getStatusClass(order)}>

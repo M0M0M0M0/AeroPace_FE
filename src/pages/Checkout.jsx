@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import axios from "axios";
+import { formatUSD } from "../utils/currency";
 import "./Checkout.css";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -90,8 +91,9 @@ const CheckoutForm = () => {
 
   // ─── Computed pricing ────────────────────────────────────────────────────────
   const shippingFee = selectedShipping ? Number(selectedShipping.fee) : 0;
-  const vatAmount = Math.round(totalPrice * VAT_RATE);
-  const grandTotal = totalPrice + vatAmount + shippingFee;
+  // Tiền USD: làm tròn 2 chữ số thập phân (cents), không làm tròn về số nguyên như VND
+  const vatAmount = Math.round(totalPrice * VAT_RATE * 100) / 100;
+  const grandTotal = Math.round((totalPrice + vatAmount + shippingFee) * 100) / 100;
 
   // ─── Prevent double click ────────────────────────────────────────────────────────
   const isSubmittingRef = useRef(false);
@@ -416,7 +418,7 @@ const CheckoutForm = () => {
       purchase_units: [{
         amount: {
           currency_code: "USD",
-          value: (grandTotal / 25000).toFixed(2),
+          value: grandTotal.toFixed(2),
         },
       }],
     });
@@ -639,7 +641,7 @@ const CheckoutForm = () => {
                       <div className="checkout-shipping-info">
                         <span className="checkout-shipping-name">{method.name}</span>
                         <span className="checkout-shipping-fee">
-                          {Number(method.fee) === 0 ? "Free" : `${Number(method.fee).toLocaleString()} ₫`}
+                          {Number(method.fee) === 0 ? "Free" : formatUSD(method.fee)}
                         </span>
                       </div>
                     </label>
@@ -745,7 +747,7 @@ const CheckoutForm = () => {
                     <div>
                       <p>{item.productName}</p>
                       <p className="checkout-variant">{item.option1Value}</p>
-                      <p>{item.quantity} x {item.price.toLocaleString()} ₫</p>
+                      <p>{item.quantity} x {formatUSD(item.price)}</p>
                     </div>
                   </div>
                 </div>
@@ -756,24 +758,24 @@ const CheckoutForm = () => {
             <div className="checkout-price-breakdown">
               <div className="checkout-price-row">
                 <span>Subtotal</span>
-                <span>{totalPrice.toLocaleString()} ₫</span>
+                <span>{formatUSD(totalPrice)}</span>
               </div>
               <div className="checkout-price-row">
                 <span>Shipping Fee</span>
                 <span>
                   {shippingFee === 0
                     ? <span className="checkout-free-tag">Free</span>
-                    : `${shippingFee.toLocaleString()} ₫`}
+                    : formatUSD(shippingFee)}
                 </span>
               </div>
               <div className="checkout-price-row">
                 <span>VAT (10%)</span>
-                <span>{vatAmount.toLocaleString()} ₫</span>
+                <span>{formatUSD(vatAmount)}</span>
               </div>
               <div className="checkout-price-divider" />
               <div className="checkout-total">
                 <h3>Grand Total</h3>
-                <p className="checkout-grand-total">{grandTotal.toLocaleString()} ₫</p>
+                <p className="checkout-grand-total">{formatUSD(grandTotal)}</p>
               </div>
             </div>
           </div>

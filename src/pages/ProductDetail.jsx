@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "../context/CartContext";
+import { formatUSD } from "../utils/currency";
 import "./ProductDetail.css";
 
 const getUniqueValues = (variants, key, optionKeys, selected) => {
@@ -295,7 +296,7 @@ const ProductDetail = () => {
 
         <div className="pd-info">
           <h1 className="pd-title">{product.name}</h1>
-          <p className="pd-price">{price.toLocaleString()} ₫</p>
+          <p className="pd-price">{formatUSD(price)}</p>
 
           {ratingSummary?.reviewCount > 0 && (
             <div className="pd-rating-summary-row">
@@ -458,7 +459,7 @@ const ProductDetail = () => {
             </div>
           </div>
         ) : (
-          <p className="pd-reviews-empty">Sản phẩm chưa có đánh giá nào.</p>
+          <p className="pd-reviews-empty">Product has no reviews yet.</p>
         )}
 
         {reviews.length > 0 && (
@@ -540,7 +541,7 @@ const ProductDetail = () => {
                   <div className="pd-related-info">
                     <span className="pd-related-item-name">{item.name}</span>
                     <span className="pd-related-item-price">
-                      {itemPrice.toLocaleString()} ₫
+                      {formatUSD(itemPrice)}
                     </span>
                   </div>
                 </div>
@@ -593,7 +594,7 @@ const ProductDetail = () => {
                   <div className="pd-related-info">
                     <span className="pd-related-item-name">{item.name}</span>
                     <span className="pd-related-item-price">
-                      {relatedPrice.toLocaleString()} ₫
+                      {formatUSD(relatedPrice)}
                     </span>
                   </div>
                 </div>

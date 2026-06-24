@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Edit2, Plus, X, Search, Eye, Trophy, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { formatUSD } from "../../utils/currency";
 import "./AdminProducts.css";
 
 const BASE = `${import.meta.env.VITE_API_BASE_URL}/api/v1/admin`;
@@ -223,8 +224,8 @@ const AdminProducts = () => {
     if (!prices.length) return "—";
     const min = Math.min(...prices), max = Math.max(...prices);
     return min === max
-      ? `${min.toLocaleString("vi-VN")} ₫`
-      : `${min.toLocaleString("vi-VN")} – ${max.toLocaleString("vi-VN")} ₫`;
+      ? formatUSD(min)
+      : `${formatUSD(min)} – ${formatUSD(max)}`;
   };
 
   const getTotalStock = (variants) =>
@@ -314,7 +315,7 @@ const AdminProducts = () => {
             </select>
           </div>
           <div className="adp-filter-field adp-filter-field--range">
-            <label className="adp-filter-label">Price Range (₫)</label>
+            <label className="adp-filter-label">Price Range ($)</label>
             <div className="adp-filter-range">
               <input className="adp-filter-input" type="number" placeholder="From" value={filterPriceMin}
                 onChange={(e) => { setFilterPriceMin(e.target.value); setPage(0); }} />

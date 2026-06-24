@@ -4,6 +4,7 @@ import axios from "../api/axiosClient";
 import { ArrowLeft, MapPin, Phone, User, Package, X, Pencil, Clock } from "lucide-react";
 import { toast } from "sonner";
 import QuickReviewModal from "../components/QuickReviewModal";
+import { formatUSD } from "../utils/currency";
 
 import "./OrderDetail.css";
 
@@ -281,7 +282,7 @@ const OrderDetail = () => {
                                                     <div className="od-item-right">
                                                         <span className="od-item-qty">x{item.quantity}</span>
                                                         <span className="od-item-price">
-                                                            {item.price?.toLocaleString()} ₫
+                                                            {formatUSD(item.price)}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -327,19 +328,19 @@ const OrderDetail = () => {
                             <div className="od-breakdown-row">
                                 <span>Subtotal</span>
                                 <span>
-                                    {order.items?.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0).toLocaleString()} ₫
+                                    {formatUSD(order.items?.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0))}
                                 </span>
                             </div>
                             {order.shippingFee != null && (
                                 <div className="od-breakdown-row">
                                     <span>Shipping fee</span>
-                                    <span>{Number(order.shippingFee).toLocaleString()} ₫</span>
+                                    <span>{formatUSD(order.shippingFee)}</span>
                                 </div>
                             )}
                             {order.vat != null && (
                                 <div className="od-breakdown-row">
                                     <span>VAT (10%)</span>
-                                    <span>{Number(order.vat).toLocaleString()} ₫</span>
+                                    <span>{formatUSD(order.vat)}</span>
                                 </div>
                             )}
                         </div>
@@ -376,11 +377,11 @@ const OrderDetail = () => {
                             <div className="od-total-row">
                                 <span className="od-total-label">Total</span>
                                 <span className="od-total-value">
-                                    {(
+                                    {formatUSD(
                                         (Number(order.totalPrice) || 0) +
                                         (Number(order.shippingFee) || 0) +
                                         (Number(order.vat) || 0)
-                                    ).toLocaleString()} ₫
+                                    )}
                                 </span>
                             </div>
                         </div>

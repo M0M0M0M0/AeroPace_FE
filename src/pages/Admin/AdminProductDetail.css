@@ -179,6 +179,14 @@
     margin-bottom: 6px;
 }
 
+.apd-form-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
 .apd-form-input {
     width: 100%;
     padding: 9px 12px;

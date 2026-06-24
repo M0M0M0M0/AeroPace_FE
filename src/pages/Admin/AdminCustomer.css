@@ -123,6 +123,23 @@
   background: var(--bg-main);
 }
 
+.ac-filter-date-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ac-filter-date-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.ac-filter-input.ac-filter-date {
+  padding: 8px 12px;
+  color-scheme: dark;
+}
+
 .ac-filter-reset {
   background: rgba(239, 68, 68, 0.08);
   border: 1px solid rgba(239, 68, 68, 0.2);

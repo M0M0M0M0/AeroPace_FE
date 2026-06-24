@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
+import { formatUSD } from "../utils/currency";
 import "./OrderSuccess.css";
 
 const OrderSuccess = () => {
@@ -54,10 +55,10 @@ const OrderSuccess = () => {
                 <img src={item.image} alt={item.productName} />
                 <div>
                   <p>{item.productName}</p>
-                  <p>{item.quantity} x {item.price.toLocaleString()} ₫</p>
+                  <p>{item.quantity} x {formatUSD(item.price)}</p>
                 </div>
               </div>
-              <p className="order-success-price">{(item.quantity * item.price).toLocaleString()} ₫</p>
+              <p className="order-success-price">{formatUSD(item.quantity * item.price)}</p>
             </div>
           ))}
         </div>
@@ -66,11 +67,11 @@ const OrderSuccess = () => {
         <div className="order-success-breakdown">
           <div className="order-success-breakdown-row">
             <span>Subtotal</span>
-            <span>{order.subtotal?.toLocaleString()} ₫</span>
+            <span>{formatUSD(order.subtotal)}</span>
           </div>
           <div className="order-success-breakdown-row">
             <span>VAT (10%)</span>
-            <span>{order.vat?.toLocaleString()} ₫</span>
+            <span>{formatUSD(order.vat)}</span>
           </div>
           <div className="order-success-breakdown-row">
             <span>
@@ -80,13 +81,13 @@ const OrderSuccess = () => {
                 {order.shippingMethod || "—"}
               </span>
             </span>
-            <span>{order.shippingFee?.toLocaleString()} ₫</span>
+            <span>{formatUSD(order.shippingFee)}</span>
           </div>
         </div>
 
         <div className="order-total">
           <span>Total:</span>
-          <span>{order.total?.toLocaleString()} ₫</span>
+          <span>{formatUSD(order.total)}</span>
         </div>
       </div>
 

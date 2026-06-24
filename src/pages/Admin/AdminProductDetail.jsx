@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { Plus, X, Search, ArrowLeft, MessageSquare, Edit2 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
@@ -42,6 +42,14 @@ const AdminProductDetail = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Quay lại đúng nơi xuất phát (dashboard / list) kèm vị trí scroll;
+  // nếu mở trực tiếp bằng URL thì fallback về danh sách product.
+  const goBack = () => {
+    if (location.key !== "default") navigate(-1);
+    else navigate("/admin/products");
+  };
 
   const urlMode = id === "new" ? "add" : (searchParams.get("mode") || "edit");
   const [currentMode, setCurrentMode] = useState(urlMode);
@@ -49,6 +57,10 @@ const AdminProductDetail = () => {
 
   const [form, setForm] = useState(emptyForm);
   const [initialForm, setInitialForm] = useState(null);
+
+  // Status đã lưu (DB). Chỉ cho phép chuyển sang DELETED khi sản phẩm đang ARCHIVED.
+  const savedStatus = initialForm ? JSON.parse(initialForm).status : null;
+  const canSelectDeleted = savedStatus === "ARCHIVED" || savedStatus === "DELETED";
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
   const [saving, setSaving] = useState(false);
@@ -145,7 +157,7 @@ const AdminProductDetail = () => {
     } else if (hasUnsavedChanges()) {
       setShowLeaveConfirm(true);
     } else {
-      navigate("/admin/products");
+      goBack();
     }
   };
 
@@ -211,8 +223,8 @@ const AdminProductDetail = () => {
       if (urlMode === "add") {
         const validVariants = form.variants.filter((v) => v.price);
         if (validVariants.length === 0) { alert("Please add at least 1 variant with a valid price!"); return; }
-        if (validVariants.some((v) => Number(v.price) < 1500)) {
-          alert("Product price must be at least 1,500 ₫ to be eligible for checkout."); return;
+        if (validVariants.some((v) => Number(v.price) < 1)) {
+          alert("Product price must be at least $1.00 to be eligible for checkout."); return;
         }
 
         await axios.post(`${BASE}/products/full-create`, {
@@ -233,8 +245,8 @@ const AdminProductDetail = () => {
         navigate("/admin/products");
 
       } else {
-        const invalidPrice = form.variants.filter((v) => !v.isDeleted && Number(v.price) < 1500);
-        if (invalidPrice.length > 0) { alert("Product price must be at least 1,500 ₫ to be eligible for checkout."); return; }
+        const invalidPrice = form.variants.filter((v) => !v.isDeleted && Number(v.price) < 1);
+        if (invalidPrice.length > 0) { alert("Product price must be at least $1.00 to be eligible for checkout."); return; }
 
         await axios.put(`${BASE}/products/${id}/full-update`, {
           name: form.name, description: form.description, brandId: Number(form.brandId),
@@ -348,10 +360,13 @@ const AdminProductDetail = () => {
                   <option value="DRAFT">Draft</option>
                   <option value="ACTIVE">Active</option>
                   <option value="ARCHIVED">Archived</option>
-                  <option value="DELETED">Deleted</option>
+                  {canSelectDeleted && <option value="DELETED">Deleted</option>}
                 </select>
               ) : (
                 <StatusBadge status={form.status} />
+              )}
+              {!isViewOnly && !canSelectDeleted && (
+                <span className="apd-form-hint">Archive the product before it can be deleted.</span>
               )}
             </div>
           </div>
@@ -574,7 +589,7 @@ const AdminProductDetail = () => {
                     setForm(JSON.parse(initialForm));
                     setCurrentMode("view");
                   } else {
-                    navigate("/admin/products");
+                    goBack();
                   }
                 }}>
                 Discard Changes

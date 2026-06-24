@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
     ArrowLeft, X, ChevronRight, Truck, CheckCircle, XCircle,
     User, Phone, MapPin, FileText, Clock, Package, ExternalLink,
     CreditCard, AlertTriangle, RefreshCw
 } from "lucide-react";
 import axios from "axios";
+import { formatUSD } from "../../utils/currency";
 import "./AdminOrderDetail.css";
 
 const BASE = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
@@ -47,7 +48,7 @@ const getNextStatus = (status) => {
 const canCancel = (status) => ["PAID", "PENDING"].includes(status);
 const canRefund = (order) => order.status === "CANCELLED" && order.paymentStatus === "REFUND_PENDING";
 
-const fmt = (n) => n?.toLocaleString("vi-VN") + " ₫";
+const fmt = (n) => formatUSD(n);
 const fmtDate = (d) => d ? new Date(d).toLocaleString("vi-VN") : "—";
 
 // ── Product Detail Modal ──────────────────────────────────────────────────────
@@ -344,6 +345,14 @@ const RefundModal = ({ orderCode, onClose, onConfirm, loading }) => {
 const AdminOrderDetail = () => {
     const { orderCode } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Quay lại đúng nơi xuất phát (dashboard / list) kèm vị trí scroll;
+    // nếu mở trực tiếp bằng URL thì fallback về danh sách order.
+    const goBack = () => {
+        if (location.key !== "default") navigate(-1);
+        else navigate("/admin/orders");
+    };
 
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -475,7 +484,7 @@ const AdminOrderDetail = () => {
                     </div>
                     <p className="aod-created">Ordered at: {fmtDate(order.createdAt)}</p>
                 </div>
-                <button className="aod-back-btn" onClick={() => navigate("/admin/orders")}>
+                <button className="aod-back-btn" onClick={goBack}>
                     <ArrowLeft size={16} /> Back
                 </button>
             </div>

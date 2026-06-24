@@ -4,6 +4,8 @@ import { Minus, Plus, Trash2, AlertTriangle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { toast } from "sonner";
+import AuthModal from "../components/AuthModal";
+import { formatUSD } from "../utils/currency";
 import "./Cart.css";
 
 const Cart = () => {
@@ -12,6 +14,7 @@ const Cart = () => {
   const { cart, updateQuantity, removeFromCart, clearCart, refreshCart } = useCart();
   const prevPricesRef = useRef({});
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
     refreshCart();
@@ -31,7 +34,7 @@ const Cart = () => {
       const prevPrice = prevPricesRef.current[item.cartItemId];
       if (prevPrice !== undefined && prevPrice !== item.price) {
         toast.warning(`Price of "${item.productName}" just changed`, {
-          description: `${prevPrice.toLocaleString()} ₫ → ${item.price.toLocaleString()} ₫`,
+          description: `${formatUSD(prevPrice)} → ${formatUSD(item.price)}`,
         });
       }
       prevPricesRef.current[item.cartItemId] = item.price;
@@ -50,7 +53,7 @@ const Cart = () => {
     );
   }, [cart]);
 
-  // ─── SỬA LỖI HIỂN THỊ KHI GIỎ HÀNG TRỐNG TẠI ĐÂY ──────────────────
+  // ─────────────────────────────────────────────────────────────────
   if (!cart || !cart.items || cart.items.length === 0)
     return (
       <div className="cart-page">
@@ -111,7 +114,7 @@ const Cart = () => {
                     {item.option3Value && ` - ${item.option3Value}`}
                   </p>
 
-                  <p className="cart-price">{item.price.toLocaleString()} ₫</p>
+                  <p className="cart-price">{formatUSD(item.price)}</p>
 
                   {outOfStock && (
                     <p className="cart-stock-warning">
@@ -174,7 +177,7 @@ const Cart = () => {
           {/* Total */}
           <div className="cart-total">
             <h2>Total (Estimated):</h2>
-            <p className="total-price">{totalAmount.toLocaleString()} ₫</p>
+            <p className="total-price">{formatUSD(totalAmount)}</p>
           </div>
 
           {/* Global warning */}
@@ -191,7 +194,7 @@ const Cart = () => {
               disabled={hasInvalidItems}
               onClick={() => {
                 if (!user?.id) {
-                  navigate("/login", { state: { from: "/cart" } });
+                  setShowAuthModal(true);
                 } else {
                   navigate("/checkout");
                 }
@@ -202,6 +205,17 @@ const Cart = () => {
           </div>
         </div>
       </div>
+
+      {/* Login/Register modal cho guest — đăng nhập xong chuyển thẳng sang checkout */}
+      {showAuthModal && (
+        <AuthModal
+          onClose={() => setShowAuthModal(false)}
+          onSuccess={() => {
+            setShowAuthModal(false);
+            navigate("/checkout");
+          }}
+        />
+      )}
 
       {/* Confirm delete modal */}
       {showConfirm && (

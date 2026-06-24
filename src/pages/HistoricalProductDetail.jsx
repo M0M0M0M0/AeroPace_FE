@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Clock } from "lucide-react";
 import axios from "../api/axiosClient";
+import { formatUSD } from "../utils/currency";
 import "./HistoricalProductDetail.css";
 
 const getUniqueValues = (variants, key, optionKeys, selected) => {
@@ -133,9 +134,9 @@ const HistoricalProductDetail = () => {
           {product.brand && <p className="hpd-brand">{product.brand}</p>}
 
           <div className="hpd-price-row">
-            <p className="hpd-price">{Number(price).toLocaleString()} ₫</p>
+            <p className="hpd-price">{formatUSD(price)}</p>
             {comparePrice && Number(comparePrice) > Number(price) && (
-              <p className="hpd-compare-price">{Number(comparePrice).toLocaleString()} ₫</p>
+              <p className="hpd-compare-price">{formatUSD(comparePrice)}</p>
             )}
           </div>
 

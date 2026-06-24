@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ShoppingCart, Heart, ArrowLeftRight, X, Star } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { usePreferences } from "../components/UsePreferences"; 
+import { usePreferences } from "../components/UsePreferences";
+import { formatUSD } from "../utils/currency";
 import "./Products.css";
-import CompareModal from "../components/CompareModal"; 
+import CompareModal from "../components/CompareModal";
 
 
 const Products = () => {
@@ -264,7 +265,7 @@ const Products = () => {
           </div>
 
           <div className="prd-filter-group">
-            <p>Price (VND)</p>
+            <p>Price (USD)</p>
             <div className="prd-price-inputs">
               <input
                 type="number"
@@ -343,8 +344,8 @@ const Products = () => {
             })}
             {(appliedMin || appliedMax) && (
               <span className="prd-tag">
-                {appliedMin ? `${Number(appliedMin).toLocaleString()}₫` : "0"} —{" "}
-                {appliedMax ? `${Number(appliedMax).toLocaleString()}₫` : "∞"}
+                {appliedMin ? formatUSD(appliedMin) : "$0"} —{" "}
+                {appliedMax ? formatUSD(appliedMax) : "∞"}
                 <button onClick={() => { setAppliedMin(""); setAppliedMax(""); setMinPrice(""); setMaxPrice(""); }}>✕</button>
               </span>
             )}
@@ -413,7 +414,7 @@ const Products = () => {
                         <div className="prd-card-left">
                           <div className="prd-card-details">
                             <h1>{item.name}</h1>
-                            <p>{price.toLocaleString()} ₫</p>
+                            <p>{formatUSD(price)}</p>
                           </div>
                           <div
                             className={`prd-card-buy ${maxed ? "prd-card-buy--disabled" : ""}`}

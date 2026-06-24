@@ -4,8 +4,9 @@ import { ShoppingCart, Heart, ArrowLeftRight, X, ChevronLeft, ChevronRight, Star
 import { usePreferences } from "../components/UsePreferences";
 import { toast } from "sonner";
 import { useCart } from "../context/CartContext";
+import { formatUSD } from "../utils/currency";
 import "./Home.css";
-import CompareModal from "../components/CompareModal";  
+import CompareModal from "../components/CompareModal";
 
 const Home = () => {
   const [featured, setFeatured] = useState([]);
@@ -159,7 +160,7 @@ const Home = () => {
             <div className="home-card-left">
               <div className="home-card-details">
                 <h1>{item.name}</h1>
-                <p>{price.toLocaleString()} ₫</p>
+                <p>{formatUSD(price)}</p>
               </div>
               <div
                 className={`home-card-buy ${maxed ? "home-card-buy--disabled" : ""}`}

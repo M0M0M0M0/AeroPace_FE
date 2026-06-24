@@ -2,6 +2,7 @@ import React from "react";
 import { useCart } from "../context/CartContext";
 import { motion } from "framer-motion";
 import { Trash2 } from "lucide-react";
+import { formatUSD } from "../utils/currency";
 
 const CartItem = ({ item }) => {
   const { updateQuantity, removeFromCart } = useCart();
@@ -15,7 +16,7 @@ const CartItem = ({ item }) => {
       <div className="flex-1">
         <h3 className="text-lg font-semibold">{item.name}</h3>
         <p className="text-gray-400">{item.category}</p>
-        <p className="font-bold mt-1">{(item.price * item.quantity).toLocaleString()} ₫</p>
+        <p className="font-bold mt-1">{formatUSD(item.price * item.quantity)}</p>
       </div>
       <div className="flex items-center gap-2">
         <button

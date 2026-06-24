@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { formatUSD } from "../utils/currency";
 
 const CompareModal = ({ isOpen, onClose, compareItems }) => {
   const [detailedProducts, setDetailedProducts] = useState([]);
@@ -56,7 +57,7 @@ const CompareModal = ({ isOpen, onClose, compareItems }) => {
                   <td>Price</td>
                   {detailedProducts.map((p) => (
                     <td key={p.id} className="compare-price">
-                      {p.variants?.[0]?.price?.toLocaleString()} ₫
+                      {formatUSD(p.variants?.[0]?.price)}
                     </td>
                   ))}
                 </tr>

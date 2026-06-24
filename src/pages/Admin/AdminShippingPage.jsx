@@ -122,9 +122,9 @@ const AdminShippingPage = () => {
 
     // ── FORMAT FEE ───────────────────────────────────────────────────────────
     const formatFee = (fee) =>
-        new Intl.NumberFormat("vi-VN", {
+        new Intl.NumberFormat("en-US", {
             style: "currency",
-            currency: "VND",
+            currency: "USD",
         }).format(fee);
 
     // ═════════════════════════════════════════════════════════════════════════
@@ -264,11 +264,12 @@ const AdminShippingPage = () => {
                         </div>
 
                         <div className="cp-form-row">
-                            <label>Shipping Fee (VNĐ) *</label>
+                            <label>Shipping Fee (USD) *</label>
                             <input
                                 type="number"
                                 min="0"
-                                placeholder="e.g., 30000"
+                                step="0.01"
+                                placeholder="e.g., 2.00"
                                 value={modal.data.fee}
                                 onChange={(e) =>
                                     setModal({ ...modal, data: { ...modal.data, fee: e.target.value } })
