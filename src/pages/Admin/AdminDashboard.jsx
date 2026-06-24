@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   DollarSign, ShoppingBag, Clock, Users, TrendingUp, TrendingDown,
-  Package, AlertTriangle, Eye, Zap, BarChart2, RefreshCw,
+  AlertTriangle, Eye, Zap, BarChart2, RefreshCw, Crown,
 } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { formatUSD } from "../../utils/currency";
 import "./AdminDashboard.css";
 
 const BASE = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
@@ -18,7 +19,7 @@ const today = () => toDateStr(new Date());
 const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return toDateStr(d); };
 const daysAgo = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return toDateStr(d); };
 
-const fmtVND = (n) => `${(n || 0).toLocaleString("vi-VN")} ₫`;
+const fmtVND = (n) => formatUSD(n);
 const fmtM = (n) => n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1)}M` : n >= 1_000 ? `${(n / 1_000).toFixed(0)}K` : String(n || 0);
 
 const pctChange = (curr, prev) => {
@@ -129,10 +130,16 @@ const LineChart = ({ points }) => {
 };
 
 // ── KPI Card ──────────────────────────────────────────────────────────────────
-const KpiCard = ({ icon: Icon, label, value, pct, iconClass }) => {
+const KpiCard = ({ icon: Icon, label, value, pct, iconClass, onClick }) => {
   const up = pct >= 0;
   return (
-    <div className="ad-stat-card">
+    <div
+      className={`ad-stat-card${onClick ? " ad-stat-card--clickable" : ""}`}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } } : undefined}
+    >
       <div className={`ad-stat-icon ${iconClass}`}><Icon size={20} /></div>
       <div className="ad-stat-body">
         <span className="ad-stat-label">{label}</span>
@@ -158,6 +165,11 @@ const AdminDashboard = () => {
   const [newCustToday, setNewCustToday] = useState([]);
   const [newCustYest, setNewCustYest] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
+  const [topBuyers, setTopBuyers] = useState([]);
+  const [tbRange, setTbRange] = useState("7d");
+  const [tbCustomFrom, setTbCustomFrom] = useState(daysAgo(7));
+  const [tbCustomTo, setTbCustomTo] = useState(today());
+  const [tbLoading, setTbLoading] = useState(false);
 
   const [revenueRange, setRevenueRange] = useState("7d");
   const [bsRange, setBsRange] = useState("30d");
@@ -206,9 +218,30 @@ const AdminDashboard = () => {
       .catch(console.error);
   }, [bsRange]);
 
+  // top buyers
+  const fetchTopBuyers = useCallback((from, to) => {
+    setTbLoading(true);
+    axios.get(`${ADMIN_BASE}/dashboard/top-buyers?dateFrom=${from}&dateTo=${to}&limit=10`, { headers: authHeader() })
+      .then((r) => setTopBuyers(r.data || []))
+      .catch(console.error)
+      .finally(() => setTbLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (tbRange === "custom") return;
+    const days = tbRange === "3d" ? 3 : tbRange === "7d" ? 7 : 30;
+    fetchTopBuyers(daysAgo(days), today());
+  }, [tbRange, fetchTopBuyers]);
+
   const handleRefresh = async () => {
     setRefreshing(true);
-    await fetchAll();
+    const days = tbRange === "custom" ? null : tbRange === "3d" ? 3 : tbRange === "7d" ? 7 : 30;
+    await Promise.all([
+      fetchAll(),
+      tbRange !== "custom"
+        ? fetchTopBuyers(daysAgo(days), today())
+        : fetchTopBuyers(tbCustomFrom, tbCustomTo),
+    ]);
     setRefreshing(false);
   };
 
@@ -223,15 +256,12 @@ const AdminDashboard = () => {
 
   const needActionToday = ordersToday.filter((o) => ["PENDING", "PAID", "SHIPPING"].includes(o.status)).length;
   const needActionYest = ordersYest.filter((o) => ["PENDING", "PAID", "SHIPPING"].includes(o.status)).length;
+  // Tất cả order đang cần xử lý (không giới hạn hôm nay)
+  const needActionAll = orders30d.filter((o) => ["PENDING", "PAID", "SHIPPING"].includes(o.status)).length;
 
   const statusSummary = Object.entries(
     orders30d.reduce((acc, o) => { acc[o.status] = (acc[o.status] || 0) + 1; return acc; }, {})
   ).map(([status, count]) => ({ status, count }));
-
-  // action cards
-  const pendingCount = orders30d.filter((o) => o.status === "PENDING").length;
-  const paidCount = orders30d.filter((o) => o.status === "PAID").length;
-  const shippingCount = orders30d.filter((o) => o.status === "SHIPPING").length;
 
   // recent 10
   const recentOrders = [...orders30d].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 10);
@@ -278,6 +308,7 @@ const AdminDashboard = () => {
   );
 
   const linePoints = buildLinePoints();
+  const td = today();
 
   return (
     <div className="ad-page">
@@ -293,12 +324,16 @@ const AdminDashboard = () => {
         </button>
       </div>
 
-      {/*KPI */}
+      {/*KPI — bấm vào để mở danh sách đã lọc sẵn (quick action) */}
       <div className="ad-stats">
-        <KpiCard icon={DollarSign} label="Revenue Today" value={fmtVND(revToday)} pct={revGrowth} iconClass="green" />
-        <KpiCard icon={ShoppingBag} label="Orders Today" value={`${ordCountToday} orders`} pct={ordGrowth} iconClass="blue" />
-        <KpiCard icon={Clock} label="Need Action" value={`${needActionToday} orders`} pct={pctChange(needActionToday, needActionYest)} iconClass="yellow" />
-        <KpiCard icon={Users} label="New Customers" value={`${newCustToday.length} users`} pct={custGrowth} iconClass="purple" />
+        <KpiCard icon={DollarSign} label="Revenue Today" value={fmtVND(revToday)} pct={revGrowth} iconClass="green"
+          onClick={() => navigate(`/admin/orders?status=COMPLETED&dateFrom=${td}&dateTo=${td}`)} />
+        <KpiCard icon={ShoppingBag} label="Orders Today" value={`${ordCountToday} orders`} pct={ordGrowth} iconClass="blue"
+          onClick={() => navigate(`/admin/orders?status=ALL&dateFrom=${td}&dateTo=${td}`)} />
+        <KpiCard icon={Clock} label="Need Action" value={`${needActionAll} orders`} pct={pctChange(needActionToday, needActionYest)} iconClass="yellow"
+          onClick={() => navigate(`/admin/orders?status=PENDING_ACTION`)} />
+        <KpiCard icon={Users} label="New Customers" value={`${newCustToday.length} users`} pct={custGrowth} iconClass="purple"
+          onClick={() => navigate(`/admin/customers?dateFrom=${td}&dateTo=${td}`)} />
       </div>
 
       {/*Charts */}
@@ -322,26 +357,6 @@ const AdminDashboard = () => {
           <h3 className="ad-card-title">Order Status</h3>
           <Doughnut data={statusSummary} />
         </div>
-      </div>
-
-      {/* Action cards */}
-      <div className="ad-action-row">
-        {[
-          { status: "PENDING", count: pendingCount, icon: Clock, color: "yellow", label: "Pending Orders" },
-          { status: "PAID", count: paidCount, icon: DollarSign, color: "blue", label: "Paid Orders" },
-          { status: "SHIPPING", count: shippingCount, icon: Package, color: "orange", label: "Shipping Orders" },
-        ].map(({ status, count, icon: Icon, color, label }) => (
-          <div key={status} className={`ad-action-card ad-action-card--${color}`}>
-            <div className="ad-action-icon"><Icon size={22} /></div>
-            <div className="ad-action-body">
-              <span className="ad-action-label">{label}</span>
-              <span className="ad-action-count">{count}</span>
-            </div>
-            <button className="ad-action-btn" onClick={() => navigate(`/admin/orders?status=${status}`)}>
-              <Eye size={14} /> View
-            </button>
-          </div>
-        ))}
       </div>
 
       {/* Recent orders */}
@@ -398,7 +413,8 @@ const AdminDashboard = () => {
             {bestSellers.length === 0
               ? <tr><td colSpan={4} className="ad-empty-row">No data</td></tr>
               : bestSellers.map((p, i) => (
-                <tr key={p.id} className="ad-row">
+                <tr key={p.id} className="ad-row ad-row--clickable"
+                  onClick={() => navigate(`/admin/products/${p.id}?mode=view`)}>
                   <td className="ad-td-rank">
                     <span className="ad-medal" data-rank={i + 1}>{i + 1}</span>
                   </td>
@@ -407,6 +423,61 @@ const AdminDashboard = () => {
                   <td className="ad-td-price">{p.revenue ? fmtVND(p.revenue) : "—"}</td>
                 </tr>
               ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Top Buyers */}
+      <div className="ad-card">
+        <div className="ad-card-header">
+          <h3 className="ad-card-title"><Crown size={16} style={{ marginRight: 6, color: "#f59e0b" }} />Top Buyers</h3>
+          <div className="ad-range-tabs">
+            {[["3d", "3 days"], ["7d", "7 days"], ["30d", "30 days"], ["custom", "Custom"]].map(([v, l]) => (
+              <button key={v} className={`ad-range-tab ${tbRange === v ? "active" : ""}`}
+                onClick={() => setTbRange(v)}>{l}</button>
+            ))}
+          </div>
+        </div>
+
+        {tbRange === "custom" && (
+          <div className="ad-tb-custom">
+            <label className="ad-tb-label">From</label>
+            <input type="date" className="ad-tb-date" value={tbCustomFrom}
+              onChange={(e) => setTbCustomFrom(e.target.value)} max={tbCustomTo} />
+            <label className="ad-tb-label">To</label>
+            <input type="date" className="ad-tb-date" value={tbCustomTo}
+              onChange={(e) => setTbCustomTo(e.target.value)} min={tbCustomFrom} max={toDateStr(new Date())} />
+            <button className="ad-tb-apply" onClick={() => fetchTopBuyers(tbCustomFrom, tbCustomTo)}>
+              Apply
+            </button>
+          </div>
+        )}
+
+        <table className="ad-table" style={{ marginTop: tbRange === "custom" ? 16 : 0 }}>
+          <thead>
+            <tr><th>#</th><th>Customer</th><th>Email</th><th>Orders</th><th>Total Spent</th></tr>
+          </thead>
+          <tbody>
+            {tbLoading
+              ? <tr><td colSpan={5} className="ad-empty-row">Loading…</td></tr>
+              : topBuyers.length === 0
+                ? <tr><td colSpan={5} className="ad-empty-row">No data for this period</td></tr>
+                : topBuyers.map((b, i) => (
+                  <tr key={b.userId} className="ad-row ad-row--clickable"
+                    onClick={() => navigate(`/admin/customers/${b.userId}`)}>
+                    <td className="ad-td-rank">
+                      <span className="ad-medal" data-rank={i + 1}
+                        style={{ color: i === 0 ? "#f59e0b" : i === 1 ? "#9ca3af" : i === 2 ? "#b45309" : "inherit" }}>
+                        {i + 1}
+                      </span>
+                    </td>
+                    <td style={{ fontWeight: 600 }}>{b.fullName}</td>
+                    <td className="ad-td-muted">{b.email}</td>
+                    <td><strong>{b.orderCount}</strong></td>
+                    <td className="ad-td-price">{fmtVND(b.totalSpent)}</td>
+                  </tr>
+                ))
+            }
           </tbody>
         </table>
       </div>
@@ -425,7 +496,9 @@ const AdminDashboard = () => {
             {lowStock.length === 0
               ? <tr><td colSpan={3} className="ad-empty-row">All stock levels are healthy</td></tr>
               : lowStock.map((item) => (
-                <tr key={item.variantId} className="ad-row">
+                <tr key={item.variantId}
+                  className={`ad-row${item.productId ? " ad-row--clickable" : ""}`}
+                  onClick={() => item.productId && navigate(`/admin/products/${item.productId}?mode=view`)}>
                   <td>{item.productName}</td>
                   <td className="ad-td-muted">{item.sku || "—"}</td>
                   <td>
@@ -437,30 +510,6 @@ const AdminDashboard = () => {
               ))}
           </tbody>
         </table>
-      </div>
-
-      {/*Performance growth */}
-      <div className="ad-perf-row">
-        {[
-          { label: "Revenue Growth", curr: fmtVND(revToday), pct: revGrowth, icon: DollarSign, color: "green" },
-          { label: "Order Growth", curr: `${ordCountToday} orders`, pct: ordGrowth, icon: ShoppingBag, color: "blue" },
-          { label: "New Customer Growth", curr: `${newCustToday.length} users`, pct: custGrowth, icon: Users, color: "purple" },
-        ].map(({ label, curr, pct, icon: Icon, color }) => {
-          const up = pct >= 0;
-          return (
-            <div key={label} className={`ad-perf-card ad-perf-card--${color}`}>
-              <div className="ad-perf-icon"><Icon size={20} /></div>
-              <div className="ad-perf-body">
-                <span className="ad-perf-label">{label}</span>
-                <span className="ad-perf-value">{curr}</span>
-                <div className={`ad-perf-pct ${up ? "up" : "down"}`}>
-                  {up ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
-                  <span>{Math.abs(pct)}% vs yesterday</span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
       </div>
 
       {/* QUICK ACTIONS */}

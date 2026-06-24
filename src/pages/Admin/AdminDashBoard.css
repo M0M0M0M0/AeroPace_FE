@@ -78,6 +78,20 @@
   gap: 14px;
 }
 
+.ad-stat-card--clickable {
+  cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.ad-stat-card--clickable:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent, #3b82f6);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+.ad-stat-card--clickable:focus-visible {
+  outline: 2px solid var(--accent, #3b82f6);
+  outline-offset: 2px;
+}
+
 .ad-stat-icon {
   width: 44px; height: 44px;
   border-radius: 10px;
@@ -224,6 +238,8 @@
 .ad-row { border-bottom: 1px solid var(--border-main); transition: background 0.15s; }
 .ad-row:last-child { border-bottom: none; }
 .ad-row:hover { background: var(--bg-surface); }
+.ad-row--clickable { cursor: pointer; }
+.ad-row--clickable:hover { background: var(--bg-surface-elevated); }
 .ad-table td { padding: 12px 14px; color: var(--text-main); vertical-align: middle; }
 .ad-td-id    { color: var(--text-muted); font-size: 0.82rem; font-weight: 600; }
 .ad-td-muted { color: var(--text-muted); }
@@ -293,6 +309,42 @@
   transition: all 0.2s;
 }
 .ad-quick-btn:hover { background: rgba(59,130,246,0.15); border-color: #2563eb; }
+
+/* ── Top Buyers custom date ──────────────────────────────────── */
+.ad-tb-custom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ad-tb-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.ad-tb-date {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border-main);
+  outline: none;
+  cursor: pointer;
+}
+.ad-tb-date:focus { border-color: var(--accent-color, #3b82f6); }
+.ad-tb-apply {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: var(--accent-color, #3b82f6);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.ad-tb-apply:hover { opacity: 0.85; }
 
 @media (max-width: 1200px) { .ad-charts-row { grid-template-columns: 1fr; } }
 @media (max-width: 1024px) {

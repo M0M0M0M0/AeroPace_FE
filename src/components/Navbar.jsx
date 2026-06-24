@@ -14,125 +14,40 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import axios from "axios";
 import { useCart } from "../context/CartContext";
 import logo from "../../public/favicon_io/LogoAero.png";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import "./Navbar.css";
 
-// ── Mega menu data (hardcoded — API returns big + sub categories flat) ──────
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
+// ── Mega menu layout — IDs only, names resolved from DB at runtime ───────────
 const MEGA_MENU = [
   // Column 1
   [
-    {
-      id: 192, label: "Apparel",
-      items: [
-        { id: 25,  name: "Áo Chạy Bộ Nike" },
-        { id: 43,  name: "Áo Chạy Bộ Adidas" },
-        { id: 15,  name: "Áo Chạy Bộ T8" },
-        { id: 130, name: "Áo Compressport" },
-        { id: 114, name: "Quần Bó Cơ Motive" },
-        { id: 82,  name: "Áo Khoác Athlet" },
-      ],
-    },
-    {
-      id: 195, label: "Hydration",
-      items: [
-        { id: 4,  name: "Vest Nước AONIJIE" },
-        { id: 46, name: "Bình nước Map Brother" },
-        { id: 58, name: "Vest Nước COMPRESSPORT" },
-        { id: 59, name: "Đai Chạy Bộ AONIJIE" },
-        { id: 85, name: "Bình nước AONIJIE" },
-      ],
-    },
+    { id: 192, items: [25, 43, 15, 130, 114, 82] },
+    { id: 195, items: [4, 46, 58, 59, 85] },
   ],
   // Column 2
   [
-    {
-      id: 193, label: "Footwear",
-      items: [
-        { id: 27,  name: "Giày Chạy Bộ Nike" },
-        { id: 9,   name: "Giày Chạy Bộ Adidas" },
-        { id: 14,  name: "Giày Chạy Bộ Hoka" },
-        { id: 28,  name: "Giày Chạy Bộ ASICS" },
-        { id: 141, name: "Giày Chạy Trail Salomon" },
-        { id: 133, name: "Giày Chạy Bộ New Balance" },
-      ],
-    },
-    {
-      id: 196, label: "Recovery",
-      items: [
-        { id: 56,  name: "Băng Bắp Chân Compressport" },
-        { id: 84,  name: "Bó calf Aonijie" },
-        { id: 171, name: "Dụng cụ massage" },
-        { id: 20,  name: "Giảm đau Ligpro" },
-        { id: 143, name: "Băng dán cơ thể thao" },
-        { id: 180, name: "Bó gối AONIJIE" },
-      ],
-    },
+    { id: 193, items: [27, 9, 14, 28, 141, 133] },
+    { id: 196, items: [56, 84, 171, 20, 143, 180] },
   ],
   // Column 3
   [
-    {
-      id: 194, label: "Accessories",
-      items: [
-        { id: 1,  name: "Kính Chạy Bộ TIFOSI" },
-        { id: 2,  name: "Tất chạy bộ Compressport" },
-        { id: 3,  name: "Nón Compressport" },
-        { id: 32, name: "Băng đô Compressport" },
-        { id: 75, name: "Nón Nike" },
-        { id: 36, name: "Khăn Đa Năng Buff" },
-      ],
-    },
-    {
-      id: 199, label: "Trail Equipment",
-      items: [
-        { id: 6,   name: "Gậy Chạy AONIJIE" },
-        { id: 108, name: "Gậy Chạy Zenone" },
-        { id: 152, name: "Gậy Leo Núi Husky" },
-        { id: 8,   name: "Cốc Gấp Gọn Msquare" },
-        { id: 145, name: "Túi sơ cứu 1Life" },
-        { id: 189, name: "Gaiter AONIJIE" },
-      ],
-    },
+    { id: 194, items: [1, 2, 3, 32, 75, 36] },
+    { id: 199, items: [6, 108, 152, 8, 145, 189] },
   ],
   // Column 4
   [
-    {
-      id: 197, label: "Nutrition",
-      items: [
-        { id: 17,  name: "Gel Năng Lượng AB" },
-        { id: 7,   name: "Thanh Protein AB" },
-        { id: 42,  name: "Bột Điện Giải Pocari" },
-        { id: 183, name: "Gel Năng Lượng GU" },
-        { id: 135, name: "Whey Protein Royal-D" },
-        { id: 88,  name: "Thanh Năng Lượng Naak" },
-      ],
-    },
-    {
-      id: null, label: "Pickleball",
-      items: [
-        { id: 200, name: "Paddles" },
-        { id: 201, name: "Balls" },
-        { id: 202, name: "Accessories" },
-        { id: 203, name: "Bags" },
-      ],
-      noSeeAll: true,
-    },
+    { id: 197, items: [17, 7, 42, 183, 135, 88] },
+    { id: 200, items: [201, 202, 203, 204], noSeeAll: true },
   ],
   // Column 5
   [
-    {
-      id: 198, label: "Electronics",
-      items: [
-        { id: 40, name: "Đồng Hồ Coros" },
-        { id: 55, name: "Đồng Hồ Garmin" },
-        { id: 65, name: "Đồng Hồ Suunto" },
-        { id: 41, name: "Đèn Đội Đầu Nitecore" },
-        { id: 81, name: "Tai Nghe Shokz" },
-        { id: 49, name: "Tai Nghe Soundcore" },
-      ],
-    },
+    { id: 198, items: [40, 55, 65, 41, 81, 49] },
   ],
 ];
 
@@ -150,8 +65,19 @@ function Navbar() {
   const megaCloseTimer = useRef(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
+  const [catNames, setCatNames] = useState({});
   const { pathname } = useLocation();
   const hideSearch = pathname.startsWith("/products");
+
+  useEffect(() => {
+    axios.get(`${API_BASE}/api/v1/categories`)
+      .then(r => {
+        const map = {};
+        r.data.forEach(c => { map[c.id] = c.name; });
+        setCatNames(map);
+      })
+      .catch(() => {});
+  }, []);
 
   const closeMobile = () => {
     setMobileOpen(false);
@@ -260,46 +186,49 @@ function Navbar() {
                 <div className="mega-inner">
                   {MEGA_MENU.map((col, ci) => (
                     <div key={ci} className="mega-col">
-                      {col.map((section) => (
-                        <div key={section.label} className="mega-section">
-                          {section.id ? (
-                            <Link
-                              to={`/products?category=${section.id}`}
-                              className="mega-head"
-                              onClick={() => setMegaOpen(false)}
-                            >
-                              {section.label}
-                            </Link>
-                          ) : (
-                            <span className="mega-head mega-head--plain">
-                              {section.label}
-                            </span>
-                          )}
-                          <ul className="mega-list">
-                            {section.items.map((item) => (
-                              <li key={item.id}>
-                                <Link
-                                  to={`/products?category=${item.id}`}
-                                  onClick={() => setMegaOpen(false)}
-                                >
-                                  {item.name}
-                                </Link>
-                              </li>
-                            ))}
-                            {!section.noSeeAll && section.id && (
-                              <li>
-                                <Link
-                                  to={`/products?category=${section.id}`}
-                                  className="mega-see-all"
-                                  onClick={() => setMegaOpen(false)}
-                                >
-                                  See all →
-                                </Link>
-                              </li>
+                      {col.map((section) => {
+                        const sectionName = catNames[section.id];
+                        return (
+                          <div key={section.id} className="mega-section">
+                            {sectionName ? (
+                              <Link
+                                to={`/products?category=${section.id}`}
+                                className="mega-head"
+                                onClick={() => setMegaOpen(false)}
+                              >
+                                {sectionName}
+                              </Link>
+                            ) : (
+                              <span className="mega-head mega-head--plain" />
                             )}
-                          </ul>
-                        </div>
-                      ))}
+                            <ul className="mega-list">
+                              {section.items
+                                .filter(id => catNames[id])
+                                .map(id => (
+                                  <li key={id}>
+                                    <Link
+                                      to={`/products?category=${id}`}
+                                      onClick={() => setMegaOpen(false)}
+                                    >
+                                      {catNames[id]}
+                                    </Link>
+                                  </li>
+                                ))}
+                              {!section.noSeeAll && sectionName && (
+                                <li>
+                                  <Link
+                                    to={`/products?category=${section.id}`}
+                                    className="mega-see-all"
+                                    onClick={() => setMegaOpen(false)}
+                                  >
+                                    See all →
+                                  </Link>
+                                </li>
+                              )}
+                            </ul>
+                          </div>
+                        );
+                      })}
                     </div>
                   ))}
                 </div>
@@ -431,16 +360,18 @@ function Navbar() {
             </button>
 
             <div className={`mobile-categories${mobileProductsOpen ? " mobile-categories--open" : ""}`}>
-              {MEGA_MENU.flat().map((section) => (
-                <Link
-                  key={section.label}
-                  to={section.id ? `/products?category=${section.id}` : "/products"}
-                  className="mobile-category-link"
-                  onClick={closeMobile}
-                >
-                  {section.label}
-                </Link>
-              ))}
+              {MEGA_MENU.flat()
+                .filter(section => catNames[section.id])
+                .map((section) => (
+                  <Link
+                    key={section.id}
+                    to={`/products?category=${section.id}`}
+                    className="mobile-category-link"
+                    onClick={closeMobile}
+                  >
+                    {catNames[section.id]}
+                  </Link>
+                ))}
             </div>
           </div>
         </nav>
