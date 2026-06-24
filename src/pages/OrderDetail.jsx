@@ -55,11 +55,11 @@ const STEPPER_STEPS = [
 
 const getCompletedSteps = (status) => {
     switch (status) {
-        case "PAID":      return 1;
-        case "SHIPPING":  return 2;
+        case "PAID": return 1;
+        case "SHIPPING": return 2;
         case "DELIVERED": return 3;
         case "COMPLETED": return 4;
-        default:          return 0;
+        default: return 0;
     }
 };
 
@@ -76,7 +76,7 @@ const OrderStepper = ({ status }) => {
                 const cls = [
                     "od-step",
                     isCompleted && "od-step--done",
-                    isActive    && "od-step--active",
+                    isActive && "od-step--active",
                 ].filter(Boolean).join(" ");
                 return (
                     <div key={n} className={cls}>
@@ -127,7 +127,7 @@ const OrderDetail = () => {
         if (order?.status !== "COMPLETED") return;
         axios.get(`/reviews/my-order/${order.orderCode}`)
             .then((res) => setReviews(res.data))
-            .catch(() => {});
+            .catch(() => { });
     }, [order?.orderCode, order?.status]);
 
     const reviewByProductId = reviews.reduce((acc, rv) => {
@@ -152,9 +152,17 @@ const OrderDetail = () => {
         }
     };
 
-    const handleViewHistorical = (item) => {
+    const handleViewHistorical = async (item) => {
         if (!item.productId) return;
-        navigate(`/order-detail/${order.orderCode}/product/${item.productId}/historical`);
+        try {
+            await axios.get(`/products/historical/${item.productId}`, {
+                params: { orderCode: order.orderCode },
+            });
+            navigate(`/order-detail/${order.orderCode}/product/${item.productId}/historical`);
+        } catch {
+            // No snapshot — product hasn't changed, navigate to current product page
+            handleProductClick(item);
+        }
     };
 
     const handleBack = () => {
@@ -320,8 +328,9 @@ const OrderDetail = () => {
                                                     <span className="od-item-name">
                                                         {item.productName} <br />
                                                         <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
-                                                            Variant: {item.variantName}
+                                                            Variant: {item.variantName}  
                                                         </span>
+                                                        <br />
                                                         <button
                                                             className="od-hist-btn"
                                                             onClick={(e) => { e.stopPropagation(); handleViewHistorical(item); }}

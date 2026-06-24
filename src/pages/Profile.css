@@ -271,7 +271,7 @@
 }
 
 .profile-order-card:hover {
-  border-color: var(--text-muted);
+  border: 1.2px solid var(--text-muted);
   background: var(--bg-surface-elevated);
 }
 
