@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "../api/axiosClient";
-import { ArrowLeft, MapPin, Phone, User, Package, X, Pencil, Clock } from "lucide-react";
+import { ArrowLeft, MapPin, Phone, User, Package, X, Pencil, Clock, Check } from "lucide-react";
 import { toast } from "sonner";
 import QuickReviewModal from "../components/QuickReviewModal";
 import { formatUSD } from "../utils/currency";
@@ -44,6 +44,52 @@ const getCancelReason = (order) => {
 };
 
 const canCancel = (order) => order.status === "PENDING" || order.status === "PAID";
+
+// ── Order progress stepper ────────────────────────────────────
+const STEPPER_STEPS = [
+    { label: "Order Placed" },
+    { label: "Preparing Your Order" },
+    { label: "In Transit" },
+    { label: "Delivered" },
+];
+
+const getCompletedSteps = (status) => {
+    switch (status) {
+        case "PAID":      return 1;
+        case "SHIPPING":  return 2;
+        case "DELIVERED": return 3;
+        case "COMPLETED": return 4;
+        default:          return 0;
+    }
+};
+
+const OrderStepper = ({ status }) => {
+    if (status === "CANCELLED" || status === "PENDING") return null;
+    const done = getCompletedSteps(status);
+
+    return (
+        <div className="od-stepper">
+            {STEPPER_STEPS.map((step, idx) => {
+                const n = idx + 1;
+                const isCompleted = n <= done;
+                const isActive = n === done + 1 && done < STEPPER_STEPS.length;
+                const cls = [
+                    "od-step",
+                    isCompleted && "od-step--done",
+                    isActive    && "od-step--active",
+                ].filter(Boolean).join(" ");
+                return (
+                    <div key={n} className={cls}>
+                        <div className="od-step-circle">
+                            {isCompleted ? <Check size={14} strokeWidth={3} /> : n}
+                        </div>
+                        <p className="od-step-label">{step.label}</p>
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
 
 const OdMiniStars = ({ rating }) => {
     const val = parseFloat(rating) || 0;
@@ -199,6 +245,11 @@ const OrderDetail = () => {
                             {getStatusLabel(order)}
                         </span>
                     </div>
+
+                    <div className="od-divider" />
+
+                    {/* Order progress stepper */}
+                    <OrderStepper status={order.status} />
 
                     <div className="od-divider" />
 
