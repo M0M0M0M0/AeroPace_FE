@@ -221,7 +221,7 @@
 /* ── Bottom row ──────────────────────────────────────────────── */
 .rv-bottom-row {
   display: grid;
-  grid-template-columns: 1fr 340px;
+  grid-template-columns: 1fr;
   gap: 16px;
   align-items: start;
 }
@@ -250,42 +250,27 @@
 .rv-row {
   border-bottom: 1px solid var(--border-main);
   transition: background 0.15s;
+  cursor: pointer;
 }
 .rv-row:last-child { border-bottom: none; }
-.rv-row:hover { background: var(--bg-surface); }
+.rv-row:hover { background: rgba(59, 130, 246, 0.06); }
 .rv-table td { padding: 12px 14px; color: var(--text-main); vertical-align: middle; }
 .rv-rank { color: var(--text-muted); font-weight: 700; font-size: 0.85rem; }
-.rv-medal { font-weight: 700; }
 .rv-product-name { font-weight: 500; }
 .rv-empty-row { padding: 28px 14px !important; color: var(--text-muted); text-align: center; font-size: 0.85rem; }
 .rv-green { color: #16a34a; font-weight: 600; }
 .rv-red   { color: #dc2626; font-weight: 600; }
 
-/* ── Breakdown ───────────────────────────────────────────────── */
-.rv-breakdown-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+.rv-inline-spin {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  align-self: center;
 }
-.rv-breakdown-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 13px 0;
-  border-bottom: 1px solid var(--border-main);
-  font-size: 0.88rem;
+.rv-data--loading {
+  opacity: 0.45;
+  pointer-events: none;
+  transition: opacity 0.15s;
 }
-.rv-breakdown-row:first-child { border-top: 1px solid var(--border-main); }
-.rv-breakdown-row--refund .rv-breakdown-label { color: #dc2626; }
-.rv-breakdown-row--total {
-  border-top: 2px solid var(--border-main);
-  border-bottom: none;
-  margin-top: 4px;
-  padding-top: 16px;
-}
-.rv-breakdown-label { color: var(--text-muted); font-size: 0.85rem; }
-.rv-breakdown-value { font-weight: 600; color: var(--text-main); }
-.rv-breakdown-total { font-size: 1.1rem; }
 
 /* ── RESPONSIVE ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
@@ -294,15 +279,11 @@
   .rv-quick-row { flex-wrap: wrap; gap: 6px; }
   .rv-custom-row { flex-direction: column; align-items: flex-start; gap: 8px; }
   .rv-kpi-row { grid-template-columns: repeat(2, 1fr) !important; }
-  .rv-bottom-row { grid-template-columns: 1fr !important; }
   .rv-table { min-width: 500px; }
   .rv-date-input { width: 100%; }
 }
 
 /* ── Responsive ──────────────────────────────────────────────── */
-@media (max-width: 1200px) {
-  .rv-bottom-row { grid-template-columns: 1fr; }
-}
 @media (max-width: 1024px) {
   .rv-kpi-row { grid-template-columns: repeat(2, 1fr); }
 }

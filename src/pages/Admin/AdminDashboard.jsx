@@ -300,15 +300,9 @@ const AdminDashboard = () => {
   const ordGrowth = pctChange(ordCountToday, ordCountYest);
   const custGrowth = pctChange(newCustToday.length, newCustYest.length);
 
-  if (loading) return (
-    <div className="ad-loading">
-      <RefreshCw size={24} className="ad-spin" />
-      <span>Loading dashboard…</span>
-    </div>
-  );
-
   const linePoints = buildLinePoints();
   const td = today();
+  const yd = yesterday();
 
   return (
     <div className="ad-page">
@@ -319,15 +313,18 @@ const AdminDashboard = () => {
           <h1 className="ad-title">Dashboard</h1>
           <p className="ad-subtitle">Overview · {new Date().toLocaleDateString("vi-VN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
         </div>
-        <button className="ad-refresh-btn" onClick={handleRefresh} disabled={refreshing}>
-          <RefreshCw size={16} className={refreshing ? "ad-spin" : ""} /> Refresh
-        </button>
+        <div className="ad-header-right">
+          {loading && <RefreshCw size={15} className="ad-spin ad-inline-spin" />}
+          <button className="ad-refresh-btn" onClick={handleRefresh} disabled={refreshing || loading}>
+            <RefreshCw size={16} className={refreshing ? "ad-spin" : ""} /> Refresh
+          </button>
+        </div>
       </div>
 
       {/*KPI — bấm vào để mở danh sách đã lọc sẵn (quick action) */}
-      <div className="ad-stats">
-        <KpiCard icon={DollarSign} label="Revenue Today" value={fmtVND(revToday)} pct={revGrowth} iconClass="green"
-          onClick={() => navigate(`/admin/orders?status=COMPLETED&dateFrom=${td}&dateTo=${td}`)} />
+      <div className={`ad-stats${loading ? " ad-data--loading" : ""}`}>
+        <KpiCard icon={DollarSign} label="Revenue Yesterday" value={fmtVND(revYest)} iconClass="green"
+          onClick={() => navigate(`/admin/orders?status=COMPLETED&dateFrom=${yd}&dateTo=${yd}`)} />
         <KpiCard icon={ShoppingBag} label="Orders Today" value={`${ordCountToday} orders`} pct={ordGrowth} iconClass="blue"
           onClick={() => navigate(`/admin/orders?status=ALL&dateFrom=${td}&dateTo=${td}`)} />
         <KpiCard icon={Clock} label="Need Action" value={`${needActionAll} orders`} pct={pctChange(needActionToday, needActionYest)} iconClass="yellow"
@@ -337,7 +334,7 @@ const AdminDashboard = () => {
       </div>
 
       {/*Charts */}
-      <div className="ad-charts-row">
+      <div className={`ad-charts-row${loading ? " ad-data--loading" : ""}`}>
         {/* Line chart */}
         <div className="ad-card ad-chart-card">
           <div className="ad-card-header">
@@ -360,7 +357,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent orders */}
-      <div className="ad-card">
+      <div className={`ad-card${loading ? " ad-data--loading" : ""}`}>
         <div className="ad-card-header">
           <h3 className="ad-card-title">Recent Orders</h3>
           <button className="ad-view-all" onClick={() => navigate("/admin/orders")}>View all →</button>

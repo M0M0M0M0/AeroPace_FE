@@ -122,6 +122,51 @@
 }
 .pp-apply-btn:hover { opacity: 0.85; }
 .pp-apply-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.pp-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pp-search-input {
+  flex: 1;
+  max-width: 320px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 0.82rem;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border-main);
+  outline: none;
+}
+.pp-search-input:focus { border-color: var(--accent-color, #3b82f6); }
+.pp-inline-spin {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.pp-data--loading {
+  opacity: 0.45;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.pp-clear-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 7px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pp-clear-btn:hover { opacity: 0.75; }
 
 /* ── KPI row ─────────────────────────────────────────────────── */
 .pp-kpi-row {
@@ -259,13 +304,13 @@
 .pp-row {
   border-bottom: 1px solid var(--border-main);
   transition: background 0.12s;
+  cursor: pointer;
 }
 .pp-row:last-child { border-bottom: none; }
-.pp-row:hover { background: var(--bg-surface); }
+.pp-row:hover { background: rgba(59, 130, 246, 0.06); }
 .pp-table td { padding: 11px 12px; color: var(--text-main); vertical-align: middle; }
 
 .pp-rank { color: var(--text-muted); font-weight: 700; font-size: 0.85rem; }
-.pp-medal { font-size: 1rem; }
 .pp-bold { font-weight: 600; }
 .pp-muted { color: var(--text-muted); font-size: 0.82rem; }
 .pp-green { color: #16a34a; font-weight: 600; }
@@ -327,7 +372,7 @@
   border-radius: 6px;
 }
 .pp-stock-row:last-child { border-bottom: none; }
-.pp-stock-row:hover { background: var(--bg-surface); }
+.pp-stock-row:hover { background: rgba(59, 130, 246, 0.06); }
 .pp-stock-left {
   display: flex;
   align-items: center;

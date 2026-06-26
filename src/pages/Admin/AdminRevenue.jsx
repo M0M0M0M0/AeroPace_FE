@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   DollarSign, ShoppingBag, Package, TrendingUp,
   RefreshCw, ChevronDown,
@@ -147,6 +148,7 @@ const KpiCard = ({ icon: Icon, label, value, sub, color }) => (
 
 // ── main page ─────────────────────────────────────────────────────────────────
 const AdminRevenue = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -256,13 +258,6 @@ const AdminRevenue = () => {
     ? activeQuick
     : `${dateFrom} → ${dateTo}`;
 
-  if (loading) return (
-    <div className="rv-loading">
-      <RefreshCw size={22} className="rv-spin" />
-      <span>Loading revenue data…</span>
-    </div>
-  );
-
   return (
     <div className="rv-page">
 
@@ -270,9 +265,8 @@ const AdminRevenue = () => {
       <div className="rv-header">
         <div>
           <h1 className="rv-title">Revenue</h1>
-          {/* <p className="rv-subtitle">{dateLabel}</p> */}
         </div>
-        <button className="rv-refresh-btn" onClick={handleRefresh} disabled={refreshing}>
+        <button className="rv-refresh-btn" onClick={handleRefresh} disabled={refreshing || loading}>
           <RefreshCw size={15} className={refreshing ? "rv-spin" : ""} /> Refresh
         </button>
       </div>
@@ -293,6 +287,7 @@ const AdminRevenue = () => {
           >
             Custom <ChevronDown size={12} style={{ marginLeft: 2, transform: showCustom ? "rotate(180deg)" : "none", transition: ".2s" }} />
           </button>
+          {loading && <RefreshCw size={15} className="rv-spin rv-inline-spin" />}
         </div>
 
         {showCustom && (
@@ -309,7 +304,7 @@ const AdminRevenue = () => {
       </div>
 
       {/* KPI cards */}
-      <div className="rv-kpi-row">
+      <div className={`rv-kpi-row${loading ? " rv-data--loading" : ""}`}>
         <KpiCard icon={DollarSign} label="Total Revenue" value={formatUSD(totalRevenue)} color="#22c55e" />
         <KpiCard icon={ShoppingBag} label="Total Orders" value={totalOrders.toLocaleString()} sub="completed" color="#3b82f6" />
         <KpiCard icon={Package} label="Units Sold" value={unitsSold.toLocaleString()} color="#f59e0b" />
@@ -317,7 +312,7 @@ const AdminRevenue = () => {
       </div>
 
       {/* Revenue trend */}
-      <div className="rv-card">
+      <div className={`rv-card${loading ? " rv-data--loading" : ""}`}>
         <div className="rv-card-header">
           <h3 className="rv-card-title">Revenue Trend</h3>
           <span className="rv-card-sub">{dateLabel}</span>
@@ -326,7 +321,7 @@ const AdminRevenue = () => {
       </div>
 
       {/* Bottom row */}
-      <div className="rv-bottom-row">
+      <div className={`rv-bottom-row${loading ? " rv-data--loading" : ""}`}>
 
         {/* Top selling products */}
         <div className="rv-card rv-card--products">
@@ -348,12 +343,9 @@ const AdminRevenue = () => {
                 {products.length === 0
                   ? <tr><td colSpan={4} className="rv-empty-row">No products data for this period.</td></tr>
                   : products.map((p, i) => (
-                    <tr key={p.id} className="rv-row">
-                      <td className="rv-rank">
-                        <span className="rv-medal" style={{
-                          color: i === 0 ? "#f59e0b" : i === 1 ? "#9ca3af" : i === 2 ? "#b45309" : "var(--rv-muted)"
-                        }}>{i + 1}</span>
-                      </td>
+                    <tr key={p.id} className="rv-row" style={{ cursor: "pointer" }}
+                      onClick={() => navigate(`/admin/products/${p.id}?mode=view`)}>
+                      <td className="rv-rank">{i + 1}</td>
                       <td className="rv-product-name">{p.name}</td>
                       <td><strong>{p.totalSold?.toLocaleString() || "—"}</strong></td>
                       <td className="rv-green">{p.revenue ? formatUSD(p.revenue) : "—"}</td>
@@ -364,36 +356,6 @@ const AdminRevenue = () => {
             </table>
           </div>
         </div>
-
-        {/* Revenue breakdown */}
-        {/* <div className="rv-card rv-card--breakdown">
-          <div className="rv-card-header">
-            <h3 className="rv-card-title">Revenue Breakdown</h3>
-            <span className="rv-card-sub">completed orders only</span>
-          </div>
-          <div className="rv-breakdown-list">
-            <div className="rv-breakdown-row">
-              <span className="rv-breakdown-label">Product Revenue</span>
-              <span className="rv-breakdown-value rv-green">{formatUSD(productRevenue)}</span>
-            </div>
-            <div className="rv-breakdown-row">
-              <span className="rv-breakdown-label">Shipping Fees</span>
-              <span className="rv-breakdown-value">{formatUSD(shippingRevenue)}</span>
-            </div>
-            <div className="rv-breakdown-row">
-              <span className="rv-breakdown-label">VAT Collected</span>
-              <span className="rv-breakdown-value">{formatUSD(vatCollected)}</span>
-            </div>
-            <div className="rv-breakdown-row rv-breakdown-row--refund">
-              <span className="rv-breakdown-label">Refunds Issued</span>
-              <span className="rv-breakdown-value rv-red">−{formatUSD(refundsIssued)}</span>
-            </div>
-            <div className="rv-breakdown-row rv-breakdown-row--total">
-              <span className="rv-breakdown-label">Final Collected</span>
-              <span className="rv-breakdown-value rv-green rv-breakdown-total">{formatUSD(finalCollected)}</span>
-            </div>
-          </div>
-        </div> */}
 
       </div>
     </div>

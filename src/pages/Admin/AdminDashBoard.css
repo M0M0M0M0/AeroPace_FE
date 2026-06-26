@@ -21,6 +21,9 @@
 
 @keyframes spin { to { transform: rotate(360deg); } }
 .ad-spin { animation: spin 1s linear infinite; }
+.ad-inline-spin { color: var(--text-muted); flex-shrink: 0; }
+.ad-data--loading { opacity: 0.45; pointer-events: none; transition: opacity 0.15s; }
+.ad-header-right { display: flex; align-items: center; gap: 10px; }
 
 /* ── Header ──────────────────────────────────────────────────── */
 .ad-header {

@@ -26,7 +26,6 @@ const QUICK_FILTERS = [
 ];
 
 const LOW_STOCK_THRESHOLD = 5;
-const MEDAL = { 0: "🥇", 1: "🥈", 2: "🥉" };
 
 const getMinPrice = (product) => {
   const active = (product.variants || []).filter((v) => !v.isDeleted);
@@ -64,21 +63,25 @@ const AdminProductPerformance = () => {
   const [topSellers, setTopSellers] = useState([]);
   const [topRated, setTopRated] = useState([]);
   const [lowStock, setLowStock] = useState([]);
+  const [productName, setProductName] = useState("");
+  const [appliedName, setAppliedName] = useState("");
 
-  const fetchAll = useCallback(async (from, to) => {
+  const fetchAll = useCallback(async (from, to, name) => {
     setLoading(true);
     try {
+      const isId = name && /^\d+$/.test(name);
+      const nameParam = name ? (isId ? { productId: name } : { name }) : {};
       const [sellersRes, ratedRes, stockRes] = await Promise.all([
         axios.get(`${ADMIN_BASE}/products/filter`, {
-          params: { sortByBestSeller: true, dateFrom: from, dateTo: to, limit: 20 },
+          params: { sortByBestSeller: true, dateFrom: from, dateTo: to, limit: 20, ...nameParam },
           headers: authHeader(),
         }),
         axios.get(`${ADMIN_BASE}/products/filter`, {
-          params: { ratingMin: 1, statuses: "ACTIVE", limit: 30, page: 0 },
+          params: { ratingMin: 1, statuses: "ACTIVE", limit: 30, page: 0, ...nameParam },
           headers: authHeader(),
         }),
         axios.get(`${ADMIN_BASE}/products/filter`, {
-          params: { stockMax: LOW_STOCK_THRESHOLD, statuses: "ACTIVE", limit: 30, page: 0 },
+          params: { stockMax: LOW_STOCK_THRESHOLD, statuses: "ACTIVE", limit: 30, page: 0, ...nameParam },
           headers: authHeader(),
         }),
       ]);
@@ -100,8 +103,8 @@ const AdminProductPerformance = () => {
   }, []);
 
   useEffect(() => {
-    fetchAll(dateFrom, dateTo);
-  }, [dateFrom, dateTo, fetchAll]);
+    fetchAll(dateFrom, dateTo, appliedName);
+  }, [dateFrom, dateTo, appliedName, fetchAll]);
 
   const handleQuick = (f) => {
     setActiveQuick(f.label);
@@ -117,7 +120,10 @@ const AdminProductPerformance = () => {
     setDateTo(customTo);
   };
 
-  const handleRefresh = () => fetchAll(dateFrom, dateTo);
+  const handleRefresh = () => fetchAll(dateFrom, dateTo, appliedName);
+
+  const handleNameSearch = () => setAppliedName(productName.trim());
+  const handleNameClear = () => { setProductName(""); setAppliedName(""); };
 
   // KPIs
   const totalUnitsSold = topSellers.reduce((s, p) => s + (p.totalSold || 0), 0);
@@ -128,17 +134,6 @@ const AdminProductPerformance = () => {
   const outOfStockVariants = lowStock.reduce(
     (s, p) => s + (p.variants || []).filter((v) => !v.isDeleted && v.stock === 0).length, 0
   );
-
-  if (loading) {
-    return (
-      <div className="pp-page">
-        <div className="pp-loading">
-          <RefreshCw size={20} className="pp-spin" />
-          Loading product performance data…
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="pp-page">
@@ -179,10 +174,29 @@ const AdminProductPerformance = () => {
             Apply
           </button>
         </div>
+        <div className="pp-search-row">
+          <input
+            type="text"
+            className="pp-search-input"
+            placeholder="Search by name or ID…"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleNameSearch()}
+          />
+          <button className="pp-apply-btn" onClick={handleNameSearch} disabled={loading}>
+            Search
+          </button>
+          {appliedName && (
+            <button className="pp-clear-btn" onClick={handleNameClear} disabled={loading}>
+              ✕ {appliedName}
+            </button>
+          )}
+          {loading && <RefreshCw size={15} className="pp-spin pp-inline-spin" />}
+        </div>
       </div>
 
       {/* KPI row */}
-      <div className="pp-kpi-row">
+      <div className={`pp-kpi-row${loading ? " pp-data--loading" : ""}`}>
         <KpiCard
           icon={<TrendingUp size={22} />}
           color="#3b82f6"
@@ -218,7 +232,7 @@ const AdminProductPerformance = () => {
       </div>
 
       {/* Main grid */}
-      <div className="pp-main-grid">
+      <div className={`pp-main-grid${loading ? " pp-data--loading" : ""}`}>
         {/* Left: tabbed top sellers / top rated */}
         <div className="pp-card">
           <div className="pp-card-header">
@@ -301,14 +315,10 @@ const TopSellersTable = ({ data, navigate }) => (
         <tbody>
           {data.map((p, i) => (
             <tr key={p.id} className="pp-row"
-              onClick={() => navigate(`/admin/products/${p.id}`)}
+              onClick={() => navigate(`/admin/products/${p.id}?mode=view`)}
               style={{ cursor: "pointer" }}>
               <td>
-                {MEDAL[i] ? (
-                  <span className="pp-medal">{MEDAL[i]}</span>
-                ) : (
-                  <span className="pp-rank">{i + 1}</span>
-                )}
+                <span className="pp-rank">{i + 1}</span>
               </td>
               <td>
                 <div className="pp-product-cell">
@@ -359,14 +369,10 @@ const TopRatedTable = ({ data, navigate }) => (
         <tbody>
           {data.map((p, i) => (
             <tr key={p.id} className="pp-row"
-              onClick={() => navigate(`/admin/products/${p.id}`)}
+              onClick={() => navigate(`/admin/products/${p.id}?mode=view`)}
               style={{ cursor: "pointer" }}>
               <td>
-                {MEDAL[i] ? (
-                  <span className="pp-medal">{MEDAL[i]}</span>
-                ) : (
-                  <span className="pp-rank">{i + 1}</span>
-                )}
+                <span className="pp-rank">{i + 1}</span>
               </td>
               <td>
                 <div className="pp-product-cell">
@@ -415,7 +421,7 @@ const LowStockList = ({ data, navigate }) => {
           <div
             key={p.id}
             className="pp-stock-row"
-            onClick={() => navigate(`/admin/products/${p.id}`)}
+            onClick={() => navigate(`/admin/products/${p.id}?mode=view`)}
           >
             <div className="pp-stock-left">
               {thumb && <img src={thumb} alt="" className="pp-stock-thumb" />}
