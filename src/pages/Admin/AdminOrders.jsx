@@ -340,7 +340,7 @@ const AdminOrders = () => {
                     <td>{order.phoneNumber}</td>
                     <td className="ao-address">{order.shippingAddress}</td>
                     <td className="ao-price">
-                      {formatUSD(order.totalPrice)}
+                      {formatUSD((Number(order.totalPrice) || 0) + (Number(order.shippingFee) || 0) + (Number(order.vat) || 0))}
                     </td>
                     <td>
                       <span className={getStatusClass(order)}>

@@ -350,6 +350,12 @@
 @media (max-width: 1024px) {
   .ad-stats, .ad-action-row, .ad-perf-row { grid-template-columns: repeat(2, 1fr); }
 }
+@media (max-width: 768px) {
+  .ad-header { flex-direction: column; gap: 10px; }
+  .ad-title { font-size: 1.3rem; }
+  .ad-quick-actions { flex-direction: column; }
+  .ad-quick-btn { width: 100%; text-align: center; }
+}
 @media (max-width: 640px) {
   .ad-stats, .ad-action-row, .ad-perf-row { grid-template-columns: 1fr; }
 }

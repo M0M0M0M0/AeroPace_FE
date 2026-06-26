@@ -346,6 +346,7 @@
 
 .profile-order-preview-name {
   flex: 1;
+  min-width: 0;
   color: var(--text-main);
   white-space: nowrap;
   overflow: hidden;
@@ -651,6 +652,23 @@
   .profile-content {
     padding: 20px 16px;
     min-height: auto;
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .profile-orders-list {
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .profile-order-card {
+    overflow-x: hidden;
+  }
+
+  .profile-order-preview-row {
+    flex-wrap: wrap;
+    row-gap: 2px;
   }
 
   .profile-tab-title {

@@ -526,6 +526,21 @@
     margin: 0;
 }
 
+/* ── RESPONSIVE ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .apr-topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .apr-title { font-size: 1.2rem; }
+  .apr-filters { flex-direction: column; }
+  .apr-filter-row { flex-direction: column; gap: 8px; }
+  .apr-search-row { flex-direction: column; gap: 8px; }
+  .apr-search-field { min-width: unset; width: 100%; }
+  .apr-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .apr-table { min-width: 580px; }
+}
+
 .apr-modal-quote {
     margin: 0;
     padding: 10px 14px;

@@ -356,3 +356,18 @@
   transition: opacity 0.2s;
 }
 .cp-btn-danger:hover { background: #b91c1c; }
+
+/* ── RESPONSIVE ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .cp-header { flex-direction: column; gap: 10px; }
+  .cp-title { font-size: 1.3rem; }
+  .cp-stats { flex-direction: column; gap: 10px; }
+  .cp-stat-card { min-width: unset; padding: 16px 20px; }
+  .cp-toolbar { flex-direction: column; gap: 10px; }
+  .cp-search { width: 100%; }
+  .cp-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .cp-table { min-width: 540px; }
+}

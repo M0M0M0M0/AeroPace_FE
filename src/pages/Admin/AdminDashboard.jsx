@@ -512,20 +512,7 @@ const AdminDashboard = () => {
         </table>
       </div>
 
-      {/* QUICK ACTIONS */}
-      <div className="ad-card">
-        <h3 className="ad-card-title"><Zap size={16} style={{ marginRight: 6 }} />Quick Actions</h3>
-        <div className="ad-quick-actions">
-          {[
-            { label: "Create Product", path: "/admin/products/new" },
-            { label: "Manage Orders", path: "/admin/orders" },
-            { label: "Manage Customers", path: "/admin/customers" },
-            { label: "Manage Categories", path: "/admin/categories" },
-          ].map(({ label, path }) => (
-            <button key={label} className="ad-quick-btn" onClick={() => navigate(path)}>{label}</button>
-          ))}
-        </div>
-      </div>
+      
 
     </div>
   );

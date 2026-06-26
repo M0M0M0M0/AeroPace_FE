@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ShoppingCart, Heart, ArrowLeftRight, X, Star } from "lucide-react";
+import { ShoppingCart, ArrowLeftRight, X, Star, SlidersHorizontal } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { usePreferences } from "../components/UsePreferences";
 import { formatUSD } from "../utils/currency";
@@ -14,6 +14,7 @@ const Products = () => {
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const {  compareList,  toggleCompare, removeCompare, clearCompare } = usePreferences();
   const [isMinimized, setIsMinimized] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
   const minimizeTimeoutRef = useRef(null);
 
   useEffect(() => {
@@ -69,7 +70,7 @@ const Products = () => {
   const [categorySearch, setCategorySearch] = useState("");
   const [brandSearch, setBrandSearch] = useState("");
 
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState(() => searchParams.get("search") || "");
   const [totalPages, setTotalPages] = useState(1);
   const [sortBy, setSortBy] = useState("");
 
@@ -189,10 +190,26 @@ const Products = () => {
     setTimeout(() => setActiveId(null), 1500);
   };
 
+  const activeFilterCount =
+    selectedCategories.length + selectedBrands.length + (appliedMin || appliedMax ? 1 : 0);
+
   return (
     <>
+      {/* Mobile filter overlay backdrop */}
+      {filterOpen && (
+        <div className="prd-filter-overlay" onClick={() => setFilterOpen(false)} />
+      )}
+
       <div className="prd-layout">
-        <div className="prd-sidebar">
+        <div className={`prd-sidebar${filterOpen ? " prd-sidebar--open" : ""}`}>
+          {/* Mobile drawer header */}
+          <div className="prd-sidebar-mobile-header">
+            <span className="prd-filter-title" style={{ marginBottom: 0 }}>Filters</span>
+            <button className="prd-sidebar-close" onClick={() => setFilterOpen(false)} aria-label="Close filters">
+              <X size={18} />
+            </button>
+          </div>
+
           <div className="prd-sidebar-search">
             <input
               type="text"
@@ -289,7 +306,21 @@ const Products = () => {
 
         <div className="prd-content">
           <div className="prd-header-top">
-            <h2 className="prd-main-title">All Products</h2>
+            <div className="prd-title-row">
+              <h2 className="prd-main-title">All Products</h2>
+              {/* Mobile filter toggle button */}
+              <button
+                className="prd-mobile-filter-btn"
+                onClick={() => setFilterOpen(true)}
+                aria-label="Open filters"
+              >
+                <SlidersHorizontal size={16} />
+                Filters
+                {activeFilterCount > 0 && (
+                  <span className="prd-mobile-filter-badge">{activeFilterCount}</span>
+                )}
+              </button>
+            </div>
               <div className="prd-sort-options">
               <button 
                 className={`prd-sort-btn ${sortBy === 'asc' ? 'active' : ''}`} 

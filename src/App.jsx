@@ -9,6 +9,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import BottomNav from "./components/BottomNav";
 
 import Home from "./pages/Home";
 import Products from "./pages/Products";
@@ -40,12 +41,15 @@ import AdminShippingPage from "./pages/Admin/AdminShippingPage";
 import AdminOrderDetail from "./pages/Admin/AdminOrderDetail";
 import AdminProductDetail from "./pages/Admin/AdminProductDetail";
 import AdminProductReviews from "./pages/Admin/AdminProductReviews";
+import AdminRevenue from "./pages/Admin/AdminRevenue";
+import AdminProductPerformance from "./pages/Admin/AdminProductPerformance";
 
 const StoreLayout = () => (
   <>
     <Navbar />
     <Outlet />
     <Footer />
+    <BottomNav />
   </>
 );
 
@@ -100,6 +104,8 @@ function App() {
                   <Route path="products/:id" element={<AdminProductDetail />} />
                   <Route path="products/:id/reviews" element={<AdminProductReviews />} />
                   <Route path="shippings" element={<AdminShippingPage />} />
+                  <Route path="revenue" element={<AdminRevenue />} />
+                  <Route path="product-performance" element={<AdminProductPerformance />} />
                 </Route>
               </Route>
             </Routes>

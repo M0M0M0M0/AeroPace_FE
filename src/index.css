@@ -82,3 +82,52 @@ button {
   background: #ccc;
 }
 
+/* ── MOBILE: extra bottom padding for bottom nav bar ─────────── */
+@media (max-width: 768px) {
+  .home-page,
+  .prd-layout,
+  .cart-page,
+  .cart-empty,
+  .checkout-page,
+  .checkout-empty,
+  .od-page,
+  .profile-page,
+  .contact-page-wrapper,
+  .about-container {
+    padding-bottom: calc(58px + 1.5rem) !important;
+  }
+
+  /* ProductDetail: extra space for BottomNav (58px) + sticky CTA bar (~62px) */
+  .pd-wrapper {
+    padding-bottom: calc(58px + 62px + 1rem) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-page,
+  .prd-layout,
+  .cart-page,
+  .checkout-page,
+  .od-page,
+  .profile-page,
+  .contact-page-wrapper {
+    padding-bottom: calc(58px + 1rem) !important;
+  }
+
+  .pd-wrapper {
+    padding-bottom: calc(58px + 62px + 0.75rem) !important;
+  }
+}
+
+/* ── MOBILE: Sonner toast above BottomNav ─────────────────────── */
+@media (max-width: 768px) {
+  [data-sonner-toaster] {
+    bottom: calc(58px + 10px) !important;
+    top: auto !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: 100% !important;
+  }
+}
+

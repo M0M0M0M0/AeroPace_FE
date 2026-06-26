@@ -204,7 +204,7 @@ const Home = () => {
       <section className="home-sport-section home-sport-section--compact">
         <div className="home-sport-header">
           <h2 className="home-section-title">Running Shoes</h2>
-          <Link to="/products" className="home-view-all-btn">View All →</Link>
+          <Link to="/products?search=shoes" className="home-view-all-btn">View All →</Link>
         </div>
         <div className="home-sport-grid">
           {featured.slice(0, 5).map(renderCard)}
@@ -223,7 +223,7 @@ const Home = () => {
       <section className="home-sport-section">
         <div className="home-sport-header">
           <h2 className="home-section-title">Running Sandals</h2>
-          <Link to="/products" className="home-view-all-btn">View All →</Link>
+          <Link to="/products?search=sandal" className="home-view-all-btn">View All →</Link>
         </div>
         <div className="home-sport-grid">
           {featured.slice(6, 11).map(renderCard)}
@@ -233,7 +233,7 @@ const Home = () => {
       <section className="home-sport-section">
         <div className="home-sport-header">
           <h2 className="home-section-title">Sports Glasses</h2>
-          <Link to="/products" className="home-view-all-btn">View All →</Link>
+          <Link to="/products?search=glasses" className="home-view-all-btn">View All →</Link>
         </div>
         <div className="home-sport-grid">
           {featured.slice(11 , 16).map(renderCard)}
@@ -243,7 +243,7 @@ const Home = () => {
       <section className="home-sport-section">
         <div className="home-sport-header">
           <h2 className="home-section-title">Sports Watches</h2>
-          <Link to="/products" className="home-view-all-btn">View All →</Link>
+          <Link to="/products?search=watches" className="home-view-all-btn">View All →</Link>
         </div>
         <div className="home-sport-grid">
           {featured.slice(16, 21).map(renderCard)}

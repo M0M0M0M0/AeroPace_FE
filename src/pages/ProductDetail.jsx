@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   ShoppingCart,
@@ -72,6 +72,9 @@ const ProductDetail = () => {
   const [reviewsPage, setReviewsPage] = useState(0);
   const [reviewsTotalPages, setReviewsTotalPages] = useState(1);
   const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [stickyVisible, setStickyVisible] = useState(false);
+  const actionButtonsRef = useRef(null);
+  const touchStartX = useRef(null);
 
   const images = product?.images
     ? [...product.images].sort((a, b) => a.position - b.position)
@@ -145,6 +148,16 @@ const ProductDetail = () => {
       .catch(console.error)
       .finally(() => setReviewsLoading(false));
   }, [id, reviewsPage]);
+
+  useEffect(() => {
+    if (!actionButtonsRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setStickyVisible(!entry.isIntersecting),
+      { threshold: 0, rootMargin: "0px 0px -10px 0px" }
+    );
+    observer.observe(actionButtonsRef.current);
+    return () => observer.disconnect();
+  }, [product]);
 
   if (!product)
     return (
@@ -274,12 +287,35 @@ const ProductDetail = () => {
     <div className="pd-wrapper">
       <div className="pd-main">
         <div className="pd-image-section">
-          <div className="pd-main-image-box">
+          <div
+            className="pd-main-image-box"
+            onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              if (touchStartX.current === null) return;
+              const dx = e.changedTouches[0].clientX - touchStartX.current;
+              touchStartX.current = null;
+              if (Math.abs(dx) < 40) return;
+              if (dx < 0 && activeImage < images.length - 1) setActiveImage((i) => i + 1);
+              if (dx > 0 && activeImage > 0) setActiveImage((i) => i - 1);
+            }}
+          >
             <img
               src={images[activeImage]?.imageUrl}
               alt={product.name}
               className="pd-main-image"
             />
+            {images.length > 1 && (
+              <div className="pd-image-dots">
+                {images.map((_, i) => (
+                  <button
+                    key={i}
+                    className={`pd-image-dot${i === activeImage ? " pd-image-dot--active" : ""}`}
+                    onClick={() => setActiveImage(i)}
+                    aria-label={`Image ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
           <div className="pd-thumb-list">
             {images.map((img, index) => (
@@ -401,7 +437,7 @@ const ProductDetail = () => {
             )}
           </div>
 
-          <div className="pd-action-buttons">
+          <div className="pd-action-buttons" ref={actionButtonsRef}>
             <button
               onClick={handleAddToCart}
               className="pd-add-btn"
@@ -603,6 +639,31 @@ const ProductDetail = () => {
           </div>
         </div>
       )}
+
+      {/* Sticky action bar — mobile only, shown when main buttons scroll out of view */}
+      <div className={`pd-sticky-bar${stickyVisible ? " pd-sticky-bar--visible" : ""}`}>
+        <div className="pd-sticky-bar-info">
+          <span className="pd-sticky-bar-name">{product.name}</span>
+          <span className="pd-sticky-bar-price">{formatUSD(price)}</span>
+        </div>
+        <div className="pd-sticky-bar-actions">
+          <button
+            className="pd-sticky-add"
+            onClick={handleAddToCart}
+            disabled={!selectedVariant || effectiveMax === 0}
+          >
+            <ShoppingCart size={18} />
+            Add to Cart
+          </button>
+          <button
+            className="pd-sticky-buy"
+            onClick={handleBuyNow}
+            disabled={!selectedVariant || maxStock === 0}
+          >
+            Buy Now
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

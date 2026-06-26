@@ -310,3 +310,19 @@
   background: var(--accent-color);
   color: #fff;
 }
+
+/* ── RESPONSIVE ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hpd-wrapper { padding: 4rem 5% calc(58px + 2rem); }
+  .hpd-main { grid-template-columns: 1fr; gap: 1.5rem; }
+  .hpd-main-image-box { height: 280px; }
+  .hpd-title { font-size: 1.5rem; }
+  .hpd-price { font-size: 1.4rem; }
+  .hpd-desc h2 { font-size: 1.4rem; }
+}
+
+@media (max-width: 480px) {
+  .hpd-wrapper { padding: 3.5rem 4% calc(58px + 1.5rem); }
+  .hpd-main-image-box { height: 240px; }
+  .hpd-title { font-size: 1.3rem; }
+}

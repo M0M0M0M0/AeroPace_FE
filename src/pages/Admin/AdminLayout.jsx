@@ -5,13 +5,15 @@ import {
   ShoppingCart,
   Package,
   Users,
-  Settings,
   LogOut,
   Menu,
   Tag,
   Truck,
+  TrendingUp,
+  BarChart2,
   Sun,
   Moon,
+  X,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
@@ -19,6 +21,7 @@ import "./AdminLayout.css";
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
@@ -36,59 +39,58 @@ const AdminLayout = () => {
     return location.pathname.startsWith(path);
   };
 
+  const closeMobileNav = () => setMobileNavOpen(false);
+
   return (
     <div className="admin-container">
+      {/* Mobile sidebar overlay */}
+      {mobileNavOpen && (
+        <div className="admin-mobile-overlay" onClick={closeMobileNav} />
+      )}
+
       {/* --- SIDEBAR --- */}
-      <aside className={`admin-sidebar ${isSidebarOpen ? "open" : "closed"}`}>
+      <aside className={`admin-sidebar ${isSidebarOpen ? "open" : "closed"}${mobileNavOpen ? " admin-sidebar--mobile-open" : ""}`}>
         <div className="sidebar-logo">
           <Link to="/" style={{ textDecoration: "none", color: "#e5e4e4" }}>
             <h2>{isSidebarOpen ? "AERO PACE" : "AP"}</h2>
           </Link>
+          <button className="admin-sidebar-close" onClick={closeMobileNav} aria-label="Close menu">
+            <X size={18} />
+          </button>
         </div>
         <nav className="sidebar-nav">
-          <Link
-            to="/admin"
-            className={`a-nav-item ${isActive("/admin") ? "active" : ""}`}
-          >
+          <Link onClick={closeMobileNav} to="/admin" className={`a-nav-item ${isActive("/admin") ? "active" : ""}`}>
             <LayoutDashboard size={20} />
             <span className="a-nav-label">Dashboard</span>
           </Link>
-          <Link
-            to="/admin/orders"
-            className={`a-nav-item ${isActive("/admin/orders") ? "active" : ""}`}
-          >
+          <Link onClick={closeMobileNav} to="/admin/orders" className={`a-nav-item ${isActive("/admin/orders") ? "active" : ""}`}>
             <ShoppingCart size={20} />
             <span className="a-nav-label">Orders</span>
           </Link>
-          <Link
-            to="/admin/products"
-            className={`a-nav-item ${isActive("/admin/products") ? "active" : ""}`}
-          >
+          <Link onClick={closeMobileNav} to="/admin/products" className={`a-nav-item ${isActive("/admin/products") ? "active" : ""}`}>
             <Package size={20} />
             <span className="a-nav-label">Products</span>
           </Link>
-          <Link
-            to="/admin/catalog"
-            className={`a-nav-item ${isActive("/admin/catalog") ? "active" : ""}`}
-          >
+          <Link onClick={closeMobileNav} to="/admin/catalog" className={`a-nav-item ${isActive("/admin/catalog") ? "active" : ""}`}>
             <Tag size={20} />
             <span className="a-nav-label">Categories & Brands</span>
           </Link>
-          <Link
-            to="/admin/customers"
-            className={`a-nav-item ${isActive("/admin/customers") ? "active" : ""}`}
-          >
+          <Link onClick={closeMobileNav} to="/admin/customers" className={`a-nav-item ${isActive("/admin/customers") ? "active" : ""}`}>
             <Users size={20} />
             <span className="a-nav-label">Customers</span>
           </Link>
-          <Link
-            to="/admin/shippings"
-            className={`a-nav-item ${isActive("/admin/shippings") ? "active" : ""}`}
-          >
+          <Link onClick={closeMobileNav} to="/admin/shippings" className={`a-nav-item ${isActive("/admin/shippings") ? "active" : ""}`}>
             <Truck size={20} />
             <span className="a-nav-label">Shipping Methods</span>
           </Link>
-    
+          <Link onClick={closeMobileNav} to="/admin/revenue" className={`a-nav-item ${isActive("/admin/revenue") ? "active" : ""}`}>
+            <TrendingUp size={20} />
+            <span className="a-nav-label">Revenue</span>
+          </Link>
+          <Link onClick={closeMobileNav} to="/admin/product-performance" className={`a-nav-item ${isActive("/admin/product-performance") ? "active" : ""}`}>
+            <BarChart2 size={20} />
+            <span className="a-nav-label">Product Performance</span>
+          </Link>
         </nav>
       </aside>
 
@@ -98,7 +100,10 @@ const AdminLayout = () => {
           <div className="header-left">
             <button
               className="menu-toggle-btn"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              onClick={() => {
+                setIsSidebarOpen(!isSidebarOpen);
+                setMobileNavOpen(true);
+              }}
             >
               <Menu size={24} />
             </button>

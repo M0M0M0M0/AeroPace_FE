@@ -526,3 +526,17 @@
 .ac-btn-confirm:hover { opacity: 0.82; }
 .ac-btn-confirm--danger { background: #dc2626; color: #fff; }
 .ac-btn-confirm--success { background: #16a34a; color: #fff; }
+
+/* ── RESPONSIVE ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .ac-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ac-table { min-width: 640px; }
+  .ac-header { flex-direction: column; gap: 10px; }
+  .ac-title { font-size: 1.3rem; }
+  .ac-filters { flex-direction: column; }
+  .ac-filter-input, .ac-filter-select { width: 100%; }
+}
+  .ac-filter-input, .ac-filter-select { width: 100
