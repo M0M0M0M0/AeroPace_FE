@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "sonner";
 import { getOrCreateSessionId } from "../utils/session";
 
 const axiosClient = axios.create({
@@ -24,7 +25,7 @@ axiosClient.interceptors.response.use(
       localStorage.removeItem("token");
       localStorage.removeItem("user");
 
-      alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!");
+      toast.error("Your session has expired. Please log in again.");
 
       window.location.href = "/login";
     }

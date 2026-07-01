@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Mail, Lock, LogIn, User, UserPlus, Camera, X,
   CheckCircle, AlertCircle, ShieldX,
@@ -83,9 +83,16 @@ const AuthModal = ({ onClose, onSuccess, initialMode = "login" }) => {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+    };
+  }, [avatarPreview]);
+
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (avatarPreview) URL.revokeObjectURL(avatarPreview);
     setAvatarFile(file);
     setAvatarPreview(URL.createObjectURL(file));
   };

@@ -3,20 +3,15 @@ import { toast } from "sonner";
 import { useAuth } from '../context/AuthContext';
 
 export const usePreferences = () => {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
 
   const [compareList, setCompareList] = useState([]);
 
-  // 1. LOAD DỮ LIỆU BAN ĐẦU
   useEffect(() => {
-  
-    // --- Xử lý Compare (Luôn lưu Local vì tính chất tạm thời) ---
     const savedCompare = JSON.parse(localStorage.getItem("compareList")) || [];
     setCompareList(savedCompare);
-  }, [token]);
+  }, [user]);
 
-
-  // 3. TOGGLE SO SÁNH (GIỮ NGUYÊN LOCAL STORAGE)
   const toggleCompare = (product, e) => {
     e.stopPropagation();
     let updatedList;

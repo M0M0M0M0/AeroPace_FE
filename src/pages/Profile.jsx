@@ -149,11 +149,13 @@ const Profile = () => {
   }, [wards, formData.ward]);
 
   useEffect(() => {
+    const controller = new AbortController();
     const fetchOrders = async () => {
       try {
         if (!user?.id) return;
         const res = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/v1/orders/user/${user.id}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/v1/orders/user/${user.id}`,
+          { signal: controller.signal }
         );
         setOrders(res.data);
 
@@ -163,7 +165,9 @@ const Profile = () => {
           await Promise.all(
             completed.map(async (o) => {
               try {
-                const rv = await axios.get(`/reviews/my-order/${o.orderCode}`);
+                const rv = await axios.get(`/reviews/my-order/${o.orderCode}`, {
+                  signal: controller.signal,
+                });
                 if (rv.data.length > 0) map[o.orderCode] = rv.data;
               } catch {}
             })
@@ -171,12 +175,13 @@ const Profile = () => {
           setOrderReviews(map);
         }
       } catch (err) {
-        console.log("LOAD ORDERS ERROR:", err);
+        if (err.name !== "CanceledError") console.log("LOAD ORDERS ERROR:", err);
       }
     };
     if (activeTab === "orders") {
       fetchOrders();
     }
+    return () => controller.abort();
   }, [activeTab, user]);
 
   useEffect(() => {

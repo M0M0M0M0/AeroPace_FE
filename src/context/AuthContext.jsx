@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { toast } from "sonner";
 
 const AuthContext = createContext();
 const isTokenExpired = (token) => {
@@ -22,7 +23,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         setUser(null);
-        alert("Log in session has expired. Please log in again!");
+        toast.error("Your session has expired. Please log in again.");
       } else {
         setUser(JSON.parse(savedUser));
       }
