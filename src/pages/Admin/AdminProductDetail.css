@@ -389,6 +389,23 @@
     flex-shrink: 0;
 }
 
+.apd-image-drag-handle {
+    cursor: grab;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    padding: 0 4px;
+    user-select: none;
+}
+
+.apd-image-drag-handle:active {
+    cursor: grabbing;
+}
+
+.apd-image-row--dragging {
+    opacity: 0.4;
+}
+
 .apd-btn-remove {
     background: transparent;
     color: #dc2626;

@@ -43,9 +43,6 @@ const AdminProductDetail = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Quay lại đúng nơi xuất phát (dashboard / list) kèm vị trí scroll;
-  // nếu mở trực tiếp bằng URL thì fallback về danh sách product.
   const goBack = () => {
     if (location.key !== "default") navigate(-1);
     else navigate("/admin/products");
@@ -58,7 +55,6 @@ const AdminProductDetail = () => {
   const [form, setForm] = useState(emptyForm);
   const [initialForm, setInitialForm] = useState(null);
 
-  // Status đã lưu (DB). Chỉ cho phép chuyển sang DELETED khi sản phẩm đang ARCHIVED.
   const savedStatus = initialForm ? JSON.parse(initialForm).status : null;
   const canSelectDeleted = savedStatus === "ARCHIVED" || savedStatus === "DELETED";
   const [brands, setBrands] = useState([]);
@@ -72,9 +68,9 @@ const AdminProductDetail = () => {
   const [leaveToView, setLeaveToView] = useState(false);
   const [deleteVariantIdx, setDeleteVariantIdx] = useState(null);
 
-  // Pool of known values per option axis — drives the dropdowns
+
   const [optionPool, setOptionPool] = useState({ 1: [], 2: [], 3: [] });
-  // Modal state for "Add new value"
+
   const [addValueModal, setAddValueModal] = useState(null); // { axis: 1|2|3, variantIdx, field }
   const [addValueInput, setAddValueInput] = useState("");
 
@@ -101,7 +97,7 @@ const AdminProductDetail = () => {
       ]);
       setBrands(br.data);
       setCategories(ca.data);
-      // Không auto-select brand khi tạo mới — để user tự chọn
+
     };
     fetchMeta();
   }, []);
@@ -157,7 +153,7 @@ const AdminProductDetail = () => {
       }
     };
     fetchProduct();
-  }, [id]); // eslint-disable-line
+  }, [id]); 
 
   // ── Unsaved changes check ─────────────────────────────────────
   const hasUnsavedChanges = () => {
@@ -206,12 +202,20 @@ const AdminProductDetail = () => {
     setDeleteVariantIdx(null);
   };
 
+  const [dragImageIdx, setDragImageIdx] = useState(null);
+
   const addImage = () => setForm({ ...form, images: [...form.images, { imageUrl: "", position: form.images.length + 1 }] });
   const removeImage = (idx) => {
     const filtered = form.images.filter((_, i) => i !== idx);
     setForm({ ...form, images: filtered.map((img, i) => ({ ...img, position: i + 1 })) });
   };
   const updateImage = (idx, value) => { const u = [...form.images]; u[idx] = { ...u[idx], imageUrl: value }; setForm({ ...form, images: u }); };
+  const moveImage = (fromIdx, toIdx) => {
+    const imgs = [...form.images];
+    const [moved] = imgs.splice(fromIdx, 1);
+    imgs.splice(toIdx, 0, moved);
+    setForm({ ...form, images: imgs.map((img, i) => ({ ...img, position: i + 1 })) });
+  };
 
   const toggleCategory = (catId) => setForm({
     ...form,
@@ -224,6 +228,17 @@ const AdminProductDetail = () => {
   const handleSave = async () => {
     if (!form.name || !form.brandId) { alert("Please fill in the product name and select a brand!"); return; }
     const activeVariants = form.variants.filter((v) => !v.isDeleted);
+
+    const seen = new Set();
+    for (const v of activeVariants) {
+      const key = `${v.option1Value}|${v.option2Value}|${v.option3Value}`;
+      if (seen.has(key)) {
+        const label = [v.option1Value, v.option2Value, v.option3Value].filter(Boolean).join(" / ") || "Default";
+        toast.error(`Duplicate variant: "${label}". Each variant must have a unique option combination.`);
+        return;
+      }
+      seen.add(key);
+    }
     const missingFields = activeVariants.some(
       (v) => !v.price || v.stock === "" || v.stock === null || v.stock === undefined
     ); if (missingFields) {
@@ -426,7 +441,16 @@ const AdminProductDetail = () => {
               <p className="apd-empty-hint">No images available.</p>
             )}
             {form.images.map((img, idx) => (
-              <div key={idx} className="apd-image-row">
+              <div
+                key={idx}
+                className={`apd-image-row${dragImageIdx === idx ? " apd-image-row--dragging" : ""}`}
+                draggable={!isViewOnly}
+                onDragStart={() => setDragImageIdx(idx)}
+                onDragOver={(e) => { e.preventDefault(); }}
+                onDrop={(e) => { e.preventDefault(); if (dragImageIdx !== null && dragImageIdx !== idx) moveImage(dragImageIdx, idx); setDragImageIdx(null); }}
+                onDragEnd={() => setDragImageIdx(null)}
+              >
+                {!isViewOnly && <span className="apd-image-drag-handle" title="Drag to reorder">⠿</span>}
                 <input className="apd-form-input" value={img.imageUrl}
                   onChange={(e) => updateImage(idx, e.target.value)}
                   placeholder="Image URL" disabled={isViewOnly} />
@@ -509,7 +533,7 @@ const AdminProductDetail = () => {
                       <label className="apd-form-label">SKU</label>
                       <input className="apd-form-input" value={v.sku}
                         onChange={(e) => updateVariant(idx, "sku", e.target.value)}
-                        placeholder="e.g., NK-AIR-RED-40" disabled={isViewOnly} />
+                        placeholder="Sku" disabled={isViewOnly} />
                     </div>
                   </div>
                   {!isViewOnly && activeCount > 1 && (
