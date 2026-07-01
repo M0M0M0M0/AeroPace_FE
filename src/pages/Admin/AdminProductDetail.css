@@ -572,6 +572,183 @@
     font-size: 0.78rem;
 }
 
+/* ── Options tag UI ─────────────────────────────────────────── */
+.apd-option-block {
+  padding: 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.apd-option-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.apd-option-block-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.apd-option-clear-btn {
+  background: transparent;
+  border: none;
+  color: #dc2626;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.apd-option-clear-btn:hover {
+  background: rgba(220, 38, 38, 0.08);
+}
+
+.apd-option-name-input {
+  margin-bottom: 10px;
+}
+
+.apd-option-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.apd-option-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-main);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.apd-option-tag-x {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0 2px;
+  transition: color 0.15s;
+}
+
+.apd-option-tag-x:hover {
+  color: #dc2626;
+}
+
+.apd-option-tag-add {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.apd-option-tag-input {
+  padding: 4px 10px;
+  background: var(--bg-main);
+  border: 1px dashed var(--border-main);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--text-main);
+  outline: none;
+  width: 120px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.apd-option-tag-input:focus {
+  border-color: var(--accent-color);
+  border-style: solid;
+}
+
+.apd-option-tag-input::placeholder {
+  color: #94a3b8;
+}
+
+.apd-option-tag-btn {
+  padding: 4px 12px;
+  background: transparent;
+  border: 1px solid var(--border-main);
+  border-radius: 20px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.apd-option-tag-btn:hover {
+  border-color: #16a34a;
+  color: #16a34a;
+}
+
+.apd-btn-generate {
+  padding: 7px 16px;
+  background: var(--accent-gradient);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.apd-btn-generate:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.apd-btn-generate:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Variant option badges ───────────────────────────────────── */
+.apd-variant-options-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.apd-variant-id-badge {
+  font-size: 11px;
+  color: #2563eb;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.apd-variant-opt-badge {
+  padding: 3px 10px;
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.apd-variant-opt-badge--default {
+  background: var(--bg-main);
+  color: var(--text-muted);
+  border-color: var(--border-main);
+}
+
 /* ── RESPONSIVE ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .apd-topbar { flex-direction: column; align-items: flex-start; gap: 10px; }

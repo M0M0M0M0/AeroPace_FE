@@ -72,6 +72,26 @@ const AdminProductDetail = () => {
   const [leaveToView, setLeaveToView] = useState(false);
   const [deleteVariantIdx, setDeleteVariantIdx] = useState(null);
 
+  // Pool of known values per option axis — drives the dropdowns
+  const [optionPool, setOptionPool] = useState({ 1: [], 2: [], 3: [] });
+  // Modal state for "Add new value"
+  const [addValueModal, setAddValueModal] = useState(null); // { axis: 1|2|3, variantIdx, field }
+  const [addValueInput, setAddValueInput] = useState("");
+
+  const confirmAddValue = () => {
+    if (!addValueModal) return;
+    const val = addValueInput.trim();
+    if (!val) return;
+    const { axis, variantIdx, field } = addValueModal;
+    setOptionPool((prev) => ({
+      ...prev,
+      [axis]: prev[axis].includes(val) ? prev[axis] : [...prev[axis], val],
+    }));
+    updateVariant(variantIdx, field, val);
+    setAddValueModal(null);
+    setAddValueInput("");
+  };
+
   // ── Load brands & categories ──────────────────────────────────
   useEffect(() => {
     const fetchMeta = async () => {
@@ -123,6 +143,12 @@ const AdminProductDetail = () => {
         };
         setForm(f);
         setInitialForm(JSON.stringify(f));
+        const activeVars = (product.variants || []).filter((v) => !v.isDeleted);
+        setOptionPool({
+          1: [...new Set(activeVars.map((v) => v.option1Value).filter(Boolean))],
+          2: [...new Set(activeVars.map((v) => v.option2Value).filter(Boolean))],
+          3: [...new Set(activeVars.map((v) => v.option3Value).filter(Boolean))],
+        });
       } catch (err) {
         console.error(err);
         alert("Không thể tải sản phẩm.");
@@ -204,16 +230,12 @@ const AdminProductDetail = () => {
       alert("Please fill in Price and Stock for all variants!");
       return;
     }
-    const optionChecks = [
-      { nameField: "option1Name", valueField: "option1Value", label: "Option 1" },
-      { nameField: "option2Name", valueField: "option2Value", label: "Option 2" },
-      { nameField: "option3Name", valueField: "option3Value", label: "Option 3" },
-    ];
-
-    for (const { nameField, valueField, label } of optionChecks) {
-      const hasValue = form.variants.some((v) => !v.isDeleted && v[valueField] && v[valueField].trim() !== "");
-      if (hasValue && !form[nameField]?.trim()) {
-        alert(`You have entered a value for ${label} but haven't set a name!\nPlease enter a name for ${label} (e.g., "Color", "Size") before saving.`);
+    const optionNames = [form.option1Name, form.option2Name, form.option3Name];
+    for (let i = 0; i < 3; i++) {
+      const valueField = `option${i + 1}Value`;
+      const hasValue = form.variants.some((v) => !v.isDeleted && v[valueField]?.trim());
+      if (hasValue && !optionNames[i]?.trim()) {
+        alert(`Option ${i + 1} has values but no name. Please set a name (e.g., "Color", "Size").`);
         return;
       }
     }
@@ -348,7 +370,7 @@ const AdminProductDetail = () => {
                 <label className="apd-form-label">Slug</label>
                 <input className="apd-form-input" value={form.slug}
                   onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                  placeholder="VD: ao-thun-nike (để trống tự generate)" disabled={isViewOnly} />
+                  placeholder="" disabled={isViewOnly} />
               </div>
             )}
 
@@ -371,16 +393,20 @@ const AdminProductDetail = () => {
             </div>
           </div>
 
-          {/* Options */}
+          {/* Option Names */}
           <div className="apd-card">
             <h2 className="apd-card-title">Option Names</h2>
             <div className="apd-form-grid-3">
-              {["option1Name", "option2Name", "option3Name"].map((field, i) => (
+              {[
+                { field: "option1Name", placeholder: "e.g., Color" },
+                { field: "option2Name", placeholder: "e.g., Size" },
+                { field: "option3Name", placeholder: "e.g., Material" },
+              ].map(({ field, placeholder }, i) => (
                 <div key={field} className="apd-form-row">
                   <label className="apd-form-label">Option {i + 1}</label>
                   <input className="apd-form-input" value={form[field]}
                     onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-                    placeholder="VD: Color" disabled={isViewOnly} />
+                    placeholder={placeholder} disabled={isViewOnly} />
                 </div>
               ))}
             </div>
@@ -428,22 +454,41 @@ const AdminProductDetail = () => {
 
             {form.variants.map((v, idx) => {
               if (v.isDeleted) return null;
+              const activeCount = form.variants.filter((x) => !x.isDeleted).length;
+              const optionFields = [
+                { field: "option1Value", axis: 1, label: form.option1Name || "Option 1" },
+                { field: "option2Value", axis: 2, label: form.option2Name || "Option 2" },
+                { field: "option3Value", axis: 3, label: form.option3Name || "Option 3" },
+              ];
               return (
                 <div key={idx} className="apd-variant-card">
-                  {v.id && (
-                    <div className="apd-variant-id">
-                      Variant ID: <span>#{v.id}</span>
-                    </div>
-                  )}
+                  {v.id && <div className="apd-variant-id">Variant ID: <span>#{v.id}</span></div>}
                   <div className="apd-form-grid-3">
-                    {["option1Value", "option2Value", "option3Value"].map((field, i) => (
+                    {optionFields.map(({ field, axis, label }) => (
                       <div key={field} className="apd-form-row">
-                        <label className="apd-form-label">
-                          {[form.option1Name, form.option2Name, form.option3Name][i] || `Option ${i + 1}`}
-                        </label>
-                        <input className="apd-form-input" value={v[field]}
-                          onChange={(e) => updateVariant(idx, field, e.target.value)}
-                          disabled={isViewOnly} />
+                        <label className="apd-form-label">{label}</label>
+                        {isViewOnly ? (
+                          <input className="apd-form-input" value={v[field]} disabled />
+                        ) : (
+                          <select
+                            className="apd-form-input"
+                            value={v[field]}
+                            onChange={(e) => {
+                              if (e.target.value === "__add_new__") {
+                                setAddValueModal({ axis, variantIdx: idx, field });
+                                setAddValueInput("");
+                              } else {
+                                updateVariant(idx, field, e.target.value);
+                              }
+                            }}
+                          >
+                            <option value="" disabled hidden>-- Select --</option>
+                            <option value="__add_new__">+ Add new value...</option>
+                            {optionPool[axis].map((val) => (
+                              <option key={val} value={val}>{val}</option>
+                            ))}
+                          </select>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -452,7 +497,7 @@ const AdminProductDetail = () => {
                       <label className="apd-form-label">Price <span className="apd-required">*</span></label>
                       <input className="apd-form-input" type="number" value={v.price}
                         onChange={(e) => updateVariant(idx, "price", e.target.value)}
-                        placeholder="e.g., 500000" disabled={isViewOnly} />
+                        placeholder="e.g., 99.99" disabled={isViewOnly} />
                     </div>
                     <div className="apd-form-row">
                       <label className="apd-form-label">Stock <span className="apd-required">*</span></label>
@@ -467,7 +512,7 @@ const AdminProductDetail = () => {
                         placeholder="e.g., NK-AIR-RED-40" disabled={isViewOnly} />
                     </div>
                   </div>
-                  {!isViewOnly && form.variants.filter((x) => !x.isDeleted).length > 1 && (
+                  {!isViewOnly && activeCount > 1 && (
                     <button className="apd-btn-remove-variant" onClick={() => removeVariant(idx)}>
                       Remove this variant
                     </button>
@@ -552,6 +597,38 @@ const AdminProductDetail = () => {
 
         </div>
       </div>
+
+      {/* ── Add new option value modal ─────────────────────────── */}
+      {addValueModal && (
+        <div className="apd-confirm-overlay" onClick={() => setAddValueModal(null)}>
+          <div className="apd-confirm-dialog" onClick={(e) => e.stopPropagation()}>
+            <h3 className="apd-confirm-title">Add New Value</h3>
+            <p className="apd-confirm-desc">
+              New value for <strong>Option {addValueModal.axis}</strong>
+              {[form.option1Name, form.option2Name, form.option3Name][addValueModal.axis - 1]
+                ? ` (${[form.option1Name, form.option2Name, form.option3Name][addValueModal.axis - 1]})`
+                : ""}
+            </p>
+            <input
+              className="apd-form-input"
+              value={addValueInput}
+              onChange={(e) => setAddValueInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") confirmAddValue(); }}
+              placeholder="e.g., Red"
+              autoFocus
+            />
+            <div className="apd-confirm-actions" style={{ marginTop: 12 }}>
+              <button className="apd-confirm-btn-discard" onClick={() => setAddValueModal(null)}>
+                Cancel
+              </button>
+              <button className="apd-confirm-btn-save" onClick={confirmAddValue}
+                disabled={!addValueInput.trim()}>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Delete variant confirm dialog ──────────────────────── */}
       {deleteVariantIdx !== null && (

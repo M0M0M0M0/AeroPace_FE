@@ -190,20 +190,34 @@ const ProductDetail = () => {
 
   const handleSelectOption = (key, value) => {
     const newSelected = { ...selected, [key]: value };
-    const match = findMatchingVariant(variants, newSelected, optionKeys);
-    if (!match) {
-      const fallback = variants.find((v) => v[key] === value);
-      if (fallback) {
-        const filled = { ...newSelected };
-        optionKeys.forEach((k) => {
-          if (!filled[k] || !findMatchingVariant(variants, filled, optionKeys))
-            filled[k] = fallback[k];
-        });
-        setSelected(filled);
-        return;
-      }
+    if (findMatchingVariant(variants, newSelected, optionKeys)) {
+      setSelected(newSelected);
+      return;
     }
-    setSelected(newSelected);
+
+    // No exact match — preserve options before the clicked one, reset options after
+    const clickedIndex = optionKeys.indexOf(key);
+    const partial = {};
+    optionKeys.slice(0, clickedIndex).forEach((k) => { partial[k] = selected[k]; });
+    partial[key] = value;
+
+    const candidate = variants.find((v) =>
+      Object.entries(partial).every(([k, val]) => v[k] === val)
+    );
+    if (candidate) {
+      const filled = {};
+      optionKeys.forEach((k) => (filled[k] = candidate[k]));
+      setSelected(filled);
+      return;
+    }
+
+    // Last resort: any variant with the clicked value
+    const fallback = variants.find((v) => v[key] === value);
+    if (fallback) {
+      const filled = {};
+      optionKeys.forEach((k) => (filled[k] = fallback[k]));
+      setSelected(filled);
+    }
   };
 
   const isAvailable = (key, value) => {
@@ -475,7 +489,7 @@ const ProductDetail = () => {
           className="pd-desc-toggle"
           onClick={() => setDescExpanded((v) => !v)}
         >
-          {descExpanded ? "Thu gọn ▲" : "Xem thêm ▼"}
+          {descExpanded ? "Minimize ▲" : "View details ▼"}
         </button>
       </div>
 
