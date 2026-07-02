@@ -380,6 +380,45 @@
     background: var(--border-main);
 }
 
+.aod-field-row { 
+    display: flex;
+    justify-content: space-between; 
+    align-items: flex-start;
+    gap: 16px; 
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-main); 
+}
+
+.aod-field-row:last-child {
+    border-bottom: none; 
+}
+
+.aod-field-row--total { 
+    border-top: 1px solid var(--border-main);
+    border-bottom: none;
+    margin-top: 4px;
+}
+
+.aod-field-label { 
+    color: var(--text-muted); 
+    font-size: 0.85rem;
+    font-weight: 500;
+    flex-shrink: 0; 
+}
+
+.aod-field-value { 
+    color: var(--text-main); 
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: right;
+    word-break: break-word;
+}
+
+.aod-field-value--price { 
+    color: #16a34a; 
+    font-weight: 700; 
+}
+
 /* ── Nút Xử lý trạng thái Đơn hàng ─────────────────────────────── */
 .aod-action-btns { display: flex; flex-direction: column; gap: 8px; }
 
