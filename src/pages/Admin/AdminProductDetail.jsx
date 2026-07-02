@@ -241,8 +241,14 @@ const AdminProductDetail = () => {
     }
     const missingFields = activeVariants.some(
       (v) => !v.price || v.stock === "" || v.stock === null || v.stock === undefined
-    ); if (missingFields) {
-      alert("Please fill in Price and Stock for all variants!");
+    );
+    if (missingFields) {
+      toast.error("Please fill in Price and Stock for all variants.");
+      return;
+    }
+    const negativeStock = activeVariants.some((v) => Number(v.stock) < 0);
+    if (negativeStock) {
+      toast.error("Stock cannot be negative.");
       return;
     }
     const optionNames = [form.option1Name, form.option2Name, form.option3Name];
@@ -525,8 +531,9 @@ const AdminProductDetail = () => {
                     </div>
                     <div className="apd-form-row">
                       <label className="apd-form-label">Stock <span className="apd-required">*</span></label>
-                      <input className="apd-form-input" type="number" value={v.stock}
+                      <input className="apd-form-input" type="number" min="0" value={v.stock}
                         onChange={(e) => updateVariant(idx, "stock", e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
                         placeholder="e.g., 10" disabled={isViewOnly} />
                     </div>
                     <div className="apd-form-row">

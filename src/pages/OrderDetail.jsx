@@ -437,11 +437,7 @@ const OrderDetail = () => {
                             <div className="od-total-row">
                                 <span className="od-total-label">Total</span>
                                 <span className="od-total-value">
-                                    {formatUSD(
-                                        (Number(order.totalPrice) || 0) +
-                                        (Number(order.shippingFee) || 0) +
-                                        (Number(order.vat) || 0)
-                                    )}
+                                    {formatUSD(Number(order.totalPrice) || 0)}
                                 </span>
                             </div>
                         </div>

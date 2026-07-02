@@ -546,7 +546,7 @@ const AdminOrderDetail = () => {
                             )}
                             <div className="aod-pricing-row aod-pricing-row--total">
                                 <span>Total</span>
-                                <span className="aod-total-price">{fmt(total + shipFee + vat)}</span>
+                                <span className="aod-total-price">{fmt(total)}</span>
                             </div>
                         </div>
                     </div>

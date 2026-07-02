@@ -449,11 +449,7 @@ const Profile = () => {
         {/* Footer */}
         <div className="profile-order-card-footer">
           <span className="profile-order-total">
-            Total: {formatUSD(
-              (Number(order.totalPrice) || 0) +
-              (Number(order.shippingFee) || 0) +
-              (Number(order.vat) || 0)
-            )}
+            Total: {formatUSD(Number(order.totalPrice) || 0)}
           </span>
 
           <div className="profile-order-actions">
