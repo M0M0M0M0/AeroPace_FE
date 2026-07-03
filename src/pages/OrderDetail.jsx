@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "../api/axiosClient";
 import { ArrowLeft, MapPin, Phone, User, Package, X, Pencil, Clock, Check } from "lucide-react";
 import { toast } from "sonner";
 import QuickReviewModal from "../components/QuickReviewModal";
+import { useAuth } from "../context/AuthContext";
 import { formatUSD } from "../utils/currency";
 
 import "./OrderDetail.css";
@@ -110,12 +111,35 @@ const OdMiniStars = ({ rating }) => {
 const OrderDetail = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const fromTab = state?.fromTab;
+    const orderCode = state?.order?.orderCode;
 
     const [order, setOrder] = useState(state?.order || null);
     const [cancelModal, setCancelModal] = useState({ open: false, note: "" });
     const [cancelling, setCancelling] = useState(false);
     const [confirming, setConfirming] = useState(false);
+
+    // ── Refetch từ server để lấy trạng thái mới nhất (vd. admin vừa đổi status ở tab khác) ─
+    const refetchOrder = useCallback(async () => {
+        if (!user?.id || !orderCode) return;
+        try {
+            const res = await axios.get(`/orders/user/${user.id}`);
+            const updated = res.data.find((o) => o.orderCode === orderCode);
+            if (updated) setOrder(updated);
+        } catch (err) {
+            console.error(err);
+        }
+    }, [user, orderCode]);
+
+    useEffect(() => {
+        refetchOrder();
+        const handleVisibility = () => {
+            if (document.visibilityState === "visible") refetchOrder();
+        };
+        document.addEventListener("visibilitychange", handleVisibility);
+        return () => document.removeEventListener("visibilitychange", handleVisibility);
+    }, [refetchOrder]);
 
     // ── Review modal ──────────────────────────────────────────────
     const [reviewOrder, setReviewOrder] = useState(null);

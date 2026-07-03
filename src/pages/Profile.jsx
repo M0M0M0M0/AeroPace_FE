@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "../api/axiosClient";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -148,41 +148,53 @@ const Profile = () => {
     if (match) setSelectedWard(match.id);
   }, [wards, formData.ward]);
 
+  const fetchOrders = useCallback(async (signal) => {
+    try {
+      if (!user?.id) return;
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/orders/user/${user.id}`,
+        { signal }
+      );
+      setOrders(res.data);
+
+      const completed = res.data.filter((o) => o.status === "COMPLETED");
+      if (completed.length > 0) {
+        const map = {};
+        await Promise.all(
+          completed.map(async (o) => {
+            try {
+              const rv = await axios.get(`/reviews/my-order/${o.orderCode}`, {
+                signal,
+              });
+              if (rv.data.length > 0) map[o.orderCode] = rv.data;
+            } catch {}
+          })
+        );
+        setOrderReviews(map);
+      }
+    } catch (err) {
+      if (err.name !== "CanceledError") console.log("LOAD ORDERS ERROR:", err);
+    }
+  }, [user]);
+
   useEffect(() => {
     const controller = new AbortController();
-    const fetchOrders = async () => {
-      try {
-        if (!user?.id) return;
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/v1/orders/user/${user.id}`,
-          { signal: controller.signal }
-        );
-        setOrders(res.data);
-
-        const completed = res.data.filter((o) => o.status === "COMPLETED");
-        if (completed.length > 0) {
-          const map = {};
-          await Promise.all(
-            completed.map(async (o) => {
-              try {
-                const rv = await axios.get(`/reviews/my-order/${o.orderCode}`, {
-                  signal: controller.signal,
-                });
-                if (rv.data.length > 0) map[o.orderCode] = rv.data;
-              } catch {}
-            })
-          );
-          setOrderReviews(map);
-        }
-      } catch (err) {
-        if (err.name !== "CanceledError") console.log("LOAD ORDERS ERROR:", err);
-      }
-    };
     if (activeTab === "orders") {
-      fetchOrders();
+      fetchOrders(controller.signal);
     }
     return () => controller.abort();
-  }, [activeTab, user]);
+  }, [activeTab, fetchOrders]);
+
+  // Refetch khi tab trình duyệt được focus lại (vd. admin vừa đổi trạng thái order ở tab khác)
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible" && activeTab === "orders") {
+        fetchOrders();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [activeTab, fetchOrders]);
 
   useEffect(() => {
     const fetchProfile = async () => {
