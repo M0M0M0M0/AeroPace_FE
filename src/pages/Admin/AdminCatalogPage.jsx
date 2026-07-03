@@ -11,6 +11,7 @@ const authHeader = () => ({
 // ── EMPTY FORMS ───────────────────────────────────────────────────────────────
 const EMPTY_BRAND = { name: "" };
 const EMPTY_CAT = { name: "", description: "" };
+const PAGE_SIZE = 20;
 
 // ═════════════════════════════════════════════════════════════════════════════
 const AdminCatalogPage = () => {
@@ -21,6 +22,7 @@ const AdminCatalogPage = () => {
   const [brandLoading, setBrandLoading] = useState(true);
   const [brandSearch, setBrandSearch] = useState("");
   const [brandIdSearch, setBrandIdSearch] = useState("");
+  const [brandPage, setBrandPage] = useState(0);
   const [brandModal, setBrandModal] = useState({
     open: false,
     mode: "add", // "add" | "edit"
@@ -39,6 +41,7 @@ const AdminCatalogPage = () => {
   const [catLoading, setCatLoading] = useState(true);
   const [catSearch, setCatSearch] = useState("");
   const [catIdSearch, setCatIdSearch] = useState("");
+  const [catPage, setCatPage] = useState(0);
   const [catModal, setCatModal] = useState({
     open: false,
     mode: "add",
@@ -191,18 +194,22 @@ const AdminCatalogPage = () => {
     }
   };
 
-  // ── FILTERED lists ────────────────────────────────────────────────────────
+  // ── FILTERED lists (client-side pagination — brand/category luôn là tập nhỏ) ─
   const filteredBrands = brands.filter((b) => {
     const matchName = b.name.toLowerCase().includes(brandSearch.toLowerCase());
     const matchId = brandIdSearch ? String(b.id).includes(brandIdSearch.trim()) : true;
     return matchName && matchId;
   });
+  const brandTotalPages = Math.max(Math.ceil(filteredBrands.length / PAGE_SIZE), 1);
+  const pagedBrands = filteredBrands.slice(brandPage * PAGE_SIZE, brandPage * PAGE_SIZE + PAGE_SIZE);
 
   const filteredCats = categories.filter((c) => {
     const matchName = c.name.toLowerCase().includes(catSearch.toLowerCase());
     const matchId = catIdSearch ? String(c.id).includes(catIdSearch.trim()) : true;
     return matchName && matchId;
   });
+  const catTotalPages = Math.max(Math.ceil(filteredCats.length / PAGE_SIZE), 1);
+  const pagedCats = filteredCats.slice(catPage * PAGE_SIZE, catPage * PAGE_SIZE + PAGE_SIZE);
 
   // ═══════════════════════════════════════════════════════════════════════════
   return (
@@ -259,14 +266,14 @@ const AdminCatalogPage = () => {
               className="cp-search"
               placeholder="Search by ID..."
               value={brandIdSearch}
-              onChange={(e) => setBrandIdSearch(e.target.value)}
+              onChange={(e) => { setBrandIdSearch(e.target.value); setBrandPage(0); }}
               style={{ maxWidth: 140 }}
             />
             <input
               className="cp-search"
               placeholder="Search brands..."
               value={brandSearch}
-              onChange={(e) => setBrandSearch(e.target.value)}
+              onChange={(e) => { setBrandSearch(e.target.value); setBrandPage(0); }}
             />
             <button className="cp-btn-add" onClick={openAddBrand}>
               <Plus size={16} /> Add Brand
@@ -287,16 +294,16 @@ const AdminCatalogPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredBrands.length === 0 ? (
+                  {pagedBrands.length === 0 ? (
                     <tr>
                       <td colSpan={4} className="cp-empty-row">
                         No brands found.
                       </td>
                     </tr>
                   ) : (
-                    filteredBrands.map((b, idx) => (
+                    pagedBrands.map((b, idx) => (
                       <tr key={b.id} className="cp-row">
-                        <td>{idx + 1}</td>
+                        <td>{brandPage * PAGE_SIZE + idx + 1}</td>
                         <td className="cp-id">#{b.id}</td>
                         <td className="cp-name">{b.name}</td>
                         <td>
@@ -330,6 +337,14 @@ const AdminCatalogPage = () => {
               </table>
             </div>
           )}
+
+          {!brandLoading && brandTotalPages > 1 && (
+            <div className="cp-pagination">
+              <button disabled={brandPage === 0} onClick={() => setBrandPage((p) => p - 1)}>Prev</button>
+              <span>{brandPage + 1} / {brandTotalPages}</span>
+              <button disabled={brandPage >= brandTotalPages - 1} onClick={() => setBrandPage((p) => p + 1)}>Next</button>
+            </div>
+          )}
         </>
       )}
 
@@ -341,14 +356,14 @@ const AdminCatalogPage = () => {
               className="cp-search"
               placeholder="Search by ID..."
               value={catIdSearch}
-              onChange={(e) => setCatIdSearch(e.target.value)}
+              onChange={(e) => { setCatIdSearch(e.target.value); setCatPage(0); }}
               style={{ maxWidth: 140 }}
             />
             <input
               className="cp-search"
               placeholder="Search categories..."
               value={catSearch}
-              onChange={(e) => setCatSearch(e.target.value)}
+              onChange={(e) => { setCatSearch(e.target.value); setCatPage(0); }}
             />
             <button className="cp-btn-add" onClick={openAddCat}>
               <Plus size={16} /> Add Category
@@ -370,16 +385,16 @@ const AdminCatalogPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredCats.length === 0 ? (
+                  {pagedCats.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="cp-empty-row">
                         No categories found.
                       </td>
                     </tr>
                   ) : (
-                    filteredCats.map((c, idx) => (
+                    pagedCats.map((c, idx) => (
                       <tr key={c.id} className="cp-row">
-                        <td>{idx + 1}</td>
+                        <td>{catPage * PAGE_SIZE + idx + 1}</td>
                         <td className="cp-id">#{c.id}</td>
                         <td className="cp-name">{c.name}</td>
                         <td className="cp-desc">
@@ -414,6 +429,14 @@ const AdminCatalogPage = () => {
                   )}
                 </tbody>
               </table>
+            </div>
+          )}
+
+          {!catLoading && catTotalPages > 1 && (
+            <div className="cp-pagination">
+              <button disabled={catPage === 0} onClick={() => setCatPage((p) => p - 1)}>Prev</button>
+              <span>{catPage + 1} / {catTotalPages}</span>
+              <button disabled={catPage >= catTotalPages - 1} onClick={() => setCatPage((p) => p + 1)}>Next</button>
             </div>
           )}
         </>

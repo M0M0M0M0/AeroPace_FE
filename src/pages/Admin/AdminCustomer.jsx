@@ -9,7 +9,11 @@ const API_BASE = `${import.meta.env.VITE_API_BASE_URL}/api/v1/admin/customers`;
 const AdminCustomers = () => {
   const location = useLocation();
   const [customers, setCustomers] = useState([]);
+  const [statCustomers, setStatCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
   const [selectedCustomer, setSelected] = useState(null);
   const [toastMsg, setToastMsg] = useState("");
   const [toastType, setToastType] = useState("success");
@@ -26,15 +30,29 @@ const AdminCustomers = () => {
   const [filterDateFrom, setFilterDateFrom] = useState("");
   const [filterDateTo, setFilterDateTo] = useState("");
 
-  // ── Fetch danh sách ──────────────────────────────────────────
+  // ── Fetch danh sách (server-side pagination + filter) ─────────
   const fetchCustomers = async () => {
+    setLoading(true);
     try {
-      const res = await axios.get(API_BASE, {
+      const params = new URLSearchParams();
+      if (searchId) params.append("searchId", searchId);
+      if (searchName) params.append("searchName", searchName);
+      if (searchEmail) params.append("searchEmail", searchEmail);
+      if (searchPhone) params.append("searchPhone", searchPhone);
+      if (filterStatus && filterStatus !== "ALL") params.append("status", filterStatus);
+      if (filterDateFrom) params.append("dateFrom", filterDateFrom);
+      if (filterDateTo) params.append("dateTo", filterDateTo);
+      params.append("page", page);
+      params.append("size", 20);
+
+      const res = await axios.get(`${API_BASE}?${params}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      setCustomers(res.data);
+      setCustomers(res.data.customers || []);
+      setTotalPages(res.data.totalPages || 1);
+      setTotalElements(res.data.totalElements || 0);
     } catch (err) {
       console.error("Lỗi tải danh sách khách hàng:", err);
     } finally {
@@ -42,9 +60,30 @@ const AdminCustomers = () => {
     }
   };
 
+  // Dùng riêng cho các stat card (Total/Active/Locked) — không áp filter, không phân trang
+  const fetchStatCustomers = async () => {
+    try {
+      const res = await axios.get(API_BASE, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setStatCustomers(res.data);
+    } catch (err) {
+      console.error("Lỗi tải thống kê khách hàng:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchStatCustomers();
+  }, []);
+
   useEffect(() => {
     fetchCustomers();
-  }, []);
+  }, [
+    page, searchId, searchName, searchEmail, searchPhone,
+    filterStatus, filterDateFrom, filterDateTo,
+  ]);
 
   // Áp filter ngày tạo từ query string khi điều hướng từ Dashboard (quick action)
   useEffect(() => {
@@ -82,6 +121,11 @@ const AdminCustomers = () => {
           c.userId === userId ? { ...c, status: data.status } : c,
         ),
       );
+      setStatCustomers((prev) =>
+        prev.map((c) =>
+          c.userId === userId ? { ...c, status: data.status } : c,
+        ),
+      );
       showToast(
         data.status === "ACTIVE" ? "Account unlocked successfully" : "Account locked successfully",
       );
@@ -100,37 +144,8 @@ const AdminCustomers = () => {
     setFilterStatus("ALL");
     setFilterDateFrom("");
     setFilterDateTo("");
+    setPage(0);
   };
-
-  // ── Filter logic ──────────────────────────────────────────────
-  const filtered = customers.filter((c) => {
-    const matchId = searchId
-      ? String(c.userId).includes(searchId.trim())
-      : true;
-    const matchName = searchName
-      ? (c.fullName || c.username || "")
-          .toLowerCase()
-          .includes(searchName.toLowerCase())
-      : true;
-    const matchEmail = searchEmail
-      ? (c.email || "").toLowerCase().includes(searchEmail.toLowerCase())
-      : true;
-    const matchPhone = searchPhone
-      ? (c.phoneNumber || "").includes(searchPhone.trim())
-      : true;
-    const matchStatus =
-      filterStatus === "ALL" ? true : c.status === filterStatus;
-    const matchDate = (() => {
-      if (!filterDateFrom && !filterDateTo) return true;
-      if (!c.createdAt) return false;
-      const d = c.createdAt.slice(0, 10);
-      if (filterDateFrom && d < filterDateFrom) return false;
-      if (filterDateTo && d > filterDateTo) return false;
-      return true;
-    })();
-
-    return matchId && matchName && matchEmail && matchPhone && matchStatus && matchDate;
-  });
 
   const hasActiveFilter =
     searchId ||
@@ -194,28 +209,28 @@ const AdminCustomers = () => {
       <div className="ac-stats">
         <div
           className={`ac-stat-card ${filterStatus === "ALL" ? "ac-stat-card--active" : ""}`}
-          onClick={() => setFilterStatus("ALL")}
+          onClick={() => { setFilterStatus("ALL"); setPage(0); }}
         >
-          <span className="ac-stat-num">{customers.length}</span>
+          <span className="ac-stat-num">{statCustomers.length}</span>
           <span className="ac-stat-label">Total Customers</span>
         </div>
 
         <div
           className={`ac-stat-card ${filterStatus === "ACTIVE" ? "ac-stat-card--active" : ""}`}
-          onClick={() => setFilterStatus("ACTIVE")}
+          onClick={() => { setFilterStatus("ACTIVE"); setPage(0); }}
         >
           <span className="ac-stat-num">
-            {customers.filter((c) => c.status === "ACTIVE").length}
+            {statCustomers.filter((c) => c.status === "ACTIVE").length}
           </span>
           <span className="ac-stat-label">Active</span>
         </div>
 
         <div
           className={`ac-stat-card ${filterStatus === "LOCKED" ? "ac-stat-card--active" : ""}`}
-          onClick={() => setFilterStatus("LOCKED")}
+          onClick={() => { setFilterStatus("LOCKED"); setPage(0); }}
         >
           <span className="ac-stat-num">
-            {customers.filter((c) => c.status === "LOCKED").length}
+            {statCustomers.filter((c) => c.status === "LOCKED").length}
           </span>
           <span className="ac-stat-label">Locked</span>
         </div>
@@ -227,30 +242,30 @@ const AdminCustomers = () => {
           className="ac-filter-input ac-filter-id"
           placeholder="ID"
           value={searchId}
-          onChange={(e) => setSearchId(e.target.value)}
+          onChange={(e) => { setSearchId(e.target.value); setPage(0); }}
         />
         <input
           className="ac-filter-input"
           placeholder="Full Name / Username"
           value={searchName}
-          onChange={(e) => setSearchName(e.target.value)}
+          onChange={(e) => { setSearchName(e.target.value); setPage(0); }}
         />
         <input
           className="ac-filter-input"
           placeholder="Email"
           value={searchEmail}
-          onChange={(e) => setSearchEmail(e.target.value)}
+          onChange={(e) => { setSearchEmail(e.target.value); setPage(0); }}
         />
         <input
           className="ac-filter-input"
           placeholder="Phone Number"
           value={searchPhone}
-          onChange={(e) => setSearchPhone(e.target.value)}
+          onChange={(e) => { setSearchPhone(e.target.value); setPage(0); }}
         />
         <select
           className="ac-filter-select"
           value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
+          onChange={(e) => { setFilterStatus(e.target.value); setPage(0); }}
         >
           <option value="ALL">All</option>
           <option value="ACTIVE">Active</option>
@@ -262,7 +277,7 @@ const AdminCustomers = () => {
             type="date"
             className="ac-filter-input ac-filter-date"
             value={filterDateFrom}
-            onChange={(e) => setFilterDateFrom(e.target.value)}
+            onChange={(e) => { setFilterDateFrom(e.target.value); setPage(0); }}
           />
         </div>
         <div className="ac-filter-date-group">
@@ -272,7 +287,7 @@ const AdminCustomers = () => {
             className="ac-filter-input ac-filter-date"
             value={filterDateTo}
             min={filterDateFrom}
-            onChange={(e) => setFilterDateTo(e.target.value)}
+            onChange={(e) => { setFilterDateTo(e.target.value); setPage(0); }}
           />
         </div>
         {hasActiveFilter && (
@@ -285,7 +300,7 @@ const AdminCustomers = () => {
       {/* Result count */}
       {hasActiveFilter && (
         <p className="ac-filter-result">
-          Found <strong>{filtered.length}</strong> / {customers.length} customers
+          Found <strong>{totalElements}</strong> customers
         </p>
       )}
 
@@ -309,16 +324,16 @@ const AdminCustomers = () => {
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 ? (
+              {customers.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="ac-empty-row">
                     No customers found
                   </td>
                 </tr>
               ) : (
-                filtered.map((c, idx) => (
+                customers.map((c, idx) => (
                   <tr key={c.userId} className="ac-row">
-                    <td>{idx + 1}</td>
+                    <td>{page * 20 + idx + 1}</td>
                     <td className="ac-id">{c.userId}</td>
                     <td className="ac-username">{c.username}</td>
                     <td>
@@ -344,14 +359,13 @@ const AdminCustomers = () => {
                     </td>
                     <td>
                       <div className="ac-actions">
-                        {/* Tạm ẩn nút Lock/Unlock — đang có vấn đề ở luồng lock account.
                         <button
                           className={`ac-lock-btn ${c.status === "ACTIVE" ? "lock" : "unlock"}`}
                           onClick={(e) => handleLockClick(c.userId, c.status, e)}
                         >
                           {c.status === "ACTIVE" ? "Lock" : "Unlock"}
                         </button>
-                        */}
+                       
                         <button
                           className="ac-view-btn"
                           onClick={() => setSelected(c)}
@@ -365,6 +379,14 @@ const AdminCustomers = () => {
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {!loading && totalPages > 1 && (
+        <div className="ac-pagination">
+          <button disabled={page === 0} onClick={() => setPage((p) => p - 1)}>Prev</button>
+          <span>{page + 1} / {totalPages}</span>
+          <button disabled={page >= totalPages - 1} onClick={() => setPage((p) => p + 1)}>Next</button>
         </div>
       )}
 

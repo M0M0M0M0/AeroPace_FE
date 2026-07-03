@@ -189,6 +189,38 @@
   color: var(--text-main);
 }
 
+.ao-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.ao-pagination button {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border-main);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ao-pagination button:hover:not(:disabled) {
+  background: var(--border-main);
+}
+
+.ao-pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ao-pagination span {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
 /* ── Bảng dữ liệu Orders ─────────────────────────────────────────── */
 .ao-table-wrap {
   background: var(--bg-surface-elevated);

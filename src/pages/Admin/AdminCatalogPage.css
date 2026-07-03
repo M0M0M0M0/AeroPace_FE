@@ -145,6 +145,38 @@
   box-shadow: 0 4px 12px rgba(255, 85, 0, 0.2);
 }
 
+.cp-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.cp-pagination button {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border-main);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cp-pagination button:hover:not(:disabled) {
+  background: var(--border-main);
+}
+
+.cp-pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.cp-pagination span {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
 /* ── Bảng Dữ liệu Phân Loại Danh Mục ───────────────────────────────── */
 .cp-table-wrap {
   background: var(--bg-surface-elevated);

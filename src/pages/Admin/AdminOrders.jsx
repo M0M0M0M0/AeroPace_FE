@@ -17,8 +17,11 @@ const AdminOrders = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [orders, setOrders] = useState([]);
-  const [allOrders, setAllOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
 
   const [searchOrderCode, setSearchOrderCode] = useState("");
   const [searchName, setSearchName] = useState("");
@@ -114,9 +117,9 @@ const AdminOrders = () => {
       if (searchAddress) params.append("shippingAddress", searchAddress);
       if (filterDateFrom) params.append("dateFrom", filterDateFrom);
       if (filterDateTo) params.append("dateTo", filterDateTo);
-
-      const beStatus = ["PENDING", "PAID", "SHIPPING", "DELIVERED", "COMPLETED", "CANCELLED"];
-      if (beStatus.includes(filterStatus)) params.append("status", filterStatus);
+      if (filterStatus && filterStatus !== "ALL") params.append("status", filterStatus);
+      params.append("page", page);
+      params.append("size", 20);
 
       const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
       const res = await axios.get(
@@ -124,8 +127,9 @@ const AdminOrders = () => {
         { headers }
       );
 
-      setAllOrders(res.data);
-      setOrders(res.data);
+      setOrders(res.data.orders || []);
+      setTotalPages(res.data.totalPages || 1);
+      setTotalElements(res.data.totalElements || 0);
     } catch (err) {
       console.error(err);
     } finally {
@@ -136,7 +140,7 @@ const AdminOrders = () => {
   useEffect(() => {
     fetchOrders();
   }, [
-    searchOrderCode, searchName, searchUserId, searchPhone,
+    page, searchOrderCode, searchName, searchUserId, searchPhone,
     searchAddress, filterDateFrom, filterDateTo,
     filterStatus,
   ]);
@@ -150,24 +154,8 @@ const AdminOrders = () => {
     setFilterStatus("PENDING_ACTION");
     setFilterDateFrom("");
     setFilterDateTo("");
+    setPage(0);
   };
-
-
-  const filteredOrders = orders
-    .filter((o) => {
-      let matchStatus = true;
-      if (filterStatus === "PENDING_ACTION") {
-        matchStatus = o.status === "PAID";
-      } else if (filterStatus === "CANCELLED") {
-        matchStatus = (o.status === "CANCELLED" || o.paymentStatus === "REFUND_PENDING") && o.paymentStatus !== "REFUNDED";
-      } else if (filterStatus === "REFUNDED") {
-        matchStatus = o.paymentStatus === "REFUNDED";
-      } else if (filterStatus !== "ALL") {
-        matchStatus = o.status === filterStatus;
-      }
-      return matchStatus;
-    })
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const hasActiveFilter =
     searchOrderCode || searchName || searchUserId || searchPhone || searchAddress ||
@@ -254,19 +242,19 @@ const AdminOrders = () => {
       {/* Filter bar */}
       <div className="ao-filter-bar">
         <input className="ao-filter-input ao-filter-id" placeholder="Order ID"
-          value={searchOrderCode} onChange={(e) => setSearchOrderCode(e.target.value)} />
+          value={searchOrderCode} onChange={(e) => { setSearchOrderCode(e.target.value); setPage(0); }} />
         <input className="ao-filter-input ao-filter-id" placeholder="User ID"
           type="number" min="1"
-          value={searchUserId} onChange={(e) => setSearchUserId(e.target.value)} />
+          value={searchUserId} onChange={(e) => { setSearchUserId(e.target.value); setPage(0); }} />
         <input className="ao-filter-input" placeholder="Receiver Name / Username"
-          value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+          value={searchName} onChange={(e) => { setSearchName(e.target.value); setPage(0); }} />
         <input className="ao-filter-input" placeholder="Phone Number"
-          value={searchPhone} onChange={(e) => setSearchPhone(e.target.value)} />
+          value={searchPhone} onChange={(e) => { setSearchPhone(e.target.value); setPage(0); }} />
         <input className="ao-filter-input" placeholder="Shipping Address"
-          value={searchAddress} onChange={(e) => setSearchAddress(e.target.value)} />
+          value={searchAddress} onChange={(e) => { setSearchAddress(e.target.value); setPage(0); }} />
 
         <select className="ao-filter-select" value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}>
+          onChange={(e) => { setFilterStatus(e.target.value); setPage(0); }}>
           <option value="ALL">All</option>
           <option value="PENDING_ACTION">Pending Action</option>
           <option value="PENDING">Pending Payment</option>
@@ -283,13 +271,13 @@ const AdminOrders = () => {
         <div className="ao-filter-date-group">
           <label className="ao-filter-date-label">From date</label>
           <input type="date" className="ao-filter-input ao-filter-date"
-            value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)} />
+            value={filterDateFrom} onChange={(e) => { setFilterDateFrom(e.target.value); setPage(0); }} />
         </div>
         <span className="ao-filter-date-sep">→</span>
         <div className="ao-filter-date-group">
           <label className="ao-filter-date-label">To date</label>
           <input type="date" className="ao-filter-input ao-filter-date"
-            value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)}
+            value={filterDateTo} onChange={(e) => { setFilterDateTo(e.target.value); setPage(0); }}
             min={filterDateFrom} />
         </div>
         {hasActiveFilter && (
@@ -301,7 +289,7 @@ const AdminOrders = () => {
 
       {hasActiveFilter && (
         <p className="ao-filter-result">
-          Found <strong>{filteredOrders.length}</strong> / {allOrders.length} orders
+          Found <strong>{totalElements}</strong> orders
         </p>
       )}
 
@@ -325,16 +313,16 @@ const AdminOrders = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredOrders.length === 0 ? (
+              {orders.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="ao-empty-row">
                     No orders found.
                   </td>
                 </tr>
               ) : (
-                filteredOrders.map((order, idx) => (
+                orders.map((order, idx) => (
                   <tr key={order.orderCode} className="ao-row">
-                    <td>{idx + 1}</td>
+                    <td>{page * 20 + idx + 1}</td>
                     <td className="ao-id">#{order.orderCode}</td>
                     <td className="ao-name">{order.receiverName || "—"}</td>
                     <td>{order.phoneNumber}</td>
@@ -373,6 +361,14 @@ const AdminOrders = () => {
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {!loading && totalPages > 1 && (
+        <div className="ao-pagination">
+          <button disabled={page === 0} onClick={() => setPage((p) => p - 1)}>Prev</button>
+          <span>{page + 1} / {totalPages}</span>
+          <button disabled={page >= totalPages - 1} onClick={() => setPage((p) => p + 1)}>Next</button>
         </div>
       )}
 
