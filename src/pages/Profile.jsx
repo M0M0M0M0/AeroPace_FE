@@ -324,7 +324,7 @@ const Profile = () => {
     switch (order.status) {
       case "PENDING": return "Waiting for confirmation";
       case "PAID": return "Paid";
-      case "SHIPPING": return "In transit";
+      case "SHIPPING": return "Shipping";
       case "DELIVERED": return "Delivered";
       case "COMPLETED": return "Completed";
       case "CANCELLED": return "Cancelled";

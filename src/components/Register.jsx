@@ -38,6 +38,11 @@ const Register = () => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
 
+    if (password.length < 8) {
+      setMessage({ type: "error", text: "Password must be at least 8 characters!" });
+      return;
+    }
+
     if (password !== confirmPassword) {
       setMessage({ type: "error", text: "Confirm password does not match!" });
       return;
@@ -157,6 +162,7 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={8}
             />
           </div>
 
