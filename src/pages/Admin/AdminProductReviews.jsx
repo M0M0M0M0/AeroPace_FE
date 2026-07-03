@@ -169,7 +169,7 @@ const AdminProductReviews = () => {
     <div className="apr-page">
       {/* Topbar */}
       <div className="apr-topbar">
-        <button className="apr-back-btn" onClick={() => navigate(`/admin/products/${productId}?mode=${fromMode}`)}>
+        <button className="apr-back-btn" onClick={() => location.key !== "default" ? navigate(-1) : navigate(`/admin/products/${productId}?mode=${fromMode}`)}>
           <ArrowLeft size={16} /> Back to Product
         </button>
         <div className="apr-topbar-info">

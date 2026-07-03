@@ -24,7 +24,7 @@ const StarRating = ({ value, onChange, disabled }) => {
             style={{ pointerEvents: disabled ? "none" : "auto", opacity: disabled ? 0.5 : 1 }}
         >
             {[1, 2, 3, 4, 5].map((star) => {
-                const leftVal = star - 0.5;
+                const leftVal = star === 1 ? 1 : star - 0.5;
                 const rightVal = star;
                 const filledLeft = display >= leftVal;
                 const filledRight = display >= rightVal;
