@@ -146,7 +146,7 @@ const KpiCard = ({ icon: Icon, label, value, pct, iconClass, onClick }) => {
         <span className="ad-stat-value">{value}</span>
         <span className={`ad-stat-pct ${up ? "up" : "down"}`}>
           {up ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-          {Math.abs(pct)}% vs yesterday
+          {Math.abs(pct)}% vs the previous day
         </span>
       </div>
     </div>
@@ -296,7 +296,11 @@ const AdminDashboard = () => {
   };
 
   // perf growth
-  const revGrowth = pctChange(revToday, revYest);
+  const dayBeforeYest = daysAgo(2);
+  const revDayBeforeYest = orders30d
+    .filter((o) => o.status === COMPLETED && o.createdAt?.slice(0, 10) === dayBeforeYest)
+    .reduce((s, o) => s + (o.totalPrice || 0), 0);
+  const revYestGrowth = pctChange(revYest, revDayBeforeYest);
   const ordGrowth = pctChange(ordCountToday, ordCountYest);
   const custGrowth = pctChange(newCustToday.length, newCustYest.length);
 
@@ -323,7 +327,7 @@ const AdminDashboard = () => {
 
       {/*KPI — bấm vào để mở danh sách đã lọc sẵn (quick action) */}
       <div className={`ad-stats${loading ? " ad-data--loading" : ""}`}>
-        <KpiCard icon={DollarSign} label="Revenue Yesterday" value={fmtVND(revYest)} iconClass="green"
+        <KpiCard icon={DollarSign} label="Revenue Yesterday" value={fmtVND(revYest)} pct={revYestGrowth} iconClass="green"
           onClick={() => navigate(`/admin/orders?status=COMPLETED&dateFrom=${yd}&dateTo=${yd}`)} />
         <KpiCard icon={ShoppingBag} label="Orders Today" value={`${ordCountToday} orders`} pct={ordGrowth} iconClass="blue"
           onClick={() => navigate(`/admin/orders?status=ALL&dateFrom=${td}&dateTo=${td}`)} />
