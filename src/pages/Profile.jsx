@@ -3,6 +3,7 @@ import axios from "../api/axiosClient";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import axiosRaw from "axios";
+import { toast } from "sonner";
 import QuickReviewModal from "../components/QuickReviewModal";
 import { uploadImage } from "../api/uploadImage";
 import { formatUSD } from "../utils/currency";
@@ -230,19 +231,19 @@ const Profile = () => {
     e.preventDefault();
     const phoneRegex = /^[0-9]+$/;
     if (formData.phone_number && !phoneRegex.test(formData.phone_number)) {
-      alert("Phone number must contain only digits!");
+      toast.error("Phone number must contain only digits!");
       return;
     }
     if (formData.dob) {
       const today = new Date();
       const inputDate = new Date(formData.dob);
       if (inputDate >= today) {
-        alert("Date of birth must be in the past!");
+        toast.error("Date of birth must be in the past!");
         return;
       }
     }
     if (!profileId) {
-      alert("No profile found to update!");
+      toast.error("No profile found to update!");
       return;
     }
     try {
@@ -577,6 +578,7 @@ const Profile = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
+                        maxLength={150}
                       />
                     </div>
                   </div>
@@ -604,6 +606,7 @@ const Profile = () => {
                       name="phone_number"
                       value={formData.phone_number}
                       onChange={handleChange}
+                      maxLength={20}
                     />
                   </div>
                 </div>
@@ -616,6 +619,7 @@ const Profile = () => {
                       name="dob"
                       value={formData.dob}
                       onChange={handleChange}
+                      max={new Date().toISOString().slice(0, 10)}
                     />
                   </div>
                 </div>
@@ -689,6 +693,7 @@ const Profile = () => {
                       placeholder="House number, alley, street name..."
                       value={formData.address}
                       onChange={handleChange}
+                      maxLength={500}
                     />
                   </div>
                 </div>

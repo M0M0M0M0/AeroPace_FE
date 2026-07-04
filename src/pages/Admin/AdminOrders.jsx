@@ -409,6 +409,7 @@ const AdminOrders = () => {
                 placeholder="E.g.: Order cancelled, customer requested refund..."
                 value={refundReason}
                 rows={3}
+                maxLength={1000}
                 onChange={(e) => { setRefundReason(e.target.value); setRefundError(""); }}
               />
             </div>

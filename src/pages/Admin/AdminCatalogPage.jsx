@@ -466,6 +466,7 @@ const AdminCatalogPage = () => {
                 type="text"
                 placeholder="Enter brand name..."
                 value={brandModal.data.name}
+                maxLength={50}
                 onChange={(e) =>
                   setBrandModal({
                     ...brandModal,
@@ -514,6 +515,7 @@ const AdminCatalogPage = () => {
                 type="text"
                 placeholder="Enter category name..."
                 value={catModal.data.name}
+                maxLength={50}
                 onChange={(e) =>
                   setCatModal({
                     ...catModal,
@@ -529,6 +531,7 @@ const AdminCatalogPage = () => {
                 placeholder="Enter description (optional)..."
                 value={catModal.data.description}
                 rows={3}
+                maxLength={255}
                 onChange={(e) =>
                   setCatModal({
                     ...catModal,

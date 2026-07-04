@@ -275,6 +275,10 @@ const CheckoutForm = () => {
       toast.error("Please fill in all required fields.");
       return false;
     }
+    if (!/^[0-9]+$/.test(phone)) {
+      toast.error("Phone number must contain digits only.");
+      return false;
+    }
     if (useOtherAddress && (!selectedProvince || !selectedDistrict || !selectedWard)) {
       toast.error("Please select the full address details.");
       return false;
@@ -516,6 +520,7 @@ const CheckoutForm = () => {
                 placeholder="Full Name"
                 value={form.name}
                 readOnly={!useOtherReceiver}
+                maxLength={255}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className={`checkout-input${!useOtherReceiver ? " checkout-input--readonly" : ""}`}
               />
@@ -524,15 +529,18 @@ const CheckoutForm = () => {
                 placeholder="Email"
                 value={form.email}
                 readOnly={!useOtherReceiver}
+                maxLength={255}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className={`checkout-input${!useOtherReceiver ? " checkout-input--readonly" : ""}`}
               />
               <input
                 type="text"
+                inputMode="numeric"
                 placeholder="Phone Number"
                 value={form.phone}
                 readOnly={!useOtherReceiver}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                maxLength={20}
+                onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/[^0-9]/g, "") })}
                 className={`checkout-input${!useOtherReceiver ? " checkout-input--readonly" : ""}`}
               />
             </div>
@@ -603,6 +611,7 @@ const CheckoutForm = () => {
                 placeholder="House number, alley, street name..."
                 value={form.specificAddress}
                 readOnly={!useOtherAddress}
+                maxLength={500}
                 onChange={(e) => setForm({ ...form, specificAddress: e.target.value })}
                 className={`checkout-input checkout-input-full${!useOtherAddress ? " checkout-input--readonly" : ""}`}
               />

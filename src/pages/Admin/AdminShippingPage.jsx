@@ -256,6 +256,7 @@ const AdminShippingPage = () => {
                                 type="text"
                                 placeholder="e.g., Standard Delivery..."
                                 value={modal.data.name}
+                                maxLength={100}
                                 onChange={(e) =>
                                     setModal({ ...modal, data: { ...modal.data, name: e.target.value } })
                                 }

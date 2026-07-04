@@ -376,7 +376,7 @@ const AdminProductDetail = () => {
               <label className="apd-form-label">Product Name <span className="apd-required">*</span></label>
               <input className="apd-form-input" value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="Product Name" disabled={isViewOnly} />
+                placeholder="Product Name" disabled={isViewOnly} maxLength={200} />
             </div>
 
             <div className="apd-form-row">
@@ -427,7 +427,7 @@ const AdminProductDetail = () => {
                   <label className="apd-form-label">Option {i + 1}</label>
                   <input className="apd-form-input" value={form[field]}
                     onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-                    placeholder={placeholder} disabled={isViewOnly} />
+                    placeholder={placeholder} disabled={isViewOnly} maxLength={50} />
                 </div>
               ))}
             </div>
@@ -459,7 +459,7 @@ const AdminProductDetail = () => {
                 {!isViewOnly && <span className="apd-image-drag-handle" title="Drag to reorder">⠿</span>}
                 <input className="apd-form-input" value={img.imageUrl}
                   onChange={(e) => updateImage(idx, e.target.value)}
-                  placeholder="Image URL" disabled={isViewOnly} />
+                  placeholder="Image URL" disabled={isViewOnly} maxLength={500} />
                 <span className="apd-image-pos">#{idx + 1}</span>
                 {img.imageUrl && <img src={img.imageUrl} alt="" className="apd-image-preview" />}
                 {!isViewOnly && (
@@ -525,7 +525,7 @@ const AdminProductDetail = () => {
                   <div className="apd-form-grid-3">
                     <div className="apd-form-row">
                       <label className="apd-form-label">Price <span className="apd-required">*</span></label>
-                      <input className="apd-form-input" type="number" value={v.price}
+                      <input className="apd-form-input" type="number" min="1" step="0.01" value={v.price}
                         onChange={(e) => updateVariant(idx, "price", e.target.value)}
                         placeholder="e.g., 99.99" disabled={isViewOnly} />
                     </div>
@@ -540,7 +540,7 @@ const AdminProductDetail = () => {
                       <label className="apd-form-label">SKU</label>
                       <input className="apd-form-input" value={v.sku}
                         onChange={(e) => updateVariant(idx, "sku", e.target.value)}
-                        placeholder="Sku" disabled={isViewOnly} />
+                        placeholder="Sku" disabled={isViewOnly} maxLength={100} />
                     </div>
                   </div>
                   {!isViewOnly && activeCount > 1 && (
@@ -646,6 +646,7 @@ const AdminProductDetail = () => {
               onChange={(e) => setAddValueInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") confirmAddValue(); }}
               placeholder="e.g., Red"
+              maxLength={50}
               autoFocus
             />
             <div className="apd-confirm-actions" style={{ marginTop: 12 }}>
