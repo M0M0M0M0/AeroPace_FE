@@ -241,7 +241,7 @@ const AdminOrders = () => {
 
       {/* Filter bar */}
       <div className="ao-filter-bar">
-        <input className="ao-filter-input ao-filter-id" placeholder="Order ID"
+        <input className="ao-filter-input ao-filter-id" placeholder="Order Code"
           value={searchOrderCode} onChange={(e) => { setSearchOrderCode(e.target.value); setPage(0); }} />
         <input className="ao-filter-input ao-filter-id" placeholder="User ID"
           type="number" min="1"
@@ -302,7 +302,7 @@ const AdminOrders = () => {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Order ID</th>
+                <th>Order Code</th>
                 <th>Receiver</th>
                 <th>Phone</th>
                 <th>Shipping Address</th>
