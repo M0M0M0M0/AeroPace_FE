@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   DollarSign, ShoppingBag, Package, TrendingUp,
   RefreshCw, ChevronDown,
@@ -149,6 +149,7 @@ const KpiCard = ({ icon: Icon, label, value, sub, color }) => (
 // ── main page ─────────────────────────────────────────────────────────────────
 const AdminRevenue = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -160,6 +161,21 @@ const AdminRevenue = () => {
   const [customFrom, setCustomFrom] = useState(daysAgo(29));
   const [customTo,   setCustomTo]   = useState(today());
   const [showCustom, setShowCustom] = useState(false);
+
+  // Áp filter custom từ query string khi điều hướng từ Dashboard (quick action)
+  useEffect(() => {
+    const q = new URLSearchParams(location.search);
+    const df = q.get("dateFrom");
+    const dt = q.get("dateTo");
+    if (df && dt) {
+      setActiveQuick(null);
+      setShowCustom(true);
+      setCustomFrom(df);
+      setCustomTo(dt);
+      setDateFrom(df);
+      setDateTo(dt);
+    }
+  }, [location.search]);
 
   // ── fetch ─────────────────────────────────────────────────────────────────
   const fetchData = useCallback(async (from, to) => {
@@ -200,8 +216,9 @@ const AdminRevenue = () => {
     setDateTo(customTo);
   };
 
-  // ── derived — only COMPLETED orders count as revenue ─────────────────────
-  const completed = orders.filter((o) => o.status === "COMPLETED");
+  // ── derived — DELIVERED và COMPLETED đều tính vào doanh thu (đơn đã giao thành
+  // công, không phụ thuộc việc khách có bấm "đã nhận hàng" hay chưa) ─────────
+  const completed = orders.filter((o) => o.status === "DELIVERED" || o.status === "COMPLETED");
   const refunded  = orders.filter((o) => o.paymentStatus === "REFUNDED");
 
   const totalRevenue  = completed.reduce((s, o) =>
@@ -306,7 +323,7 @@ const AdminRevenue = () => {
       {/* KPI cards */}
       <div className={`rv-kpi-row${loading ? " rv-data--loading" : ""}`}>
         <KpiCard icon={DollarSign} label="Total Revenue" value={formatUSD(totalRevenue)} color="#22c55e" />
-        <KpiCard icon={ShoppingBag} label="Total Orders" value={totalOrders.toLocaleString()} sub="completed" color="#3b82f6" />
+        <KpiCard icon={ShoppingBag} label="Total Orders" value={totalOrders.toLocaleString()} sub="delivered" color="#3b82f6" />
         <KpiCard icon={Package} label="Units Sold" value={unitsSold.toLocaleString()} color="#f59e0b" />
         <KpiCard icon={TrendingUp} label="Avg. Order Value" value={formatUSD(aov)} sub="AOV" color="#a855f7" />
       </div>

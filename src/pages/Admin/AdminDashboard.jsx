@@ -246,10 +246,12 @@ const AdminDashboard = () => {
   };
 
   // ── derived ─────────────────────────────────────────────────────────────────
-  const COMPLETED = "COMPLETED";
+  // DELIVERED và COMPLETED đều tính là doanh thu — không phụ thuộc việc khách có
+  // bấm "đã nhận hàng" hay chưa (đa số không bấm, đơn sẽ tự chuyển COMPLETED sau 1 ngày).
+  const isRevenueOrder = (o) => o.status === "DELIVERED" || o.status === "COMPLETED";
 
-  const revToday = ordersToday.filter((o) => o.status === COMPLETED).reduce((s, o) => s + (o.totalPrice || 0), 0);
-  const revYest = ordersYest.filter((o) => o.status === COMPLETED).reduce((s, o) => s + (o.totalPrice || 0), 0);
+  const revToday = ordersToday.filter(isRevenueOrder).reduce((s, o) => s + (o.totalPrice || 0), 0);
+  const revYest = ordersYest.filter(isRevenueOrder).reduce((s, o) => s + (o.totalPrice || 0), 0);
 
   const ordCountToday = ordersToday.length;
   const ordCountYest = ordersYest.length;
@@ -277,7 +279,7 @@ const AdminDashboard = () => {
       return hours.map((h) => {
         const label = `${String(h.getHours()).padStart(2, "0")}:00`;
         const value = sourceOrders
-          .filter((o) => o.status === COMPLETED)
+          .filter(isRevenueOrder)
           .filter((o) => { const d = new Date(o.createdAt); return d.getHours() === h.getHours() && d.toDateString() === h.toDateString(); })
           .reduce((s, o) => s + (o.totalPrice || 0), 0);
         return { label, value };
@@ -289,7 +291,7 @@ const AdminDashboard = () => {
       const ds = toDateStr(d);
       const label = `${d.getDate()}/${d.getMonth() + 1}`;
       const value = sourceOrders
-        .filter((o) => o.status === COMPLETED && o.createdAt?.slice(0, 10) === ds)
+        .filter((o) => isRevenueOrder(o) && o.createdAt?.slice(0, 10) === ds)
         .reduce((s, o) => s + (o.totalPrice || 0), 0);
       return { label, value };
     });
@@ -298,7 +300,7 @@ const AdminDashboard = () => {
   // perf growth
   const dayBeforeYest = daysAgo(2);
   const revDayBeforeYest = orders30d
-    .filter((o) => o.status === COMPLETED && o.createdAt?.slice(0, 10) === dayBeforeYest)
+    .filter((o) => isRevenueOrder(o) && o.createdAt?.slice(0, 10) === dayBeforeYest)
     .reduce((s, o) => s + (o.totalPrice || 0), 0);
   const revYestGrowth = pctChange(revYest, revDayBeforeYest);
   const ordGrowth = pctChange(ordCountToday, ordCountYest);
@@ -328,7 +330,7 @@ const AdminDashboard = () => {
       {/*KPI — bấm vào để mở danh sách đã lọc sẵn (quick action) */}
       <div className={`ad-stats${loading ? " ad-data--loading" : ""}`}>
         <KpiCard icon={DollarSign} label="Revenue Yesterday" value={fmtVND(revYest)} pct={revYestGrowth} iconClass="green"
-          onClick={() => navigate(`/admin/orders?status=COMPLETED&dateFrom=${yd}&dateTo=${yd}`)} />
+          onClick={() => navigate(`/admin/revenue?dateFrom=${yd}&dateTo=${yd}`)} />
         <KpiCard icon={ShoppingBag} label="Orders Today" value={`${ordCountToday} orders`} pct={ordGrowth} iconClass="blue"
           onClick={() => navigate(`/admin/orders?status=ALL&dateFrom=${td}&dateTo=${td}`)} />
         <KpiCard icon={Clock} label="Need Action" value={`${needActionAll} orders`} pct={pctChange(needActionToday, needActionYest)} iconClass="yellow"
